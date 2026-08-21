@@ -10,6 +10,8 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "dvc>=3.67.1",
+    "dvc-gdrive>=3.0.1",
     "ipykernel>=7.3.0",
     "jupyterlab>=4.6.3",
 ]
