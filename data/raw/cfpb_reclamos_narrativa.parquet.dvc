@@ -1,0 +1,5 @@
+outs:
+- md5: 68f4560aca0967779f118e8225e72c26
+  size: 1616005038
+  hash: md5
+  path: cfpb_reclamos_narrativa.parquet
