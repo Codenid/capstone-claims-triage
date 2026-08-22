@@ -1,16 +1,16 @@
 # Datos del proyecto
 
-## RAW v1
+## RAW
 
-* **Archivo:** `data/raw/complaints.csv.zip`
-* **Fuente:** Consumer Financial Protection Bureau (CFPB)
-* **Dataset:** Consumer Complaint Database
-* **URL:** https://www.consumerfinance.gov/data-research/consumer-complaints/
-* **Formato original:** CSV
-* **Tamaño aproximado:** ~1.4 GB
-* **Estado:** datos originales, sin transformaciones
-* **Versionamiento:** DVC
-* **DVC Remote:** DagsHub
+- **Archivo:** `data/raw/cfpb_reclamos_narrativa.parquet`
+- **Fuente:** Consumer Financial Protection Bureau (CFPB)
+- **Entregado por:** docente del curso
+- **Filas:** 3,837,184
+- **Columnas:** 16
+- **Contenido:** reclamos que incluyen narrativa del consumidor
+- **Formato:** Parquet
+- **Versionamiento:** DVC
+- **Remote:** DagsHub
 
 ## Regla de tratamiento
 
