@@ -1,0 +1,59 @@
+bloque,regimen,clave,n,pct,valor
+longitud,historico,media,,,1022.4
+longitud,historico,p10,,,195.0
+longitud,historico,p25,,,346.0
+longitud,historico,p50,,,669.0
+longitud,historico,p75,,,1221.0
+longitud,historico,p90,,,2124.0
+longitud,historico,p99,,,5873.0
+longitud,historico,max,,,35984.0
+longitud,historico,min,,,4.0
+longitud_bucket,historico,<200,402063,10.4781,
+longitud_bucket,historico,200-499,1019491,26.5687,
+longitud_bucket,historico,500-999,1173301,30.5771,
+longitud_bucket,historico,1 000-1 999,814397,21.2238,
+longitud_bucket,historico,2 000-4 999,371082,9.6707,
+longitud_bucket,historico,5 000+,56850,1.4816,
+mascara,historico,textos_con_XXXX,2667282,69.5114,
+mascara,historico,media_bloques_XXXX,,,16.09
+mascara,historico,p50_bloques_XXXX,,,4.0
+mascara,historico,p99_bloques_XXXX,,,168.0
+mascara,historico,pct_caracteres_enmascarados,,,5.99
+mascara,historico,textos_con_monto,843199,21.9744,
+pii,historico,correo,314,0.0082,
+pii,historico,url,13077,0.3408,
+pii,historico,telefono,139,0.0036,
+pii,historico,ssn,14,0.0004,
+pii,historico,digitos_6_o_mas,35841,0.934,
+pii,historico,tarjeta_16_digitos,11,0.0003,
+idioma,historico,marcas_espanol_>=4,118,0.0031,
+idioma,historico,con_acentos,3,0.0001,
+longitud,2023_2025,media,,,1004.6
+longitud,2023_2025,p10,,,192.0
+longitud,2023_2025,p25,,,330.0
+longitud,2023_2025,p50,,,661.0
+longitud,2023_2025,p75,,,1193.0
+longitud,2023_2025,p90,,,2068.0
+longitud,2023_2025,p99,,,5874.0
+longitud,2023_2025,max,,,35984.0
+longitud,2023_2025,min,,,9.0
+longitud_bucket,2023_2025,<200,270290,10.7094,
+longitud_bucket,2023_2025,200-499,679134,26.9087,
+longitud_bucket,2023_2025,500-999,788518,31.2427,
+longitud_bucket,2023_2025,1 000-1 999,517530,20.5056,
+longitud_bucket,2023_2025,2 000-4 999,231471,9.1713,
+longitud_bucket,2023_2025,5 000+,36907,1.4623,
+mascara,2023_2025,textos_con_XXXX,1584187,62.7687,
+mascara,2023_2025,media_bloques_XXXX,,,17.03
+mascara,2023_2025,p50_bloques_XXXX,,,3.0
+mascara,2023_2025,p99_bloques_XXXX,,,186.0
+mascara,2023_2025,pct_caracteres_enmascarados,,,6.57
+mascara,2023_2025,textos_con_monto,467056,18.5057,
+pii,2023_2025,correo,102,0.004,
+pii,2023_2025,url,6432,0.2548,
+pii,2023_2025,telefono,116,0.0046,
+pii,2023_2025,ssn,10,0.0004,
+pii,2023_2025,digitos_6_o_mas,18671,0.7398,
+pii,2023_2025,tarjeta_16_digitos,4,0.0002,
+idioma,2023_2025,marcas_espanol_>=4,49,0.0019,
+idioma,2023_2025,con_acentos,0,0.0,

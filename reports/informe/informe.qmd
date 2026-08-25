@@ -1,0 +1,1378 @@
+---
+title: "Triaje automático de reclamos financieros"
+subtitle: "Informe de avance I — Exploración y transformación de datos"
+author: "Equipo capstone"
+date: last-modified
+date-format: "D [de] MMMM [de] YYYY"
+lang: es
+bibliography: []
+format:
+  html:
+    toc: true
+    toc-title: "Contenido"
+    toc-depth: 3
+    number-sections: true
+    embed-resources: true
+    theme: cosmo
+    fig-width: 8.5
+    fig-height: 4.2
+    tbl-cap-location: bottom
+    fig-cap-location: bottom
+  typst:
+    toc: true
+    number-sections: true
+    fig-width: 7
+    fig-height: 3.6
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+```{python}
+# | label: setup
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+from IPython.display import Markdown
+
+from src.reporting import (
+    ARTEFACTOS, CRITICO, RAMPA, REJILLA, SERIE_1, SERIE_2, SERIE_3, TINTA_2,
+    TINTA_3, artefacto, estado_pipeline, estilo, miles, pendiente,
+    resumen_avance, sin_marco,
+)
+
+estilo()
+
+def tabla(df, **kw):
+    return Markdown(df.to_markdown(index=False, **kw))
+
+tipos = artefacto("e01_tabla_tipos")
+respuesta = artefacto("d1b_respuesta_empresa")
+volumen = artefacto("e02_volumen_mensual")
+prod_anio = artefacto("e03_producto_anio")
+tasas = artefacto("e09_tasas_anuales")
+tasas_prod = artefacto("e09_tasas_producto")
+pareto = artefacto("e04_pareto_issue")
+plantillas = artefacto("e05_plantillas")
+texto = artefacto("e06_narrativa")
+empresas = artefacto("e07_empresas")
+geografia = artefacto("e08_geografia")
+sesgo = artefacto("e11_sesgo")
+piso_senal = artefacto("e12_piso_senal")
+embeddings = artefacto("e13_embeddings")
+clusters = artefacto("e14_clusters")
+features = artefacto("f5_features")
+
+REGIMEN = "2023_2025"
+
+def reg(df, r=REGIMEN):
+    """Vista de un artefacto restringida a un régimen (decisiones D3 y D3b)."""
+    return df[df["regimen"] == r]
+
+N_FILAS = int(tipos["n_no_nulos"].max()) if tipos is not None else 0
+listas, total_etapas = resumen_avance()
+```
+
+# Resumen ejecutivo {.unnumbered}
+
+Este informe documenta la **exploración y creación de features** del proyecto de triaje
+automático de reclamos financieros. Su alcance termina en matrices F0/R0/R1 validadas y
+versionadas. E12 y E13 usan clasificadores pequeños como sondas para medir señal y comparar
+representaciones; no son la selección final de modelos, que pertenece al Informe II. El
+mockup web y el agente redactor se describen para fijar el destino de las features, pero no
+forman parte del entregable de este informe.
+
+```{python}
+# | output: asis
+if tipos is None:
+    print(pendiente("E1"))
+else:
+    narrativa = tipos.loc[tipos["columna"] == "Consumer complaint narrative"].iloc[0]
+    print(f"""
+**El dato.** {miles(N_FILAS)} reclamos del *Consumer Financial Protection Bureau*
+(CFPB) con narrativa escrita por el consumidor, 16 columnas, marzo 2015 – julio 2026.
+Todas las columnas llegan como texto y ocupan **{tipos['mb_arrow'].sum()/1024:.2f} GB**
+en memoria, de los cuales el {100*narrativa['mb_arrow']/tipos['mb_arrow'].sum():.0f}%
+es la narrativa. De las {miles(N_FILAS)} filas, solo
+**{miles(narrativa['n_unicos'])} narrativas son únicas** ({narrativa['pct_unicos']:.1f}%):
+casi un tercio del corpus son textos repetidos, casi siempre plantillas.
+""")
+```
+
+**Cuatro hallazgos que cambian el alcance.**
+
+1. **El objetivo prometido en la propuesta no existe en el dato.** Las diapositivas
+   ofrecían predecir *riesgo de disputa* usando el campo «Disputa del consumidor». Ese
+   campo no está entre las 16 columnas: el CFPB dejó de publicarlo en 2017. El objetivo
+   se redefine como **¿la respuesta final registró algún relief?**, declarado explícitamente
+   como *proxy* y no como prueba de obligación, validez o disputa.
+
+2. **La variable de resultado no es binaria.** `Company response to consumer` tiene seis
+   valores, no dos, y uno de ellos marca casos aún sin resolver. Tratarlos como
+   «no hubo compensación» habría metido ruido dirigido en la etiqueta. La regla caso por
+   caso está en la @sec-targets.
+
+3. **La tasa base se mueve más que cualquier modelo.** La proporción de reclamos con
+   compensación pasa de 20% en 2015 a 11% en 2020, 46% en 2024 y 37% en 2025. Entrenar
+   sobre la historia completa es entrenar sobre un fenómeno que ya no existe: el dataset
+   principal se restringe al régimen **2023-2025**.
+
+4. **2026 es un régimen distinto y hubo que excluirlo del conjunto de prueba.** El volumen
+   cae 61% en un solo mes, la composición por producto se da vuelta y las tres tasas base
+   se invierten a la vez. La explicación fácil —casos aún abiertos— queda descartada por el
+   propio dato. El detalle está en @sec-quiebre; es el hallazgo que más afecta el diseño de
+   la evaluación.
+
+```{python}
+# | output: asis
+print(f"**Avance.** {listas} de {total_etapas} etapas del pipeline tienen su "
+      f"artefacto producido y verificado (@sec-estado).")
+```
+
+# Estado del pipeline {#sec-estado}
+
+Cada etapa deja un artefacto en `reports/artefactos/`. Este informe lee esos
+artefactos, nunca el dato crudo: por eso se genera en segundos y las secciones se
+completan solas a medida que el pipeline avanza. Una etapa sin artefacto aparece
+marcada como pendiente en su sección correspondiente.
+
+```{python}
+# | label: tbl-estado
+# | tbl-cap: "Estado de las etapas del pipeline. `listo` significa que el artefacto existe y fue verificado."
+estado = estado_pipeline()
+tabla(estado[["Etapa", "Fase", "Qué produce", "Estado"]])
+```
+
+# El dato {#sec-dato}
+
+## Perfil de las 16 columnas {#sec-perfil}
+
+```{python}
+# | output: asis
+if tipos is None:
+    print(pendiente("E1"))
+```
+
+```{python}
+# | label: tbl-tipos
+# | tbl-cap: "Perfil del dato crudo. `tier` es el contrato de disponibilidad: F0 se conoce al recibir el reclamo, F1 lo declara el formulario, FX solo existe después de que la empresa respondió."
+if tipos is not None:
+    vista = tipos[[
+        "columna", "tier", "n_unicos", "pct_nulos", "long_media", "mb_arrow"
+    ]].rename(columns={
+        "columna": "Columna", "tier": "Tier", "n_unicos": "Valores únicos",
+        "pct_nulos": "% nulos", "long_media": "Largo medio", "mb_arrow": "MB",
+    })
+    vista["Valores únicos"] = vista["Valores únicos"].map(lambda v: f"{v:,.0f}")
+    display(tabla(vista))
+```
+
+Tres lecturas de esta tabla:
+
+- **No hay ninguna variable numérica de origen.** Todas las features numéricas habrá que
+  construirlas desde el texto y las fechas.
+- **`Submitted via` tiene un solo valor** (`Web`) en las 3.8 millones de filas: varianza
+  cero, se elimina.
+- **`Complaint ID` es único en el 100% de las filas**, así que sirve de clave de
+  trazabilidad — y nunca como variable predictora.
+
+## El contrato anti-fuga {#sec-fuga}
+
+La decisión más importante de toda la fase. Las columnas se separan en tres niveles
+según **cuándo se conocen**:
+
+| Tier | Cuándo se conoce | Uso permitido |
+|------|------------------|---------------|
+| **F0** | al recibir el reclamo | variables predictoras de todos los modelos |
+| **F1** | lo declara el formulario del CFPB | *etiqueta* del clasificador de motivo. En la bandeja de un banco este campo no existe, así que no puede ser variable predictora del modelo desplegable |
+| **FX** | solo después de que la empresa respondió | únicamente objetivos y diagnóstico. **Nunca** variable predictora |
+
+Un modelo que use `Timely response?` o `Company response to consumer` para predecir
+riesgo obtendría métricas excelentes y sería inútil: esas columnas no existen en el
+momento en que hay que priorizar el reclamo. La Fase 5 debe añadir
+`tests/test_no_leakage.py`, una prueba que falle si una columna FX aparece en la matriz de
+variables; hasta que esa prueba y el artefacto F5 existan, el control está diseñado pero no
+implementado.
+
+# Los objetivos y su definición {#sec-targets}
+
+## Qué puede pagar el dato
+
+| Necesidad del negocio | Modelo | Objetivo |
+|---|---|---|
+| Clasificar y enrutar el reclamo | T1, multiclase | motivo canónico derivado de `Issue`, usado solo como etiqueta histórica |
+| Priorizar por probabilidad de relief registrado | T2, binaria | la respuesta final registró relief monetario o no monetario |
+| Probabilidad de relief monetario | T3, binaria | la respuesta registró relief monetario; no estima un monto ni costo esperado |
+| Riesgo de respuesta tardía | T4, binaria | la respuesta salió fuera de plazo |
+| Semáforo operativo | regla + T4 | días restantes calculados + riesgo histórico estimado |
+| Borrador de respuesta | agente LangGraph posterior a T1-T4 | revisión humana y evaluación con rúbrica |
+| Causas raíz por producto y mes | agregación, no es un modelo | — |
+
+`Issue` no se conoce al recibir un reclamo: en el histórico supervisa T1 y en producción T1
+lo infiere desde F0. Los cuatro modelos alimentan una bandeja; un LLM separado redacta una
+recomendación y nunca modifica los scores ni envía texto sin aprobación.
+
+```{mermaid}
+flowchart TD
+    A[Nuevo reclamo F0] --> B[Saneo y features R0/R1]
+    B --> C[T1: motivo y equipo]
+    B --> D[T2: probabilidad de relief]
+    B --> E[T3: probabilidad monetaria]
+    B --> F[T4: riesgo de tardanza]
+    A --> G[Regla de fecha límite]
+    C --> H[Motor de triaje]
+    D --> H
+    E --> H
+    F --> H
+    G --> H
+    H --> I[Prioridad, equipo y semáforo]
+    B --> J[Casos similares y políticas aprobadas]
+    I --> K[Agente LangGraph redacta]
+    J --> K
+    K --> L[Guardrails]
+    L --> M[Revisión humana obligatoria]
+```
+
+## La regla de etiquetado, caso por caso
+
+```{python}
+# | output: asis
+if respuesta is None:
+    print(pendiente("D1b"))
+```
+
+```{python}
+# | label: tbl-respuesta
+# | tbl-cap: "Los seis valores de `Company response to consumer` y su traducción a los objetivos T2 y T3. Dos casos se excluyen del entrenamiento en lugar de codificarse como cero."
+if respuesta is not None:
+    v = respuesta.rename(columns={
+        "respuesta": "Valor", "n": "Filas", "pct": "%",
+        "t2_relief": "T2 compensó", "t3_monetario": "T3 monetario",
+        "motivo": "Lectura",
+    })
+    v["Filas"] = v["Filas"].map(lambda x: f"{x:,.0f}")
+    v["%"] = v["%"].map(lambda x: f"{x:.2f}")
+    display(tabla(v))
+```
+
+El caso que importa es **`In progress`**: son reclamos cuyo resultado todavía no se
+conoce. Codificarlos como «no hubo compensación» equivale a afirmar algo que el dato no
+dice, y el error no sería aleatorio — se concentraría en los meses más recientes, que son
+justamente los del conjunto de prueba. Se excluyen, junto con los nulos.
+
+`Untimely response` es distinto: sí es un desenlace, pero es *ausencia de respuesta*, no
+prueba de ausencia de relief. La convención principal lo etiqueta como cero y lo marca con
+un indicador. E12 debe repetir T2 excluyendo `Untimely response` y la categoría heredada
+`Closed`; si cambian materialmente PR-AUC o calibración, el informe reportará ambas
+lecturas en lugar de presentar la convención como verdad observada.
+
+# Cobertura temporal {#sec-temporal}
+
+```{python}
+# | output: asis
+if volumen is None:
+    print(pendiente("E2"))
+```
+
+```{python}
+# | label: fig-volumen
+# | fig-cap: "Reclamos con narrativa recibidos por mes. El volumen crece de forma sostenida hasta 2025 y cae un 61% de un mes al siguiente en enero de 2026, quedándose después en una meseta baja durante seis meses. Una meseta no es un rezago de publicación."
+if volumen is not None:
+    v = volumen.copy()
+    v["fecha"] = pd.PeriodIndex(v["mes"], freq="M").to_timestamp()
+
+    fig, ax = plt.subplots(figsize=(8.5, 4.1))
+    sin_marco(ax)
+
+    corte = pd.Timestamp("2023-01-01")
+    quiebre = pd.Timestamp("2026-01-01")
+    ultimo = v["fecha"].max()
+
+    ax.axvspan(quiebre, ultimo, color=CRITICO, alpha=0.07, zorder=1)
+    ax.plot(v["fecha"], v["n_reclamos"] / 1000, color=SERIE_1, zorder=3)
+    ax.fill_between(v["fecha"], v["n_reclamos"] / 1000, color=SERIE_1, alpha=0.10, zorder=2)
+    ax.axvline(corte, color=TINTA_3, lw=1, ls=(0, (4, 3)), zorder=4)
+
+    tope = (v["n_reclamos"].max() / 1000) * 1.20
+    ax.set_ylim(0, tope)
+
+    ax.annotate("régimen 2023+", xy=(corte, tope * 0.72), xytext=(-7, 0),
+                textcoords="offset points", va="center", ha="right",
+                fontsize=8.5, color=TINTA_2)
+
+    pico = v.loc[v["n_reclamos"].idxmax()]
+    ax.annotate(f"pico {pico['n_reclamos']/1000:.0f} mil\n{pico['mes']}",
+                xy=(pico["fecha"], pico["n_reclamos"] / 1000),
+                xytext=(-9, 2), textcoords="offset points", ha="right", va="bottom",
+                fontsize=8.5, color=TINTA_2, fontweight="semibold")
+
+    y_q = float(v.loc[v["fecha"] == quiebre, "n_reclamos"].iloc[0]) / 1000
+    ax.annotate("quiebre 2026-01\n−61% en un mes", xy=(quiebre, y_q),
+                xytext=(-5, 26), textcoords="offset points", ha="right",
+                fontsize=8.5, color=CRITICO, fontweight="semibold",
+                arrowprops=dict(arrowstyle="-", color=CRITICO, lw=0.9, shrinkB=3))
+
+    ax.text(quiebre + (ultimo - quiebre) / 2, tope * 0.965, "2026", ha="center",
+            va="top", fontsize=8, color=CRITICO, fontweight="semibold")
+
+    ax.set_ylabel("miles de reclamos por mes")
+    ax.set_title("Crecimiento sostenido hasta 2025, quiebre abrupto en 2026")
+    plt.show()
+```
+
+```{python}
+# | output: asis
+if volumen is not None:
+    v = volumen.copy()
+    v["anio"] = v["mes"].str[:4]
+    por_anio = v.groupby("anio")["n_reclamos"].sum()
+    p23 = 100 * por_anio.loc["2023":"2025"].sum() / por_anio.sum()
+    print(f"""
+La ventana 2023-2025 concentra el **{p23:.0f}% de todo el corpus**. Restringir el
+entrenamiento a ese periodo no sacrifica volumen: sacrifica historia que ya no describe
+el fenómeno actual. Lo que sí queda fuera, y por otra razón, es 2026 —ver @sec-quiebre.
+""")
+```
+
+# Deriva de la taxonomía {#sec-deriva}
+
+```{python}
+# | output: asis
+if prod_anio is None:
+    print(pendiente("E3"))
+```
+
+```{python}
+# | label: fig-deriva
+# | fig-cap: "Participación de cada producto en el total del año. Las categorías no son estables: el CFPB renombró la familia de *credit reporting* dos veces, y cada rebautizo aparece aquí como una categoría que nace mientras otra muere."
+if prod_anio is not None:
+    p = prod_anio.copy()
+    relevantes = p.groupby("producto")["pct_del_anio"].max()
+    relevantes = relevantes[relevantes >= 2].index
+    m = (p[p["producto"].isin(relevantes)]
+         .pivot(index="producto", columns="anio", values="pct_del_anio")
+         .fillna(0))
+    m = m.loc[m.sum(axis=1).sort_values(ascending=False).index]
+
+    etiquetas = [t if len(t) <= 46 else t[:44] + "…" for t in m.index]
+
+    fig, ax = plt.subplots(figsize=(8.5, 0.42 * len(m) + 1.5))
+    im = ax.imshow(m.values, cmap=RAMPA, aspect="auto", vmin=0, vmax=100)
+
+    ax.set_xticks(range(len(m.columns)), [str(c) for c in m.columns])
+    ax.set_yticks(range(len(m)), etiquetas, fontsize=8.5)
+    ax.grid(False)
+    for lado in ("left", "bottom"):
+        ax.spines[lado].set_visible(False)
+    ax.tick_params(length=0)
+
+    for i in range(m.shape[0]):
+        for j in range(m.shape[1]):
+            val = m.values[i, j]
+            if val >= 1:
+                ax.text(j, i, f"{val:.0f}", ha="center", va="center", fontsize=7.5,
+                        color="#ffffff" if val > 45 else TINTA_2)
+
+    cb = fig.colorbar(im, ax=ax, fraction=0.022, pad=0.015, aspect=38)
+    cb.set_label("% del total del año", fontsize=8.5, color=TINTA_2)
+    cb.outline.set_visible(False)
+    cb.ax.tick_params(length=0, labelsize=8, colors=TINTA_2)
+
+    ax.set_title("Ningún producto mantiene su nombre durante toda la serie")
+    plt.show()
+```
+
+Esta figura es la razón por la que existe una **etapa de canonicalización**: antes de
+entrenar nada hay que traducir las 21 etiquetas crudas de producto a un conjunto estable
+de unas 11, y las 173 de `Issue` a entre 25 y 40. El mapa se revisa a mano, se versiona en
+`configs/taxonomia.yaml`, y una prueba de regresión exige que **cada etiqueta canónica
+exista tanto en entrenamiento como en prueba**.
+
+# Desbalance de clases {#sec-desbalance}
+
+```{python}
+# | output: asis
+if pareto is None:
+    print(pendiente("E4"))
+```
+
+El clasificador de motivo (T1) tiene que elegir entre las etiquetas de `Issue`. Antes de
+entrenar nada conviene saber cómo se reparte el volumen entre ellas, porque de eso depende
+qué métrica tiene sentido y cuántas clases sobreviven a la canonicalización.
+
+```{python}
+# | label: fig-pareto
+# | fig-cap: "Concentración de las etiquetas de `Issue` en el régimen 2023-2025. Arriba, las doce etiquetas más frecuentes. Abajo, cuántas etiquetas hacen falta para cubrir cada fracción del volumen: seis bastan para el 80%, y las 86 restantes se reparten el 19% que queda."
+if pareto is not None:
+    iss = reg(pareto).query("nivel == 'issue'").sort_values("rango")
+    top = iss.head(12)
+
+    fig = plt.figure(figsize=(8.5, 7.0))
+    ejes = fig.subplots(2, 1, gridspec_kw={"height_ratios": [1.55, 1], "hspace": 0.38})
+
+    ax = ejes[0]
+    sin_marco(ax)
+    ax.grid(axis="x", color=REJILLA, linewidth=0.8)
+    ax.grid(axis="y", visible=False)
+    y = np.arange(len(top))[::-1]
+    ax.barh(y, top["pct"], color=SERIE_1, height=0.72, zorder=3)
+    ax.set_yticks(y, [t if len(t) <= 44 else t[:42] + "…" for t in top["etiqueta"]],
+                  fontsize=8.5)
+    ax.set_xlim(0, top["pct"].max() * 1.16)
+    ax.set_xlabel("% de los reclamos del régimen")
+    for yi, v in zip(y, top["pct"]):
+        ax.annotate(f"{v:.1f}%", xy=(v, yi), xytext=(4, 0), textcoords="offset points",
+                    va="center", fontsize=8.5, color=TINTA_2, fontweight="semibold")
+    ax.set_title("Tres etiquetas concentran el 72% del volumen")
+
+    ax = ejes[1]
+    sin_marco(ax)
+    ax.plot(iss["rango"], iss["pct_acum"], color=SERIE_1, zorder=3)
+    ax.fill_between(iss["rango"], iss["pct_acum"], color=SERIE_1, alpha=0.10, zorder=2)
+    ax.axhline(80, color=TINTA_3, lw=1, ls=(0, (4, 3)), zorder=4)
+    ax.set_xlim(1, iss["rango"].max())
+    ax.set_ylim(0, 104)
+    ax.set_xlabel("etiquetas de `Issue`, ordenadas de mayor a menor volumen")
+    ax.set_ylabel("% acumulado")
+    n80 = int((iss["pct_acum"] < 80).sum()) + 1
+    ax.annotate(f"{n80} etiquetas cubren el 80%", xy=(n80, 80), xytext=(14, -20),
+                textcoords="offset points", fontsize=8.5, color=TINTA_2,
+                fontweight="semibold",
+                arrowprops=dict(arrowstyle="-", color=TINTA_3, lw=0.9, shrinkB=2))
+    ax.set_title("El 80% del volumen cabe en un puñado de etiquetas")
+    plt.show()
+```
+
+```{python}
+# | label: tbl-pareto
+# | tbl-cap: "Desbalance en los dos niveles de la taxonomía declarada, en el corpus completo y en el régimen que se entrena. `clases <1000` cuenta las etiquetas con tan pocas filas que ninguna métrica por clase es estable."
+if pareto is not None:
+    filas = []
+    for nivel in ("producto", "issue"):
+        for regimen, nombre in (("historico", "histórico"), ("2023_2025", "2023-2025")):
+            s = pareto.query("nivel == @nivel and regimen == @regimen").sort_values("rango")
+            filas.append({
+                "Nivel": "Product" if nivel == "producto" else "Issue",
+                "Régimen": nombre,
+                "Clases": len(s),
+                "Top-1": f"{s['pct'].iloc[0]:.1f}%",
+                "Top-10": f"{s['pct_acum'].iloc[min(9, len(s) - 1)]:.1f}%",
+                "Clases hasta 80%": int((s["pct_acum"] < 80).sum()) + 1,
+                "Clases <1000 filas": int((s["n"] < 1000).sum()),
+            })
+    display(tabla(pd.DataFrame(filas)))
+```
+
+Dos consecuencias, y ninguna es cosmética.
+
+**La primera es que la canonicalización tiene menos trabajo del que parecía, pero uno más
+delicado.** De las 173 etiquetas de `Issue` del corpus histórico, solo **92 existen en
+2023-2025**: 81 pertenecen a taxonomías que el CFPB ya retiró. Agrupar las 173 sería
+construir un mapa para clases que nunca van a llegar. El mapa se construye sobre las 92, y
+las 81 restantes solo importan para el experimento de deriva.
+
+**La segunda es que el desbalance del régimen es peor que el del histórico, no mejor.** La
+clase mayoritaria pasa de 31.4% a 36.8% y bastan seis etiquetas para cubrir el 80% del
+volumen. Un clasificador que responda siempre «información incorrecta en su reporte»
+acierta más de un tercio de las veces. Ese es el número que cualquier modelo tiene que
+superar, y es la razón por la que la métrica de T1 se reporta como **macro-F1** y no como
+exactitud: la exactitud premia justamente a ese modelo inútil.
+
+# La narrativa {#sec-narrativa}
+
+## Cuánto del corpus es texto repetido {#sec-plantillas}
+
+```{python}
+# | output: asis
+if plantillas is None:
+    print(pendiente("E5"))
+```
+
+```{python}
+# | label: fig-plantillas
+# | fig-cap: "Reparto de los reclamos según cuántas veces se repite su narrativa. En el régimen 2023-2025 solo el 48% de los reclamos tiene un texto que no aparece en ningún otro, y uno de cada cinco pertenece a un grupo de más de 500 copias."
+if plantillas is not None:
+    r = plantillas.query("bloque == 'repeticiones'")
+    hist = r.query("regimen == 'historico'")
+    act = r.query("regimen == '2023_2025'")
+    etiquetas = list(hist["clave"])
+    x = np.arange(len(etiquetas))
+    ancho = 0.38
+
+    fig, ax = plt.subplots(figsize=(8.5, 4.3))
+    sin_marco(ax)
+    ax.bar(x - ancho / 2, hist["pct_filas"], ancho, color=SERIE_1,
+           label="corpus completo", zorder=3)
+    ax.bar(x + ancho / 2, act["pct_filas"], ancho, color=SERIE_2,
+           label="régimen 2023-2025", zorder=3)
+    ax.set_xticks(x, etiquetas, fontsize=8.5)
+    ax.set_xlabel("veces que se repite la misma narrativa")
+    ax.set_ylabel("% de los reclamos")
+    ax.set_ylim(0, max(hist["pct_filas"].max(), act["pct_filas"].max()) * 1.18)
+    for xi, v in zip(x - ancho / 2, hist["pct_filas"]):
+        ax.annotate(f"{v:.0f}", xy=(xi, v), xytext=(0, 3), textcoords="offset points",
+                    ha="center", fontsize=8, color=TINTA_2)
+    for xi, v in zip(x + ancho / 2, act["pct_filas"]):
+        ax.annotate(f"{v:.0f}", xy=(xi, v), xytext=(0, 3), textcoords="offset points",
+                    ha="center", fontsize=8, color=TINTA_2)
+    ax.legend(loc="upper right")
+    ax.set_title("El régimen que se entrena es el más plagado de plantillas")
+    plt.show()
+```
+
+```{python}
+# | label: tbl-plantillas
+# | tbl-cap: "Las seis narrativas más repetidas del régimen 2023-2025, con su producto dominante. Son cartas modelo de disputa de crédito que circulan en internet; el consumidor las copia, cambia el nombre y las envía."
+if plantillas is not None:
+    v = reg(plantillas).query("bloque == 'plantilla'").head(6).copy()
+    v["Producto"] = v["producto"].map(
+        lambda s: s if len(str(s)) <= 34 else str(s)[:32] + "…")
+    v["Copias"] = v["n_filas"].map(lambda x: f"{x:,.0f}")
+    v["Extracto"] = v["muestra"].map(lambda s: str(s)[:96] + "…")
+    display(tabla(v[["clave", "Copias", "Producto", "Extracto"]].rename(
+        columns={"clave": "#"})))
+```
+
+```{python}
+# | output: asis
+if plantillas is not None:
+    res = plantillas.query("bloque == 'resumen'").set_index(["regimen", "clave"])["pct_filas"]
+    n_res = plantillas.query("bloque == 'resumen'").set_index(["regimen", "clave"])["n_filas"]
+    print(f"""
+**Qué cambia esto.** En el corpus completo, el {res[('historico', 'filas_en_grupo_repetido')]:.1f}%
+de los reclamos comparte su narrativa con al menos otro; dentro del régimen 2023-2025 la
+cifra sube al **{res[('2023_2025', 'filas_en_grupo_repetido')]:.1f}%**. Dentro de esa
+ventana, la plantilla más copiada aparece
+{miles(n_res[('2023_2025', 'grupo_mas_grande')])} veces, siempre sobre el mismo producto.
+
+Una división aleatoria pondría copias del mismo texto a ambos lados y mediría memorización.
+Los cortes son siempre temporales, pero se reportan dos lecturas: la operacional conserva
+plantillas que reaparecen naturalmente después del corte; la purgada elimina de
+validación/test los hashes ya vistos en train y mide generalización a texto nuevo.
+
+Un detalle de método que conviene dejar anotado, porque explica una diferencia con las
+cifras de versiones anteriores del plan. Sobre el texto **tal cual llega**, la proporción
+de filas repetidas es {res[('historico', 'filas_en_grupo_repetido_crudo')]:.1f}% y el grupo
+mayor tiene {miles(n_res[('historico', 'grupo_mas_grande_crudo')])} copias. Al normalizar
+—colapsar espacios y pasar a minúsculas— esas cifras suben a
+{res[('historico', 'filas_en_grupo_repetido')]:.1f}% y
+{miles(n_res[('historico', 'grupo_mas_grande')])}. La diferencia son copias de la misma
+carta con distinto espaciado. Como el agrupamiento sirve para impedir fuga, la definición
+correcta es la **normalizada**: es la más conservadora de las dos.
+""")
+```
+
+## Qué hay dentro del texto {#sec-contenido}
+
+```{python}
+# | output: asis
+if texto is None:
+    print(pendiente("E6"))
+```
+
+```{python}
+# | label: fig-narrativa
+# | fig-cap: "Izquierda: longitud de la narrativa en caracteres. Dos tercios de los reclamos caben en menos de mil caracteres, pero la cola llega hasta 36 mil. Derecha: reclamos con rastros de datos personales que el enmascarado del CFPB no capturó, por cada cien mil. Las dos magnitudes se grafican por separado porque no comparten unidad ni escala."
+if texto is not None:
+    largo = reg(texto).query("bloque == 'longitud_bucket'")
+    pii = reg(texto).query("bloque == 'pii'").sort_values("pct")
+    NOMBRES_PII = {
+        "digitos_6_o_mas": "6+ dígitos seguidos", "url": "URL",
+        "telefono": "teléfono", "correo": "correo", "ssn": "número de SSN",
+        "tarjeta_16_digitos": "tarjeta (16 dígitos)",
+    }
+
+    fig, ejes = plt.subplots(1, 2, figsize=(8.5, 4.0),
+                             gridspec_kw={"width_ratios": [1.05, 1]})
+    fig.subplots_adjust(wspace=0.55)
+
+    ax = ejes[0]
+    sin_marco(ax)
+    x = np.arange(len(largo))
+    ax.bar(x, largo["pct"], color=SERIE_1, width=0.72, zorder=3)
+    ax.set_xticks(x, largo["clave"], rotation=35, ha="right", fontsize=8)
+    ax.set_ylabel("% de los reclamos")
+    ax.set_ylim(0, largo["pct"].max() * 1.20)
+    for xi, v in zip(x, largo["pct"]):
+        ax.annotate(f"{v:.0f}", xy=(xi, v), xytext=(0, 3), textcoords="offset points",
+                    ha="center", fontsize=8, color=TINTA_2)
+    ax.set_title("Longitud, en caracteres", fontsize=10)
+
+    ax = ejes[1]
+    sin_marco(ax)
+    ax.grid(axis="x", color=REJILLA, linewidth=0.8)
+    ax.grid(axis="y", visible=False)
+    y = np.arange(len(pii))
+    # % -> reclamos por cada 100 000. Con la unidad anterior, los dos patrones
+    # menos frecuentes se imprimían como "0.0" sin serlo.
+    tasa = pii["pct"] * 1000
+    ax.barh(y, tasa, color=SERIE_2, height=0.68, zorder=3)
+    ax.set_yticks(y, [NOMBRES_PII.get(c, c) for c in pii["clave"]], fontsize=8.5)
+    ax.set_xlim(0, tasa.max() * 1.32)
+    ax.set_xlabel("reclamos por cada 100 000")
+    for yi, v in zip(y, tasa):
+        ax.annotate(f"{v:,.0f}" if v >= 10 else f"{v:.1f}", xy=(v, yi),
+                    xytext=(4, 0), textcoords="offset points",
+                    va="center", fontsize=8, color=TINTA_2)
+    ax.set_title("Rastros de PII que sobrevivieron", fontsize=10)
+    plt.show()
+```
+
+```{python}
+# | label: tbl-narrativa
+# | tbl-cap: "Perfil de la narrativa en el régimen 2023-2025. Los bloques `XXXX` son el enmascarado que aplica el CFPB antes de publicar; el porcentaje de caracteres enmascarados mide cuánto del texto es ruido de anonimización."
+if texto is not None:
+    t = reg(texto)
+    lon = t.query("bloque == 'longitud'").set_index("clave")["valor"]
+    mas = t.query("bloque == 'mascara'").set_index("clave")
+    idi = t.query("bloque == 'idioma'").set_index("clave")
+    filas = [
+        ("Longitud media", f"{lon['media']:,.0f} caracteres"),
+        ("Mediana / p90 / p99", f"{lon['p50']:,.0f} / {lon['p90']:,.0f} / {lon['p99']:,.0f}"),
+        ("Máximo", f"{lon['max']:,.0f}"),
+        ("Reclamos con al menos un bloque `XXXX`", f"{mas.loc['textos_con_XXXX', 'pct']:.1f}%"),
+        ("Bloques `XXXX` por reclamo (media)", f"{mas.loc['media_bloques_XXXX', 'valor']:.1f}"),
+        ("Caracteres enmascarados sobre el total", f"{mas.loc['pct_caracteres_enmascarados', 'valor']:.1f}%"),
+        ("Reclamos que mencionan un importe", f"{mas.loc['textos_con_monto', 'pct']:.1f}%"),
+        ("Reclamos con marcas de español", f"{idi.iloc[0]['pct']:.4f}%"),
+    ]
+    display(tabla(pd.DataFrame(filas, columns=["Indicador", "Valor"])))
+```
+
+```{python}
+# | output: asis
+if texto is not None:
+    p = reg(texto).query("bloque == 'pii'").set_index("clave")
+    total_pii = int(p["n"].sum())
+    mas = reg(texto).query("bloque == 'mascara'").set_index("clave")
+    pct_es = float(reg(texto).query("bloque == 'idioma'")["pct"].iloc[0])
+    pct_xxxx = float(mas.loc["textos_con_XXXX", "pct"])
+    pct_char = float(mas.loc["pct_caracteres_enmascarados", "valor"])
+    print(f"""
+**Tres lecturas, cada una con una consecuencia.**
+
+*El enmascarado es masivo y hay que tratarlo como una señal, no como ruido.* El
+{pct_xxxx:.0f}% de los reclamos contiene bloques `XXXX` y el {pct_char:.1f}%
+de todos los caracteres del corpus es enmascarado. Un TF-IDF ingenuo convertiría `xxxx` en
+el token más frecuente del vocabulario. La normalización de la Fase 5 lo reemplaza por un
+marcador único y, en paralelo, **cuenta** los bloques: cuántos datos tuvo que ocultar el
+CFPB es en sí mismo un indicador de qué tan cargado de identificadores viene el reclamo.
+
+*El corpus es monolingüe a efectos prácticos.* Las marcas de español aparecen en el
+{pct_es:.4f}% de los textos.
+No hace falta un detector de idioma ni un modelo multilingüe; conviene volver a revisarlo
+si el CFPB empieza a publicar el canal en español.
+
+*Queda PII residual, y eso bloquea el envío de texto a servicios externos.*
+{miles(total_pii)} reclamos del régimen contienen al menos un patrón que el enmascarado no
+capturó: direcciones de correo, URL, cadenas de seis o más dígitos. Son pocos en
+proporción —menos del 1%— pero no son cero, y basta con que no sean cero. La regla 4 de la
+decisión D6 se mantiene: **ningún texto sale de la red del proyecto sin un segundo
+enmascarado**, y el nivel R1 local no tiene este problema en absoluto. Conviene tomar la
+cifra como cota superior: una cadena de seis dígitos puede ser un número de cuenta o puede
+ser un importe sin enmascarar, y este conteo no los distingue.
+""")
+```
+
+# Contra quién se reclama, y desde dónde {#sec-entidades}
+
+## Concentración de empresas {#sec-empresas}
+
+```{python}
+# | output: asis
+if empresas is None:
+    print(pendiente("E7"))
+```
+
+```{python}
+# | label: fig-empresas
+# | fig-cap: "Arriba: porcentaje acumulado de reclamos a medida que se añaden empresas, ordenadas de mayor a menor volumen (eje horizontal logarítmico). Abajo: las diez empresas con más reclamos en el régimen 2023-2025. Tres burós de crédito reúnen el 72% del volumen del periodo que se entrena."
+if empresas is not None:
+    fig = plt.figure(figsize=(8.5, 6.9))
+    ejes = fig.subplots(2, 1, gridspec_kw={"height_ratios": [1, 1.25], "hspace": 0.42})
+
+    ax = ejes[0]
+    sin_marco(ax)
+    for regimen, nombre, color in (
+        ("historico", "corpus completo", SERIE_1),
+        ("2023_2025", "régimen 2023-2025", SERIE_2),
+    ):
+        c = empresas.query("bloque == 'curva' and regimen == @regimen").sort_values("rango")
+        ax.plot(c["rango"], c["pct_acum"], color=color, label=nombre, zorder=3)
+    ax.set_xscale("log")
+    ax.set_ylim(0, 104)
+    ax.set_xlabel("empresas incluidas, de mayor a menor volumen")
+    ax.set_ylabel("% acumulado de reclamos")
+    ax.legend(loc="lower right")
+
+    c3 = empresas.query(
+        "bloque == 'curva' and regimen == '2023_2025' and rango == 3")["pct_acum"].iloc[0]
+    ax.annotate(f"3 empresas = {c3:.0f}%", xy=(3, c3), xytext=(-10, 20),
+                textcoords="offset points", ha="right", fontsize=8.5,
+                color=SERIE_2, fontweight="semibold",
+                arrowprops=dict(arrowstyle="-", color=SERIE_2, lw=0.9, shrinkB=3))
+    ax.set_title("La concentración es extrema y empeora en el régimen reciente")
+
+    ax = ejes[1]
+    sin_marco(ax)
+    ax.grid(axis="x", color=REJILLA, linewidth=0.8)
+    ax.grid(axis="y", visible=False)
+    # Los nombres vienen en mayúsculas sostenidas. `title()` los arregla pero
+    # rompe las siglas, así que se reponen a mano.
+    SIGLAS = {"Jpmorgan": "JPMorgan", "Llc": "LLC", "Usaa": "USAA",
+              "Nra": "NRA", "Us ": "US "}
+
+    def nombre_empresa(bruto):
+        t = bruto.title() if bruto.isupper() else bruto
+        for mal, bien in SIGLAS.items():
+            t = t.replace(mal, bien)
+        return t if len(t) <= 40 else t[:38] + "…"
+
+    top = reg(empresas).query("bloque == 'empresa'").head(10)
+    y = np.arange(len(top))[::-1]
+    ax.barh(y, top["pct"], color=SERIE_2, height=0.72, zorder=3)
+    ax.set_yticks(y, [nombre_empresa(e) for e in top["empresa"]], fontsize=8.5)
+    ax.set_xlim(0, top["pct"].max() * 1.16)
+    ax.set_xlabel("% de los reclamos del régimen")
+    for yi, v in zip(y, top["pct"]):
+        ax.annotate(f"{v:.1f}%", xy=(v, yi), xytext=(4, 0), textcoords="offset points",
+                    va="center", fontsize=8.5, color=TINTA_2, fontweight="semibold")
+    ax.set_title("Top 10 de empresas, régimen 2023-2025")
+    plt.show()
+```
+
+```{python}
+# | label: tbl-empresas
+# | tbl-cap: "Distribución de las empresas por volumen de reclamos en el régimen 2023-2025. Las 2,759 empresas con menos de diez reclamos aportan el 0.3% del volumen: no hay con qué estimarles un efecto propio y van a un bucket común."
+if empresas is not None:
+    v = reg(empresas).query("bloque == 'cola'").copy()
+    v["Empresas"] = v["n_empresas"].map(lambda x: f"{x:,.0f}")
+    v["Reclamos"] = v["n"].map(lambda x: f"{x:,.0f}")
+    v["% del volumen"] = v["pct"].map(lambda x: f"{x:.1f}%")
+    v = v.rename(columns={"empresa": "Reclamos por empresa"})
+    display(tabla(v[["Reclamos por empresa", "Empresas", "Reclamos", "% del volumen"]]))
+```
+
+```{python}
+# | output: asis
+if empresas is not None:
+    c = reg(empresas).query("bloque == 'curva'").set_index("rango")["pct_acum"]
+    ch = empresas.query("bloque == 'curva' and regimen == 'historico'").set_index("rango")["pct_acum"]
+    n_emp = int(reg(empresas).query("bloque == 'curva'")["rango"].max())
+    print(f"""
+**Dos consecuencias para el modelo.** La primera es de codificación: con {miles(n_emp)}
+empresas en el régimen y un {c[5]:.0f}% del volumen en las cinco primeras, un *one-hot* es
+inviable y una codificación por frecuencia o por objetivo es obligatoria — calculada solo
+con datos anteriores al periodo de cada fila, para no filtrar el futuro. La cola larga se
+agrupa en un bucket `OTRA`.
+
+La segunda es más incómoda y afecta a la interpretación de todo lo que venga después. Si
+tres burós de crédito concentran el {c[3]:.0f}% de los reclamos del régimen —contra el
+{ch[3]:.0f}% del corpus completo—, un modelo de texto puede alcanzar buenas métricas
+aprendiendo a reconocer *de qué empresa se habla* en vez de *qué problema se describe*. El
+agrupamiento no supervisado de la etapa E14 tiene que correrse dos veces, con y sin los
+nombres de empresa enmascarados; si los grupos cambian mucho, ese hallazgo vale más que el
+agrupamiento original.
+""")
+```
+
+## Geografía: qué queda del código postal {#sec-geografia}
+
+```{python}
+# | output: asis
+if geografia is None:
+    print(pendiente("E8"))
+```
+
+```{python}
+# | label: fig-geografia
+# | fig-cap: "Izquierda: forma del campo `ZIP code` en el régimen 2023-2025. El CFPB enmascara los dos últimos dígitos de los códigos poco poblados y el código entero en algunos casos. Derecha: los doce estados con más reclamos. Los dos paneles están separados porque uno reparte el 100% entre tres categorías y el otro entre sesenta y una."
+if geografia is not None:
+    pat = reg(geografia).query("bloque == 'patron_zip'").copy()
+    nombres = {"NNNNN": "5 dígitos\ncompletos", "NNNXX": "3 dígitos\n+ 2 enmascarados",
+               "XXXXX": "enmascarado\ncompleto", "(nulo)": "nulo", "otro": "otro"}
+    pat["etiqueta"] = pat["clave"].map(lambda c: nombres.get(c, c))
+    est = reg(geografia).query("bloque == 'estado' and clave != '(nulo)'").head(12)
+
+    fig, ejes = plt.subplots(1, 2, figsize=(8.5, 4.2),
+                             gridspec_kw={"width_ratios": [1, 1.15]})
+    fig.subplots_adjust(wspace=0.32)
+
+    ax = ejes[0]
+    sin_marco(ax)
+    x = np.arange(len(pat))
+    ax.bar(x, pat["pct"], color=SERIE_1, width=0.62, zorder=3)
+    ax.set_xticks(x, pat["etiqueta"], fontsize=8)
+    ax.set_ylabel("% de los reclamos")
+    ax.set_ylim(0, 100)
+    for xi, v in zip(x, pat["pct"]):
+        ax.annotate(f"{v:.1f}%", xy=(xi, v), xytext=(0, 3), textcoords="offset points",
+                    ha="center", fontsize=8.5, color=TINTA_2, fontweight="semibold")
+    ax.set_title("Forma del código postal", fontsize=10)
+
+    ax = ejes[1]
+    sin_marco(ax)
+    ax.grid(axis="x", color=REJILLA, linewidth=0.8)
+    ax.grid(axis="y", visible=False)
+    y = np.arange(len(est))[::-1]
+    ax.barh(y, est["pct"], color=SERIE_3, height=0.72, zorder=3)
+    ax.set_yticks(y, est["clave"], fontsize=8.5)
+    ax.set_xlim(0, est["pct"].max() * 1.18)
+    ax.set_xlabel("% de los reclamos")
+    for yi, v in zip(y, est["pct"]):
+        ax.annotate(f"{v:.1f}", xy=(v, yi), xytext=(4, 0), textcoords="offset points",
+                    va="center", fontsize=8, color=TINTA_2)
+    ax.set_title("Estados con más reclamos", fontsize=10)
+    plt.show()
+```
+
+```{python}
+# | label: tbl-geografia
+# | tbl-cap: "Cardinalidad de los campos geográficos en el régimen 2023-2025. El prefijo de tres dígitos es la única unidad geográfica que sobrevive al enmascarado, y baja la cardinalidad de casi siete mil valores a 876."
+if geografia is not None:
+    res = reg(geografia).query("bloque == 'resumen'").set_index("clave")
+    nombres = {
+        "filas": "Reclamos del régimen",
+        "zip_crudo": "`ZIP code` no nulo",
+        "zip3_derivable": "Con prefijo ZIP-3 utilizable",
+        "estado": "`State` no nulo",
+    }
+    filas = [
+        {
+            "Campo": nombres[k],
+            "Filas": f"{res.loc[k, 'n']:,.0f}",
+            "% del régimen": f"{res.loc[k, 'pct']:.2f}%",
+            "Valores distintos": (
+                "—" if pd.isna(res.loc[k, "n_unicos"]) else f"{res.loc[k, 'n_unicos']:,.0f}"
+            ),
+        }
+        for k in nombres
+    ]
+    display(tabla(pd.DataFrame(filas)))
+```
+
+```{python}
+# | output: asis
+if geografia is not None:
+    res = reg(geografia).query("bloque == 'resumen'").set_index("clave")
+    pat = reg(geografia).query("bloque == 'patron_zip'").set_index("clave")
+    ph = geografia.query("bloque == 'patron_zip' and regimen == 'historico'").set_index("clave")
+    enmascarado = float(ph.loc["NNNXX", "pct"] + ph.loc["XXXXX", "pct"])
+    print(f"""
+**La decisión que sale de aquí.** El código postal completo no sirve como variable: el
+{pat.loc['NNNXX', 'pct']:.1f}% de los reclamos lo trae con los dos últimos dígitos
+enmascarados y el {pat.loc['XXXXX', 'pct']:.1f}% no trae nada. Pero el prefijo de tres
+dígitos —el que identifica el área postal— sobrevive en el
+**{res.loc['zip3_derivable', 'pct']:.1f}%** de las filas, y baja la cardinalidad de
+{res.loc['zip_crudo', 'n_unicos']:,.0f} valores a
+{res.loc['zip3_derivable', 'n_unicos']:,.0f}. La variable geográfica del proyecto es
+**ZIP-3, más un indicador booleano de que el código venía enmascarado**, que es informativo
+por sí mismo: el CFPB enmascara justamente los códigos de áreas poco pobladas.
+
+Una corrección sobre el plan, menor pero conviene dejarla escrita: las 290 filas que el
+plan describía como «malformadas» no lo son. Son **nulos**, y están todos fuera del régimen
+2023-2025 —dentro de la ventana que se entrena, `ZIP code` no tiene ni un nulo. No existe
+ningún valor con una forma distinta de las tres de la figura: entre los
+{miles(int(res.loc['filas', 'n']))} reclamos del régimen, el campo o trae cinco dígitos, o
+trae tres y dos equis, o trae cinco equis. En el corpus completo el enmascarado afecta al
+{enmascarado:.1f}% de las filas.
+""")
+```
+
+# Tasas base de los objetivos {#sec-tasas}
+
+```{python}
+# | output: asis
+if tasas is None:
+    print(pendiente("E9"))
+```
+
+```{python}
+# | label: fig-tasas
+# | fig-cap: "Tasa base anual de los tres objetivos binarios. Se grafican en paneles separados y no superpuestos porque sus escalas difieren en un orden de magnitud; forzarlos a un eje común aplanaría los dos de abajo hasta volverlos ilegibles."
+if tasas is not None:
+    t = tasas.copy()
+    paneles = [
+        ("tasa_relief", "T2 · relief registrado", SERIE_1),
+        ("tasa_monetario", "T3 · la compensación fue monetaria", SERIE_2),
+        ("tasa_fuera_plazo", "T4 · respuesta fuera de plazo", SERIE_3),
+    ]
+
+    fig, axes = plt.subplots(3, 1, figsize=(8.5, 7.4), sharex=True)
+    fig.subplots_adjust(hspace=0.62)
+
+    for ax, (col, titulo, color) in zip(axes, paneles):
+        sin_marco(ax)
+        ax.axvspan(2025.5, t["anio"].max() + 0.45, color=CRITICO, alpha=0.06, zorder=1)
+        ax.plot(t["anio"], t[col], color=color, marker="o", zorder=3)
+        ax.set_title(titulo, fontsize=10)
+        ax.set_ylim(0, t[col].max() * 1.42)
+        ax.set_ylabel("% de reclamos")
+
+        for x in (t["anio"].iloc[0], t["anio"].iloc[-1], t.loc[t[col].idxmax(), "anio"]):
+            y = float(t.loc[t["anio"] == x, col].iloc[0])
+            ax.annotate(f"{y:.1f}%", xy=(x, y), xytext=(0, 10),
+                        textcoords="offset points", ha="center", fontsize=8.5,
+                        color=TINTA_2, fontweight="semibold")
+
+    axes[-1].set_xticks(t["anio"], [str(a) for a in t["anio"]])
+    axes[0].text(0.995, 1.30, "2026: stress OOD separado",
+                 transform=axes[0].transAxes, ha="right", va="bottom",
+                 fontsize=8.5, color=CRITICO, fontweight="semibold")
+    fig.align_ylabels(axes)
+    plt.show()
+```
+
+```{python}
+# | label: tbl-tasas
+# | tbl-cap: "Tasas base por año. `censurados` son los reclamos marcados como aún sin resolver, excluidos del cálculo."
+if tasas is not None:
+    v = tasas.rename(columns={
+        "anio": "Año", "n_reclamos": "Reclamos", "n_censurados": "Censurados",
+        "tasa_relief": "T2 %", "tasa_monetario": "T3 %", "tasa_fuera_plazo": "T4 %",
+    })[["Año", "Reclamos", "Censurados", "T2 %", "T3 %", "T4 %"]]
+    v["Reclamos"] = v["Reclamos"].map(lambda x: f"{x:,.0f}")
+    display(tabla(v))
+```
+
+Las tres series se mueven juntas en 2026 y en la dirección contraria a su tendencia. Eso
+no es ruido de un año incompleto: es el mismo fenómeno visto tres veces, y merece sección
+propia.
+
+```{python}
+# | label: tbl-producto
+# | tbl-cap: "Tasa base por producto crudo. Las diferencias entre productos son mayores que la señal que cualquier modelo puede extraer del texto, así que toda evaluación se reporta también por producto."
+if tasas_prod is not None:
+    v = tasas_prod.head(10).copy()
+    v["producto"] = v["producto"].map(lambda s: s if len(s) <= 48 else s[:46] + "…")
+    v = v.rename(columns={
+        "producto": "Producto", "n_reclamos": "Reclamos",
+        "tasa_relief": "T2 %", "tasa_monetario": "T3 %", "tasa_fuera_plazo": "T4 %",
+    })
+    v["Reclamos"] = v["Reclamos"].map(lambda x: f"{x:,.0f}")
+    display(tabla(v))
+```
+
+# Sesgo por perfil del consumidor {#sec-sesgo}
+
+```{python}
+# | output: asis
+if sesgo is None:
+    print(pendiente("E11"))
+```
+
+El dato trae dos campos que describen a quien reclama: `Tags`, que marca si es
+*servicemember* o adulto mayor, y `State`. La pregunta obligatoria antes de poner un
+modelo a priorizar reclamos es si esos grupos reciben resultados distintos. La respuesta
+cruda es que sí, y es engañosa.
+
+Un reclamo marcado `Older American` termina en compensación monetaria mucho más seguido que
+uno sin etiqueta. Pero los adultos mayores **no reclaman sobre los mismos productos**: solo
+el 21% de sus reclamos son del producto dominante del régimen, contra el 68% del resto. Y
+la tasa de compensación depende sobre todo del producto. Sin estratificar, lo que se mide
+es la mezcla de productos del grupo, no un trato distinto.
+
+La figura pone las dos cifras lado a lado. La **cruda** es la proporción observada. La
+**ajustada** es la tasa que tendría el grupo si su mezcla de productos fuera la de la
+población — estandarización directa, calculada por estrato de producto y reagregada con los
+pesos de la población. La distancia entre ambas es la parte del efecto que explica la
+composición; lo que sobrevive al ajuste es lo que hay que mirar en serio.
+
+```{python}
+# | label: fig-sesgo-tags
+# | fig-cap: "Tasa cruda y tasa ajustada por producto para cada grupo de `Tags`, régimen 2023-2025. La línea punteada es la tasa de la población. Ajustar por producto reduce la brecha de compensación monetaria de los adultos mayores de siete veces a dos, pero no la elimina; en el objetivo T2 el ajuste apenas mueve la aguja."
+if sesgo is not None:
+    def dumbbell(ax, tabla_g, target, titulo, referencia, etiquetas=False):
+        """Un par de puntos por grupo: tasa cruda y tasa ajustada.
+
+        Las etiquetas numéricas van **a los lados** del par, nunca encima ni
+        debajo: con cuatro filas y una línea de referencia vertical, cualquier
+        desplazamiento vertical choca con el eje o con el título.
+        """
+        sin_marco(ax)
+        ax.grid(axis="x", color=REJILLA, linewidth=0.8)
+        ax.grid(axis="y", visible=False)
+        y = np.arange(len(tabla_g))[::-1]
+        crudo = tabla_g[f"{target}_crudo"].to_numpy()
+        ajus = tabla_g[f"{target}_ajustado"].to_numpy()
+        ax.axvline(referencia, color=TINTA_3, lw=1, ls=(0, (4, 3)), zorder=2)
+        ax.hlines(y, crudo, ajus, color=TINTA_3, lw=1.2, zorder=3)
+        ax.scatter(crudo, y, s=52, color=SERIE_1, zorder=4, label="tasa cruda")
+        ax.scatter(ajus, y, s=52, color=SERIE_2, zorder=4,
+                   label="ajustada por producto")
+        ax.set_yticks(y, tabla_g["etiqueta"], fontsize=8.5)
+        ax.set_ylim(-0.75, len(tabla_g) - 0.25)
+        lo = min(crudo.min(), ajus.min(), referencia)
+        hi = max(crudo.max(), ajus.max(), referencia)
+        margen = (hi - lo) * (0.34 if etiquetas else 0.14) + 0.15
+        ax.set_xlim(lo - margen, hi + margen)
+        ax.set_xlabel("% de los reclamos del grupo")
+        ax.set_title(titulo, fontsize=10)
+
+        if etiquetas:
+            for yi, c, a in zip(y, crudo, ajus):
+                izq, der = (c, a) if c <= a else (a, c)
+                col_i, col_d = (SERIE_1, SERIE_2) if c <= a else (SERIE_2, SERIE_1)
+                ax.annotate(f"{izq:.1f}", xy=(izq, yi), xytext=(-7, 0),
+                            textcoords="offset points", ha="right", va="center",
+                            fontsize=8, color=col_i, fontweight="semibold")
+                ax.annotate(f"{der:.1f}", xy=(der, yi), xytext=(7, 0),
+                            textcoords="offset points", ha="left", va="center",
+                            fontsize=8, color=col_d, fontweight="semibold")
+        return y
+
+    t = reg(sesgo).query("dimension == 'tags'")
+    ref = t[t["grupo"] == "(población)"].iloc[0]
+    g = t[t["grupo"] != "(población)"].copy()
+    corto = {"(sin etiqueta)": "sin etiqueta", "Servicemember": "Servicemember",
+             "Older American": "Older American",
+             "Older American, Servicemember": "ambas etiquetas"}
+    g["etiqueta"] = g["grupo"].map(lambda s: corto.get(s, s))
+
+    fig, ejes = plt.subplots(1, 2, figsize=(8.5, 3.8))
+    fig.subplots_adjust(wspace=0.55)
+    dumbbell(ejes[0], g, "relief", "T2 · relief registrado",
+             ref["relief_crudo"], etiquetas=True)
+    dumbbell(ejes[1], g, "monetario", "T3 · la compensación fue monetaria",
+             ref["monetario_crudo"], etiquetas=True)
+    ejes[0].legend(loc="upper center", bbox_to_anchor=(1.05, 1.24), ncols=2)
+    plt.show()
+```
+
+```{python}
+# | label: tbl-sesgo-tags
+# | tbl-cap: "Cortes por `Tags` en el régimen 2023-2025. `% producto dominante` es el indicador de mezcla: cuánto pesa en el grupo el producto que domina la población. Es la columna que explica por qué la tasa cruda y la ajustada no coinciden."
+if sesgo is not None:
+    v = reg(sesgo).query("dimension == 'tags'").copy()
+    v["Reclamos"] = v["n"].map(lambda x: f"{x:,.0f}")
+    v["% prod. dominante"] = v["pct_producto_dominante"].map(lambda x: f"{x:.0f}%")
+    for col, nombre in (("relief", "T2"), ("monetario", "T3")):
+        v[f"{nombre} crudo"] = v[f"{col}_crudo"].map(lambda x: f"{x:.2f}%")
+        v[f"{nombre} ajustado"] = v[f"{col}_ajustado"].map(lambda x: f"{x:.2f}%")
+    display(tabla(v[["grupo", "Reclamos", "% prod. dominante",
+                     "T2 crudo", "T2 ajustado", "T3 crudo", "T3 ajustado"]]
+                  .rename(columns={"grupo": "Grupo"})))
+```
+
+```{python}
+# | output: asis
+if sesgo is not None:
+    t = reg(sesgo).query("dimension == 'tags'").set_index("grupo")
+    h = sesgo.query("regimen == 'historico' and dimension == 'tags'").set_index("grupo")
+    ma = t.loc["Older American"]
+    sn = t.loc["(sin etiqueta)"]
+    razon_c = ma["monetario_crudo"] / sn["monetario_crudo"]
+    razon_a = ma["monetario_ajustado"] / sn["monetario_ajustado"]
+    explicado = 100 * (1 - (ma["monetario_ajustado"] - sn["monetario_ajustado"]) /
+                       (ma["monetario_crudo"] - sn["monetario_crudo"]))
+    print(f"""
+**El número que no se puede citar solo.** En el régimen 2023-2025, un reclamo marcado
+`Older American` termina en compensación monetaria el **{ma['monetario_crudo']:.2f}%** de
+las veces, contra el **{sn['monetario_crudo']:.2f}%** de los reclamos sin etiqueta: una
+razón de {razon_c:.1f} a 1. Controlando por producto, las tasas pasan a
+{ma['monetario_ajustado']:.2f}% y {sn['monetario_ajustado']:.2f}%, y la razón cae a
+{razon_a:.1f} a 1. Es decir: **la composición explica alrededor del {explicado:.0f}% de la
+brecha**, pero no toda.
+
+Eso deja dos obligaciones, no una.
+
+La primera es de comunicación: la cifra cruda no puede aparecer en una diapositiva sin su
+versión ajustada al lado. Decir que los adultos mayores reciben siete veces más
+compensación monetaria es describir su cartera de productos, no el trato que reciben.
+
+La segunda es que **el residuo no es cero y no se puede archivar**. Después de ajustar,
+`Older American` sigue duplicando la tasa de compensación monetaria y sigue
+{sn['relief_ajustado'] - ma['relief_ajustado']:.0f} puntos por debajo en T2. El ajuste por
+producto crudo es un control grueso: quedan afuera el sub-producto, el motivo y la empresa.
+La evaluación por cortes de la Fase 6 tiene que reportar métricas por estos grupos de
+forma rutinaria, y un modelo que priorice reclamos no puede usar `Tags` como variable sin
+que alguien decida explícitamente que eso es aceptable.
+""")
+```
+
+```{python}
+# | label: fig-sesgo-estado
+# | fig-cap: "Lo mismo, para los doce estados con más reclamos. Aquí el ajuste sí cierra casi toda la diferencia: la dispersión entre estados en T2 se reduce a menos de tres puntos, y lo que parecía una brecha geográfica en T3 es en su mayor parte una diferencia en qué productos se reclama en cada estado."
+if sesgo is not None:
+    e = reg(sesgo).query("dimension == 'estado'")
+    ref = e[e["grupo"] == "(población)"].iloc[0]
+    g = e[e["grupo"] != "(población)"].copy()
+    g["etiqueta"] = g["grupo"]
+
+    fig, ejes = plt.subplots(1, 2, figsize=(8.5, 4.6))
+    fig.subplots_adjust(wspace=0.42)
+    dumbbell(ejes[0], g, "relief", "T2 · relief registrado", ref["relief_crudo"])
+    dumbbell(ejes[1], g, "monetario", "T3 · la compensación fue monetaria",
+             ref["monetario_crudo"])
+    ejes[1].set_yticklabels([])
+    ejes[0].legend(loc="upper center", bbox_to_anchor=(1.05, 1.17), ncols=2)
+    plt.show()
+```
+
+```{python}
+# | label: tbl-sesgo-estado
+# | tbl-cap: "Cortes por `State` en el régimen 2023-2025, ordenados por volumen. La dispersión que queda después del ajuste es del orden de la décima de punto porcentual: no hay un efecto geográfico grande escondido detrás de la composición."
+if sesgo is not None:
+    v = reg(sesgo).query("dimension == 'estado'").copy()
+    v["Reclamos"] = v["n"].map(lambda x: f"{x:,.0f}")
+    v["% prod. dominante"] = v["pct_producto_dominante"].map(lambda x: f"{x:.0f}%")
+    for col, nombre in (("relief", "T2"), ("monetario", "T3")):
+        v[f"{nombre} crudo"] = v[f"{col}_crudo"].map(lambda x: f"{x:.2f}%")
+        v[f"{nombre} ajustado"] = v[f"{col}_ajustado"].map(lambda x: f"{x:.2f}%")
+    display(tabla(v[["grupo", "Reclamos", "% prod. dominante",
+                     "T2 crudo", "T2 ajustado", "T3 crudo", "T3 ajustado"]]
+                  .rename(columns={"grupo": "Estado"})))
+```
+
+```{python}
+# | output: asis
+if sesgo is not None:
+    e = reg(sesgo).query("dimension == 'estado' and grupo != '(población)'")
+    r_c = e["relief_crudo"].max() - e["relief_crudo"].min()
+    r_a = e["relief_ajustado"].max() - e["relief_ajustado"].min()
+    m_c = e["monetario_crudo"].max() / e["monetario_crudo"].min()
+    m_a = e["monetario_ajustado"].max() / e["monetario_ajustado"].min()
+    print(f"""
+El contraste con `Tags` es lo interesante. Entre los doce estados más grandes, el rango de
+la tasa T2 pasa de {r_c:.1f} puntos porcentuales en crudo a {r_a:.1f} después de ajustar, y
+la razón entre el estado con más y el con menos compensación monetaria baja de {m_c:.1f}
+a {m_a:.1f}. Dicho de otro modo: **la geografía casi no aporta nada por sí misma**, y lo
+que parecía un efecto de estado era la mezcla de productos que se reclama en cada uno.
+
+Esto tiene una consecuencia práctica que ahorra trabajo: no hace falta tratar el estado
+como una variable sensible con manejo especial, pero sí conviene dejar el corte en la
+evaluación por si el patrón cambia con los datos nuevos. Y refuerza lo del apartado
+anterior — que el residuo de `Tags` sobreviva al mismo ajuste que borra el de `State` es
+precisamente lo que lo hace digno de atención.
+""")
+```
+
+# Cierre del EDA y creación de features {#sec-cierre-eda}
+
+E12-E14 cierran la exploración, pero necesitan una preparación mínima reproducible. No se
+pueden ejecutar sobre una muestra aleatoria ni diseñar la taxonomía mirando el test. El
+orden operativo es:
+
+```{mermaid}
+flowchart TD
+    A[Dato crudo DVC] --> B[Fijar cortes temporales]
+    B --> C[Tipado mínimo y targets]
+    C --> D[Hash y auditoría de repetidos]
+    D --> E[Muestra de train]
+    E --> F[R1 local una vez por hash]
+    F --> G[E14 solo sobre train]
+    G --> H[Congelar taxonomía]
+    H --> I[Split temporal completo]
+    I --> J[E12 R0]
+    F --> K[E13 R0 frente a R1]
+    I --> K
+    J --> L[Features auditadas]
+    K --> L
+```
+
+## Qué significa deduplicar {#sec-deduplicacion}
+
+Deduplicar aquí **no significa borrar reclamos**. Dos personas pueden copiar una plantilla
+y obtener desenlaces distintos. La narrativa normalizada recibe un `hash_narrativa` para:
+
+1. calcular el embedding una sola vez por texto;
+2. impedir que el clustering esté dominado por miles de copias de una plantilla;
+3. medir cuánto del rendimiento viene de memorizar textos conocidos;
+4. auditar hashes con empresas, productos o targets contradictorios.
+
+Se conservan dos evaluaciones temporales. La **operacional** permite que una plantilla vista
+en train reaparezca después, como puede ocurrir en la bandeja. La de **generalización a
+texto nuevo** purga de validación/test los hashes ya vistos en train y es la lectura
+anti-memorización. Colapsar un grupo a una fila solo es válido para E14; los modelos de
+outcome conservan las filas si sus desenlaces son eventos distintos.
+
+## E12 — Piso de señal R0 {#sec-e12}
+
+E12 ajusta word+character TF-IDF exclusivamente en train y usa regresión logística o
+`SGDClassifier(loss="log_loss")`. Es una sonda barata, no la selección final. Reportará
+macro-F1/top-3 para T1 y PR-AUC, Brier, log loss, lift y recall a capacidad fija para
+T2-T4. Accuracy no sirve como métrica principal para T3/T4 por su prevalencia cercana al
+1%.
+
+```{python}
+# | output: asis
+if piso_senal is None:
+    print(pendiente("E12"))
+else:
+    display(tabla(piso_senal.head(30)))
+```
+
+## E13 — ¿Aporta R1 local? {#sec-e13}
+
+Sobre exactamente las mismas filas, splits y clasificadores, E13 compara: F0 tabular, R0,
+F0+R0, R1 local, F0+R1 y F0+R0+R1. La primera implementación usa
+`all-MiniLM-L6-v2`; sus vectores se cachean por `hash_narrativa`. El criterio es mejora
+predictiva, memoria y latencia, no que el método sea más moderno.
+
+```{python}
+# | output: asis
+if embeddings is None:
+    print(pendiente("E13"))
+else:
+    display(tabla(embeddings.head(30)))
+```
+
+## E14 — Estructura latente {#sec-e14}
+
+E14 usa únicamente textos únicos de train. Compara embedding → UMAP 10-15D → HDBSCAN
+contra TF-IDF → SVD → KMeans. El UMAP 2D se reserva para visualizar. La corrida se repite
+con nombres de empresa enmascarados y con varias semillas; reporta ARI, NMI, pureza,
+porcentaje de ruido y estabilidad. El clustering aporta evidencia al mapa canónico, pero no
+lo edita automáticamente.
+
+```{python}
+# | output: asis
+if clusters is None:
+    print(pendiente("E14"))
+else:
+    display(tabla(clusters.head(30)))
+```
+
+## Fases 2-5 — Del parquet crudo a matrices entrenables {#sec-features}
+
+El Informe I documentará cada transformación con entradas, parámetros, salidas, conteos y
+pruebas:
+
+1. **Tipado:** fechas, booleanos, categorías, tags separados y contrato Pandera.
+2. **Repetidos:** hash, conflictos de etiquetas y vistas operacional/texto único.
+3. **Canonicalización:** mapa manual versionado, definido con train y aplicado sin cambios.
+4. **Split:** train 2023-2024, validación 2025-01/06 y test 2025-07/12; 2026 queda como
+   stress test OOD separado.
+5. **R0:** word/character TF-IDF y señales deterministas, con `fit` solo en train.
+6. **R1:** embedding local versionado, una vez por hash.
+7. **Ensamblado:** IDs/tabulares en Parquet, TF-IDF CSR en `.npz`, embeddings en `.npy` e
+   índices/manifiestos en Parquet.
+8. **Auditoría:** dimensiones, memoria, nulos, cobertura, columnas por tier y prueba que
+   prohíbe FX.
+
+```{python}
+# | output: asis
+if features is None:
+    print(pendiente("F5"))
+else:
+    display(tabla(features.head(30)))
+```
+
+DVC debe rastrear el DAG completo, no solo el parquet crudo:
+
+```{mermaid}
+flowchart TD
+    A[raw] --> B[typing]
+    B --> C[hash y repetidos]
+    C --> D[embedding local]
+    D --> E[E14]
+    E --> F[canonicalize]
+    F --> G[split]
+    G --> H[features R0/R1]
+    H --> I[E12/E13]
+    I --> J[artefactos del informe]
+```
+
+Cada etapa declara código/configuración como dependencia, artefactos como salidas y semillas,
+ventanas, muestra y modelo de embedding en `params.yaml`. `dvc.lock` fija los hashes que
+permiten reproducir cada tabla del informe.
+
+# El quiebre de 2026 {#sec-quiebre}
+
+Al empezar el análisis, la explicación de trabajo para las cifras raras de 2026 era la
+obvia: **censura**, es decir, reclamos recientes cuyo desenlace todavía no se ha
+registrado. El dato descarta esa explicación y deja algo más incómodo en su lugar.
+
+**Evidencia 1 — el campo de censura está vacío.** De los 107,158 reclamos de 2026,
+**exactamente uno** aparece marcado como `In progress`. Si el problema fuera que los casos
+siguen abiertos, ese contador sería enorme. No lo es.
+
+**Evidencia 2 — el volumen no decae, se quiebra.** Diciembre de 2025 cierra con 56,510
+reclamos y enero de 2026 con 22,211: una caída del 61% en un mes. Después el volumen se
+queda en una meseta de entre 10 mil y 22 mil durante seis meses. Un rezago de publicación
+produce una cola que se desvanece en los últimos uno o dos meses, no un escalón seguido de
+una meseta estable.
+
+**Evidencia 3 — cambia la composición, no solo la cantidad.** Es el argumento decisivo. En
+2025 la familia *credit reporting* representaba el 75% de los reclamos del año; en 2026
+cae al 4%, mientras *debt collection* sube de 8% a 34% y *checking or savings account* de
+4% a 18% (@fig-deriva). Un rezago de publicación retrasa reclamos de todos los tipos por
+igual y **conserva la mezcla**. Aquí la mezcla se da vuelta por completo.
+
+**Conclusión.** Las tres piezas apuntan a lo mismo: 2026 no es 2025 con menos datos, es un
+**proceso generador distinto**. El dato por sí solo no dice por qué —eso exige verificar
+qué cambió en la operación o en la política de publicación del CFPB durante ese periodo, y
+es una pregunta abierta que el equipo debe resolver con fuentes externas, no con el
+parquet.
+
+**Consecuencia operativa, que ya se aplicó:** el régimen de entrenamiento se cierra en
+**diciembre de 2025**, y la división temporal se reacomoda íntegramente dentro de él —
+entrenamiento 2023-01 a 2024-12, validación 2025-01 a 2025-06, prueba 2025-07 a 2025-12.
+La propuesta original usaba 2026 como periodo de prueba; hacerlo habría significado medir
+el modelo contra una distribución que no es la que verá en producción, y habría producido
+un número de evaluación pesimista y sin sentido.
+
+# Decisiones de diseño registradas {#sec-decisiones}
+
+| # | Decisión | Consecuencia |
+|---|---|---|
+| **D1** | El objetivo prometido no existe; se reemplaza por «la respuesta registró relief», declarado como *proxy* | cambia y acota la promesa de la propuesta |
+| **D1b** | Regla de etiquetado caso por caso; `In progress` y nulos se excluyen | evita ruido dirigido en la etiqueta |
+| **D2** | Contrato F0 / F1 / FX de disponibilidad temporal | ninguna columna post-respuesta puede ser variable predictora |
+| **D3** | Ventana principal restringida a 2023-2025 | 2026 no se mezcla con la métrica principal y se conserva como stress test OOD |
+| **D4** | División temporal, nunca aleatoria; prueba operacional y prueba purgada por hash en 2025-07 a 2025-12 | separa rendimiento real con plantillas recurrentes de generalización a texto nuevo |
+| **D5** | Muestra de desarrollo de 300 mil filas estratificada | itera en minutos, no en horas |
+| **D6** | R0 TF-IDF y R1 local son las únicas representaciones predictivas; el LLM queda después de T1-T4 | el agente puede cambiar sin regenerar features y no contamina la evaluación |
+
+La justificación completa de cada una está en `docs/plan-eda-y-transformacion.md`.
+
+# Riesgos abiertos {#sec-riesgos}
+
+| Riesgo | Estado | Mitigación |
+|---|---|---|
+| El objetivo de la propuesta no existe | **confirmado** | D1: se usa un proxy y se declara como tal |
+| Empresa como atajo del modelo | **abierto** | tres burós concentran el 72% del régimen; E14 debe repetirse con los nombres enmascarados (@sec-empresas) |
+| PII residual en la narrativa | **medido**, mitigación obligatoria | menos del 1% de los textos, pero no cero: segundo enmascarado antes de cualquier llamada externa (@sec-contenido) |
+| El quiebre de 2026 no tiene causa identificada | **abierto**, aislado del test principal | prueba principal en 2025-07/12 y 2026 como stress test OOD separado; falta confirmar la causa externa |
+| Fuga por columnas post-respuesta | contrato definido; prueba pendiente | F5 debe añadir una prueba automática que falle si aparece FX |
+| Memorización de plantillas | cuantificada; implementación pendiente | hash, evaluación operacional y evaluación purgada; **52% de las filas del régimen 2023-2025** comparte texto con otra (@sec-plantillas) |
+| Deriva de etiquetas y de tasa base | cuantificado | régimen 2023+, mapa canónico versionado, prueba de regresión |
+| Sesgo por perfil del consumidor | **medido**, con un residuo abierto | la mezcla de productos explica ~4/5 de la brecha de `Older American`, pero no toda; `State` se explica casi entero (@sec-sesgo). Cortes obligatorios en la evaluación de la Fase 6 |
+
+# Próximos pasos {#sec-proximos}
+
+1. Crear el pipeline DVC de tipado, hash/repetidos y muestra temporal de train.
+2. Generar R1 local una vez por hash y completar E14 sin mirar validación/test.
+3. Congelar la taxonomía y construir los splits temporal, operacional y purgado.
+4. Completar E12/E13 sobre las mismas filas y crear matrices R0/R1 con auditoría FX.
+5. Incorporar sus artefactos a este informe y renderizar el entregable EDA + features.
+6. Confirmar con fuentes externas qué originó el quiebre de 2026 (@sec-quiebre); mientras
+   tanto se conserva como stress test OOD separado.
+
+# Reproducibilidad {.appendix #sec-repro}
+
+Todo el contenido de este informe se regenera desde el dato crudo con:
+
+```bash
+uv sync
+dvc pull                              # descarga el dataset versionado
+uv run python -m src.data.profile        # E1
+uv run python -m src.data.agregados      # D1b, E2, E3, E4, E7, E8, E9
+uv run python -m src.data.narrativa      # E5, E6  (dos pasadas por la narrativa)
+uv run python -m src.evaluation.slices   # E11
+# Cuando las etapas pendientes estén implementadas:
+# uv run dvc repro                        # F2-F5, E12-E14 y artefactos
+uv run quarto render reports/informe     # este documento
+```
+
+El informe lee exclusivamente los CSV de `reports/artefactos/`, nunca el parquet de
+1.6 GB. Las secciones sin artéfacto se marcan como pendientes en lugar de fallar, así que
+el documento siempre compila.
+
+# Nota sobre uso de IA generativa {.appendix .unnumbered}
+
+Se utilizaron herramientas de IA generativa como apoyo en la redacción de código y de este
+documento. Todas las cifras presentadas se calcularon sobre el dato real mediante el
+código versionado en `src/`, y son verificables ejecutando los comandos de @sec-repro. Las
+decisiones de diseño y su justificación fueron revisadas por el equipo.

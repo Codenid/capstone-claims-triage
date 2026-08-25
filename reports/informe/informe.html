@@ -1,0 +1,2401 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Equipo capstone">
+
+<title>Triaje automático de reclamos financieros</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="informe_files/libs/clipboard/clipboard.min.js"></script>
+<script src="informe_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="informe_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="informe_files/libs/quarto-html/axe/axe-check.js" type="module"></script>
+<script src="informe_files/libs/quarto-html/popper.min.js"></script>
+<script src="informe_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="informe_files/libs/quarto-html/anchor.min.js"></script>
+<link href="informe_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="informe_files/libs/quarto-html/quarto-syntax-highlighting-ed96de9b727972fe78a7b5d16c58bf87.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="informe_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="informe_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="informe_files/libs/bootstrap/bootstrap-4d7f0bce1131f3e5f9547cd857cfbfc8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="informe_files/libs/quarto-diagram/mermaid.min.js"></script>
+<script src="informe_files/libs/quarto-diagram/mermaid-init.js"></script>
+<link href="informe_files/libs/quarto-diagram/mermaid.css" rel="stylesheet">
+
+
+</head>
+
+<body class="quarto-light">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Contenido</h2>
+   
+  <ul>
+  <li><a href="#resumen-ejecutivo" id="toc-resumen-ejecutivo" class="nav-link active" data-scroll-target="#resumen-ejecutivo">Resumen ejecutivo</a></li>
+  <li><a href="#sec-estado" id="toc-sec-estado" class="nav-link" data-scroll-target="#sec-estado"><span class="header-section-number">1</span> Estado del pipeline</a></li>
+  <li><a href="#sec-dato" id="toc-sec-dato" class="nav-link" data-scroll-target="#sec-dato"><span class="header-section-number">2</span> El dato</a>
+  <ul class="collapse">
+  <li><a href="#sec-perfil" id="toc-sec-perfil" class="nav-link" data-scroll-target="#sec-perfil"><span class="header-section-number">2.1</span> Perfil de las 16 columnas</a></li>
+  <li><a href="#sec-fuga" id="toc-sec-fuga" class="nav-link" data-scroll-target="#sec-fuga"><span class="header-section-number">2.2</span> El contrato anti-fuga</a></li>
+  </ul></li>
+  <li><a href="#sec-targets" id="toc-sec-targets" class="nav-link" data-scroll-target="#sec-targets"><span class="header-section-number">3</span> Los objetivos y su definición</a>
+  <ul class="collapse">
+  <li><a href="#qué-puede-pagar-el-dato" id="toc-qué-puede-pagar-el-dato" class="nav-link" data-scroll-target="#qué-puede-pagar-el-dato"><span class="header-section-number">3.1</span> Qué puede pagar el dato</a></li>
+  <li><a href="#la-regla-de-etiquetado-caso-por-caso" id="toc-la-regla-de-etiquetado-caso-por-caso" class="nav-link" data-scroll-target="#la-regla-de-etiquetado-caso-por-caso"><span class="header-section-number">3.2</span> La regla de etiquetado, caso por caso</a></li>
+  </ul></li>
+  <li><a href="#sec-temporal" id="toc-sec-temporal" class="nav-link" data-scroll-target="#sec-temporal"><span class="header-section-number">4</span> Cobertura temporal</a></li>
+  <li><a href="#sec-deriva" id="toc-sec-deriva" class="nav-link" data-scroll-target="#sec-deriva"><span class="header-section-number">5</span> Deriva de la taxonomía</a></li>
+  <li><a href="#sec-desbalance" id="toc-sec-desbalance" class="nav-link" data-scroll-target="#sec-desbalance"><span class="header-section-number">6</span> Desbalance de clases</a></li>
+  <li><a href="#sec-narrativa" id="toc-sec-narrativa" class="nav-link" data-scroll-target="#sec-narrativa"><span class="header-section-number">7</span> La narrativa</a>
+  <ul class="collapse">
+  <li><a href="#sec-plantillas" id="toc-sec-plantillas" class="nav-link" data-scroll-target="#sec-plantillas"><span class="header-section-number">7.1</span> Cuánto del corpus es texto repetido</a></li>
+  <li><a href="#sec-contenido" id="toc-sec-contenido" class="nav-link" data-scroll-target="#sec-contenido"><span class="header-section-number">7.2</span> Qué hay dentro del texto</a></li>
+  </ul></li>
+  <li><a href="#sec-entidades" id="toc-sec-entidades" class="nav-link" data-scroll-target="#sec-entidades"><span class="header-section-number">8</span> Contra quién se reclama, y desde dónde</a>
+  <ul class="collapse">
+  <li><a href="#sec-empresas" id="toc-sec-empresas" class="nav-link" data-scroll-target="#sec-empresas"><span class="header-section-number">8.1</span> Concentración de empresas</a></li>
+  <li><a href="#sec-geografia" id="toc-sec-geografia" class="nav-link" data-scroll-target="#sec-geografia"><span class="header-section-number">8.2</span> Geografía: qué queda del código postal</a></li>
+  </ul></li>
+  <li><a href="#sec-tasas" id="toc-sec-tasas" class="nav-link" data-scroll-target="#sec-tasas"><span class="header-section-number">9</span> Tasas base de los objetivos</a></li>
+  <li><a href="#sec-sesgo" id="toc-sec-sesgo" class="nav-link" data-scroll-target="#sec-sesgo"><span class="header-section-number">10</span> Sesgo por perfil del consumidor</a></li>
+  <li><a href="#sec-cierre-eda" id="toc-sec-cierre-eda" class="nav-link" data-scroll-target="#sec-cierre-eda"><span class="header-section-number">11</span> Cierre del EDA y creación de features</a>
+  <ul class="collapse">
+  <li><a href="#sec-deduplicacion" id="toc-sec-deduplicacion" class="nav-link" data-scroll-target="#sec-deduplicacion"><span class="header-section-number">11.1</span> Qué significa deduplicar</a></li>
+  <li><a href="#sec-e12" id="toc-sec-e12" class="nav-link" data-scroll-target="#sec-e12"><span class="header-section-number">11.2</span> E12 — Piso de señal R0</a></li>
+  <li><a href="#sec-e13" id="toc-sec-e13" class="nav-link" data-scroll-target="#sec-e13"><span class="header-section-number">11.3</span> E13 — ¿Aporta R1 local?</a></li>
+  <li><a href="#sec-e14" id="toc-sec-e14" class="nav-link" data-scroll-target="#sec-e14"><span class="header-section-number">11.4</span> E14 — Estructura latente</a></li>
+  <li><a href="#sec-features" id="toc-sec-features" class="nav-link" data-scroll-target="#sec-features"><span class="header-section-number">11.5</span> Fases 2-5 — Del parquet crudo a matrices entrenables</a></li>
+  </ul></li>
+  <li><a href="#sec-quiebre" id="toc-sec-quiebre" class="nav-link" data-scroll-target="#sec-quiebre"><span class="header-section-number">12</span> El quiebre de 2026</a></li>
+  <li><a href="#sec-decisiones" id="toc-sec-decisiones" class="nav-link" data-scroll-target="#sec-decisiones"><span class="header-section-number">13</span> Decisiones de diseño registradas</a></li>
+  <li><a href="#sec-riesgos" id="toc-sec-riesgos" class="nav-link" data-scroll-target="#sec-riesgos"><span class="header-section-number">14</span> Riesgos abiertos</a></li>
+  <li><a href="#sec-proximos" id="toc-sec-proximos" class="nav-link" data-scroll-target="#sec-proximos"><span class="header-section-number">15</span> Próximos pasos</a></li>
+  
+  
+  </ul>
+<div class="quarto-alternate-formats"><h2>Otros formatos</h2><ul><li><a href="informe.pdf"><i class="bi bi-file-pdf"></i>Typst</a></li></ul></div></nav>
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Triaje automático de reclamos financieros</h1>
+<p class="subtitle lead">Informe de avance I — Exploración y transformación de datos</p>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Autor/a</div>
+    <div class="quarto-title-meta-contents">
+             <p>Equipo capstone </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Fecha de publicación</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">24 de agosto de 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="resumen-ejecutivo" class="level1 unnumbered">
+<h1 class="unnumbered">Resumen ejecutivo</h1>
+<p>Este informe documenta la <strong>exploración y creación de features</strong> del proyecto de triaje automático de reclamos financieros. Su alcance termina en matrices F0/R0/R1 validadas y versionadas. E12 y E13 usan clasificadores pequeños como sondas para medir señal y comparar representaciones; no son la selección final de modelos, que pertenece al Informe II. El mockup web y el agente redactor se describen para fijar el destino de las features, pero no forman parte del entregable de este informe.</p>
+<p><strong>El dato.</strong> 3,837,184 reclamos del <em>Consumer Financial Protection Bureau</em> (CFPB) con narrativa escrita por el consumidor, 16 columnas, marzo 2015 – julio 2026. Todas las columnas llegan como texto y ocupan <strong>5.12 GB</strong> en memoria, de los cuales el 72% es la narrativa. De las 3,837,184 filas, solo <strong>2,583,683 narrativas son únicas</strong> (67.3%): casi un tercio del corpus son textos repetidos, casi siempre plantillas.</p>
+<p><strong>Cuatro hallazgos que cambian el alcance.</strong></p>
+<ol type="1">
+<li><p><strong>El objetivo prometido en la propuesta no existe en el dato.</strong> Las diapositivas ofrecían predecir <em>riesgo de disputa</em> usando el campo «Disputa del consumidor». Ese campo no está entre las 16 columnas: el CFPB dejó de publicarlo en 2017. El objetivo se redefine como <strong>¿tuvo la empresa que compensar al cliente?</strong>, declarado explícitamente como <em>proxy</em>.</p></li>
+<li><p><strong>La variable de resultado no es binaria.</strong> <code>Company response to consumer</code> tiene seis valores, no dos, y uno de ellos marca casos aún sin resolver. Tratarlos como «no hubo compensación» habría metido ruido dirigido en la etiqueta. La regla caso por caso está en la <a href="#sec-targets" class="quarto-xref">Sección&nbsp;3</a>.</p></li>
+<li><p><strong>La tasa base se mueve más que cualquier modelo.</strong> La proporción de reclamos con compensación pasa de 20% en 2015 a 11% en 2020, 46% en 2024 y 37% en 2025. Entrenar sobre la historia completa es entrenar sobre un fenómeno que ya no existe: el dataset principal se restringe al régimen <strong>2023-2025</strong>.</p></li>
+<li><p><strong>2026 es un régimen distinto y hubo que excluirlo del conjunto de prueba.</strong> El volumen cae 61% en un solo mes, la composición por producto se da vuelta y las tres tasas base se invierten a la vez. La explicación fácil —casos aún abiertos— queda descartada por el propio dato. El detalle está en <a href="#sec-quiebre" class="quarto-xref">Sección&nbsp;12</a>; es el hallazgo que más afecta el diseño de la evaluación.</p></li>
+</ol>
+<p><strong>Avance.</strong> 11 de 20 etapas del pipeline tienen su artefacto producido y verificado (<a href="#sec-estado" class="quarto-xref">Sección&nbsp;1</a>).</p>
+</section>
+<section id="sec-estado" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Estado del pipeline</h1>
+<p>Cada etapa deja un artefacto en <code>reports/artefactos/</code>. Este informe lee esos artefactos, nunca el dato crudo: por eso se genera en segundos y las secciones se completan solas a medida que el pipeline avanza. Una etapa sin artefacto aparece marcada como pendiente en su sección correspondiente.</p>
+<div class="cell" data-execution_count="4">
+<div id="tbl-estado" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="4">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-estado-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display cell-output-markdown" data-execution_count="4">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 12%">
+<col style="width: 63%">
+<col style="width: 13%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Etapa</th>
+<th style="text-align: left;">Fase</th>
+<th style="text-align: left;">Qué produce</th>
+<th style="text-align: left;">Estado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">E1</td>
+<td style="text-align: left;">EDA</td>
+<td style="text-align: left;">Perfil de tipos, nulos, cardinalidad y memoria</td>
+<td style="text-align: left;">listo</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">D1b</td>
+<td style="text-align: left;">Targets</td>
+<td style="text-align: left;">Regla de etiquetado de T2/T3 caso por caso</td>
+<td style="text-align: left;">listo</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">E2</td>
+<td style="text-align: left;">EDA</td>
+<td style="text-align: left;">Volumen por mes y cobertura temporal</td>
+<td style="text-align: left;">listo</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">E3</td>
+<td style="text-align: left;">EDA</td>
+<td style="text-align: left;">Deriva de taxonomía: Product / Issue por año</td>
+<td style="text-align: left;">listo</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">E9</td>
+<td style="text-align: left;">EDA</td>
+<td style="text-align: left;">Tasa base de los targets por año y por producto</td>
+<td style="text-align: left;">listo</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">E4</td>
+<td style="text-align: left;">EDA</td>
+<td style="text-align: left;">Desbalance de clases: Pareto de Product e Issue</td>
+<td style="text-align: left;">listo</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">E5</td>
+<td style="text-align: left;">EDA</td>
+<td style="text-align: left;">Duplicados y plantillas de narrativa</td>
+<td style="text-align: left;">listo</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">E6</td>
+<td style="text-align: left;">EDA</td>
+<td style="text-align: left;">Narrativa: longitud, densidad de XXXX, PII residual</td>
+<td style="text-align: left;">listo</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">E7</td>
+<td style="text-align: left;">EDA</td>
+<td style="text-align: left;">Concentración de empresas</td>
+<td style="text-align: left;">listo</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">E8</td>
+<td style="text-align: left;">EDA</td>
+<td style="text-align: left;">Geografía: ZIP-3 y malformados</td>
+<td style="text-align: left;">listo</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">E11</td>
+<td style="text-align: left;">EDA</td>
+<td style="text-align: left;">Sesgo por Tags y State, controlando por producto</td>
+<td style="text-align: left;">listo</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">E12</td>
+<td style="text-align: left;">EDA</td>
+<td style="text-align: left;">Piso de señal: TF-IDF + LogReg</td>
+<td style="text-align: left;">pendiente</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">E13</td>
+<td style="text-align: left;">EDA</td>
+<td style="text-align: left;">¿Vale un embedding? TF-IDF vs embedding local</td>
+<td style="text-align: left;">pendiente</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">E14</td>
+<td style="text-align: left;">EDA</td>
+<td style="text-align: left;">Estructura latente: UMAP + HDBSCAN</td>
+<td style="text-align: left;">pendiente</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">F2</td>
+<td style="text-align: left;">Pipeline</td>
+<td style="text-align: left;">Tipado y contrato de esquema (pandera)</td>
+<td style="text-align: left;">pendiente</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">F3</td>
+<td style="text-align: left;">Pipeline</td>
+<td style="text-align: left;">Canonicalización de taxonomía</td>
+<td style="text-align: left;">pendiente</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">F4</td>
+<td style="text-align: left;">Pipeline</td>
+<td style="text-align: left;">Deduplicación y splits temporales por grupo</td>
+<td style="text-align: left;">pendiente</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">F5</td>
+<td style="text-align: left;">Pipeline</td>
+<td style="text-align: left;">Matriz de features y auditoría de fuga</td>
+<td style="text-align: left;">pendiente</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">F6</td>
+<td style="text-align: left;">Modelos</td>
+<td style="text-align: left;">Métricas de T1-T4 y evaluación por cortes</td>
+<td style="text-align: left;">pendiente</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">F7</td>
+<td style="text-align: left;">Negocio</td>
+<td style="text-align: left;">Simulación de la bandeja: FIFO vs riesgo</td>
+<td style="text-align: left;">pendiente</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-estado-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabla&nbsp;1: Estado de las etapas del pipeline. <code>listo</code> significa que el artefacto existe y fue verificado.
+</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="sec-dato" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> El dato</h1>
+<section id="sec-perfil" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="sec-perfil"><span class="header-section-number">2.1</span> Perfil de las 16 columnas</h2>
+<div class="cell" data-execution_count="6">
+<div id="tbl-tipos" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="6">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-tipos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 8%">
+<col style="width: 20%">
+<col style="width: 12%">
+<col style="width: 16%">
+<col style="width: 8%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Columna</th>
+<th style="text-align: left;">Tier</th>
+<th style="text-align: right;">Valores únicos</th>
+<th style="text-align: right;">% nulos</th>
+<th style="text-align: right;">Largo medio</th>
+<th style="text-align: right;">MB</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Date received</td>
+<td style="text-align: left;">F0</td>
+<td style="text-align: right;">4,138</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">65.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Consumer complaint narrative</td>
+<td style="text-align: left;">F0</td>
+<td style="text-align: right;">2,583,683</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">1022.4</td>
+<td style="text-align: right;">3770.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Company</td>
+<td style="text-align: left;">F0</td>
+<td style="text-align: right;">6,831</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">26.5</td>
+<td style="text-align: right;">126.3</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">ZIP code</td>
+<td style="text-align: left;">F0</td>
+<td style="text-align: right;">6,938</td>
+<td style="text-align: right;">0.01</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">47.6</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">State</td>
+<td style="text-align: left;">F0</td>
+<td style="text-align: right;">63</td>
+<td style="text-align: right;">0.36</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">37</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Tags</td>
+<td style="text-align: left;">F0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">90.42</td>
+<td style="text-align: right;">14.5</td>
+<td style="text-align: right;">34.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Product</td>
+<td style="text-align: left;">F1</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">45.5</td>
+<td style="text-align: right;">195.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Issue</td>
+<td style="text-align: left;">F1</td>
+<td style="text-align: right;">173</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">38.5</td>
+<td style="text-align: right;">170</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Sub-product</td>
+<td style="text-align: left;">F1</td>
+<td style="text-align: right;">85</td>
+<td style="text-align: right;">1.36</td>
+<td style="text-align: right;">17.8</td>
+<td style="text-align: right;">93.6</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Sub-issue</td>
+<td style="text-align: left;">F1</td>
+<td style="text-align: right;">266</td>
+<td style="text-align: right;">8.74</td>
+<td style="text-align: right;">40</td>
+<td style="text-align: right;">163.3</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Date sent to company</td>
+<td style="text-align: left;">FX</td>
+<td style="text-align: right;">4,120</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">10</td>
+<td style="text-align: right;">65.9</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Company response to consumer</td>
+<td style="text-align: left;">FX</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">25.5</td>
+<td style="text-align: right;">122.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Timely response?</td>
+<td style="text-align: left;">FX</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">40.2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Company public response</td>
+<td style="text-align: left;">FX</td>
+<td style="text-align: right;">11</td>
+<td style="text-align: right;">46.79</td>
+<td style="text-align: right;">93</td>
+<td style="text-align: right;">210.7</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Complaint ID</td>
+<td style="text-align: left;">ID</td>
+<td style="text-align: right;">3,837,184</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">7.4</td>
+<td style="text-align: right;">56.4</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Submitted via</td>
+<td style="text-align: left;">FUERA</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">40.3</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-tipos-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabla&nbsp;2: Perfil del dato crudo. <code>tier</code> es el contrato de disponibilidad: F0 se conoce al recibir el reclamo, F1 lo declara el formulario, FX solo existe después de que la empresa respondió.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>Tres lecturas de esta tabla:</p>
+<ul>
+<li><strong>No hay ninguna variable numérica de origen.</strong> Todas las features numéricas habrá que construirlas desde el texto y las fechas.</li>
+<li><strong><code>Submitted via</code> tiene un solo valor</strong> (<code>Web</code>) en las 3.8 millones de filas: varianza cero, se elimina.</li>
+<li><strong><code>Complaint ID</code> es único en el 100% de las filas</strong>, así que sirve de clave de trazabilidad — y nunca como variable predictora.</li>
+</ul>
+</section>
+<section id="sec-fuga" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="sec-fuga"><span class="header-section-number">2.2</span> El contrato anti-fuga</h2>
+<p>La decisión más importante de toda la fase. Las columnas se separan en tres niveles según <strong>cuándo se conocen</strong>:</p>
+<table class="table">
+<colgroup>
+<col style="width: 15%">
+<col style="width: 46%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Tier</th>
+<th>Cuándo se conoce</th>
+<th>Uso permitido</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>F0</strong></td>
+<td>al recibir el reclamo</td>
+<td>variables predictoras de todos los modelos</td>
+</tr>
+<tr class="even">
+<td><strong>F1</strong></td>
+<td>lo declara el formulario del CFPB</td>
+<td><em>etiqueta</em> del clasificador de motivo. En la bandeja de un banco este campo no existe, así que no puede ser variable predictora del modelo desplegable</td>
+</tr>
+<tr class="odd">
+<td><strong>FX</strong></td>
+<td>solo después de que la empresa respondió</td>
+<td>únicamente objetivos y diagnóstico. <strong>Nunca</strong> variable predictora</td>
+</tr>
+</tbody>
+</table>
+<p>Un modelo que use <code>Timely response?</code> o <code>Company response to consumer</code> para predecir riesgo obtendría métricas excelentes y sería inútil: esas columnas no existen en el momento en que hay que priorizar el reclamo. La Fase 5 debe añadir <code>tests/test_no_leakage.py</code>, una prueba que falle si una columna FX aparece en la matriz de variables; hasta que esa prueba y el artefacto F5 existan, el control está diseñado pero no implementado.</p>
+</section>
+</section>
+<section id="sec-targets" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Los objetivos y su definición</h1>
+<section id="qué-puede-pagar-el-dato" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="qué-puede-pagar-el-dato"><span class="header-section-number">3.1</span> Qué puede pagar el dato</h2>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Necesidad del negocio</th>
+<th>Modelo</th>
+<th>Objetivo</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Clasificar y enrutar el reclamo</td>
+<td>T1, multiclase</td>
+<td>motivo canónico derivado de <code>Issue</code>, usado solo como etiqueta histórica</td>
+</tr>
+<tr class="even">
+<td>Priorizar por probabilidad de relief registrado</td>
+<td>T2, binaria</td>
+<td>la respuesta final registró relief monetario o no monetario</td>
+</tr>
+<tr class="odd">
+<td>Probabilidad de relief monetario</td>
+<td>T3, binaria</td>
+<td>la respuesta registró relief monetario; no estima un monto ni costo esperado</td>
+</tr>
+<tr class="even">
+<td>Riesgo de respuesta tardía</td>
+<td>T4, binaria</td>
+<td>la respuesta salió fuera de plazo</td>
+</tr>
+<tr class="odd">
+<td>Semáforo operativo</td>
+<td>regla + T4</td>
+<td>días restantes calculados + riesgo histórico estimado</td>
+</tr>
+<tr class="even">
+<td>Borrador de respuesta</td>
+<td>agente LangGraph posterior a T1-T4</td>
+<td>revisión humana y evaluación con rúbrica</td>
+</tr>
+<tr class="odd">
+<td>Causas raíz por producto y mes</td>
+<td>agregación, no es un modelo</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p><code>Issue</code> no se conoce al recibir un reclamo: en el histórico supervisa T1 y en producción T1 lo infiere desde F0. Los cuatro modelos alimentan una bandeja; un LLM separado redacta una recomendación y nunca modifica los scores ni envía texto sin aprobación.</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[Nuevo reclamo F0] --&gt; B[Saneo y features R0/R1]
+    B --&gt; C[T1: motivo y equipo]
+    B --&gt; D[T2: probabilidad de relief]
+    B --&gt; E[T3: probabilidad monetaria]
+    B --&gt; F[T4: riesgo de tardanza]
+    A --&gt; G[Regla de fecha límite]
+    C --&gt; H[Motor de triaje]
+    D --&gt; H
+    E --&gt; H
+    F --&gt; H
+    G --&gt; H
+    H --&gt; I[Prioridad, equipo y semáforo]
+    B --&gt; J[Casos similares y políticas aprobadas]
+    I --&gt; K[Agente LangGraph redacta]
+    J --&gt; K
+    K --&gt; L[Guardrails]
+    L --&gt; M[Revisión humana obligatoria]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+</section>
+<section id="la-regla-de-etiquetado-caso-por-caso" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="la-regla-de-etiquetado-caso-por-caso"><span class="header-section-number">3.2</span> La regla de etiquetado, caso por caso</h2>
+<div class="cell" data-execution_count="8">
+<div id="tbl-respuesta" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="8">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-respuesta-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 9%">
+<col style="width: 6%">
+<col style="width: 12%">
+<col style="width: 13%">
+<col style="width: 29%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Valor</th>
+<th style="text-align: right;">Filas</th>
+<th style="text-align: right;">%</th>
+<th style="text-align: left;">T2 compensó</th>
+<th style="text-align: left;">T3 monetario</th>
+<th style="text-align: left;">Lectura</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Closed with explanation</td>
+<td style="text-align: right;">2,548,866</td>
+<td style="text-align: right;">66.43</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">resuelto sin compensar</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Closed with non-monetary relief</td>
+<td style="text-align: right;">1,175,215</td>
+<td style="text-align: right;">30.63</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">compensación no económica</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Closed with monetary relief</td>
+<td style="text-align: right;">98,150</td>
+<td style="text-align: right;">2.56</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">1</td>
+<td style="text-align: left;">compensación económica</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Untimely response</td>
+<td style="text-align: right;">11,092</td>
+<td style="text-align: right;">0.29</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">la empresa no respondió a tiempo</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Closed</td>
+<td style="text-align: right;">3,741</td>
+<td style="text-align: right;">0.1</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">0</td>
+<td style="text-align: left;">categoría heredada, sin detalle</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">In progress</td>
+<td style="text-align: right;">111</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">excluir</td>
+<td style="text-align: left;">excluir</td>
+<td style="text-align: left;">censura: aún sin resultado</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">(nulo)</td>
+<td style="text-align: right;">9</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: left;">excluir</td>
+<td style="text-align: left;">excluir</td>
+<td style="text-align: left;">sin etiqueta</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-respuesta-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabla&nbsp;3: Los seis valores de <code>Company response to consumer</code> y su traducción a los objetivos T2 y T3. Dos casos se excluyen del entrenamiento en lugar de codificarse como cero.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>El caso que importa es <strong><code>In progress</code></strong>: son reclamos cuyo resultado todavía no se conoce. Codificarlos como «no hubo compensación» equivale a afirmar algo que el dato no dice, y el error no sería aleatorio — se concentraría en los meses más recientes, que son justamente los del conjunto de prueba. Se excluyen, junto con los nulos.</p>
+<p><code>Untimely response</code> es distinto: sí es un desenlace, pero es <em>ausencia de respuesta</em>, no <em>ausencia de compensación</em>. Se etiqueta como cero y se marca con un indicador, para poder reportar su métrica por separado.</p>
+</section>
+</section>
+<section id="sec-temporal" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Cobertura temporal</h1>
+<div id="cell-fig-volumen" class="cell" data-execution_count="10">
+<div class="cell-output cell-output-display">
+<div id="fig-volumen" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-volumen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="informe_files/figure-html/fig-volumen-output-1.png" width="946" height="492" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-volumen-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;1: Reclamos con narrativa recibidos por mes. El volumen crece de forma sostenida hasta 2025 y cae un 61% de un mes al siguiente en enero de 2026, quedándose después en una meseta baja durante seis meses. Una meseta no es un rezago de publicación.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>La ventana 2023-2025 concentra el <strong>66% de todo el corpus</strong>. Restringir el entrenamiento a ese periodo no sacrifica volumen: sacrifica historia que ya no describe el fenómeno actual. Lo que sí queda fuera, y por otra razón, es 2026 —ver <a href="#sec-quiebre" class="quarto-xref">Sección&nbsp;12</a>.</p>
+</section>
+<section id="sec-deriva" class="level1" data-number="5">
+<h1 data-number="5"><span class="header-section-number">5</span> Deriva de la taxonomía</h1>
+<div id="cell-fig-deriva" class="cell" data-execution_count="13">
+<div class="cell-output cell-output-display">
+<div id="fig-deriva" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-deriva-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="informe_files/figure-html/fig-deriva-output-1.png" width="1311" height="863" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-deriva-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;2: Participación de cada producto en el total del año. Las categorías no son estables: el CFPB renombró la familia de <em>credit reporting</em> dos veces, y cada rebautizo aparece aquí como una categoría que nace mientras otra muere.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Esta figura es la razón por la que existe una <strong>etapa de canonicalización</strong>: antes de entrenar nada hay que traducir las 21 etiquetas crudas de producto a un conjunto estable de unas 11, y las 173 de <code>Issue</code> a entre 25 y 40. El mapa se revisa a mano, se versiona en <code>configs/taxonomia.yaml</code>, y una prueba de regresión exige que <strong>cada etiqueta canónica exista tanto en entrenamiento como en prueba</strong>.</p>
+</section>
+<section id="sec-desbalance" class="level1" data-number="6">
+<h1 data-number="6"><span class="header-section-number">6</span> Desbalance de clases</h1>
+<p>El clasificador de motivo (T1) tiene que elegir entre las etiquetas de <code>Issue</code>. Antes de entrenar nada conviene saber cómo se reparte el volumen entre ellas, porque de eso depende qué métrica tiene sentido y cuántas clases sobreviven a la canonicalización.</p>
+<div id="cell-fig-pareto" class="cell" data-execution_count="15">
+<div class="cell-output cell-output-display">
+<div id="fig-pareto" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-pareto-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="informe_files/figure-html/fig-pareto-output-1.png" width="1251" height="807" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-pareto-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;3: Concentración de las etiquetas de <code>Issue</code> en el régimen 2023-2025. Arriba, las doce etiquetas más frecuentes. Abajo, cuántas etiquetas hacen falta para cubrir cada fracción del volumen: seis bastan para el 80%, y las 86 restantes se reparten el 19% que queda.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="16">
+<div id="tbl-pareto" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="16">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-pareto-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<colgroup>
+<col style="width: 9%">
+<col style="width: 12%">
+<col style="width: 10%">
+<col style="width: 9%">
+<col style="width: 10%">
+<col style="width: 21%">
+<col style="width: 24%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Nivel</th>
+<th style="text-align: left;">Régimen</th>
+<th style="text-align: right;">Clases</th>
+<th style="text-align: left;">Top-1</th>
+<th style="text-align: left;">Top-10</th>
+<th style="text-align: right;">Clases hasta 80%</th>
+<th style="text-align: right;">Clases &lt;1000 filas</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Product</td>
+<td style="text-align: left;">histórico</td>
+<td style="text-align: right;">21</td>
+<td style="text-align: left;">43.6%</td>
+<td style="text-align: left;">97.1%</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Product</td>
+<td style="text-align: left;">2023-2025</td>
+<td style="text-align: right;">14</td>
+<td style="text-align: left;">66.1%</td>
+<td style="text-align: left;">98.8%</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Issue</td>
+<td style="text-align: left;">histórico</td>
+<td style="text-align: right;">173</td>
+<td style="text-align: left;">31.4%</td>
+<td style="text-align: left;">78.6%</td>
+<td style="text-align: right;">12</td>
+<td style="text-align: right;">84</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Issue</td>
+<td style="text-align: left;">2023-2025</td>
+<td style="text-align: right;">92</td>
+<td style="text-align: left;">36.8%</td>
+<td style="text-align: left;">86.9%</td>
+<td style="text-align: right;">6</td>
+<td style="text-align: right;">33</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-pareto-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabla&nbsp;4: Desbalance en los dos niveles de la taxonomía declarada, en el corpus completo y en el régimen que se entrena. <code>clases &lt;1000</code> cuenta las etiquetas con tan pocas filas que ninguna métrica por clase es estable.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>Dos consecuencias, y ninguna es cosmética.</p>
+<p><strong>La primera es que la canonicalización tiene menos trabajo del que parecía, pero uno más delicado.</strong> De las 173 etiquetas de <code>Issue</code> del corpus histórico, solo <strong>92 existen en 2023-2025</strong>: 81 pertenecen a taxonomías que el CFPB ya retiró. Agrupar las 173 sería construir un mapa para clases que nunca van a llegar. El mapa se construye sobre las 92, y las 81 restantes solo importan para el experimento de deriva.</p>
+<p><strong>La segunda es que el desbalance del régimen es peor que el del histórico, no mejor.</strong> La clase mayoritaria pasa de 31.4% a 36.8% y bastan seis etiquetas para cubrir el 80% del volumen. Un clasificador que responda siempre «información incorrecta en su reporte» acierta más de un tercio de las veces. Ese es el número que cualquier modelo tiene que superar, y es la razón por la que la métrica de T1 se reporta como <strong>macro-F1</strong> y no como exactitud: la exactitud premia justamente a ese modelo inútil.</p>
+</section>
+<section id="sec-narrativa" class="level1" data-number="7">
+<h1 data-number="7"><span class="header-section-number">7</span> La narrativa</h1>
+<section id="sec-plantillas" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="sec-plantillas"><span class="header-section-number">7.1</span> Cuánto del corpus es texto repetido</h2>
+<div id="cell-fig-plantillas" class="cell" data-execution_count="18">
+<div class="cell-output cell-output-display">
+<div id="fig-plantillas" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-plantillas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="informe_files/figure-html/fig-plantillas-output-1.png" width="935" height="535" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-plantillas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;4: Reparto de los reclamos según cuántas veces se repite su narrativa. En el régimen 2023-2025 solo el 48% de los reclamos tiene un texto que no aparece en ningún otro, y uno de cada cinco pertenece a un grupo de más de 500 copias.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="19">
+<div id="tbl-plantillas" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="19">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-plantillas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<colgroup>
+<col style="width: 3%">
+<col style="width: 6%">
+<col style="width: 23%">
+<col style="width: 66%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">#</th>
+<th style="text-align: right;">Copias</th>
+<th style="text-align: left;">Producto</th>
+<th style="text-align: left;">Extracto</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">#1</td>
+<td style="text-align: right;">30,078</td>
+<td style="text-align: left;">Credit reporting or other person…</td>
+<td style="text-align: left;">In accordance with the Fair Credit Reporting act. The List of accounts below has violated my fed…</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">#2</td>
+<td style="text-align: right;">22,430</td>
+<td style="text-align: left;">Credit reporting or other person…</td>
+<td style="text-align: left;">My credit reports are inaccurate. These inaccuracies are causing creditors to deny me credit. Yo…</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">#3</td>
+<td style="text-align: right;">18,312</td>
+<td style="text-align: left;">Credit reporting or other person…</td>
+<td style="text-align: left;">You have reported inaccurate and unauthorized accounts on my credit report, which is a violation…</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">#4</td>
+<td style="text-align: right;">15,802</td>
+<td style="text-align: left;">Credit reporting or other person…</td>
+<td style="text-align: left;">Upon reviewing my credit report, I have identified inaccurate accounts that need reporting and c…</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">#5</td>
+<td style="text-align: right;">14,446</td>
+<td style="text-align: left;">Credit reporting or other person…</td>
+<td style="text-align: left;">The Fair Credit Reporting Act ( 15 U.S. Code 1681 ) says ( 1 ) The banking system is dependent u…</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">#6</td>
+<td style="text-align: right;">12,335</td>
+<td style="text-align: left;">Credit reporting or other person…</td>
+<td style="text-align: left;">I have not supplied proof under the doctrine of estoppel by silence, Engelhardt V. Gravens ( mo …</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-plantillas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabla&nbsp;5: Las seis narrativas más repetidas del régimen 2023-2025, con su producto dominante. Son cartas modelo de disputa de crédito que circulan en internet; el consumidor las copia, cambia el nombre y las envía.
+</figcaption>
+</figure>
+</div>
+</div>
+<p><strong>Qué cambia esto.</strong> En el corpus completo, el 41.4% de los reclamos comparte su narrativa con al menos otro; dentro del régimen 2023-2025 la cifra sube al <strong>52.5%</strong>. Dentro de esa ventana, la plantilla más copiada aparece 30,078 veces, siempre sobre el mismo producto.</p>
+<p>Una división aleatoria de entrenamiento y prueba pondría copias del mismo texto a ambos lados. El modelo memorizaría la plantilla y la métrica de prueba mediría esa memorización, no su capacidad de generalizar. Por eso la división de la decisión D4 es <strong>por grupo de narrativa</strong>: el hash del texto normalizado define el grupo y un grupo nunca se parte.</p>
+<p>Un detalle de método que conviene dejar anotado, porque explica una diferencia con las cifras de versiones anteriores del plan. Sobre el texto <strong>tal cual llega</strong>, la proporción de filas repetidas es 39.1% y el grupo mayor tiene 27,496 copias. Al normalizar —colapsar espacios y pasar a minúsculas— esas cifras suben a 41.4% y 30,110. La diferencia son copias de la misma carta con distinto espaciado. Como el agrupamiento sirve para impedir fuga, la definición correcta es la <strong>normalizada</strong>: es la más conservadora de las dos.</p>
+</section>
+<section id="sec-contenido" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="sec-contenido"><span class="header-section-number">7.2</span> Qué hay dentro del texto</h2>
+<div id="cell-fig-narrativa" class="cell" data-execution_count="22">
+<div class="cell-output cell-output-display">
+<div id="fig-narrativa" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-narrativa-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="informe_files/figure-html/fig-narrativa-output-1.png" width="937" height="525" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-narrativa-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;5: Izquierda: longitud de la narrativa en caracteres. Dos tercios de los reclamos caben en menos de mil caracteres, pero la cola llega hasta 36 mil. Derecha: reclamos con rastros de datos personales que el enmascarado del CFPB no capturó, por cada cien mil. Las dos magnitudes se grafican por separado porque no comparten unidad ni escala.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="23">
+<div id="tbl-narrativa" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="23">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-narrativa-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Indicador</th>
+<th style="text-align: left;">Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Longitud media</td>
+<td style="text-align: left;">1,005 caracteres</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Mediana / p90 / p99</td>
+<td style="text-align: left;">661 / 2,068 / 5,874</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Máximo</td>
+<td style="text-align: left;">35,984</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Reclamos con al menos un bloque <code>XXXX</code></td>
+<td style="text-align: left;">62.8%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Bloques <code>XXXX</code> por reclamo (media)</td>
+<td style="text-align: left;">17.0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Caracteres enmascarados sobre el total</td>
+<td style="text-align: left;">6.6%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Reclamos que mencionan un importe</td>
+<td style="text-align: left;">18.5%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Reclamos con marcas de español</td>
+<td style="text-align: left;">0.0019%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-narrativa-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabla&nbsp;6: Perfil de la narrativa en el régimen 2023-2025. Los bloques <code>XXXX</code> son el enmascarado que aplica el CFPB antes de publicar; el porcentaje de caracteres enmascarados mide cuánto del texto es ruido de anonimización.
+</figcaption>
+</figure>
+</div>
+</div>
+<p><strong>Tres lecturas, cada una con una consecuencia.</strong></p>
+<p><em>El enmascarado es masivo y hay que tratarlo como una señal, no como ruido.</em> El 63% de los reclamos contiene bloques <code>XXXX</code> y el 6.6% de todos los caracteres del corpus es enmascarado. Un TF-IDF ingenuo convertiría <code>xxxx</code> en el token más frecuente del vocabulario. La normalización de la Fase 5 lo reemplaza por un marcador único y, en paralelo, <strong>cuenta</strong> los bloques: cuántos datos tuvo que ocultar el CFPB es en sí mismo un indicador de qué tan cargado de identificadores viene el reclamo.</p>
+<p><em>El corpus es monolingüe a efectos prácticos.</em> Las marcas de español aparecen en el 0.0019% de los textos. No hace falta un detector de idioma ni un modelo multilingüe; conviene volver a revisarlo si el CFPB empieza a publicar el canal en español.</p>
+<p><em>Queda PII residual, y eso bloquea el envío de texto a servicios externos.</em> 25,335 reclamos del régimen contienen al menos un patrón que el enmascarado no capturó: direcciones de correo, URL, cadenas de seis o más dígitos. Son pocos en proporción —menos del 1%— pero no son cero, y basta con que no sean cero. La regla 4 de la decisión D6 se mantiene: <strong>ningún texto sale de la red del proyecto sin un segundo enmascarado</strong>, y el nivel R1 local no tiene este problema en absoluto. Conviene tomar la cifra como cota superior: una cadena de seis dígitos puede ser un número de cuenta o puede ser un importe sin enmascarar, y este conteo no los distingue.</p>
+</section>
+</section>
+<section id="sec-entidades" class="level1" data-number="8">
+<h1 data-number="8"><span class="header-section-number">8</span> Contra quién se reclama, y desde dónde</h1>
+<section id="sec-empresas" class="level2" data-number="8.1">
+<h2 data-number="8.1" class="anchored" data-anchor-id="sec-empresas"><span class="header-section-number">8.1</span> Concentración de empresas</h2>
+<div id="cell-fig-empresas" class="cell" data-execution_count="26">
+<div class="cell-output cell-output-display">
+<div id="fig-empresas" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-empresas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="informe_files/figure-html/fig-empresas-output-1.png" width="1200" height="798" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-empresas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;6: Arriba: porcentaje acumulado de reclamos a medida que se añaden empresas, ordenadas de mayor a menor volumen (eje horizontal logarítmico). Abajo: las diez empresas con más reclamos en el régimen 2023-2025. Tres burós de crédito reúnen el 72% del volumen del periodo que se entrena.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="27">
+<div id="tbl-empresas" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="27">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-empresas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Reclamos por empresa</th>
+<th style="text-align: right;">Empresas</th>
+<th style="text-align: right;">Reclamos</th>
+<th style="text-align: left;">% del volumen</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">0-9</td>
+<td style="text-align: right;">2,759</td>
+<td style="text-align: right;">7,892</td>
+<td style="text-align: left;">0.3%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">10-99</td>
+<td style="text-align: right;">1,157</td>
+<td style="text-align: right;">37,605</td>
+<td style="text-align: left;">1.5%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">100-999</td>
+<td style="text-align: right;">350</td>
+<td style="text-align: right;">107,692</td>
+<td style="text-align: left;">4.3%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">1 000-9 999</td>
+<td style="text-align: right;">87</td>
+<td style="text-align: right;">257,139</td>
+<td style="text-align: left;">10.2%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">10 000+</td>
+<td style="text-align: right;">18</td>
+<td style="text-align: right;">2,113,522</td>
+<td style="text-align: left;">83.7%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-empresas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabla&nbsp;7: Distribución de las empresas por volumen de reclamos en el régimen 2023-2025. Las 2,759 empresas con menos de diez reclamos aportan el 0.3% del volumen: no hay con qué estimarles un efecto propio y van a un bucket común.
+</figcaption>
+</figure>
+</div>
+</div>
+<p><strong>Dos consecuencias para el modelo.</strong> La primera es de codificación: con 4,371 empresas en el régimen y un 75% del volumen en las cinco primeras, un <em>one-hot</em> es inviable y una codificación por frecuencia o por objetivo es obligatoria — calculada solo con datos anteriores al periodo de cada fila, para no filtrar el futuro. La cola larga se agrupa en un bucket <code>OTRA</code>.</p>
+<p>La segunda es más incómoda y afecta a la interpretación de todo lo que venga después. Si tres burós de crédito concentran el 72% de los reclamos del régimen —contra el 61% del corpus completo—, un modelo de texto puede alcanzar buenas métricas aprendiendo a reconocer <em>de qué empresa se habla</em> en vez de <em>qué problema se describe</em>. El agrupamiento no supervisado de la etapa E14 tiene que correrse dos veces, con y sin los nombres de empresa enmascarados; si los grupos cambian mucho, ese hallazgo vale más que el agrupamiento original.</p>
+</section>
+<section id="sec-geografia" class="level2" data-number="8.2">
+<h2 data-number="8.2" class="anchored" data-anchor-id="sec-geografia"><span class="header-section-number">8.2</span> Geografía: qué queda del código postal</h2>
+<div id="cell-fig-geografia" class="cell" data-execution_count="30">
+<div class="cell-output cell-output-display">
+<div id="fig-geografia" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-geografia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="informe_files/figure-html/fig-geografia-output-1.png" width="946" height="526" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-geografia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;7: Izquierda: forma del campo <code>ZIP code</code> en el régimen 2023-2025. El CFPB enmascara los dos últimos dígitos de los códigos poco poblados y el código entero en algunos casos. Derecha: los doce estados con más reclamos. Los dos paneles están separados porque uno reparte el 100% entre tres categorías y el otro entre sesenta y una.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="31">
+<div id="tbl-geografia" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="31">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-geografia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<colgroup>
+<col style="width: 37%">
+<col style="width: 13%">
+<col style="width: 21%">
+<col style="width: 26%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Campo</th>
+<th style="text-align: right;">Filas</th>
+<th style="text-align: left;">% del régimen</th>
+<th style="text-align: left;">Valores distintos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Reclamos del régimen</td>
+<td style="text-align: right;">2,523,850</td>
+<td style="text-align: left;">100.00%</td>
+<td style="text-align: left;">—</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>ZIP code</code> no nulo</td>
+<td style="text-align: right;">2,523,850</td>
+<td style="text-align: left;">100.00%</td>
+<td style="text-align: left;">6,935</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Con prefijo ZIP-3 utilizable</td>
+<td style="text-align: right;">2,483,614</td>
+<td style="text-align: left;">98.41%</td>
+<td style="text-align: left;">876</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><code>State</code> no nulo</td>
+<td style="text-align: right;">2,515,633</td>
+<td style="text-align: left;">99.67%</td>
+<td style="text-align: left;">61</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-geografia-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabla&nbsp;8: Cardinalidad de los campos geográficos en el régimen 2023-2025. El prefijo de tres dígitos es la única unidad geográfica que sobrevive al enmascarado, y baja la cardinalidad de casi siete mil valores a 876.
+</figcaption>
+</figure>
+</div>
+</div>
+<p><strong>La decisión que sale de aquí.</strong> El código postal completo no sirve como variable: el 20.1% de los reclamos lo trae con los dos últimos dígitos enmascarados y el 1.6% no trae nada. Pero el prefijo de tres dígitos —el que identifica el área postal— sobrevive en el <strong>98.4%</strong> de las filas, y baja la cardinalidad de 6,935 valores a 876. La variable geográfica del proyecto es <strong>ZIP-3, más un indicador booleano de que el código venía enmascarado</strong>, que es informativo por sí mismo: el CFPB enmascara justamente los códigos de áreas poco pobladas.</p>
+<p>Una corrección sobre el plan, menor pero conviene dejarla escrita: las 290 filas que el plan describía como «malformadas» no lo son. Son <strong>nulos</strong>, y están todos fuera del régimen 2023-2025 —dentro de la ventana que se entrena, <code>ZIP code</code> no tiene ni un nulo. No existe ningún valor con una forma distinta de las tres de la figura: entre los 2,523,850 reclamos del régimen, el campo o trae cinco dígitos, o trae tres y dos equis, o trae cinco equis. En el corpus completo el enmascarado afecta al 22.4% de las filas.</p>
+</section>
+</section>
+<section id="sec-tasas" class="level1" data-number="9">
+<h1 data-number="9"><span class="header-section-number">9</span> Tasas base de los objetivos</h1>
+<div id="cell-fig-tasas" class="cell" data-execution_count="34">
+<div class="cell-output cell-output-display">
+<div id="fig-tasas" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-tasas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="informe_files/figure-html/fig-tasas-output-1.png" width="951" height="858" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-tasas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;8: Tasa base anual de los tres objetivos binarios. Se grafican en paneles separados y no superpuestos porque sus escalas difieren en un orden de magnitud; forzarlos a un eje común aplanaría los dos de abajo hasta volverlos ilegibles.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="35">
+<div id="tbl-tasas" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="35">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-tasas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: right;">Año</th>
+<th style="text-align: right;">Reclamos</th>
+<th style="text-align: right;">Censurados</th>
+<th style="text-align: right;">T2 %</th>
+<th style="text-align: right;">T3 %</th>
+<th style="text-align: right;">T4 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2015</td>
+<td style="text-align: right;">54,723</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">20.28</td>
+<td style="text-align: right;">7.22</td>
+<td style="text-align: right;">3.44</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2016</td>
+<td style="text-align: right;">77,766</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">18.93</td>
+<td style="text-align: right;">7.29</td>
+<td style="text-align: right;">3.96</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2017</td>
+<td style="text-align: right;">115,311</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">15.06</td>
+<td style="text-align: right;">4.91</td>
+<td style="text-align: right;">2.98</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2018</td>
+<td style="text-align: right;">118,393</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">17.87</td>
+<td style="text-align: right;">4.76</td>
+<td style="text-align: right;">2.02</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2019</td>
+<td style="text-align: right;">124,843</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">18.5</td>
+<td style="text-align: right;">4.4</td>
+<td style="text-align: right;">1.75</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2020</td>
+<td style="text-align: right;">174,297</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">11.25</td>
+<td style="text-align: right;">3.81</td>
+<td style="text-align: right;">1.39</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2021</td>
+<td style="text-align: right;">203,570</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">12.93</td>
+<td style="text-align: right;">3.67</td>
+<td style="text-align: right;">1.52</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2022</td>
+<td style="text-align: right;">337,273</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">32.19</td>
+<td style="text-align: right;">2.74</td>
+<td style="text-align: right;">0.8</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2023</td>
+<td style="text-align: right;">487,410</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">38.83</td>
+<td style="text-align: right;">2.51</td>
+<td style="text-align: right;">0.64</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2024</td>
+<td style="text-align: right;">814,384</td>
+<td style="text-align: right;">7</td>
+<td style="text-align: right;">45.8</td>
+<td style="text-align: right;">1.71</td>
+<td style="text-align: right;">0.47</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2025</td>
+<td style="text-align: right;">1,222,056</td>
+<td style="text-align: right;">110</td>
+<td style="text-align: right;">36.8</td>
+<td style="text-align: right;">1.24</td>
+<td style="text-align: right;">0.87</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2026</td>
+<td style="text-align: right;">107,158</td>
+<td style="text-align: right;">1</td>
+<td style="text-align: right;">18.27</td>
+<td style="text-align: right;">6.62</td>
+<td style="text-align: right;">3.52</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-tasas-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabla&nbsp;9: Tasas base por año. <code>censurados</code> son los reclamos marcados como aún sin resolver, excluidos del cálculo.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>Las tres series se mueven juntas en 2026 y en la dirección contraria a su tendencia. Eso no es ruido de un año incompleto: es el mismo fenómeno visto tres veces, y merece sección propia.</p>
+<div class="cell" data-execution_count="36">
+<div id="tbl-producto" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="36">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-producto-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<colgroup>
+<col style="width: 57%">
+<col style="width: 14%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 9%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Producto</th>
+<th style="text-align: right;">Reclamos</th>
+<th style="text-align: right;">T2 %</th>
+<th style="text-align: right;">T3 %</th>
+<th style="text-align: right;">T4 %</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Credit reporting or other personal consumer re…</td>
+<td style="text-align: right;">1,671,841</td>
+<td style="text-align: right;">47.33</td>
+<td style="text-align: right;">0.06</td>
+<td style="text-align: right;">0.18</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Credit reporting, credit repair services, or o…</td>
+<td style="text-align: right;">807,499</td>
+<td style="text-align: right;">29.15</td>
+<td style="text-align: right;">0.25</td>
+<td style="text-align: right;">0.5</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Debt collection</td>
+<td style="text-align: right;">441,051</td>
+<td style="text-align: right;">19.06</td>
+<td style="text-align: right;">0.56</td>
+<td style="text-align: right;">3.54</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Checking or savings account</td>
+<td style="text-align: right;">186,789</td>
+<td style="text-align: right;">20.36</td>
+<td style="text-align: right;">14.89</td>
+<td style="text-align: right;">0.98</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Mortgage</td>
+<td style="text-align: right;">146,301</td>
+<td style="text-align: right;">6.71</td>
+<td style="text-align: right;">3.35</td>
+<td style="text-align: right;">1.69</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Credit card</td>
+<td style="text-align: right;">126,827</td>
+<td style="text-align: right;">32.61</td>
+<td style="text-align: right;">17.37</td>
+<td style="text-align: right;">0.58</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Money transfer, virtual currency, or money ser…</td>
+<td style="text-align: right;">120,644</td>
+<td style="text-align: right;">8.75</td>
+<td style="text-align: right;">5.47</td>
+<td style="text-align: right;">1.55</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Credit card or prepaid card</td>
+<td style="text-align: right;">108,683</td>
+<td style="text-align: right;">30.38</td>
+<td style="text-align: right;">18.19</td>
+<td style="text-align: right;">1.12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Student loan</td>
+<td style="text-align: right;">62,620</td>
+<td style="text-align: right;">6.32</td>
+<td style="text-align: right;">1.53</td>
+<td style="text-align: right;">10.02</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Vehicle loan or lease</td>
+<td style="text-align: right;">53,005</td>
+<td style="text-align: right;">9.3</td>
+<td style="text-align: right;">3.17</td>
+<td style="text-align: right;">1.95</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-producto-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabla&nbsp;10: Tasa base por producto crudo. Las diferencias entre productos son mayores que la señal que cualquier modelo puede extraer del texto, así que toda evaluación se reporta también por producto.
+</figcaption>
+</figure>
+</div>
+</div>
+</section>
+<section id="sec-sesgo" class="level1" data-number="10">
+<h1 data-number="10"><span class="header-section-number">10</span> Sesgo por perfil del consumidor</h1>
+<p>El dato trae dos campos que describen a quien reclama: <code>Tags</code>, que marca si es <em>servicemember</em> o adulto mayor, y <code>State</code>. La pregunta obligatoria antes de poner un modelo a priorizar reclamos es si esos grupos reciben resultados distintos. La respuesta cruda es que sí, y es engañosa.</p>
+<p>Un reclamo marcado <code>Older American</code> termina en compensación monetaria mucho más seguido que uno sin etiqueta. Pero los adultos mayores <strong>no reclaman sobre los mismos productos</strong>: solo el 21% de sus reclamos son del producto dominante del régimen, contra el 68% del resto. Y la tasa de compensación depende sobre todo del producto. Sin estratificar, lo que se mide es la mezcla de productos del grupo, no un trato distinto.</p>
+<p>La figura pone las dos cifras lado a lado. La <strong>cruda</strong> es la proporción observada. La <strong>ajustada</strong> es la tasa que tendría el grupo si su mezcla de productos fuera la de la población — estandarización directa, calculada por estrato de producto y reagregada con los pesos de la población. La distancia entre ambas es la parte del efecto que explica la composición; lo que sobrevive al ajuste es lo que hay que mirar en serio.</p>
+<div id="cell-fig-sesgo-tags" class="cell" data-execution_count="38">
+<div class="cell-output cell-output-display">
+<div id="fig-sesgo-tags" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sesgo-tags-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="informe_files/figure-html/fig-sesgo-tags-output-1.png" width="1046" height="537" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sesgo-tags-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;9: Tasa cruda y tasa ajustada por producto para cada grupo de <code>Tags</code>, régimen 2023-2025. La línea punteada es la tasa de la población. Ajustar por producto reduce la brecha de compensación monetaria de los adultos mayores de siete veces a dos, pero no la elimina; en el objetivo T2 el ajuste apenas mueve la aguja.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="39">
+<div id="tbl-sesgo-tags" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="39">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-sesgo-tags-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<colgroup>
+<col style="width: 26%">
+<col style="width: 10%">
+<col style="width: 17%">
+<col style="width: 10%">
+<col style="width: 12%">
+<col style="width: 10%">
+<col style="width: 12%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Grupo</th>
+<th style="text-align: right;">Reclamos</th>
+<th style="text-align: left;">% prod. dominante</th>
+<th style="text-align: left;">T2 crudo</th>
+<th style="text-align: left;">T2 ajustado</th>
+<th style="text-align: left;">T3 crudo</th>
+<th style="text-align: left;">T3 ajustado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(población)</td>
+<td style="text-align: right;">2,523,850</td>
+<td style="text-align: left;">66%</td>
+<td style="text-align: left;">40.09%</td>
+<td style="text-align: left;">40.09%</td>
+<td style="text-align: left;">1.64%</td>
+<td style="text-align: left;">1.64%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">(sin etiqueta)</td>
+<td style="text-align: right;">2,347,041</td>
+<td style="text-align: left;">68%</td>
+<td style="text-align: left;">41.20%</td>
+<td style="text-align: left;">40.55%</td>
+<td style="text-align: left;">1.38%</td>
+<td style="text-align: left;">1.55%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Servicemember</td>
+<td style="text-align: right;">120,281</td>
+<td style="text-align: left;">43%</td>
+<td style="text-align: left;">26.25%</td>
+<td style="text-align: left;">30.98%</td>
+<td style="text-align: left;">3.02%</td>
+<td style="text-align: left;">1.73%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Older American</td>
+<td style="text-align: right;">43,058</td>
+<td style="text-align: left;">21%</td>
+<td style="text-align: left;">23.53%</td>
+<td style="text-align: left;">28.30%</td>
+<td style="text-align: left;">9.85%</td>
+<td style="text-align: left;">3.07%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Older American, Servicemember</td>
+<td style="text-align: right;">13,352</td>
+<td style="text-align: left;">24%</td>
+<td style="text-align: left;">23.07%</td>
+<td style="text-align: left;">28.42%</td>
+<td style="text-align: left;">8.04%</td>
+<td style="text-align: left;">2.84%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-sesgo-tags-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabla&nbsp;11: Cortes por <code>Tags</code> en el régimen 2023-2025. <code>% producto dominante</code> es el indicador de mezcla: cuánto pesa en el grupo el producto que domina la población. Es la columna que explica por qué la tasa cruda y la ajustada no coinciden.
+</figcaption>
+</figure>
+</div>
+</div>
+<p><strong>El número que no se puede citar solo.</strong> En el régimen 2023-2025, un reclamo marcado <code>Older American</code> termina en compensación monetaria el <strong>9.85%</strong> de las veces, contra el <strong>1.38%</strong> de los reclamos sin etiqueta: una razón de 7.1 a 1. Controlando por producto, las tasas pasan a 3.07% y 1.55%, y la razón cae a 2.0 a 1. Es decir: <strong>la composición explica alrededor del 82% de la brecha</strong>, pero no toda.</p>
+<p>Eso deja dos obligaciones, no una.</p>
+<p>La primera es de comunicación: la cifra cruda no puede aparecer en una diapositiva sin su versión ajustada al lado. Decir que los adultos mayores reciben siete veces más compensación monetaria es describir su cartera de productos, no el trato que reciben.</p>
+<p>La segunda es que <strong>el residuo no es cero y no se puede archivar</strong>. Después de ajustar, <code>Older American</code> sigue duplicando la tasa de compensación monetaria y sigue 12 puntos por debajo en T2. El ajuste por producto crudo es un control grueso: quedan afuera el sub-producto, el motivo y la empresa. La evaluación por cortes de la Fase 6 tiene que reportar métricas por estos grupos de forma rutinaria, y un modelo que priorice reclamos no puede usar <code>Tags</code> como variable sin que alguien decida explícitamente que eso es aceptable.</p>
+<div id="cell-fig-sesgo-estado" class="cell" data-execution_count="41">
+<div class="cell-output cell-output-display">
+<div id="fig-sesgo-estado" class="quarto-float quarto-figure quarto-figure-center anchored">
+<figure class="quarto-float quarto-float-fig figure">
+<div aria-describedby="fig-sesgo-estado-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<img src="informe_files/figure-html/fig-sesgo-estado-output-1.png" width="924" height="604" class="figure-img">
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-fig" id="fig-sesgo-estado-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Figura&nbsp;10: Lo mismo, para los doce estados con más reclamos. Aquí el ajuste sí cierra casi toda la diferencia: la dispersión entre estados en T2 se reduce a menos de tres puntos, y lo que parecía una brecha geográfica en T3 es en su mayor parte una diferencia en qué productos se reclama en cada estado.
+</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-execution_count="42">
+<div id="tbl-sesgo-estado" class="cell quarto-float quarto-figure quarto-figure-center anchored" data-execution_count="42">
+<figure class="quarto-float quarto-float-tbl figure">
+<div aria-describedby="tbl-sesgo-estado-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+<div class="cell-output cell-output-display cell-output-markdown">
+<table class="do-not-create-environment cell table table-sm table-striped small">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 12%">
+<col style="width: 21%">
+<col style="width: 12%">
+<col style="width: 15%">
+<col style="width: 12%">
+<col style="width: 15%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Estado</th>
+<th style="text-align: right;">Reclamos</th>
+<th style="text-align: left;">% prod. dominante</th>
+<th style="text-align: left;">T2 crudo</th>
+<th style="text-align: left;">T2 ajustado</th>
+<th style="text-align: left;">T3 crudo</th>
+<th style="text-align: left;">T3 ajustado</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(población)</td>
+<td style="text-align: right;">2,523,850</td>
+<td style="text-align: left;">66%</td>
+<td style="text-align: left;">40.09%</td>
+<td style="text-align: left;">40.09%</td>
+<td style="text-align: left;">1.64%</td>
+<td style="text-align: left;">1.64%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">TX</td>
+<td style="text-align: right;">357,157</td>
+<td style="text-align: left;">71%</td>
+<td style="text-align: left;">42.48%</td>
+<td style="text-align: left;">41.10%</td>
+<td style="text-align: left;">0.98%</td>
+<td style="text-align: left;">1.42%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FL</td>
+<td style="text-align: right;">313,733</td>
+<td style="text-align: left;">70%</td>
+<td style="text-align: left;">42.18%</td>
+<td style="text-align: left;">40.55%</td>
+<td style="text-align: left;">1.18%</td>
+<td style="text-align: left;">1.57%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">CA</td>
+<td style="text-align: right;">248,188</td>
+<td style="text-align: left;">63%</td>
+<td style="text-align: left;">39.62%</td>
+<td style="text-align: left;">40.54%</td>
+<td style="text-align: left;">2.60%</td>
+<td style="text-align: left;">1.95%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GA</td>
+<td style="text-align: right;">197,682</td>
+<td style="text-align: left;">71%</td>
+<td style="text-align: left;">41.00%</td>
+<td style="text-align: left;">39.40%</td>
+<td style="text-align: left;">0.81%</td>
+<td style="text-align: left;">1.28%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NY</td>
+<td style="text-align: right;">143,210</td>
+<td style="text-align: left;">65%</td>
+<td style="text-align: left;">40.37%</td>
+<td style="text-align: left;">40.49%</td>
+<td style="text-align: left;">2.27%</td>
+<td style="text-align: left;">1.90%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">IL</td>
+<td style="text-align: right;">124,578</td>
+<td style="text-align: left;">66%</td>
+<td style="text-align: left;">40.57%</td>
+<td style="text-align: left;">40.43%</td>
+<td style="text-align: left;">1.21%</td>
+<td style="text-align: left;">1.21%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NC</td>
+<td style="text-align: right;">98,934</td>
+<td style="text-align: left;">69%</td>
+<td style="text-align: left;">41.25%</td>
+<td style="text-align: left;">40.03%</td>
+<td style="text-align: left;">1.28%</td>
+<td style="text-align: left;">1.61%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PA</td>
+<td style="text-align: right;">91,776</td>
+<td style="text-align: left;">64%</td>
+<td style="text-align: left;">40.67%</td>
+<td style="text-align: left;">40.55%</td>
+<td style="text-align: left;">1.67%</td>
+<td style="text-align: left;">1.65%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">NJ</td>
+<td style="text-align: right;">79,375</td>
+<td style="text-align: left;">66%</td>
+<td style="text-align: left;">40.74%</td>
+<td style="text-align: left;">40.39%</td>
+<td style="text-align: left;">2.00%</td>
+<td style="text-align: left;">1.86%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MD</td>
+<td style="text-align: right;">61,207</td>
+<td style="text-align: left;">66%</td>
+<td style="text-align: left;">40.09%</td>
+<td style="text-align: left;">40.16%</td>
+<td style="text-align: left;">1.55%</td>
+<td style="text-align: left;">1.59%</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SC</td>
+<td style="text-align: right;">60,248</td>
+<td style="text-align: left;">72%</td>
+<td style="text-align: left;">42.41%</td>
+<td style="text-align: left;">40.88%</td>
+<td style="text-align: left;">0.90%</td>
+<td style="text-align: left;">1.37%</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">MI</td>
+<td style="text-align: right;">59,802</td>
+<td style="text-align: left;">63%</td>
+<td style="text-align: left;">37.77%</td>
+<td style="text-align: left;">38.58%</td>
+<td style="text-align: left;">1.70%</td>
+<td style="text-align: left;">1.65%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<figcaption class="quarto-float-caption-bottom quarto-float-caption quarto-float-tbl" id="tbl-sesgo-estado-caption-0ceaefa1-69ba-4598-a22c-09a6ac19f8ca">
+Tabla&nbsp;12: Cortes por <code>State</code> en el régimen 2023-2025, ordenados por volumen. La dispersión que queda después del ajuste es del orden de la décima de punto porcentual: no hay un efecto geográfico grande escondido detrás de la composición.
+</figcaption>
+</figure>
+</div>
+</div>
+<p>El contraste con <code>Tags</code> es lo interesante. Entre los doce estados más grandes, el rango de la tasa T2 pasa de 4.7 puntos porcentuales en crudo a 2.5 después de ajustar, y la razón entre el estado con más y el con menos compensación monetaria baja de 3.2 a 1.6. Dicho de otro modo: <strong>la geografía casi no aporta nada por sí misma</strong>, y lo que parecía un efecto de estado era la mezcla de productos que se reclama en cada uno.</p>
+<p>Esto tiene una consecuencia práctica que ahorra trabajo: no hace falta tratar el estado como una variable sensible con manejo especial, pero sí conviene dejar el corte en la evaluación por si el patrón cambia con los datos nuevos. Y refuerza lo del apartado anterior — que el residuo de <code>Tags</code> sobreviva al mismo ajuste que borra el de <code>State</code> es precisamente lo que lo hace digno de atención.</p>
+</section>
+<section id="sec-cierre-eda" class="level1" data-number="11">
+<h1 data-number="11"><span class="header-section-number">11</span> Cierre del EDA y creación de features</h1>
+<p>E12-E14 cierran la exploración, pero necesitan una preparación mínima reproducible. No se pueden ejecutar sobre una muestra aleatoria ni diseñar la taxonomía mirando el test. El orden operativo es:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[Dato crudo DVC] --&gt; B[Fijar cortes temporales]
+    B --&gt; C[Tipado mínimo y targets]
+    C --&gt; D[Hash y auditoría de repetidos]
+    D --&gt; E[Muestra de train]
+    E --&gt; F[R1 local una vez por hash]
+    F --&gt; G[E14 solo sobre train]
+    G --&gt; H[Congelar taxonomía]
+    H --&gt; I[Split temporal completo]
+    I --&gt; J[E12 R0]
+    F --&gt; K[E13 R0 frente a R1]
+    I --&gt; K
+    J --&gt; L[Features auditadas]
+    K --&gt; L
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<section id="sec-deduplicacion" class="level2" data-number="11.1">
+<h2 data-number="11.1" class="anchored" data-anchor-id="sec-deduplicacion"><span class="header-section-number">11.1</span> Qué significa deduplicar</h2>
+<p>Deduplicar aquí <strong>no significa borrar reclamos</strong>. Dos personas pueden copiar una plantilla y obtener desenlaces distintos. La narrativa normalizada recibe un <code>hash_narrativa</code> para:</p>
+<ol type="1">
+<li>calcular el embedding una sola vez por texto;</li>
+<li>impedir que el clustering esté dominado por miles de copias de una plantilla;</li>
+<li>medir cuánto del rendimiento viene de memorizar textos conocidos;</li>
+<li>auditar hashes con empresas, productos o targets contradictorios.</li>
+</ol>
+<p>Se conservan dos evaluaciones temporales. La <strong>operacional</strong> permite que una plantilla vista en train reaparezca después, como puede ocurrir en la bandeja. La de <strong>generalización a texto nuevo</strong> purga de validación/test los hashes ya vistos en train y es la lectura anti-memorización. Colapsar un grupo a una fila solo es válido para E14; los modelos de outcome conservan las filas si sus desenlaces son eventos distintos.</p>
+</section>
+<section id="sec-e12" class="level2" data-number="11.2">
+<h2 data-number="11.2" class="anchored" data-anchor-id="sec-e12"><span class="header-section-number">11.2</span> E12 — Piso de señal R0</h2>
+<p>E12 ajusta word+character TF-IDF exclusivamente en train y usa regresión logística o <code>SGDClassifier(loss="log_loss")</code>. Es una sonda barata, no la selección final. Reportará macro-F1/top-3 para T1 y PR-AUC, Brier, log loss, lift y recall a capacidad fija para T2-T4. Accuracy no sirve como métrica principal para T3/T4 por su prevalencia cercana al 1%.</p>
+<div class="callout callout-style-simple callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Pendiente — E12
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Piso de señal: TF-IDF + LogReg. El artefacto <code>e12_piso_senal.csv</code> todavía no existe; esta sección se completa sola al ejecutar:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.models.baseline</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="sec-e13" class="level2" data-number="11.3">
+<h2 data-number="11.3" class="anchored" data-anchor-id="sec-e13"><span class="header-section-number">11.3</span> E13 — ¿Aporta R1 local?</h2>
+<p>Sobre exactamente las mismas filas, splits y clasificadores, E13 compara: F0 tabular, R0, F0+R0, R1 local, F0+R1 y F0+R0+R1. La primera implementación usa <code>all-MiniLM-L6-v2</code>; sus vectores se cachean por <code>hash_narrativa</code>. El criterio es mejora predictiva, memoria y latencia, no que el método sea más moderno.</p>
+<div class="callout callout-style-simple callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Pendiente — E13
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>¿Vale un embedding? TF-IDF vs embedding local. El artefacto <code>e13_embeddings.csv</code> todavía no existe; esta sección se completa sola al ejecutar:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.features.embeddings</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="sec-e14" class="level2" data-number="11.4">
+<h2 data-number="11.4" class="anchored" data-anchor-id="sec-e14"><span class="header-section-number">11.4</span> E14 — Estructura latente</h2>
+<p>E14 usa únicamente textos únicos de train. Compara embedding → UMAP 10-15D → HDBSCAN contra TF-IDF → SVD → KMeans. El UMAP 2D se reserva para visualizar. La corrida se repite con nombres de empresa enmascarados y con varias semillas; reporta ARI, NMI, pureza, porcentaje de ruido y estabilidad. El clustering aporta evidencia al mapa canónico, pero no lo edita automáticamente.</p>
+<div class="callout callout-style-simple callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Pendiente — E14
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Estructura latente: UMAP + HDBSCAN. El artefacto <code>e14_clusters.csv</code> todavía no existe; esta sección se completa sola al ejecutar:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.data.cluster_evidence</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+</section>
+<section id="sec-features" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="sec-features"><span class="header-section-number">11.5</span> Fases 2-5 — Del parquet crudo a matrices entrenables</h2>
+<p>El Informe I documentará cada transformación con entradas, parámetros, salidas, conteos y pruebas:</p>
+<ol type="1">
+<li><strong>Tipado:</strong> fechas, booleanos, categorías, tags separados y contrato Pandera.</li>
+<li><strong>Repetidos:</strong> hash, conflictos de etiquetas y vistas operacional/texto único.</li>
+<li><strong>Canonicalización:</strong> mapa manual versionado, definido con train y aplicado sin cambios.</li>
+<li><strong>Split:</strong> train 2023-2024, validación 2025-01/06 y test 2025-07/12; 2026 queda como stress test OOD separado.</li>
+<li><strong>R0:</strong> word/character TF-IDF y señales deterministas, con <code>fit</code> solo en train.</li>
+<li><strong>R1:</strong> embedding local versionado, una vez por hash.</li>
+<li><strong>Ensamblado:</strong> IDs/tabulares en Parquet, TF-IDF CSR en <code>.npz</code>, embeddings en <code>.npy</code> e índices/manifiestos en Parquet.</li>
+<li><strong>Auditoría:</strong> dimensiones, memoria, nulos, cobertura, columnas por tier y prueba que prohíbe FX.</li>
+</ol>
+<div class="callout callout-style-simple callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">Advertencia</span>Pendiente — F5
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Matriz de features y auditoría de fuga. El artefacto <code>f5_features.csv</code> todavía no existe; esta sección se completa sola al ejecutar:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.features.build</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</div>
+<p>DVC debe rastrear el DAG completo, no solo el parquet crudo:</p>
+<div class="cell" data-layout-align="default">
+<div class="cell-output-display">
+<div>
+<p></p><figure class="figure"><p></p>
+<div>
+<pre class="mermaid mermaid-js">flowchart TD
+    A[raw] --&gt; B[typing]
+    B --&gt; C[hash y repetidos]
+    C --&gt; D[embedding local]
+    D --&gt; E[E14]
+    E --&gt; F[canonicalize]
+    F --&gt; G[split]
+    G --&gt; H[features R0/R1]
+    H --&gt; I[E12/E13]
+    I --&gt; J[artefactos del informe]
+</pre>
+</div>
+<p></p></figure><p></p>
+</div>
+</div>
+</div>
+<p>Cada etapa declara código/configuración como dependencia, artefactos como salidas y semillas, ventanas, muestra y modelo de embedding en <code>params.yaml</code>. <code>dvc.lock</code> fija los hashes que permiten reproducir cada tabla del informe.</p>
+</section>
+</section>
+<section id="sec-quiebre" class="level1" data-number="12">
+<h1 data-number="12"><span class="header-section-number">12</span> El quiebre de 2026</h1>
+<p>Al empezar el análisis, la explicación de trabajo para las cifras raras de 2026 era la obvia: <strong>censura</strong>, es decir, reclamos recientes cuyo desenlace todavía no se ha registrado. El dato descarta esa explicación y deja algo más incómodo en su lugar.</p>
+<p><strong>Evidencia 1 — el campo de censura está vacío.</strong> De los 107,158 reclamos de 2026, <strong>exactamente uno</strong> aparece marcado como <code>In progress</code>. Si el problema fuera que los casos siguen abiertos, ese contador sería enorme. No lo es.</p>
+<p><strong>Evidencia 2 — el volumen no decae, se quiebra.</strong> Diciembre de 2025 cierra con 56,510 reclamos y enero de 2026 con 22,211: una caída del 61% en un mes. Después el volumen se queda en una meseta de entre 10 mil y 22 mil durante seis meses. Un rezago de publicación produce una cola que se desvanece en los últimos uno o dos meses, no un escalón seguido de una meseta estable.</p>
+<p><strong>Evidencia 3 — cambia la composición, no solo la cantidad.</strong> Es el argumento decisivo. En 2025 la familia <em>credit reporting</em> representaba el 75% de los reclamos del año; en 2026 cae al 4%, mientras <em>debt collection</em> sube de 8% a 34% y <em>checking or savings account</em> de 4% a 18% (<a href="#fig-deriva" class="quarto-xref">Figura&nbsp;2</a>). Un rezago de publicación retrasa reclamos de todos los tipos por igual y <strong>conserva la mezcla</strong>. Aquí la mezcla se da vuelta por completo.</p>
+<p><strong>Conclusión.</strong> Las tres piezas apuntan a lo mismo: 2026 no es 2025 con menos datos, es un <strong>proceso generador distinto</strong>. El dato por sí solo no dice por qué —eso exige verificar qué cambió en la operación o en la política de publicación del CFPB durante ese periodo, y es una pregunta abierta que el equipo debe resolver con fuentes externas, no con el parquet.</p>
+<p><strong>Consecuencia operativa, que ya se aplicó:</strong> el régimen de entrenamiento se cierra en <strong>diciembre de 2025</strong>, y la división temporal se reacomoda íntegramente dentro de él — entrenamiento 2023-01 a 2024-12, validación 2025-01 a 2025-06, prueba 2025-07 a 2025-12. La propuesta original usaba 2026 como periodo de prueba; hacerlo habría significado medir el modelo contra una distribución que no es la que verá en producción, y habría producido un número de evaluación pesimista y sin sentido.</p>
+</section>
+<section id="sec-decisiones" class="level1" data-number="13">
+<h1 data-number="13"><span class="header-section-number">13</span> Decisiones de diseño registradas</h1>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>#</th>
+<th>Decisión</th>
+<th>Consecuencia</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>D1</strong></td>
+<td>El objetivo prometido no existe; se reemplaza por «la empresa compensó», declarado como <em>proxy</em></td>
+<td>cambia la promesa de la propuesta</td>
+</tr>
+<tr class="even">
+<td><strong>D1b</strong></td>
+<td>Regla de etiquetado caso por caso; <code>In progress</code> y nulos se excluyen</td>
+<td>evita ruido dirigido en la etiqueta</td>
+</tr>
+<tr class="odd">
+<td><strong>D2</strong></td>
+<td>Contrato F0 / F1 / FX de disponibilidad temporal</td>
+<td>ninguna columna post-respuesta puede ser variable predictora</td>
+</tr>
+<tr class="even">
+<td><strong>D3</strong></td>
+<td>Ventana de entrenamiento restringida a 2023-2025</td>
+<td>descarta historia que ya no describe el fenómeno, y excluye el régimen distinto de 2026</td>
+</tr>
+<tr class="odd">
+<td><strong>D4</strong></td>
+<td>División temporal y por grupo de narrativa, nunca aleatoria; prueba en 2025-07 a 2025-12</td>
+<td>las plantillas repetidas no pueden cruzar de entrenamiento a prueba, y la evaluación ocurre dentro de un régimen estable</td>
+</tr>
+<tr class="even">
+<td><strong>D5</strong></td>
+<td>Muestra de desarrollo de 300 mil filas estratificada</td>
+<td>itera en minutos, no en horas</td>
+</tr>
+<tr class="odd">
+<td><strong>D6</strong></td>
+<td>R0 TF-IDF y R1 local son las únicas representaciones predictivas; el LLM queda después de T1-T4</td>
+<td>el agente puede cambiar sin regenerar features y no contamina la evaluación</td>
+</tr>
+</tbody>
+</table>
+<p>La justificación completa de cada una está en <code>docs/plan-eda-y-transformacion.md</code>.</p>
+</section>
+<section id="sec-riesgos" class="level1" data-number="14">
+<h1 data-number="14"><span class="header-section-number">14</span> Riesgos abiertos</h1>
+<table class="table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Riesgo</th>
+<th>Estado</th>
+<th>Mitigación</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>El objetivo de la propuesta no existe</td>
+<td><strong>confirmado</strong></td>
+<td>D1: se usa un proxy y se declara como tal</td>
+</tr>
+<tr class="even">
+<td>Empresa como atajo del modelo</td>
+<td><strong>abierto</strong></td>
+<td>tres burós concentran el 72% del régimen; E14 debe repetirse con los nombres enmascarados (<a href="#sec-empresas" class="quarto-xref">Sección&nbsp;8.1</a>)</td>
+</tr>
+<tr class="odd">
+<td>PII residual en la narrativa</td>
+<td><strong>medido</strong>, mitigación obligatoria</td>
+<td>menos del 1% de los textos, pero no cero: segundo enmascarado antes de cualquier llamada externa (<a href="#sec-contenido" class="quarto-xref">Sección&nbsp;7.2</a>)</td>
+</tr>
+<tr class="even">
+<td>El quiebre de 2026 no tiene causa identificada</td>
+<td><strong>abierto</strong>, ya mitigado en el diseño</td>
+<td>2026 excluido; la prueba se mueve a 2025-07/2025-12. Falta confirmar la causa con fuentes externas al dataset</td>
+</tr>
+<tr class="odd">
+<td>Fuga por columnas post-respuesta</td>
+<td>contrato definido; prueba pendiente</td>
+<td>F5 debe añadir una prueba automática que falle si aparece FX</td>
+</tr>
+<tr class="even">
+<td>Memorización de plantillas</td>
+<td>cuantificada; implementación pendiente</td>
+<td>hash, evaluación operacional y evaluación purgada; <strong>52% de las filas del régimen 2023-2025</strong> comparte texto con otra (<a href="#sec-plantillas" class="quarto-xref">Sección&nbsp;7.1</a>)</td>
+</tr>
+<tr class="odd">
+<td>Deriva de etiquetas y de tasa base</td>
+<td>cuantificado</td>
+<td>régimen 2023+, mapa canónico versionado, prueba de regresión</td>
+</tr>
+<tr class="even">
+<td>Sesgo por perfil del consumidor</td>
+<td><strong>medido</strong>, con un residuo abierto</td>
+<td>la mezcla de productos explica ~4/5 de la brecha de <code>Older American</code>, pero no toda; <code>State</code> se explica casi entero (<a href="#sec-sesgo" class="quarto-xref">Sección&nbsp;10</a>). Cortes obligatorios en la evaluación de la Fase 6</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sec-proximos" class="level1" data-number="15">
+<h1 data-number="15"><span class="header-section-number">15</span> Próximos pasos</h1>
+<ol type="1">
+<li>Crear el pipeline DVC de tipado, hash/repetidos y muestra temporal de train.</li>
+<li>Generar R1 local una vez por hash y completar E14 sin mirar validación/test.</li>
+<li>Congelar la taxonomía y construir los splits temporal, operacional y purgado.</li>
+<li>Completar E12/E13 sobre las mismas filas y crear matrices R0/R1 con auditoría FX.</li>
+<li>Incorporar sus artefactos a este informe y renderizar el entregable EDA + features.</li>
+<li>Confirmar con fuentes externas qué originó el quiebre de 2026 (<a href="#sec-quiebre" class="quarto-xref">Sección&nbsp;12</a>); mientras tanto se conserva como stress test OOD separado.</li>
+</ol>
+</section>
+
+
+
+<div id="quarto-appendix" class="default"><section id="sec-repro" class="level1 appendix" data-number="16"><h2 class="anchored quarto-appendix-heading"><span class="header-section-number">16</span> Reproducibilidad</h2><div class="quarto-appendix-contents">
+
+<p>Todo el contenido de este informe se regenera desde el dato crudo con:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> sync</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="ex">dvc</span> pull                              <span class="co"># descarga el dataset versionado</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.data.profile        <span class="co"># E1</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.data.agregados      <span class="co"># D1b, E2, E3, E4, E7, E8, E9</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.data.narrativa      <span class="co"># E5, E6  (dos pasadas por la narrativa)</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.evaluation.slices   <span class="co"># E11</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Cuando las etapas pendientes estén implementadas:</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># uv run dvc repro                        # F2-F5, E12-E14 y artefactos</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run quarto render reports/informe     <span class="co"># este documento</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<p>El informe lee exclusivamente los CSV de <code>reports/artefactos/</code>, nunca el parquet de 1.6 GB. Las secciones sin artéfacto se marcan como pendientes en lugar de fallar, así que el documento siempre compila.</p>
+</div></section><section id="nota-sobre-uso-de-ia-generativa" class="level1 appendix unnumbered"><h2 class="anchored quarto-appendix-heading">Nota sobre uso de IA generativa</h2><div class="quarto-appendix-contents">
+
+<p>Se utilizaron herramientas de IA generativa como apoyo en la redacción de código y de este documento. Todas las cifras presentadas se calcularon sobre el dato real mediante el código versionado en <code>src/</code>, y son verificables ejecutando los comandos de <a href="#sec-repro" class="quarto-xref">Sección&nbsp;16</a>. Las decisiones de diseño y su justificación fueron revisadas por el equipo.</p>
+</div></section></div></main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copiado");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copiado");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

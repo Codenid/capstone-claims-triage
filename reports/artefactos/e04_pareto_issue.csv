@@ -1,0 +1,301 @@
+nivel,regimen,rango,etiqueta,n,pct,pct_acum
+producto,historico,1,Credit reporting or other personal consumer reports,1671841,43.5695,43.5695
+producto,historico,2,"Credit reporting, credit repair services, or other personal consumer reports",807499,21.0441,64.6135
+producto,historico,3,Debt collection,441051,11.4941,76.1077
+producto,historico,4,Checking or savings account,186789,4.8679,80.9755
+producto,historico,5,Mortgage,146301,3.8127,84.7882
+producto,historico,6,Credit card,126827,3.3052,88.0935
+producto,historico,7,"Money transfer, virtual currency, or money service",120644,3.1441,91.2375
+producto,historico,8,Credit card or prepaid card,108683,2.8324,94.0699
+producto,historico,9,Student loan,62620,1.6319,95.7018
+producto,historico,10,Vehicle loan or lease,53005,1.3814,97.0832
+producto,historico,11,Credit reporting,31587,0.8232,97.9064
+producto,historico,12,"Payday loan, title loan, personal loan, or advance loan",18202,0.4744,98.3807
+producto,historico,13,"Payday loan, title loan, or personal loan",17219,0.4487,98.8295
+producto,historico,14,Bank account or service,14883,0.3879,99.2173
+producto,historico,15,Prepaid card,11581,0.3018,99.5191
+producto,historico,16,Consumer Loan,9458,0.2465,99.7656
+producto,historico,17,Debt or credit management,5444,0.1419,99.9075
+producto,historico,18,Payday loan,1745,0.0455,99.953
+producto,historico,19,Money transfers,1497,0.039,99.992
+producto,historico,20,Other financial service,292,0.0076,99.9996
+producto,historico,21,Virtual currency,16,0.0004,100.0
+issue,historico,1,Incorrect information on your report,1205002,31.4033,31.4033
+issue,historico,2,Improper use of your report,664039,17.3054,48.7087
+issue,historico,3,Problem with a company's investigation into an existing problem,349237,9.1014,57.8101
+issue,historico,4,Problem with a credit reporting company's investigation into an existing problem,250448,6.5269,64.3369
+issue,historico,5,Attempts to collect debt not owed,189403,4.936,69.2729
+issue,historico,6,Managing an account,101759,2.6519,71.9248
+issue,historico,7,Written notification about debt,88658,2.3105,74.2353
+issue,historico,8,Trouble during payment process,56347,1.4684,75.7038
+issue,historico,9,Other transaction problem,54759,1.4271,77.1308
+issue,historico,10,Problem with a purchase shown on your statement,54510,1.4206,78.5514
+issue,historico,11,False statements or representation,49088,1.2793,79.8307
+issue,historico,12,Took or threatened to take negative or legal action,37419,0.9752,80.8058
+issue,historico,13,Dealing with your lender or servicer,34914,0.9099,81.7157
+issue,historico,14,Communication tactics,34074,0.888,82.6037
+issue,historico,15,Fraud or scam,28291,0.7373,83.341
+issue,historico,16,Struggling to pay mortgage,27119,0.7067,84.0478
+issue,historico,17,Closing an account,25820,0.6729,84.7206
+issue,historico,18,"Other features, terms, or problems",25225,0.6574,85.378
+issue,historico,19,Problem with a lender or other company charging your account,23265,0.6063,85.9843
+issue,historico,20,Fees or interest,23250,0.6059,86.5902
+issue,historico,21,Getting a credit card,22639,0.59,87.1802
+issue,historico,22,Managing the loan or lease,21800,0.5681,87.7484
+issue,historico,23,Incorrect information on credit report,21216,0.5529,88.3013
+issue,historico,24,Problem when making payments,19975,0.5206,88.8218
+issue,historico,25,Unable to get your credit report or credit score,19225,0.501,89.3228
+issue,historico,26,Problem caused by your funds being low,18621,0.4853,89.8081
+issue,historico,27,Cont'd attempts collect debt not owed,17406,0.4536,90.2617
+issue,historico,28,Opening an account,16330,0.4256,90.6873
+issue,historico,29,Problem with fraud alerts or security freezes,16022,0.4175,91.1049
+issue,historico,30,Closing your account,15692,0.4089,91.5138
+issue,historico,31,Applying for a mortgage or refinancing an existing mortgage,14965,0.39,91.9038
+issue,historico,32,"Loan servicing, payments, escrow account",14719,0.3836,92.2874
+issue,historico,33,Credit monitoring or identity theft protection services,14044,0.366,92.6534
+issue,historico,34,"Advertising and marketing, including promotional offers",11356,0.2959,92.9493
+issue,historico,35,Closing on a mortgage,10862,0.2831,93.2324
+issue,historico,36,"Loan modification,collection,foreclosure",10788,0.2811,93.5136
+issue,historico,37,Struggling to pay your loan,10321,0.269,93.7825
+issue,historico,38,Struggling to repay your loan,10126,0.2639,94.0464
+issue,historico,39,Unauthorized transactions or other transaction problem,9580,0.2497,94.2961
+issue,historico,40,Problems at the end of the loan or lease,9176,0.2391,94.5352
+issue,historico,41,Trouble using your card,9128,0.2379,94.7731
+issue,historico,42,Charged fees or interest you didn't expect,9049,0.2358,95.0089
+issue,historico,43,Dealing with my lender or servicer,7904,0.206,95.2149
+issue,historico,44,Disclosure verification of debt,7587,0.1977,95.4126
+issue,historico,45,Money was not available when promised,7500,0.1955,95.6081
+issue,historico,46,Getting a loan or lease,7196,0.1875,95.7956
+issue,historico,47,Threatened to contact someone or share information improperly,7176,0.187,95.9826
+issue,historico,48,Trouble using the card,7114,0.1854,96.168
+issue,historico,49,Repossession,6958,0.1813,96.3494
+issue,historico,50,"Account opening, closing, or management",6345,0.1654,96.5147
+issue,historico,51,Problem with a purchase or transfer,5877,0.1532,96.6679
+issue,historico,52,"Managing, opening, or closing your mobile wallet account",5792,0.1509,96.8188
+issue,historico,53,Credit reporting company's investigation,5663,0.1476,96.9664
+issue,historico,54,Unexpected or other fees,5176,0.1349,97.1013
+issue,historico,55,Electronic communications,4417,0.1151,97.2164
+issue,historico,56,Trouble accessing funds in your mobile or digital wallet,4199,0.1094,97.3258
+issue,historico,57,Confusing or missing disclosures,4164,0.1085,97.4343
+issue,historico,58,"Application, originator, mortgage broker",3744,0.0976,97.5319
+issue,historico,59,Other service problem,3498,0.0912,97.6231
+issue,historico,60,Problem with a company's investigation into an existing issue,3484,0.0908,97.7139
+issue,historico,61,Deposits and withdrawals,3425,0.0893,97.8031
+issue,historico,62,Problem with the payoff process at the end of the loan,3232,0.0842,97.8874
+issue,historico,63,Problem getting a card or closing an account,3132,0.0816,97.969
+issue,historico,64,Billing disputes,3102,0.0808,98.0498
+issue,historico,65,Can't repay my loan,3057,0.0797,98.1295
+issue,historico,66,Struggling to pay your bill,3011,0.0785,98.208
+issue,historico,67,Taking/threatening an illegal action,2915,0.076,98.2839
+issue,historico,68,Improper contact or sharing of info,2908,0.0758,98.3597
+issue,historico,69,Problem with customer service,2817,0.0734,98.4331
+issue,historico,70,Getting the loan,2740,0.0714,98.5045
+issue,historico,71,Problems when you are unable to pay,2451,0.0639,98.5684
+issue,historico,72,Unable to get credit report/credit score,2252,0.0587,98.6271
+issue,historico,73,Settlement process and costs,2248,0.0586,98.6857
+issue,historico,74,Problem with additional add-on products or services,2165,0.0564,98.7421
+issue,historico,75,Problems caused by my funds being low,2084,0.0543,98.7964
+issue,historico,76,Confusing or misleading advertising or marketing,1956,0.051,98.8474
+issue,historico,77,Other,1940,0.0506,98.8979
+issue,historico,78,Identity theft / Fraud / Embezzlement,1722,0.0449,98.9428
+issue,historico,79,Using a debit or ATM card,1597,0.0416,98.9844
+issue,historico,80,Taking out the loan or lease,1559,0.0406,99.0251
+issue,historico,81,Improper use of my credit report,1520,0.0396,99.0647
+issue,historico,82,Didn't provide services promised,1485,0.0387,99.1034
+issue,historico,83,Closing/Cancelling account,1440,0.0375,99.1409
+issue,historico,84,"Making/receiving payments, sending money",1432,0.0373,99.1782
+issue,historico,85,Getting a line of credit,1428,0.0372,99.2154
+issue,historico,86,Getting a loan,1327,0.0346,99.25
+issue,historico,87,Identity theft protection or other monitoring services,1297,0.0338,99.2838
+issue,historico,88,Credit decision / Underwriting,1288,0.0336,99.3174
+issue,historico,89,Wrong amount charged or received,1116,0.0291,99.3465
+issue,historico,90,Customer service / Customer relations,973,0.0254,99.3718
+issue,historico,91,Credit monitoring or identity protection,936,0.0244,99.3962
+issue,historico,92,Rewards,900,0.0235,99.4197
+issue,historico,93,Charged upfront or unexpected fees,886,0.0231,99.4428
+issue,historico,94,Charged fees or interest I didn't expect,852,0.0222,99.465
+issue,historico,95,Received a loan you didn't apply for,847,0.0221,99.487
+issue,historico,96,Delinquent account,834,0.0217,99.5088
+issue,historico,97,Advertising and marketing,830,0.0216,99.5304
+issue,historico,98,APR or interest rate,785,0.0205,99.5509
+issue,historico,99,Late fee,771,0.0201,99.571
+issue,historico,100,Can't contact lender or servicer,730,0.019,99.59
+issue,historico,101,Credit card protection / Debt protection,712,0.0186,99.6085
+issue,historico,102,Transaction issue,681,0.0177,99.6263
+issue,historico,103,Shopping for a loan or lease,661,0.0172,99.6435
+issue,historico,104,Can't stop withdrawals from your bank account,647,0.0169,99.6604
+issue,historico,105,Problem adding money,645,0.0168,99.6772
+issue,historico,106,Unauthorized withdrawals or charges,620,0.0162,99.6933
+issue,historico,107,Billing statement,620,0.0162,99.7095
+issue,historico,108,Unauthorized transactions/trans. issues,543,0.0142,99.7237
+issue,historico,109,Payoff process,513,0.0134,99.737
+issue,historico,110,Loan payment wasn't credited to your account,511,0.0133,99.7503
+issue,historico,111,Credit determination,506,0.0132,99.7635
+issue,historico,112,Other fee,502,0.0131,99.7766
+issue,historico,113,Unsolicited issuance of credit card,491,0.0128,99.7894
+issue,historico,114,Other transaction issues,471,0.0123,99.8017
+issue,historico,115,Lost or stolen money order,471,0.0123,99.814
+issue,historico,116,Vehicle was repossessed or sold the vehicle,457,0.0119,99.8259
+issue,historico,117,Credit line increase/decrease,451,0.0118,99.8376
+issue,historico,118,Money was taken from your bank account on the wrong day or for the wrong amount,450,0.0117,99.8493
+issue,historico,119,"Managing, opening, or closing account",386,0.0101,99.8594
+issue,historico,120,Can't contact lender,372,0.0097,99.8691
+issue,historico,121,Advertising,360,0.0094,99.8785
+issue,historico,122,"Was approved for a loan, but didn't receive the money",345,0.009,99.8875
+issue,historico,123,Balance transfer,298,0.0078,99.8952
+issue,historico,124,Lost or stolen check,260,0.0068,99.902
+issue,historico,125,Received a loan I didn't apply for,209,0.0054,99.9075
+issue,historico,126,Excessive fees,183,0.0048,99.9122
+issue,historico,127,Problem with cash advance,178,0.0046,99.9169
+issue,historico,128,Issues with repayment,176,0.0046,99.9215
+issue,historico,129,Can't stop charges to bank account,166,0.0043,99.9258
+issue,historico,130,Payment to acct not credited,151,0.0039,99.9297
+issue,historico,131,Credit limit changed,150,0.0039,99.9336
+issue,historico,132,Other service issues,138,0.0036,99.9372
+issue,historico,133,"Overdraft, savings, or rewards features",135,0.0035,99.9407
+issue,historico,134,Vehicle was damaged or destroyed the vehicle,126,0.0033,99.944
+issue,historico,135,Issue where my lender is my school,116,0.003,99.947
+issue,historico,136,Issue with income share agreement,110,0.0029,99.9499
+issue,historico,137,Application processing delay,107,0.0028,99.9527
+issue,historico,138,Problem with overdraft,106,0.0028,99.9555
+issue,historico,139,Charged bank acct wrong day or amt,106,0.0028,99.9582
+issue,historico,140,Privacy,105,0.0027,99.961
+issue,historico,141,Problems receiving the advance,104,0.0027,99.9637
+issue,historico,142,Incorrect exchange rate,102,0.0027,99.9663
+issue,historico,143,Sale of account,98,0.0026,99.9689
+issue,historico,144,Bankruptcy,96,0.0025,99.9714
+issue,historico,145,Unexpected fees,93,0.0024,99.9738
+issue,historico,146,Adding money,92,0.0024,99.9762
+issue,historico,147,Forbearance / Workout plans,85,0.0022,99.9784
+issue,historico,148,Applied for loan/did not receive money,85,0.0022,99.9806
+issue,historico,149,Arbitration,83,0.0022,99.9828
+issue,historico,150,Fees,77,0.002,99.9848
+issue,historico,151,"Was approved for a loan, but didn't receive money",72,0.0019,99.9867
+issue,historico,152,Incorrect/missing disclosures or info,58,0.0015,99.9882
+issue,historico,153,Customer service/Customer relations,55,0.0014,99.9896
+issue,historico,154,Balance transfer fee,51,0.0013,99.991
+issue,historico,155,Cash advance,44,0.0011,99.9921
+issue,historico,156,Cash advance fee,41,0.0011,99.9932
+issue,historico,157,Convenience checks,37,0.001,99.9941
+issue,historico,158,Overlimit fee,31,0.0008,99.9949
+issue,historico,159,Lender repossessed or sold the vehicle,31,0.0008,99.9958
+issue,historico,160,"Advertising, marketing or disclosures",25,0.0007,99.9964
+issue,historico,161,Unexpected/Other fees,22,0.0006,99.997
+issue,historico,162,Property was sold,17,0.0004,99.9974
+issue,historico,163,Account terms and changes,17,0.0004,99.9979
+issue,historico,164,"Overdraft, savings or rewards features",17,0.0004,99.9983
+issue,historico,165,Managing the line of credit,16,0.0004,99.9987
+issue,historico,166,Disclosures,13,0.0003,99.9991
+issue,historico,167,Shopping for a line of credit,10,0.0003,99.9993
+issue,historico,168,Property was damaged or destroyed property,9,0.0002,99.9996
+issue,historico,169,Lost or stolen refund,7,0.0002,99.9997
+issue,historico,170,Problem with an overdraft,4,0.0001,99.9998
+issue,historico,171,Lender sold the property,3,0.0001,99.9999
+issue,historico,172,Lender damaged or destroyed vehicle,2,0.0001,100.0
+issue,historico,173,Lender damaged or destroyed property,1,0.0,100.0
+producto,2023_2025,1,Credit reporting or other personal consumer reports,1667485,66.0691,66.0691
+producto,2023_2025,2,"Credit reporting, credit repair services, or other personal consumer reports",224699,8.903,74.9721
+producto,2023_2025,3,Debt collection,206508,8.1823,83.1544
+producto,2023_2025,4,Checking or savings account,108949,4.3168,87.4712
+producto,2023_2025,5,Credit card,89873,3.5609,91.0321
+producto,2023_2025,6,"Money transfer, virtual currency, or money service",83560,3.3108,94.3429
+producto,2023_2025,7,Mortgage,39121,1.5501,95.893
+producto,2023_2025,8,Vehicle loan or lease,26598,1.0539,96.9468
+producto,2023_2025,9,Student loan,25062,0.993,97.9399
+producto,2023_2025,10,Credit card or prepaid card,21283,0.8433,98.7831
+producto,2023_2025,11,"Payday loan, title loan, personal loan, or advance loan",14509,0.5749,99.358
+producto,2023_2025,12,Prepaid card,8872,0.3515,99.7095
+producto,2023_2025,13,Debt or credit management,4505,0.1785,99.888
+producto,2023_2025,14,"Payday loan, title loan, or personal loan",2826,0.112,100.0
+issue,2023_2025,1,Incorrect information on your report,928208,36.7775,36.7775
+issue,2023_2025,2,Improper use of your report,542076,21.4781,58.2556
+issue,2023_2025,3,Problem with a company's investigation into an existing problem,347557,13.7709,72.0265
+issue,2023_2025,4,Attempts to collect debt not owed,95001,3.7641,75.7906
+issue,2023_2025,5,Problem with a credit reporting company's investigation into an existing problem,71769,2.8436,78.6343
+issue,2023_2025,6,Managing an account,58403,2.314,80.9483
+issue,2023_2025,7,Written notification about debt,52224,2.0692,83.0175
+issue,2023_2025,8,Other transaction problem,48557,1.9239,84.9415
+issue,2023_2025,9,Problem with a purchase shown on your statement,26643,1.0556,85.9971
+issue,2023_2025,10,False statements or representation,23988,0.9505,86.9476
+issue,2023_2025,11,Trouble during payment process,21012,0.8325,87.7801
+issue,2023_2025,12,Took or threatened to take negative or legal action,17335,0.6868,88.4669
+issue,2023_2025,13,Dealing with your lender or servicer,17160,0.6799,89.1469
+issue,2023_2025,14,Closing an account,14754,0.5846,89.7314
+issue,2023_2025,15,Fraud or scam,14043,0.5564,90.2879
+issue,2023_2025,16,Problem caused by your funds being low,13588,0.5384,90.8262
+issue,2023_2025,17,Problem with a lender or other company charging your account,13368,0.5297,91.3559
+issue,2023_2025,18,Getting a credit card,12679,0.5024,91.8583
+issue,2023_2025,19,"Other features, terms, or problems",12315,0.4879,92.3462
+issue,2023_2025,20,Fees or interest,11581,0.4589,92.8051
+issue,2023_2025,21,Communication tactics,11437,0.4532,93.2582
+issue,2023_2025,22,Unable to get your credit report or credit score,10503,0.4161,93.6744
+issue,2023_2025,23,Problem with fraud alerts or security freezes,9514,0.377,94.0514
+issue,2023_2025,24,Struggling to pay mortgage,9097,0.3604,94.4118
+issue,2023_2025,25,Credit monitoring or identity theft protection services,8889,0.3522,94.764
+issue,2023_2025,26,Problem when making payments,8693,0.3444,95.1084
+issue,2023_2025,27,Managing the loan or lease,8488,0.3363,95.4447
+issue,2023_2025,28,Opening an account,8287,0.3283,95.7731
+issue,2023_2025,29,Closing your account,7983,0.3163,96.0894
+issue,2023_2025,30,Repossession,5581,0.2211,96.3105
+issue,2023_2025,31,Unauthorized transactions or other transaction problem,5470,0.2167,96.5273
+issue,2023_2025,32,"Advertising and marketing, including promotional offers",5229,0.2072,96.7344
+issue,2023_2025,33,Trouble using the card,4639,0.1838,96.9182
+issue,2023_2025,34,Charged fees or interest you didn't expect,4537,0.1798,97.098
+issue,2023_2025,35,Struggling to repay your loan,4480,0.1775,97.2755
+issue,2023_2025,36,Trouble using your card,4475,0.1773,97.4528
+issue,2023_2025,37,Applying for a mortgage or refinancing an existing mortgage,4238,0.1679,97.6207
+issue,2023_2025,38,Struggling to pay your loan,3977,0.1576,97.7783
+issue,2023_2025,39,Problems at the end of the loan or lease,3944,0.1563,97.9346
+issue,2023_2025,40,Getting a loan or lease,3779,0.1497,98.0843
+issue,2023_2025,41,Electronic communications,3598,0.1426,98.2269
+issue,2023_2025,42,Trouble accessing funds in your mobile or digital wallet,3309,0.1311,98.358
+issue,2023_2025,43,Money was not available when promised,3285,0.1302,98.4881
+issue,2023_2025,44,Closing on a mortgage,3140,0.1244,98.6126
+issue,2023_2025,45,Threatened to contact someone or share information improperly,2925,0.1159,98.7285
+issue,2023_2025,46,Problem with a purchase or transfer,2851,0.113,98.8414
+issue,2023_2025,47,Confusing or missing disclosures,2693,0.1067,98.9481
+issue,2023_2025,48,Unexpected or other fees,2383,0.0944,99.0425
+issue,2023_2025,49,"Managing, opening, or closing your mobile wallet account",2144,0.0849,99.1275
+issue,2023_2025,50,Problem with a company's investigation into an existing issue,2107,0.0835,99.211
+issue,2023_2025,51,Other service problem,2051,0.0813,99.2922
+issue,2023_2025,52,Problem with customer service,1578,0.0625,99.3548
+issue,2023_2025,53,Problem with the payoff process at the end of the loan,1472,0.0583,99.4131
+issue,2023_2025,54,Problem getting a card or closing an account,1380,0.0547,99.4678
+issue,2023_2025,55,Struggling to pay your bill,1348,0.0534,99.5212
+issue,2023_2025,56,Getting the loan,1322,0.0524,99.5735
+issue,2023_2025,57,Problem with additional add-on products or services,1288,0.051,99.6246
+issue,2023_2025,58,Didn't provide services promised,1247,0.0494,99.674
+issue,2023_2025,59,Confusing or misleading advertising or marketing,1108,0.0439,99.7179
+issue,2023_2025,60,Charged upfront or unexpected fees,745,0.0295,99.7474
+issue,2023_2025,61,Identity theft protection or other monitoring services,709,0.0281,99.7755
+issue,2023_2025,62,Getting a line of credit,676,0.0268,99.8023
+issue,2023_2025,63,Getting a loan,558,0.0221,99.8244
+issue,2023_2025,64,Unauthorized withdrawals or charges,502,0.0199,99.8443
+issue,2023_2025,65,Wrong amount charged or received,496,0.0197,99.8639
+issue,2023_2025,66,Received a loan you didn't apply for,396,0.0157,99.8796
+issue,2023_2025,67,Can't stop withdrawals from your bank account,304,0.012,99.8917
+issue,2023_2025,68,Lost or stolen money order,292,0.0116,99.9032
+issue,2023_2025,69,Can't contact lender or servicer,281,0.0111,99.9144
+issue,2023_2025,70,Vehicle was repossessed or sold the vehicle,229,0.0091,99.9235
+issue,2023_2025,71,Problem adding money,214,0.0085,99.9319
+issue,2023_2025,72,Loan payment wasn't credited to your account,209,0.0083,99.9402
+issue,2023_2025,73,Money was taken from your bank account on the wrong day or for the wrong amount,207,0.0082,99.9484
+issue,2023_2025,74,"Was approved for a loan, but didn't receive the money",164,0.0065,99.9549
+issue,2023_2025,75,Advertising,136,0.0054,99.9603
+issue,2023_2025,76,Issues with repayment,136,0.0054,99.9657
+issue,2023_2025,77,Issue where my lender is my school,100,0.004,99.9696
+issue,2023_2025,78,Issue with income share agreement,97,0.0038,99.9735
+issue,2023_2025,79,Problem with cash advance,87,0.0034,99.9769
+issue,2023_2025,80,Problems receiving the advance,82,0.0032,99.9802
+issue,2023_2025,81,Unexpected fees,76,0.003,99.9832
+issue,2023_2025,82,"Overdraft, savings, or rewards features",72,0.0029,99.9861
+issue,2023_2025,83,Credit limit changed,57,0.0023,99.9883
+issue,2023_2025,84,Vehicle was damaged or destroyed the vehicle,57,0.0023,99.9906
+issue,2023_2025,85,Lost or stolen check,53,0.0021,99.9927
+issue,2023_2025,86,Incorrect exchange rate,50,0.002,99.9947
+issue,2023_2025,87,Problem with overdraft,48,0.0019,99.9966
+issue,2023_2025,88,Excessive fees,34,0.0013,99.9979
+issue,2023_2025,89,"Was approved for a loan, but didn't receive money",33,0.0013,99.9992
+issue,2023_2025,90,Property was sold,11,0.0004,99.9996
+issue,2023_2025,91,Lost or stolen refund,6,0.0002,99.9999
+issue,2023_2025,92,Property was damaged or destroyed property,3,0.0001,100.0

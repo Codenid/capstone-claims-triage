@@ -1,0 +1,7 @@
+project:
+  type: default
+  render:
+    - informe.qmd
+
+execute:
+  freeze: auto

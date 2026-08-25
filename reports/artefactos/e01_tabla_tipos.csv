@@ -1,0 +1,17 @@
+columna,tier,tipo_crudo,n_no_nulos,pct_nulos,n_unicos,pct_unicos,valor_top,freq_top,pct_top,long_media,long_p50,long_p99,mb_arrow
+Date received,F0,large_string,3837184,0.0,4138,0.11,2025-01-17,20524.0,0.53,10.0,10,10,65.9
+Consumer complaint narrative,F0,large_string,3837184,0.0,2583683,67.33,,,,1022.4,669,5873,3770.7
+Company,F0,large_string,3837184,0.0,6831,0.18,,,,26.5,30,38,126.3
+ZIP code,F0,large_string,3836894,0.01,6938,0.18,,,,5.0,5,5,47.6
+State,F0,large_string,3823466,0.36,63,0.0,TX,485539.0,12.7,2.0,2,2,37.0
+Tags,F0,large_string,367632,90.42,3,0.0,Servicemember,240176.0,65.33,14.5,13,29,34.8
+Product,F1,large_string,3837184,0.0,21,0.0,Credit reporting or other personal consumer reports,1671841.0,43.57,45.5,51,76,195.9
+Issue,F1,large_string,3837184,0.0,173,0.0,Incorrect information on your report,1205002.0,31.4,38.5,36,80,170.0
+Sub-product,F1,large_string,3784979,1.36,85,0.0,Credit reporting,2457199.0,64.92,17.8,16,42,93.6
+Sub-issue,F1,large_string,3501916,8.74,266,0.01,Information belongs to someone else,697613.0,19.92,40.0,36,85,163.3
+Date sent to company,FX,large_string,3837184,0.0,4120,0.11,2025-01-17,16066.0,0.42,10.0,10,10,65.9
+Company response to consumer,FX,large_string,3837175,0.0,6,0.0,Closed with explanation,2548866.0,66.43,25.5,23,31,122.8
+Timely response?,FX,large_string,3837184,0.0,2,0.0,Yes,3794569.0,98.89,3.0,3,3,40.2
+Company public response,FX,large_string,2041763,46.79,11,0.0,Company has responded to the consumer and the CFPB and choos,1877700.0,91.96,93.0,95,95,210.7
+Complaint ID,ID,large_string,3837184,0.0,3837184,100.0,,,,7.4,7,8,56.4
+Submitted via,FUERA,large_string,3837184,0.0,1,0.0,Web,3837184.0,100.0,3.0,3,3,40.3

@@ -1,0 +1,135 @@
+producto,anio,n,pct_del_anio
+Debt collection,2015,14546,26.58114503956289
+Mortgage,2015,12301,22.478665277853917
+Credit reporting,2015,10258,18.74531732543903
+Credit card,2015,6243,11.408365769420536
+Bank account or service,2015,4559,8.331049101840177
+Consumer Loan,2015,2969,5.425506642545182
+Student loan,2015,1805,3.298430276117903
+Prepaid card,2015,772,1.4107413701734188
+Payday loan,2015,614,1.1220145094384446
+Money transfers,2015,562,1.0269904793231366
+Other financial service,2015,87,0.1589825119236884
+Virtual currency,2015,7,0.012791696361676078
+Debt collection,2016,18676,24.015636653550395
+Mortgage,2016,15764,20.271069619113753
+Credit reporting,2016,15081,19.392793765913122
+Credit card,2016,9433,12.129979682637657
+Bank account or service,2016,7755,9.972224365403903
+Consumer Loan,2016,4666,6.000051436360363
+Student loan,2016,4178,5.372527839930046
+Payday loan,2016,865,1.1123112928529177
+Money transfers,2016,711,0.914281305454826
+Prepaid card,2016,492,0.6326672324666307
+Other financial service,2016,139,0.17874135226191395
+Virtual currency,2016,6,0.007715454054471106
+"Credit reporting, credit repair services, or other personal consumer reports",2017,36301,31.48095151373243
+Debt collection,2017,23571,20.44124151208471
+Mortgage,2017,13152,11.405676821812316
+Student loan,2017,9640,8.36000034688798
+Credit card or prepaid card,2017,7799,6.763448413421096
+Credit reporting,2017,6248,5.4183902663232475
+Checking or savings account,2017,4752,4.121029216640216
+Credit card,2017,3161,2.741282271422501
+Bank account or service,2017,2569,2.227888059248467
+Vehicle loan or lease,2017,2047,1.775199243784201
+"Money transfer, virtual currency, or money service",2017,1870,1.6217013121037889
+Consumer Loan,2017,1823,1.580941974312945
+"Payday loan, title loan, or personal loan",2017,1633,1.416170183243576
+Payday loan,2017,266,0.2306805074971165
+Money transfers,2017,224,0.194257269471256
+Prepaid card,2017,186,0.16130291125738222
+Other financial service,2017,66,0.05723651689778078
+Virtual currency,2017,3,0.0026016598589900354
+"Credit reporting, credit repair services, or other personal consumer reports",2018,48975,41.36646592281638
+Debt collection,2018,26107,22.051134779927867
+Credit card or prepaid card,2018,11854,10.01241627461083
+Mortgage,2018,10269,8.673654692422694
+Checking or savings account,2018,6999,5.911667074911524
+Student loan,2018,5288,4.466480281773416
+Vehicle loan or lease,2018,3264,2.7569197503230765
+"Money transfer, virtual currency, or money service",2018,3241,2.7374929261020498
+"Payday loan, title loan, or personal loan",2018,2396,2.02376829711216
+"Credit reporting, credit repair services, or other personal consumer reports",2019,58515,46.87086981248448
+Debt collection,2019,23945,19.180090193282762
+Credit card or prepaid card,2019,12526,10.033401952852783
+Mortgage,2019,10035,8.038095848385572
+Checking or savings account,2019,7351,5.888195573640492
+Student loan,2019,4281,3.4291069583396747
+Vehicle loan or lease,2019,2930,2.3469477663945915
+"Money transfer, virtual currency, or money service",2019,2835,2.2708521903510808
+"Payday loan, title loan, or personal loan",2019,2425,1.9424397042685613
+"Credit reporting, credit repair services, or other personal consumer reports",2020,95924,55.03479692708423
+Debt collection,2020,25831,14.820105911174604
+Credit card or prepaid card,2020,17102,9.811987584410518
+Mortgage,2020,12467,7.15273355249947
+Checking or savings account,2020,9530,5.467678732278811
+"Money transfer, virtual currency, or money service",2020,4827,2.76941083323293
+Vehicle loan or lease,2020,3802,2.181334159509343
+Student loan,2020,2465,1.414252683637699
+"Payday loan, title loan, or personal loan",2020,2349,1.3476996161723953
+"Credit reporting, credit repair services, or other personal consumer reports",2021,109197,53.64100800707374
+Debt collection,2021,34478,16.936680257405314
+Credit card or prepaid card,2021,16607,8.15788180969691
+Mortgage,2021,14077,6.915066070639092
+Checking or savings account,2021,12401,6.091762047452964
+"Money transfer, virtual currency, or money service",2021,7966,3.913150267721177
+Vehicle loan or lease,2021,4285,2.104927052119664
+"Payday loan, title loan, or personal loan",2021,2388,1.1730608635850077
+Student loan,2021,2171,1.0664636243061354
+"Credit reporting, credit repair services, or other personal consumer reports",2022,233888,69.34679028561432
+Debt collection,2022,31380,9.304035603205712
+Credit card or prepaid card,2022,21512,6.378215866671806
+Checking or savings account,2022,18032,5.346410771096411
+Mortgage,2022,12289,3.6436358676798912
+"Money transfer, virtual currency, or money service",2022,7898,2.3417231738087545
+Vehicle loan or lease,2022,4816,1.4279233736468677
+Student loan,2022,4256,1.2618857720600225
+"Payday loan, title loan, or personal loan",2022,3202,0.9493792862162106
+"Credit reporting, credit repair services, or other personal consumer reports",2023,224699,46.10061344658501
+Credit reporting or other personal consumer reports,2023,124058,25.45249379372602
+Debt collection,2023,35607,7.305348679756262
+Checking or savings account,2023,28017,5.748138117806365
+Credit card or prepaid card,2023,21283,4.366549721999959
+Credit card,2023,12905,2.647668287478714
+Mortgage,2023,12883,2.6431546336759606
+"Money transfer, virtual currency, or money service",2023,8459,1.7354998871586549
+Vehicle loan or lease,2023,7360,1.510022363102932
+Student loan,2023,6163,1.264438563016762
+"Payday loan, title loan, or personal loan",2023,2826,0.5797993475718595
+"Payday loan, title loan, personal loan, or advance loan",2023,1492,0.306107794259453
+Prepaid card,2023,1351,0.27717937670544307
+Debt or credit management,2023,307,0.06298598715660327
+Credit reporting or other personal consumer reports,2024,630670,77.44135444704219
+Debt collection,2024,70291,8.631186270850115
+Credit card,2024,35451,4.353106151397866
+Checking or savings account,2024,29484,3.620405116014067
+Mortgage,2024,12209,1.4991699247529422
+"Money transfer, virtual currency, or money service",2024,10239,1.257269298021572
+Student loan,2024,8025,0.9854073753904792
+Vehicle loan or lease,2024,7552,0.9273266665356883
+"Payday loan, title loan, personal loan, or advance loan",2024,5211,0.6398701349731822
+Prepaid card,2024,3699,0.454208334151948
+Debt or credit management,2024,1553,0.19069628086995816
+Credit reporting or other personal consumer reports,2025,912757,74.69027605936226
+Debt collection,2025,100610,8.2328469399111
+"Money transfer, virtual currency, or money service",2025,64862,5.3076127444241505
+Checking or savings account,2025,51448,4.209954371976407
+Credit card,2025,41517,3.397307488363872
+Mortgage,2025,14029,1.1479833984694645
+Vehicle loan or lease,2025,11686,0.9562573237232991
+Student loan,2025,10874,0.8898119235125068
+"Payday loan, title loan, personal loan, or advance loan",2025,7806,0.6387595985781339
+Prepaid card,2025,3822,0.3127516251301086
+Debt or credit management,2025,2645,0.21643852654870152
+Debt collection,2026,36009,33.60365068403666
+Checking or savings account,2026,18775,17.52085705220329
+Credit card,2026,18117,16.90681050411542
+"Money transfer, virtual currency, or money service",2026,8447,7.88275257096997
+Mortgage,2026,6826,6.370033035331007
+Vehicle loan or lease,2026,5263,4.911439183262099
+Credit reporting or other personal consumer reports,2026,4356,4.065025476399335
+"Payday loan, title loan, personal loan, or advance loan",2026,3693,3.4463129211071504
+Student loan,2026,3474,3.241941805558148
+Prepaid card,2026,1259,1.174900614046548
+Debt or credit management,2026,939,0.8762761529703802

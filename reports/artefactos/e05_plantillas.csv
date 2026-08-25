@@ -1,0 +1,53 @@
+bloque,regimen,clave,n_grupos,n_filas,pct_filas,producto,pct_producto,longitud,muestra
+resumen,historico,filas,,3837184,100.0,,,,
+resumen,historico,textos_unicos_crudos,,2583683,67.3328,,,,
+resumen,historico,textos_unicos_normalizados,,2513729,65.5097,,,,
+resumen,historico,filas_en_grupo_repetido,,1588535,41.3985,,,,
+resumen,historico,filas_en_grupo_repetido_crudo,,1499606,39.0809,,,,
+resumen,historico,grupo_mas_grande_crudo,,27496,0.7166,,,,
+resumen,historico,grupo_mas_grande,,30110,0.7847,,,,
+repeticiones,historico,1 (sin repetir),2248649,2248649,58.6015,,,,
+repeticiones,historico,2,132351,264702,6.8983,,,,
+repeticiones,historico,3-5,117346,368193,9.5954,,,,
+repeticiones,historico,6-10,8027,58157,1.5156,,,,
+repeticiones,historico,11-50,5364,111482,2.9053,,,,
+repeticiones,historico,51-500,1701,237313,6.1846,,,,
+repeticiones,historico,501+,291,548688,14.2992,,,,
+resumen,2023_2025,filas,,2523850,100.0,,,,
+resumen,2023_2025,textos_unicos_crudos,,1442639,57.1603,,,,
+resumen,2023_2025,textos_unicos_normalizados,,1395286,55.284,,,,
+resumen,2023_2025,filas_en_grupo_repetido,,1324822,52.4921,,,,
+resumen,2023_2025,filas_en_grupo_repetido_crudo,,1267436,50.2184,,,,
+resumen,2023_2025,grupo_mas_grande_crudo,,27480,1.0888,,,,
+resumen,2023_2025,grupo_mas_grande,,30078,1.1918,,,,
+repeticiones,2023_2025,1 (sin repetir),1199028,1199028,47.5079,,,,
+repeticiones,2023_2025,2,93797,187594,7.4329,,,,
+repeticiones,2023_2025,3-5,90400,283442,11.2305,,,,
+repeticiones,2023_2025,6-10,6163,44699,1.7711,,,,
+repeticiones,2023_2025,11-50,4224,88679,3.5136,,,,
+repeticiones,2023_2025,51-500,1405,198098,7.849,,,,
+repeticiones,2023_2025,501+,269,522310,20.695,,,,
+plantilla,historico,#1,1,30110,0.7847,Credit reporting or other personal consumer reports,95.1,896,In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confid...
+plantilla,historico,#2,1,24246,0.6319,Credit reporting or other personal consumer reports,92.4,272,My credit reports are inaccurate. These inaccuracies are causing creditors to deny me credit. You have the duty to report accurate information about c...
+plantilla,historico,#3,1,18436,0.4805,Credit reporting or other personal consumer reports,100.0,533,"You have reported inaccurate and unauthorized accounts on my credit report, which is a violation of the Fair Credit Reporting Act ( 15 U.S. Code 1681i..."
+plantilla,historico,#4,1,15803,0.4118,Credit reporting or other personal consumer reports,90.5,127,"Upon reviewing my credit report, I have identified inaccurate accounts that need reporting and correction through your company."
+plantilla,historico,#5,1,14480,0.3774,Credit reporting or other personal consumer reports,99.0,981,The Fair Credit Reporting Act ( 15 U.S. Code 1681 ) says ( 1 ) The banking system is dependent upon fair and accurate credit reporting. Inaccurate cre...
+plantilla,historico,#6,1,12335,0.3215,Credit reporting or other personal consumer reports,100.0,213,"I have not supplied proof under the doctrine of estoppel by silence, Engelhardt V. Gravens ( mo ) 281 SW 715.719. I pressume that no proof of the alle..."
+plantilla,historico,#7,1,12211,0.3182,Credit reporting or other personal consumer reports,100.0,662,"I am writing to have the following information removed from my credit file, the items that I need deleted are going to be attached in a word document...."
+plantilla,historico,#8,1,10117,0.2637,Credit reporting or other personal consumer reports,100.0,1168,The Fair Credit Reporting Act ( 15 U.S. Code 1681 ) says ( 1 ) The banking system is dependent upon fair and accurate credit reporting. Inaccurate cre...
+plantilla,historico,#9,1,9997,0.2605,"Money transfer, virtual currency, or money service",99.9,660,"I am filing a complaint against Cash App ( Block , Inc. ) due to inadequate customer service and unfair practices, which violate the Consumer Financia..."
+plantilla,historico,#10,1,8105,0.2112,Credit reporting or other personal consumer reports,98.2,309,"These can be combined On my credit report, you have shown incorrect accounts that should not be there at all. This is not only unjust to me, but it's ..."
+plantilla,historico,#11,1,7932,0.2067,Credit reporting or other personal consumer reports,58.8,280,Could you please take a moment to review and examine the attached documents? I believe your expertise will be invaluable in ensuring their accuracy an...
+plantilla,historico,#12,1,7637,0.199,Debt collection,93.1,308,There are collection accounts on my report that I believe contain inaccurate information. Under my rights pursuant to 15 USC 1681e ( b ) and 15 USC 16...
+plantilla,2023_2025,#1,1,30078,1.1918,Credit reporting or other personal consumer reports,95.1,896,In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confid...
+plantilla,2023_2025,#2,1,22430,0.8887,Credit reporting or other personal consumer reports,92.4,272,My credit reports are inaccurate. These inaccuracies are causing creditors to deny me credit. You have the duty to report accurate information about c...
+plantilla,2023_2025,#3,1,18312,0.7256,Credit reporting or other personal consumer reports,100.0,533,"You have reported inaccurate and unauthorized accounts on my credit report, which is a violation of the Fair Credit Reporting Act ( 15 U.S. Code 1681i..."
+plantilla,2023_2025,#4,1,15802,0.6261,Credit reporting or other personal consumer reports,90.5,127,"Upon reviewing my credit report, I have identified inaccurate accounts that need reporting and correction through your company."
+plantilla,2023_2025,#5,1,14446,0.5724,Credit reporting or other personal consumer reports,99.0,981,The Fair Credit Reporting Act ( 15 U.S. Code 1681 ) says ( 1 ) The banking system is dependent upon fair and accurate credit reporting. Inaccurate cre...
+plantilla,2023_2025,#6,1,12335,0.4887,Credit reporting or other personal consumer reports,100.0,213,"I have not supplied proof under the doctrine of estoppel by silence, Engelhardt V. Gravens ( mo ) 281 SW 715.719. I pressume that no proof of the alle..."
+plantilla,2023_2025,#7,1,12211,0.4838,Credit reporting or other personal consumer reports,100.0,662,"I am writing to have the following information removed from my credit file, the items that I need deleted are going to be attached in a word document...."
+plantilla,2023_2025,#8,1,10066,0.3988,Credit reporting or other personal consumer reports,100.0,1168,The Fair Credit Reporting Act ( 15 U.S. Code 1681 ) says ( 1 ) The banking system is dependent upon fair and accurate credit reporting. Inaccurate cre...
+plantilla,2023_2025,#9,1,9978,0.3953,"Money transfer, virtual currency, or money service",99.9,660,"I am filing a complaint against Cash App ( Block , Inc. ) due to inadequate customer service and unfair practices, which violate the Consumer Financia..."
+plantilla,2023_2025,#10,1,7962,0.3155,Credit reporting or other personal consumer reports,98.2,309,"These can be combined On my credit report, you have shown incorrect accounts that should not be there at all. This is not only unjust to me, but it's ..."
+plantilla,2023_2025,#11,1,7932,0.3143,Credit reporting or other personal consumer reports,58.8,280,Could you please take a moment to review and examine the attached documents? I believe your expertise will be invaluable in ensuring their accuracy an...
+plantilla,2023_2025,#12,1,7023,0.2783,Credit reporting or other personal consumer reports,100.0,169,"I carefully review my credit report to ensure the accuracy of my accounts, and I have never been late on a payment. Its possible that there is an erro..."
