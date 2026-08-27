@@ -11,6 +11,29 @@ para comparar representaciones; el entrenamiento y selección final de T1-T4 per
 Informe II. El agente redactor y el mockup se diseñan ahora, pero no forman parte de las
 features ni del entregable del Informe I.
 
+## Encaje en CRISP-DM y estado actual
+
+```mermaid
+flowchart LR
+    A[1. Comprensión del negocio] --> B[2. Comprensión de los datos]
+    B --> C[3. Preparación de los datos]
+    C --> D[4. Modelado]
+    D --> E[5. Evaluación]
+    E --> F[6. Despliegue]
+    F -. iteración .-> A
+```
+
+- **1. Comprensión del negocio:** suficientemente cerrada para el Informe I con D1-D6,
+  T1-T4 y la arquitectura humano-en-el-bucle. Se revisará cuando exista información del
+  banco sobre capacidad, costos y plazos reales.
+- **2. Comprensión de los datos:** etapa activa. E1-E11 están producidas; falta cerrar
+  E12-E14 y registrar sus resultados en Quarto.
+- **3. Preparación de los datos:** diseñada, todavía no completada. Se adelanta solo la
+  infraestructura mínima —tipado, cortes temporales, hash y muestra de train— que E12-E14
+  necesitan para no producir fuga. Después se completan Fases 2-5.
+- **4-6. Modelado, evaluación y despliegue:** fuera del trabajo inmediato. TabPFN, PyMC,
+  simulación, app y LangGraph pertenecen a esas etapas, no al cierre del EDA.
+
 **Caso de negocio (de las slides):** la jefa de atención al cliente necesita que cada
 reclamo entrante llegue (a) clasificado por motivo, (b) priorizado por riesgo, (c) con
 semáforo de plazo legal, (d) con borrador de respuesta. El oficial de cumplimiento
@@ -174,7 +197,7 @@ como feature ni como etiqueta.
 Cada bloque produce **una figura o tabla reutilizable en las slides**. Cada etapa deja un
 CSV pequeño en `reports/artefactos/` y el informe de Quarto lo grafica; el informe nunca
 lee el parquet. Estado al día de hoy: **E1-E9 y E11 hechas**, E10 es un acuerdo de equipo y
-E12-E14 dependen de decisiones abiertas.
+E12-E14 están definidos y son el siguiente bloque de implementación.
 
 | # | Pregunta | Entregable |
 |---|---|---|
@@ -189,9 +212,9 @@ E12-E14 dependen de decisiones abiertas.
 | E9 | Targets candidatos y su deriva | ✅ hecho — `e09_tasas_anuales.csv`, `e09_tasas_producto.csv` |
 | E10 | Auditoría de fuga | tabla F0/F1/FX acordada por el equipo |
 | E11 | Sesgo | ✅ hecho — `e11_sesgo.csv`, vía `uv run python -m src.evaluation.slices`. Estandarización directa por producto. La sospecha se confirma **y deja residuo**: en el régimen, `Older American` pasa de 9.85% vs 1.38% (7.1×) a 3.07% vs 1.55% (2.0×) al ajustar — la mezcla explica ~82% de la brecha, no toda. `State` en cambio se explica casi entero (rango T2 de 4.7 pp a 2.5 pp). Consecuencia: cortes por `Tags` obligatorios en la Fase 6 |
-| E12 | Piso de señal | TF-IDF + LogReg sobre 100 k filas: macro-F1 de referencia antes de invertir en modelos grandes |
-| E13 | ¿Vale un embedding? | mismas 100 k filas y mismo clasificador, embedding local vs TF-IDF: delta de macro-F1 antes de comprometer presupuesto de API (insumo del gate §6.4) |
-| E14 | Estructura latente del texto | UMAP 2D coloreado por `Product` crudo + contingencia cluster × etiqueta (§4.5): la figura que justifica el mapa canónico y expone las etiquetas que el texto no separa |
+| E12 | Piso de señal | TF-IDF word+char + modelo lineal sobre 100 k filas: macro-F1/top-3 para T1 y PR-AUC/calibración para T2-T4; incluye sensibilidad de T2 |
+| E13 | ¿Vale un embedding? | mismas filas, splits y clasificador: F0/R0 frente a R1 local y sus combinaciones; delta de métrica, memoria y latencia |
+| E14 | Estructura latente y topics | embedding → UMAP 10-15D → HDBSCAN + c-TF-IDF/BERTopic; topics por tiempo/producto, estabilidad, contingencias y contraste con empresa enmascarada |
 
 **Salida de fase:** `docs/data_card.md` con esquema, fuente, límites conocidos y
 decisiones D1-D6 registradas.
@@ -201,6 +224,15 @@ normalizar/hashar la narrativa y tomar una muestra solo desde train; generar R1 
 vez; ejecutar E14 sobre train para aportar evidencia al mapa; congelar la taxonomía; correr
 E12 y E13 sobre el mismo split. El clustering y la canonicalización nunca miran las
 narrativas ni contingencias de validación/test para tomar decisiones.
+
+**Definición de EDA terminado:** E1-E14 tienen artefacto, método, parámetros, figura/tabla y
+conclusión incorporados a `reports/informe/informe.qmd`; la muestra, hashes, embedding local
+y resultados son reproducibles mediante DVC. Hasta cumplirla no se prueban modelos finales
+ni nuevas familias de features.
+
+**Freeze de alcance para cerrar el EDA:** BERTopic/c-TF-IDF entra ahora como parte de E14.
+Von Mises, TabPFN, PyMC, KumoRFM, esquema relacional, app y LangGraph quedan registrados en
+sus fases futuras y no son dependencias de E12-E14 ni del cierre de comprensión de datos.
 
 ---
 
@@ -288,9 +320,11 @@ Tres advertencias que decidirán si esto sirve o no:
 - **Control barato:** SVD del TF-IDF + KMeans sobre los mismos textos. Si el embedding no
   produce clusters más coherentes que eso, tampoco va a mejorar al clasificador — y el
   gate de §6.4 queda medio resuelto gratis, antes de gastar un peso.
-- **BERTopic** empaqueta UMAP + HDBSCAN + c-TF-IDF y devuelve los términos que definen
-  cada cluster. Eso es lo que hace la figura legible en la slide; es un envoltorio
-  conveniente, no un método distinto.
+- **BERTopic es parte de E14**, no una extensión futura: reutiliza embedding, UMAP y
+  HDBSCAN, y añade c-TF-IDF para nombrar cada cluster. Se generan topics por tiempo y por
+  producto, documentos representativos y una tabla de términos. No se usa ningún LLM para
+  poner nombres. El topic puede evaluarse después como feature, pero no entra a F5 sin una
+  ablación ajustada solo en train.
 
 **Consecuencia de orden — esto invierte una dependencia del plan.** Los embeddings locales
 R1 dejan de ser un paso de la Fase 5 y se calculan **temprano, sobre la muestra de
@@ -336,7 +370,9 @@ desenlaces distintos. La etapa agrupa textos para evitar optimismo y cómputo re
   con datos anteriores al periodo de la fila** (evita fuga temporal); bucket `OTRA` para
   la cola de 3,908 empresas con <10 reclamos.
 - **Temporales** (`temporal.py`): mes, día de semana, año, semanas desde el inicio del
-  régimen, indicador de picos de volumen. No incluye *días de gestión* (es FX).
+  régimen, indicador de picos de volumen. No incluye *días de gestión* (es FX). La versión
+  inicial usa mes categórico y codificación seno/coseno; bases circulares de Von Mises quedan
+  como ablación posterior, no como requisito de F5.
 - **Ensamblado** (`build.py`): matriz por tier — `F0` (producción) y `F0+F1`
   (referencia superior, no desplegable) — y por representación (tabular / R0 / R1 /
   R0+R1), seleccionado desde `configs/features.yaml`. `Tags` se conserva siempre para
@@ -347,6 +383,14 @@ desenlaces distintos. La etapa agrupa textos para evitar optimismo y cómputo re
 
 Salida validada con `pandera` y una prueba automática que **falla si aparece cualquier
 columna FX** en la matriz de features.
+
+### 6.1 Transformaciones temporales opcionales
+
+Si seno/coseno deja señal estacional no lineal en los residuos del baseline, se compara con
+bases de Von Mises sobre mes o día del año. No se aplica por defecto: con doce meses, una
+variable categórica ya es una referencia fuerte, y los árboles pueden aprender esa
+periodicidad sin la transformación. La comparación pertenece a una ablación posterior de
+features, después de cerrar E12-E14.
 
 ### 6.2 R1 — Embeddings de oración (`src/features/embeddings.py`)
 
@@ -478,7 +522,16 @@ Experimento opcional y acotado:
 También puede reforzar E11 cuantificando la incertidumbre de brechas por `Tags` después de
 controlar por producto/empresa. Si el tiempo del capstone es limitado, se prioriza primero
 calibración frecuentista; PyMC queda detrás de un gate porque aporta rigor de incertidumbre,
-no necesariamente mejor predicción individual.
+no necesariamente mejor predicción individual. **No se instala ni ejecuta para el Informe I.**
+
+### 7.2 TabPFN como challenger, no como feature del EDA
+
+TabPFN se registra para el Informe II. Se probará sobre una muestra temporal y una matriz
+densa acotada —F0 + derivadas numéricas + R1—, nunca sobre el TF-IDF sparse completo ni los
+2.5 M de filas de una vez. Se compara contra LogReg y LightGBM/CatBoost con las mismas filas.
+Sus predicciones pueden entrar a un ensemble mediante scores out-of-fold; sus embeddings
+internos no se agregan como features por defecto. Antes de cualquier uso bancario se revisan
+la versión vigente, límites de escala y licencia comercial; no se fija TabPFN 2.5 desde ahora.
 
 ---
 
@@ -536,6 +589,13 @@ casos parecidos, pero no son precedentes legales ni prueban que "se respondió a
 Evaluación con 100-200 casos y dos revisores: fidelidad factual, grounding en fuentes,
 cumplimiento, PII, compromisos indebidos, utilidad y porcentaje de edición humana.
 
+**Persistencia en esta fase:** hasta construir la app, los datos siguen siendo artefactos
+Parquet versionados con DVC y matrices auxiliares versionadas por la misma herramienta. No
+se normaliza el CFPB en tablas relacionales solo para probar un modelo. El esquema relacional
+y KumoRFM se reconsideran en despliegue únicamente si el banco aporta relaciones reales
+—clientes, cuentas, transacciones, contactos y acciones—; dividir un único parquet en varias
+tablas no crea señal relacional.
+
 ---
 
 ## 10. Estructura de código y reproducibilidad
@@ -579,10 +639,11 @@ DAG de features; sus prompts/políticas se versionan en Git/DVC según tamaño y
 se leen de variables de entorno.
 
 Dependencias nuevas respecto del `pyproject.toml` actual, agrupadas: `pandera` y
-`scikit-learn` (núcleo); `sentence-transformers` (R1 local); `umap-learn` y `hdbscan` —o
-`sklearn.cluster.HDBSCAN`— para E14; `lightgbm`/`catboost` (Fase 6); `pymc` solo para el
-experimento jerárquico; `streamlit`, `langgraph`, un adaptador del proveedor LLM y
-`pydantic` para el mockup. Las dependencias del agente no son necesarias para el Informe I.
+`scikit-learn` (núcleo); `sentence-transformers`, `umap-learn`, `hdbscan` y `bertopic` para
+R1/E14 —o `sklearn.cluster.HDBSCAN` cuando aplique—. `lightgbm`/`catboost`/`tabpfn` y `pymc`
+pertenecen al Informe II; `streamlit`, `langgraph`, un adaptador del proveedor LLM y
+`pydantic` pertenecen al mockup. Solo se instalan ahora las dependencias necesarias para
+cerrar E12-E14 y preparar F2-F5.
 
 ---
 
@@ -597,6 +658,22 @@ agente LangGraph.
 Dependencias duras: los repetidos se agrupan antes del clustering; E14 y cualquier decisión
 de taxonomía solo ven train; R1 se genera una vez y se reutiliza; E12/E13 usan exactamente
 las mismas filas y splits; nada de API antes de demostrar valor local.
+
+### Próximo bloque de implementación — cierre de comprensión de datos
+
+1. Crear `params.yaml` y el primer `dvc.yaml` con fronteras temporales y semilla.
+2. Implementar tipado mínimo, targets, `hash_narrativa` y auditoría de conflictos.
+3. Producir una muestra reproducible de 100 k textos de train para E12-E14.
+4. Generar y cachear `all-MiniLM-L6-v2` una vez por hash.
+5. Ejecutar E14: control TF-IDF/SVD/KMeans, UMAP/HDBSCAN y BERTopic/c-TF-IDF, con y sin
+   nombres de empresa.
+6. Congelar `taxonomia.yaml` usando solo evidencia de train.
+7. Ejecutar E12 y E13 sobre las mismas filas y cortes.
+8. Escribir `e12_piso_senal.csv`, `e13_embeddings.csv`, `e14_clusters.csv` y las tablas de
+   topics; incorporarlos al Quarto y renderizar el Informe I.
+
+**No objetivos de este bloque:** optimizar modelos finales, Von Mises, TabPFN, PyMC,
+embeddings de API, base relacional, KumoRFM, Streamlit o LangGraph.
 
 | Riesgo | Señal temprana | Mitigación |
 |---|---|---|
