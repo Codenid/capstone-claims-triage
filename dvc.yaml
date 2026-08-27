@@ -1,0 +1,19 @@
+stages:
+  prepare_eda_sample:
+    cmd: uv run python -m src.data.prepare_eda
+    deps:
+      - data/raw/cfpb_reclamos_narrativa.parquet
+      - src/data/agregados.py
+      - src/data/load_raw.py
+      - src/data/prepare_eda.py
+      - src/paths.py
+    params:
+      - random_seed
+      - splits
+      - sample
+      - text.hash_algorithm
+      - text.normalization_version
+    outs:
+      - data/interim/eda_sample.parquet
+      - data/interim/eda_hash_groups.parquet
+      - reports/artefactos/eda_sample_hash_audit.csv

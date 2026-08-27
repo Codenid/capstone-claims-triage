@@ -1,0 +1,63 @@
+random_seed: 42
+
+splits:
+  train:
+    start: "2023-01-01"
+    end: "2024-12-31"
+  validation:
+    start: "2025-01-01"
+    end: "2025-06-30"
+  test:
+    start: "2025-07-01"
+    end: "2025-12-31"
+  ood_2026:
+    start: "2026-01-01"
+    end: "2026-12-31"
+
+sample:
+  train_size: 100000
+  validation_size: 25000
+  test_size: 25000
+  ood_2026_size: 25000
+  batch_size: 131072
+
+text:
+  hash_algorithm: "sha1"
+  normalization_version: "lower-whitespace-v1"
+  mask_company_names: true
+
+embedding:
+  model: "sentence-transformers/all-MiniLM-L6-v2"
+  revision: null
+  batch_size: 256
+  normalize: true
+
+tfidf:
+  word:
+    ngram_range: [1, 2]
+    min_df: 3
+    max_df: 0.98
+    max_features: 150000
+    sublinear_tf: true
+  char:
+    analyzer: "char_wb"
+    ngram_range: [3, 5]
+    min_df: 3
+    max_features: 150000
+    sublinear_tf: true
+
+clustering:
+  svd_components: 100
+  kmeans_clusters: 40
+  umap:
+    n_components: 12
+    n_neighbors: 30
+    min_dist: 0.0
+    metric: "cosine"
+  hdbscan:
+    min_cluster_size: 100
+    min_samples: 20
+    metric: "euclidean"
+  bertopic:
+    top_n_words: 10
+    calculate_probabilities: false

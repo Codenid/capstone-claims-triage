@@ -6,6 +6,7 @@ dependencies = [
     "matplotlib>=3.11.1",
     "pandas>=3.0.5",
     "pyarrow>=25.0.1",
+    "pyyaml>=6.0.2",
 ]
 
 [dependency-groups]

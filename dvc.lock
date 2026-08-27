@@ -1,0 +1,62 @@
+schema: '2.0'
+stages:
+  prepare_eda_sample:
+    cmd: uv run python -m src.data.prepare_eda
+    deps:
+    - path: data/raw/cfpb_reclamos_narrativa.parquet
+      hash: md5
+      md5: 68f4560aca0967779f118e8225e72c26
+      size: 1616005038
+    - path: src/data/agregados.py
+      hash: md5
+      md5: acb7f7bce1e665d7a166cd9acade6446
+      size: 16774
+    - path: src/data/load_raw.py
+      hash: md5
+      md5: 40111c33b5b20c90d24b8847addc3e03
+      size: 2454
+    - path: src/data/prepare_eda.py
+      hash: md5
+      md5: f81c63f8bbb4c22632a3acd729057248
+      size: 11041
+    - path: src/paths.py
+      hash: md5
+      md5: 7bcaff4d98841997471c8e2e43928977
+      size: 748
+    params:
+      params.yaml:
+        random_seed: 42
+        sample:
+          train_size: 100000
+          validation_size: 25000
+          test_size: 25000
+          ood_2026_size: 25000
+          batch_size: 131072
+        splits:
+          train:
+            start: '2023-01-01'
+            end: '2024-12-31'
+          validation:
+            start: '2025-01-01'
+            end: '2025-06-30'
+          test:
+            start: '2025-07-01'
+            end: '2025-12-31'
+          ood_2026:
+            start: '2026-01-01'
+            end: '2026-12-31'
+        text.hash_algorithm: sha1
+        text.normalization_version: lower-whitespace-v1
+    outs:
+    - path: data/interim/eda_hash_groups.parquet
+      hash: md5
+      md5: c80bc492b39cdd1a3d2b144b4bfda67a
+      size: 2697727
+    - path: data/interim/eda_sample.parquet
+      hash: md5
+      md5: 7eb58e21982828c3f3e7152ad37cca21
+      size: 53721622
+    - path: reports/artefactos/eda_sample_hash_audit.csv
+      hash: md5
+      md5: a885d04fa65c0a4adf96835b9376a021
+      size: 269
