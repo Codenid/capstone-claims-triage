@@ -32,3 +32,18 @@ stages:
       - data/processed/r0_index.parquet
       - data/processed/r0_vectorizers.joblib
       - data/processed/r0_manifest.json
+
+  e12_baseline:
+    cmd: uv run python -m src.models.baseline
+    deps:
+      - data/processed/r0_tfidf.npz
+      - data/processed/r0_index.parquet
+      - src/data/prepare_eda.py
+      - src/models/baseline.py
+      - src/paths.py
+    params:
+      - random_seed
+      - baseline
+    outs:
+      - data/processed/e12_predictions.parquet
+      - reports/artefactos/e12_piso_senal.csv

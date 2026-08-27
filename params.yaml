@@ -46,6 +46,13 @@ tfidf:
     max_features: 150000
     sublinear_tf: true
 
+baseline:
+  alpha: 0.00001
+  max_iter: 10
+  tol: 0.001
+  average: true
+  class_weight_cap: 20.0
+
 clustering:
   svd_components: 100
   kmeans_clusters: 40

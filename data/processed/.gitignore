@@ -2,3 +2,4 @@
 /r0_index.parquet
 /r0_vectorizers.joblib
 /r0_manifest.json
+/e12_predictions.parquet

@@ -115,3 +115,44 @@ stages:
       hash: md5
       md5: d6952121d8b76b6fe42e0579e83025d6
       size: 2742873
+  e12_baseline:
+    cmd: uv run python -m src.models.baseline
+    deps:
+    - path: data/processed/r0_index.parquet
+      hash: md5
+      md5: f83dc57493de9e3bcb7c48aa2c017998
+      size: 4234392
+    - path: data/processed/r0_tfidf.npz
+      hash: md5
+      md5: 995d24ad423b8e972ced6cc0355c7a11
+      size: 989538185
+    - path: src/data/prepare_eda.py
+      hash: md5
+      md5: f81c63f8bbb4c22632a3acd729057248
+      size: 11041
+    - path: src/models/baseline.py
+      hash: md5
+      md5: 764d9174ac8f9ab522be0802e102f7d1
+      size: 11830
+    - path: src/paths.py
+      hash: md5
+      md5: 7bcaff4d98841997471c8e2e43928977
+      size: 748
+    params:
+      params.yaml:
+        baseline:
+          alpha: 1e-05
+          max_iter: 10
+          tol: 0.001
+          average: true
+          class_weight_cap: 20.0
+        random_seed: 42
+    outs:
+    - path: data/processed/e12_predictions.parquet
+      hash: md5
+      md5: 675eef2d6f6857db95b1b3f77b3fe7b5
+      size: 9029709
+    - path: reports/artefactos/e12_piso_senal.csv
+      hash: md5
+      md5: 443010218901fa49eede456163329b0b
+      size: 65867
