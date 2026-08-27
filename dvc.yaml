@@ -17,3 +17,18 @@ stages:
       - data/interim/eda_sample.parquet
       - data/interim/eda_hash_groups.parquet
       - reports/artefactos/eda_sample_hash_audit.csv
+
+  build_tfidf:
+    cmd: uv run python -m src.features.text
+    deps:
+      - data/interim/eda_sample.parquet
+      - src/data/prepare_eda.py
+      - src/features/text.py
+      - src/paths.py
+    params:
+      - tfidf
+    outs:
+      - data/processed/r0_tfidf.npz
+      - data/processed/r0_index.parquet
+      - data/processed/r0_vectorizers.joblib
+      - data/processed/r0_manifest.json

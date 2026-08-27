@@ -1,0 +1,4 @@
+/r0_tfidf.npz
+/r0_index.parquet
+/r0_vectorizers.joblib
+/r0_manifest.json
