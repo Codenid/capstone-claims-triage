@@ -1,18 +1,10 @@
 stages:
-  type_full_corpus:
-    cmd: uv run python -m src.data.typing
-    deps:
-      - configs/dtypes.yaml
-      - data/raw/cfpb_reclamos_narrativa.parquet
-      - src/data/agregados.py
-      - src/data/typing.py
-      - src/paths.py
-    params:
-      - typing
-    outs:
-      - data/interim/tipado.parquet
-      - reports/artefactos/f02_tipado_audit.csv
-
+  # ---------------------------------------------------------------------------
+  # CRISP-DM 2 — Comprensión de los datos
+  # Estas etapas usan una muestra temporal controlada para medir señal,
+  # repetición, representaciones y estructura latente. No producen todavía las
+  # features finales del corpus completo.
+  # ---------------------------------------------------------------------------
   prepare_eda_sample:
     cmd: uv run python -m src.data.prepare_eda
     deps:
@@ -47,6 +39,21 @@ stages:
       - data/processed/r0_vectorizers.joblib
       - data/processed/r0_manifest.json
 
+  build_embeddings:
+    cmd: uv run python -m src.features.embeddings
+    deps:
+      - data/interim/eda_sample.parquet
+      - src/data/prepare_eda.py
+      - src/features/embeddings.py
+      - src/paths.py
+    params:
+      - embedding
+      - text.normalization_version
+    outs:
+      - data/processed/r1_embeddings.npy
+      - data/processed/r1_hash_index.parquet
+      - data/processed/r1_manifest.json
+
   e12_baseline:
     cmd: uv run python -m src.models.baseline
     deps:
@@ -62,20 +69,22 @@ stages:
       - data/processed/e12_predictions.parquet
       - reports/artefactos/e12_piso_senal.csv
 
-  build_embeddings:
-    cmd: uv run python -m src.features.embeddings
+  e13_compare_representations:
+    cmd: uv run python -m src.evaluation.compare_embeddings
     deps:
-      - data/interim/eda_sample.parquet
-      - src/data/prepare_eda.py
-      - src/features/embeddings.py
-      - src/paths.py
-    params:
-      - embedding
-      - text.normalization_version
-    outs:
+      - data/processed/r0_tfidf.npz
+      - data/processed/r0_index.parquet
+      - data/processed/r0_vectorizers.joblib
       - data/processed/r1_embeddings.npy
       - data/processed/r1_hash_index.parquet
-      - data/processed/r1_manifest.json
+      - src/evaluation/compare_embeddings.py
+      - src/models/baseline.py
+      - src/paths.py
+    params:
+      - random_seed
+      - baseline
+    outs:
+      - reports/artefactos/e13_embeddings.csv
 
   prepare_e14:
     cmd: uv run python -m src.features.e14_prepare
@@ -121,3 +130,22 @@ stages:
       - reports/artefactos/e14_clusters.csv
       - reports/artefactos/e14_stability.csv
       - reports/artefactos/e14_topics.csv
+
+  # ---------------------------------------------------------------------------
+  # CRISP-DM 3 — Preparación de los datos
+  # Esta rama procesa el corpus completo. La canonicalización, los hashes/splits
+  # completos y las features ganadoras se añadirán aquí después de los gates.
+  # ---------------------------------------------------------------------------
+  type_full_corpus:
+    cmd: uv run python -m src.data.typing
+    deps:
+      - configs/dtypes.yaml
+      - data/raw/cfpb_reclamos_narrativa.parquet
+      - src/data/agregados.py
+      - src/data/typing.py
+      - src/paths.py
+    params:
+      - typing
+    outs:
+      - data/interim/tipado.parquet
+      - reports/artefactos/f02_tipado_audit.csv
