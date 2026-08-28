@@ -59,9 +59,13 @@ texto = artefacto("e06_narrativa")
 empresas = artefacto("e07_empresas")
 geografia = artefacto("e08_geografia")
 sesgo = artefacto("e11_sesgo")
+tipado_audit = artefacto("f02_tipado_audit")
 piso_senal = artefacto("e12_piso_senal")
 embeddings = artefacto("e13_embeddings")
 clusters = artefacto("e14_clusters")
+e14_company = artefacto("e14_company_ablation")
+e14_stability = artefacto("e14_stability")
+e14_topics = artefacto("e14_topics")
 features = artefacto("f5_features")
 
 REGIMEN = "2023_2025"
@@ -1156,20 +1160,27 @@ orden operativo es:
 
 ```{mermaid}
 flowchart TD
-    A[Dato crudo DVC] --> B[Fijar cortes temporales]
-    B --> C[Tipado mínimo y targets]
-    C --> D[Hash y auditoría de repetidos]
-    D --> E[Muestra de train]
-    E --> F[R1 local una vez por hash]
-    F --> G[E14 solo sobre train]
-    G --> H[Congelar taxonomía]
-    H --> I[Split temporal completo]
-    I --> J[E12 R0]
-    F --> K[E13 R0 frente a R1]
+    A[Dato crudo DVC<br/>3.84 M filas] --> B[Tipado completo]
+    B --> C[tipado.parquet<br/>3.84 M filas]
+    A --> D[Muestra experimental<br/>175 k filas]
+    D --> E[R0 TF-IDF]
+    D --> F[R1 MiniLM por hash]
+    E --> G[E12 piso de señal]
+    E --> H[E14 control]
+    F --> I[E14 semántico]
+    E --> J[E13 R0 vs R1]
+    F --> J
+    H --> K[Decisiones de taxonomía y representación]
     I --> K
-    J --> L[Features auditadas]
+    J --> K
+    C --> L[Canonicalización y splits completos]
     K --> L
+    L --> M[Features finales sobre el corpus en alcance]
 ```
+
+La muestra sirve para **decidir**; no se convierte en el dataset final. Si R0 gana, TF-IDF se
+reajusta con todo el train completo. Si R1 gana, MiniLM se calcula para todos los hashes
+únicos del corpus en alcance.
 
 ## Qué significa deduplicar {#sec-deduplicacion}
 
@@ -1189,19 +1200,46 @@ outcome conservan las filas si sus desenlaces son eventos distintos.
 
 ## E12 — Piso de señal R0 {#sec-e12}
 
-E12 ajusta word+character TF-IDF exclusivamente en train y usa regresión logística o
-`SGDClassifier(loss="log_loss")`. Es una sonda barata, no la selección final. Reportará
-macro-F1/top-3 para T1 y PR-AUC, Brier, log loss, lift y recall a capacidad fija para
-T2-T4. Accuracy no sirve como métrica principal para T3/T4 por su prevalencia cercana al
-1%.
+E12 ajustó word+character TF-IDF exclusivamente en train y usó
+`SGDClassifier(loss="log_loss")`. Es una sonda barata, no la selección final. Para evitar
+una lectura inflada por plantillas repetidas, la tabla principal usa el test 2025-H2
+**purgado de hashes vistos en train**.
 
 ```{python}
 # | output: asis
 if piso_senal is None:
     print(pendiente("E12"))
 else:
-    display(tabla(piso_senal.head(30)))
+    metricas_clave = [
+        "macro_f1", "top_3_accuracy", "average_precision",
+        "lift_at_5pct", "hierarchy_violation_rate",
+    ]
+    e12_resumen = piso_senal[
+        (piso_senal["split"] == "test")
+        & (piso_senal["view"] == "purged")
+        & piso_senal["metric"].isin(metricas_clave)
+        & ~piso_senal["variant"].isin(["main_nonambiguous"])
+    ].copy()
+    e12_resumen["prevalence"] = e12_resumen["prevalence"].map(
+        lambda x: "—" if pd.isna(x) else f"{x:.4f}"
+    )
+    e12_tabla = (
+        e12_resumen.pivot_table(
+            index=["target", "variant", "n", "prevalence"],
+            columns="metric", values="value", aggfunc="first",
+        )
+        .reset_index()
+        .round(4)
+    )
+    display(tabla(e12_tabla))
 ```
+
+**Lectura.** T1 alcanza top-3 de 0.763, aunque el macro-F1 de 0.223 confirma que la
+clasificación fina de `Issue` sigue siendo difícil. T2 apenas cambia al excluir respuestas
+ambiguas. T3 directo alcanza PR-AUC 0.309 frente a prevalencia 0.0167, pero viola
+`P(T3) ≤ P(T2)` en 11.1% de los casos: la formulación jerárquica sigue justificada aunque
+la cascada no gane todavía. T4 logra lift 4.67 al revisar el 5% superior, pero su PR-AUC
+absoluta sigue siendo baja por el desbalance extremo.
 
 ## E13 — ¿Aporta R1 local? {#sec-e13}
 
@@ -1220,26 +1258,98 @@ else:
 
 ## E14 — Estructura latente {#sec-e14}
 
-E14 usa únicamente textos únicos de train. Compara embedding → UMAP 10-15D → HDBSCAN
-contra TF-IDF → SVD → KMeans. El UMAP 2D se reserva para visualizar. La corrida se repite
-con nombres de empresa enmascarados y con varias semillas; reporta ARI, NMI, pureza,
-porcentaje de ruido y estabilidad. El clustering aporta evidencia al mapa canónico, pero no
-lo edita automáticamente.
+E14 se ajustó con **73,512 hashes únicos de train**; ninguna narrativa o etiqueta de
+validation, test u OOD participó en las decisiones. El procedimiento reproducible fue:
+
+1. colapsar solo para clustering los 100,000 eventos train por `hash_narrativa`;
+2. mantener Product/Issue como nulos cuando un hash tiene etiquetas contradictorias;
+3. reajustar R0 en train único y ejecutar SVD(100) + KMeans con `k={30,40,50}`;
+4. alinear R1 y ejecutar UMAP(12D) + HDBSCAN con tres semillas;
+5. repetir HDBSCAN con `min_cluster_size={50,100,200}`;
+6. enmascarar aliases conservadores de empresa y volver a ajustar UMAP/HDBSCAN;
+7. describir cada cluster con c-TF-IDF directo, sin LLM ni nombres automáticos.
 
 ```{python}
 # | output: asis
 if clusters is None:
     print(pendiente("E14"))
 else:
-    display(tabla(clusters.head(30)))
+    runs_clave = [
+        "r0_kmeans_k40",
+        "r1_umap_seed42_mcs100",
+        "r1_umap_seed43_mcs100",
+        "r1_umap_seed44_mcs100",
+        "r1_masked_seed42_mcs100",
+    ]
+    cols = [
+        "run_id", "n_clusters", "noise_rate", "silhouette_cosine",
+        "product_hash_coverage", "product_hash_nmi",
+        "product_hash_purity_weighted", "issue_hash_nmi",
+        "issue_hash_purity_weighted",
+    ]
+    e14_resumen = clusters.loc[clusters["run_id"].isin(runs_clave), cols].round(4)
+    display(tabla(e14_resumen))
 ```
+
+R1 produce grupos más alineados con Product/Issue que el control R0, pero con una
+contrapartida importante: entre 30% y 41% queda como ruido y aparecen 120–130 clusters,
+muchos más que las 25–40 categorías operativas buscadas. Por eso E14 **no descubre la
+taxonomía final**; proporciona subtemas para consolidación manual.
+
+### Estabilidad y atajo por empresa
+
+```{python}
+# | output: asis
+if e14_stability is None or e14_company is None:
+    print(pendiente("E14-estabilidad"))
+else:
+    estable = e14_stability[e14_stability["family"].isin(["umap_seeds", "company_mask"])]
+    display(tabla(estable.round(4)))
+    display(tabla(e14_company))
+```
+
+Entre semillas, el ARI sobre hashes no-ruido está entre 0.971 y 0.991: la estructura central
+es estable, mientras la principal variación está en qué textos HDBSCAN declara ruido. El
+enmascarado modificó 9,688 textos (13.18%), aumentó el ruido de 30.1% a 40.7% y produjo un
+ARI 0.856 sobre los hashes no-ruido compartidos. La empresa influye, pero no explica por sí
+sola la estructura semántica.
+
+### Topics c-TF-IDF
+
+```{python}
+# | output: asis
+if e14_topics is None:
+    print(pendiente("E14-topics"))
+else:
+    topics_grandes = (
+        e14_topics.sort_values(["condition", "n_hashes"], ascending=[True, False])
+        .groupby("condition", observed=True)
+        .head(6)
+    )
+    display(tabla(topics_grandes[
+        ["condition", "cluster", "n_hashes", "n_events", "top_terms", "top_product", "top_issue"]
+    ]))
+```
+
+Los términos recuperan subtemas reconocibles —deuda no reconocida, consultas no autorizadas,
+robo de identidad y pagos tardíos—, pero también tokens de enmascarado como `xxxx`. Esa
+contaminación debe tratarse en la limpieza léxica antes de considerar `topic_id` como feature.
 
 ## Fases 2-5 — Del parquet crudo a matrices entrenables {#sec-features}
 
-El Informe I documentará cada transformación con entradas, parámetros, salidas, conteos y
-pruebas:
+El Informe I documenta cada transformación con entradas, parámetros, salidas, conteos y
+pruebas. La Fase 2 ya procesó el corpus completo:
 
-1. **Tipado:** fechas, booleanos, categorías, tags separados y contrato Pandera.
+```{python}
+# | output: asis
+if tipado_audit is None:
+    print(pendiente("F2-tipado"))
+else:
+    display(tabla(tipado_audit))
+```
+
+1. **Tipado — completo:** 3,837,184 filas, fechas, booleanos, categorías, tags separados,
+   targets y contrato de dominios; reducción de memoria no-texto de 84.55%.
 2. **Repetidos:** hash, conflictos de etiquetas y vistas operacional/texto único.
 3. **Canonicalización:** mapa manual versionado, definido con train y aplicado sin cambios.
 4. **Split:** train 2023-2024, validación 2025-01/06 y test 2025-07/12; 2026 queda como
@@ -1263,15 +1373,19 @@ DVC debe rastrear el DAG completo, no solo el parquet crudo:
 
 ```{mermaid}
 flowchart TD
-    A[raw] --> B[typing]
-    B --> C[hash y repetidos]
-    C --> D[embedding local]
-    D --> E[E14]
-    E --> F[canonicalize]
-    F --> G[split]
-    G --> H[features R0/R1]
-    H --> I[E12/E13]
-    I --> J[artefactos del informe]
+    A[raw completo] --> B[type_full_corpus]
+    A --> C[prepare_eda_sample]
+    C --> D[build_tfidf]
+    D --> E[e12_baseline]
+    C --> F[build_embeddings]
+    F --> G[prepare_e14]
+    D --> H[e14_clustering]
+    G --> H
+    H --> I[canonicalize completo]
+    I --> J[split completo]
+    J --> K[features completas]
+    E --> L[artefactos del informe]
+    H --> L
 ```
 
 Cada etapa declara código/configuración como dependencia, artefactos como salidas y semillas,
@@ -1332,21 +1446,21 @@ La justificación completa de cada una está en `docs/plan-eda-y-transformacion.
 | Riesgo | Estado | Mitigación |
 |---|---|---|
 | El objetivo de la propuesta no existe | **confirmado** | D1: se usa un proxy y se declara como tal |
-| Empresa como atajo del modelo | **abierto** | tres burós concentran el 72% del régimen; E14 debe repetirse con los nombres enmascarados (@sec-empresas) |
+| Empresa como atajo del modelo | **medido, no cerrado** | E14 enmascaró 13.18% de textos; subió el ruido y cambió fronteras, pero la estructura no-ruido conservó ARI 0.856 (@sec-e14) |
 | PII residual en la narrativa | **medido**, mitigación obligatoria | menos del 1% de los textos, pero no cero: segundo enmascarado antes de cualquier llamada externa (@sec-contenido) |
 | El quiebre de 2026 no tiene causa identificada | **abierto**, aislado del test principal | prueba principal en 2025-07/12 y 2026 como stress test OOD separado; falta confirmar la causa externa |
 | Fuga por columnas post-respuesta | contrato definido; prueba pendiente | F5 debe añadir una prueba automática que falle si aparece FX |
-| Memorización de plantillas | cuantificada; implementación pendiente | hash, evaluación operacional y evaluación purgada; **52% de las filas del régimen 2023-2025** comparte texto con otra (@sec-plantillas) |
+| Memorización de plantillas | **implementada en la muestra** | hash, cache por texto, E14 unique-only y evaluación E12 operacional/purgada; falta extender hashes al corpus completo (@sec-plantillas) |
 | Deriva de etiquetas y de tasa base | cuantificado | régimen 2023+, mapa canónico versionado, prueba de regresión |
 | Sesgo por perfil del consumidor | **medido**, con un residuo abierto | la mezcla de productos explica ~4/5 de la brecha de `Older American`, pero no toda; `State` se explica casi entero (@sec-sesgo). Cortes obligatorios en la evaluación de la Fase 6 |
 
 # Próximos pasos {#sec-proximos}
 
-1. Crear el pipeline DVC de tipado, hash/repetidos y muestra temporal de train.
-2. Generar R1 local una vez por hash y completar E14 sin mirar validación/test.
-3. Congelar la taxonomía y construir los splits temporal, operacional y purgado.
-4. Completar E12/E13 sobre las mismas filas y crear matrices R0/R1 con auditoría FX.
-5. Incorporar sus artefactos a este informe y renderizar el entregable EDA + features.
+1. Revisar los 122 topics E14 y congelar una taxonomía manual de 25–40 motivos.
+2. Ejecutar E13 sobre las mismas filas para decidir R0, R1 o su combinación.
+3. Aplicar la taxonomía al corpus completo y construir hashes/splits completos.
+4. Regenerar la representación ganadora sobre todo train/validation/test y auditar FX.
+5. Completar F5, actualizar este informe y renderizar el entregable EDA + features.
 6. Confirmar con fuentes externas qué originó el quiebre de 2026 (@sec-quiebre); mientras
    tanto se conserva como stress test OOD separado.
 
@@ -1356,18 +1470,17 @@ Todo el contenido de este informe se regenera desde el dato crudo con:
 
 ```bash
 uv sync
-dvc pull                              # descarga el dataset versionado
-uv run python -m src.data.profile        # E1
-uv run python -m src.data.agregados      # D1b, E2, E3, E4, E7, E8, E9
-uv run python -m src.data.narrativa      # E5, E6  (dos pasadas por la narrativa)
-uv run python -m src.evaluation.slices   # E11
-# Cuando las etapas pendientes estén implementadas:
-# uv run dvc repro                        # F2-F5, E12-E14 y artefactos
-uv run quarto render reports/informe     # este documento
+dvc pull                                 # descarga artefactos versionados
+uv run python -m src.data.profile         # E1
+uv run python -m src.data.agregados       # D1b, E2, E3, E4, E7, E8, E9
+uv run python -m src.data.narrativa       # E5, E6
+uv run python -m src.evaluation.slices    # E11
+uv run dvc repro                          # F2, R0, R1, E12 y E14 implementados
+uv run quarto render reports/informe      # este documento
 ```
 
-El informe lee exclusivamente los CSV de `reports/artefactos/`, nunca el parquet de
-1.6 GB. Las secciones sin artéfacto se marcan como pendientes en lugar de fallar, así que
+El informe lee exclusivamente los CSV de `reports/artefactos/`, nunca los Parquet o matrices
+grandes. Las secciones sin artefacto se marcan como pendientes en lugar de fallar, así que
 el documento siempre compila.
 
 # Nota sobre uso de IA generativa {.appendix .unnumbered}
