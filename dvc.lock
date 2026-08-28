@@ -293,3 +293,120 @@ stages:
       hash: md5
       md5: 62d18f98fde55aa18ae5d93f083cf93d
       size: 318
+  e14_clustering:
+    cmd: uv run python -m src.data.cluster_evidence
+    deps:
+    - path: data/interim/eda_sample.parquet
+      hash: md5
+      md5: 7eb58e21982828c3f3e7152ad37cca21
+      size: 53721622
+    - path: data/processed/e14_masked_embeddings.npy
+      hash: md5
+      md5: 91e50aa360692060b63230e82b01f03a
+      size: 112914560
+    - path: data/processed/e14_train_index.parquet
+      hash: md5
+      md5: 7f5c81576b75247b567dd60bcdced3a8
+      size: 3434266
+    - path: data/processed/r1_embeddings.npy
+      hash: md5
+      md5: 889dd0319804fae2341fd4f8a389d0df
+      size: 198701696
+    - path: data/processed/r1_hash_index.parquet
+      hash: md5
+      md5: 0252d03c84e8376d138763c3c1631062
+      size: 3035080
+    - path: src/data/cluster_evidence.py
+      hash: md5
+      md5: 9ccc157a3db6453064c8a8cadd4b8640
+      size: 22418
+    - path: src/features/e14_prepare.py
+      hash: md5
+      md5: b93cfa8f8c517f95df54698ce06ab83e
+      size: 9881
+    - path: src/features/text.py
+      hash: md5
+      md5: e7eeacd93dfa600e2f763b2725aacb59
+      size: 4073
+    - path: src/paths.py
+      hash: md5
+      md5: 7bcaff4d98841997471c8e2e43928977
+      size: 748
+    params:
+      params.yaml:
+        clustering:
+          svd_components: 100
+          kmeans_clusters: 40
+          umap:
+            n_components: 12
+            n_neighbors: 30
+            min_dist: 0.0
+            metric: cosine
+          hdbscan:
+            min_cluster_size: 100
+            min_samples: 20
+            metric: euclidean
+          bertopic:
+            top_n_words: 10
+            calculate_probabilities: false
+        e14:
+          company_mask:
+            min_alias_chars: 5
+          umap_seeds:
+          - 42
+          - 43
+          - 44
+          kmeans_clusters:
+          - 30
+          - 40
+          - 50
+          hdbscan_min_cluster_sizes:
+          - 50
+          - 100
+          - 200
+          silhouette_sample_size: 5000
+          topic_max_features: 30000
+        embedding.max_seq_length: 256
+        random_seed: 42
+        tfidf:
+          word:
+            ngram_range:
+            - 1
+            - 2
+            min_df: 3
+            max_df: 0.98
+            max_features: 150000
+            sublinear_tf: true
+          char:
+            analyzer: char_wb
+            ngram_range:
+            - 3
+            - 5
+            min_df: 3
+            max_features: 150000
+            sublinear_tf: true
+    outs:
+    - path: data/processed/e14_assignments.parquet
+      hash: md5
+      md5: 620eeaf1849fe287e371b4d8f6281e61
+      size: 16143265
+    - path: data/processed/e14_manifest.json
+      hash: md5
+      md5: 9c1a821033aec1f723464ace063f2b9b
+      size: 3729
+    - path: data/processed/e14_projection.parquet
+      hash: md5
+      md5: 2c7b7fbc8db61bef4988059e4af80ead
+      size: 11883920
+    - path: reports/artefactos/e14_clusters.csv
+      hash: md5
+      md5: dc1e80c1e7facd0f5be39deb1d097314
+      size: 5508
+    - path: reports/artefactos/e14_stability.csv
+      hash: md5
+      md5: 4dbabccf9cbd5a1bd0ff0fb243041029
+      size: 1133
+    - path: reports/artefactos/e14_topics.csv
+      hash: md5
+      md5: 0ed5f027444ac485e70c0e13404e9f66
+      size: 152374

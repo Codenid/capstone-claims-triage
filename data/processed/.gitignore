@@ -11,3 +11,6 @@
 /e14_train_index.parquet
 /e14_masked_embeddings.npy
 /e14_prepare_manifest.json
+/e14_assignments.parquet
+/e14_projection.parquet
+/e14_manifest.json

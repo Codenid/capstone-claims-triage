@@ -95,3 +95,29 @@ stages:
       - data/processed/e14_masked_embeddings.npy
       - data/processed/e14_prepare_manifest.json
       - reports/artefactos/e14_company_ablation.csv
+
+  e14_clustering:
+    cmd: uv run python -m src.data.cluster_evidence
+    deps:
+      - data/interim/eda_sample.parquet
+      - data/processed/e14_train_index.parquet
+      - data/processed/e14_masked_embeddings.npy
+      - data/processed/r1_embeddings.npy
+      - data/processed/r1_hash_index.parquet
+      - src/data/cluster_evidence.py
+      - src/features/e14_prepare.py
+      - src/features/text.py
+      - src/paths.py
+    params:
+      - random_seed
+      - tfidf
+      - e14
+      - clustering
+      - embedding.max_seq_length
+    outs:
+      - data/processed/e14_assignments.parquet
+      - data/processed/e14_projection.parquet
+      - data/processed/e14_manifest.json
+      - reports/artefactos/e14_clusters.csv
+      - reports/artefactos/e14_stability.csv
+      - reports/artefactos/e14_topics.csv
