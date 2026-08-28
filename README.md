@@ -1,245 +1,296 @@
 # Triaje automático de reclamos financieros
 
 Sistema de apoyo para clasificar, priorizar y gestionar reclamos financieros a partir de la
-narrativa disponible al momento de ingreso. El proyecto utiliza datos históricos del
-Consumer Financial Protection Bureau (CFPB) y termina en un mockup web donde un agente
-humano conserva la decisión final.
+información disponible cuando ingresa un caso. El proyecto usa reclamos públicos del
+**Consumer Financial Protection Bureau (CFPB)** como proxy y sigue **CRISP-DM** para separar
+comprensión, preparación, modelado y despliegue.
 
-> El dataset CFPB es un proxy del caso de negocio, no evidencia de que el modelo pueda
-> desplegarse sin validación en una institución concreta. La transferencia de dominio y el
-> efecto de `Company` deben medirse explícitamente.
+> **Resumen para revisión rápida:** el raw completo contiene **3,837,184 reclamos**. Ya se
+> completaron el EDA E1–E12, el tipado del corpus completo, el baseline TF-IDF y los
+> embeddings MiniLM locales sobre una muestra experimental. El siguiente paso es **E14** para
+> estudiar estructura temática en train. La muestra de 175k sirve para decidir features; no
+> reemplaza la creación posterior de features sobre el corpus completo de modelado.
 
-## Alcance actual
+## 1. Valor para el negocio
 
-El **Informe I** cubre:
+Al recibir un reclamo, un banco necesita decidir rápidamente quién debe atenderlo, qué casos
+requieren revisión prioritaria y cuánto tiempo queda para responder. El sistema propone cuatro
+señales, pero mantiene la decisión final en una persona:
 
-- EDA E1-E14;
-- contrato de disponibilidad F0/F1/FX;
-- tipado y validación del esquema;
-- canonicalización de la taxonomía;
-- agrupación de narrativas repetidas y splits temporales;
-- features tabulares, TF-IDF R0 y embeddings locales R1;
-- DVC para reproducir datos, features y artefactos del informe.
-
-E12 y E13 entrenan modelos pequeños únicamente como sondas para medir señal. La selección
-final de modelos, la simulación de bandeja y el agente redactor pertenecen a fases
-posteriores.
-
-## Caso de negocio
-
-Cuando llega un reclamo nuevo no conocemos `Product` ni `Issue`. El sistema solo puede usar
-información disponible al ingreso —F0— para producir cuatro recomendaciones:
-
-| Target | Pregunta que responde | Uso operativo |
+| Target | Pregunta | Uso operativo |
 |---|---|---|
-| **T1** | ¿Cuál es el motivo probable? | Enrutamiento al equipo correcto |
-| **T2** | ¿Cuál es la probabilidad de relief registrado? | Priorización como proxy de complejidad |
-| **T3** | ¿Cuál es la probabilidad de relief monetario? | Ranking de riesgo monetario, no estimación de monto |
-| **T4** | ¿Cuál es el riesgo histórico de responder tarde? | Complemento predictivo del semáforo |
+| **T1** | ¿Cuál es el motivo probable? | Enrutamiento y top-3 de equipos sugeridos |
+| **T2** | ¿Cuál es la probabilidad de *relief* registrado? | Priorización como proxy de complejidad |
+| **T3** | ¿Cuál es la probabilidad de *relief* monetario? | Ranking de riesgo monetario; no predice monto |
+| **T4** | ¿Cuál es el riesgo histórico de respuesta tardía? | Complemento del semáforo de plazo |
 
-El semáforo combina T4 con una regla determinista de fecha límite y días restantes. T3 no
-estima costo económico porque el dataset no contiene el monto pagado.
+T4 no sustituye la regla de vencimiento: el semáforo combina el score predictivo con fecha
+límite y días restantes. El dataset no contiene el monto pagado, por lo que T3 no puede estimar
+costo económico.
 
-## Flujo del sistema
+## 2. Estado del proyecto en CRISP-DM
 
 ```mermaid
 flowchart TD
-    A[Nuevo reclamo] --> B[Datos F0]
-    B --> C[Saneo y validación]
-    C --> D[Features tabulares]
-    C --> E[R0 TF-IDF]
-    C --> F[R1 embedding local]
-    D --> G[Modelos calibrados]
-    E --> G
-    F --> G
-    G --> T1[T1 motivo y equipo]
-    G --> T2[T2 probabilidad de relief]
-    G --> T3[T3 probabilidad monetaria]
-    G --> T4[T4 riesgo de tardanza]
-    B --> H[Regla de fecha límite]
-    T1 --> I[Motor de triaje]
-    T2 --> I
-    T3 --> I
-    T4 --> I
-    H --> I
-    I --> J[Prioridad, equipo y semáforo]
-    C --> K[Casos similares y políticas aprobadas]
-    J --> L[Agente LangGraph]
-    K --> L
-    L --> M[Borrador recomendado]
-    M --> N[Guardrails]
-    N --> O[Revisión humana obligatoria]
-    O --> P[Aprobar, editar o rechazar]
+    A[1. Comprensión del negocio<br/>T1-T4 y flujo humano] --> B[2. Comprensión de datos<br/>EDA E1-E14]
+    B --> C[3. Preparación<br/>tipado, taxonomía, hashes, splits, features]
+    C --> D[4. Modelado<br/>modelos finales y calibración]
+    D --> E[5. Evaluación<br/>métricas y simulación de bandeja]
+    E --> F[6. Despliegue<br/>mockup web y LangGraph]
+    F -. retroalimentación .-> A
 ```
 
-Los modelos T1-T4 y el agente LLM son componentes separados. El agente consume scores y
-fuentes, pero no modifica los modelos ni convierte su texto automáticamente en features o
-etiquetas.
+| Etapa CRISP-DM | Estado | Evidencia principal |
+|---|---|---|
+| 1. Comprensión del negocio | Completada para Informe I | T1–T4, F0/F1/FX y arquitectura humana |
+| 2. Comprensión de datos | En curso | E1–E12 completos; E13–E14 pendientes |
+| 3. Preparación | En curso | Tipado completo; taxonomía, splits y features finales pendientes |
+| 4. Modelado | No iniciado formalmente | E12 es una sonda diagnóstica, no selección final |
+| 5. Evaluación | Diseñada | Split temporal, vista purgada, calibración y métricas de capacidad |
+| 6. Despliegue | Diseñado | Streamlit/LangGraph, todavía fuera del Informe I |
 
-## Datos disponibles y fuga
+El **Informe I** cubre EDA y creación/auditoría de features. La optimización de modelos y la
+app pertenecen a entregables posteriores.
 
-| Tier | Disponibilidad | Uso |
+## 3. Datos y contrato anti-fuga
+
+El raw contiene 3,837,184 reclamos con narrativa. Está versionado con DVC y nunca se modifica
+manualmente.
+
+| Tier | Cuándo existe | Uso permitido |
 |---|---|---|
 | **F0** | Al ingresar el reclamo | Features desplegables |
-| **F1** | Taxonomía declarada en el histórico CFPB | Etiqueta de T1 y diagnóstico; no feature del mockup |
-| **FX** | Después de la gestión o respuesta | Targets y evaluación; nunca features |
+| **F1** | Taxonomía histórica CFPB | Etiqueta/diagnóstico; no feature en producción |
+| **FX** | Después de gestionar el caso | Targets y evaluación; nunca features |
 
-Ejemplos FX: `Company response to consumer`, `Timely response?` y `Date sent to company`.
-Usarlos como predictores produciría fuga de información.
+Ejemplos F1: `Product`, `Issue`. Ejemplos FX: `Company response to consumer`,
+`Timely response?`, `Date sent to company`. Usarlos como predictores produciría fuga porque
+no se conocen al momento del triaje.
 
-## Representaciones del texto
+### Resultado del tipado completo
 
-- **R0:** TF-IDF de palabras y caracteres, longitud, montos/fechas detectados, bloques
-  `XXXX` y señales léxicas deterministas.
-- **R1:** embeddings locales, inicialmente `all-MiniLM-L6-v2`, calculados una vez por
-  `hash_narrativa`.
-- **LLM:** no es R2 ni una feature. Se utiliza después de T1-T4 para redactar un borrador
-  sujeto a grounding, guardrails y aprobación humana.
+`data/interim/tipado.parquet` contiene **todas las 3,837,184 filas**, no una muestra:
 
-E13 compara F0, R0, R1 y sus combinaciones sobre exactamente las mismas filas y splits.
+- fechas en `timestamp[ns]` e ID en `int64` único;
+- categorías y dominios validados;
+- `Tags` convertido en `is_servicemember` e `is_older_adult`;
+- nulos informativos con flags explícitos;
+- targets T1–T4 derivados y auditados;
+- memoria no-texto de 1,470.6 MiB a 227.2 MiB al aplicar categorías: **−84.55%**;
+- Parquet Zstandard de 750.17 MiB, publicado en DVC.
 
-## ¿Qué significa deduplicar?
+## 4. Grafo de transformación de datos
 
-La deduplicación es principalmente **agrupación analítica**, no borrado de reclamos. Dos
-filas pueden compartir una plantilla y aun así representar personas y outcomes distintos.
+La rama de muestra sirve para experimentar. Sus resultados vuelven al corpus completo como
+**decisiones**, no como un dataset final de entrenamiento.
 
-El hash del texto se utiliza para:
+```mermaid
+flowchart TD
+    A[Raw CFPB<br/>3,837,184 filas<br/>DVC] --> B[Fase 2<br/>tipado y validación completos]
+    B --> C[tipado.parquet<br/>3,837,184 filas]
+
+    A --> D[Muestra experimental temporal<br/>175,000 filas]
+    D --> D1[Train 2023-2024<br/>100,000]
+    D --> D2[Validation 2025 H1<br/>25,000]
+    D --> D3[Test 2025 H2<br/>25,000]
+    D --> D4[OOD 2026<br/>25,000]
+
+    D1 --> E[R0 experimental<br/>TF-IDF word + char]
+    D1 --> F[R1 experimental<br/>MiniLM por hash]
+    E --> G[E12<br/>piso de señal]
+    E --> H[E13<br/>comparación controlada]
+    F --> H
+    E --> I[E14 control<br/>SVD + KMeans]
+    F --> J[E14 semántico<br/>UMAP + HDBSCAN]
+    J --> K[c-TF-IDF<br/>topics y términos]
+    I --> L[Evidencia de estructura]
+    K --> L
+
+    H --> M{Gate de representación}
+    L --> N[Revisión humana<br/>taxonomia.yaml]
+
+    C --> O[Fase 3<br/>aplicar taxonomía al corpus completo]
+    N --> O
+    O --> P[canonico.parquet]
+    P --> Q[Fase 4<br/>hashes y splits completos]
+
+    Q --> R[Train completo<br/>2023-2024]
+    Q --> S[Validation completo<br/>2025 H1]
+    Q --> T[Test completo<br/>2025 H2]
+    Q --> U[OOD completo<br/>2026]
+
+    M --> V[Fase 5<br/>construcción final de features]
+    R --> V
+    S --> V
+    T --> V
+    U --> V
+
+    V -->|R0 gana| W[Reajustar TF-IDF<br/>con todo train]
+    V -->|R1 gana| X[Embeddings de todos<br/>los hashes del alcance]
+    V -->|R0 + R1 gana| Y[Construir ambas]
+
+    W --> Z[features train/val/test]
+    X --> Z
+    Y --> Z
+```
+
+### Muestra frente a corpus completo
+
+```text
+Muestra de 175k
+    → E12-E14, comparación de costo/señal y decisión de representación
+
+Corpus completo dentro del régimen de modelado
+    → taxonomía, hashes, splits y features definitivas
+```
+
+Si gana R0, el vocabulario y el IDF se reajustan exclusivamente con **todo el train completo**.
+Si gana R1, MiniLM se ejecuta para **todos los hashes únicos** del corpus en alcance; los hashes
+ya calculados en la muestra se reutilizan.
+
+Los datos anteriores a 2023 se conservan para análisis histórico. El modelo principal usa
+2023–2025; 2026 se mantiene separado como prueba OOD.
+
+## 5. ¿Qué es OOD 2026?
+
+**OOD** significa *Out Of Distribution*. En 2026 cambian fuertemente las prevalencias de T2,
+T3 y T4, lo que indica otro proceso generador.
+
+- No se mezcla con train, validation ni test principal.
+- No se usa para elegir features, hiperparámetros o umbrales.
+- Se aplica al final como prueba de estrés ante deriva.
+
+## 6. Representaciones y experimentos E12–E14
+
+### R0 — TF-IDF
+
+TF-IDF de palabras y caracteres ajustado solo con train. La matriz experimental actual tiene
+175,000 filas, 248,473 columnas sparse y está almacenada como `.npz` en DVC.
+
+### R1 — MiniLM local
+
+`sentence-transformers/all-MiniLM-L6-v2`, fijado a una revisión específica. Se calculó una vez
+por `hash_narrativa`:
+
+- 129,363 textos únicos de la muestra;
+- 384 dimensiones `float32` normalizadas;
+- 189.5 MiB;
+- procesamiento local, sin API ni costo por token.
+
+El entorno CUDA ya reconoce una GTX 1650 mediante `torch 2.11.0+cu128`. El primer cache R1 se
+generó en CPU y su manifiesto lo registra; las futuras codificaciones pueden usar GPU.
+
+### E12 — piso de señal
+
+Usa TF-IDF y modelos lineales escalables. No selecciona el modelo final. Reporta métricas
+adecuadas al desbalance y dos vistas:
+
+- **operacional:** permite plantillas recurrentes;
+- **purgada:** excluye de evaluación hashes vistos en train.
+
+### E13 — ¿aporta valor R1?
+
+Comparará R0 y R1 sobre exactamente las mismas filas, splits y clasificador. El gate considera
+métrica, memoria, latencia y costo de generación.
+
+### E14 — estructura latente
+
+Se ajustará únicamente con textos únicos de train:
+
+1. control R0 → SVD → KMeans;
+2. R1 → UMAP 10–15D → HDBSCAN;
+3. c-TF-IDF para describir topics sin LLM;
+4. estabilidad, ruido, pureza y ARI/NMI;
+5. contraste con nombres de empresa enmascarados.
+
+E14 aporta evidencia para proponer la taxonomía; nunca la cambia automáticamente.
+
+## 7. ¿Qué significa deduplicar?
+
+No significa borrar reclamos. Dos eventos pueden compartir una plantilla y tener personas,
+empresas o resultados diferentes.
+
+El hash normalizado se usa para:
 
 1. calcular embeddings una sola vez;
-2. evitar que miles de copias dominen E14;
-3. detectar memorización de plantillas;
-4. auditar grupos con productos o targets contradictorios.
+2. evitar que plantillas masivas dominen E14;
+3. detectar conflictos de producto/issue/targets;
+4. medir memorización mediante la vista purgada.
 
-Se conservan dos evaluaciones:
-
-- **operacional:** una plantilla de train puede reaparecer en periodos posteriores;
-- **texto nuevo:** validación/test purga hashes vistos en train.
-
-La segunda mide generalización; la primera aproxima la bandeja real.
-
-## Orden para cerrar E12-E14 y crear features
+## 8. Pipeline DVC implementado
 
 ```mermaid
 flowchart TD
-    A[Raw versionado] --> B[Fijar fronteras temporales]
-    B --> C[Tipado y targets]
-    C --> D[Hash y repetidos]
-    D --> E[Muestra solo de train]
-    E --> F[Embedding local]
-    F --> G[E14 clustering en train]
-    G --> H[Congelar taxonomía]
-    H --> I[Splits completos]
-    I --> J[E12 baseline R0]
-    F --> K[E13 R0 frente a R1]
-    I --> K
-    J --> L[Features F0/R0/R1]
-    K --> L
-    L --> M[Informe Quarto]
+    A[raw.parquet] --> B[type_full_corpus]
+    A --> C[prepare_eda_sample]
+    C --> D[build_tfidf]
+    D --> E[e12_baseline]
+    C --> F[build_embeddings]
+    D -. siguiente .-> G[E14]
+    F -. siguiente .-> G
+    G -.-> H[canonicalize full]
+    H -.-> I[split full]
+    I -.-> J[features full]
+    J -.-> K[E13/modelado]
 ```
 
-- **E12:** word+character TF-IDF y modelo lineal como piso de señal.
-- **E13:** comparación controlada de TF-IDF y embedding local.
-- **E14:** UMAP/HDBSCAN sobre textos únicos de train, repetido con nombres de empresa
-  enmascarados y contrastado con TF-IDF/SVD/KMeans.
-
-El clustering aporta evidencia para la taxonomía; no la modifica automáticamente.
-
-## Pipeline DVC
-
-El parquet crudo ya está versionado con DVC y un remoto DagsHub. Las transformaciones deben
-incorporarse a `dvc.yaml` para que datos, parámetros, features y resultados sean
-reproducibles.
-
-```mermaid
-flowchart TD
-    A[raw.parquet] --> B[typing]
-    B --> C[hash y repetidos]
-    C --> D[embeddings local]
-    D --> E[E14]
-    E --> F[canonicalize]
-    F --> G[split]
-    G --> H[features R0/R1]
-    H --> I[E12/E13]
-    I --> J[artefactos CSV]
-    J --> K[informe Quarto]
-```
-
-Persistencia prevista:
-
-```text
-data/interim/       Parquets tipados, hashes, taxonomía y splits
-data/processed/     Manifiestos y tabulares por split
-                     TF-IDF sparse en .npz
-                     embeddings en .npy + índice Parquet
-models/encoders/    Vocabularios, escaladores y codificadores
-reports/artefactos/ CSV pequeños consumidos por Quarto
-```
-
-DVC versiona hashes y dependencias; Git versiona `dvc.yaml`, `dvc.lock`, `params.yaml`,
-código, configuraciones y documentación.
-
-## Propuestas de modelos
-
-| Target | Baseline | Candidatos posteriores |
+| Etapa DVC | Salida | Estado |
 |---|---|---|
-| T1 | TF-IDF + LogReg/SGD log-loss | R1 + lineal, fusión R0/R1, transformer ligero |
-| T2 | logística regularizada y calibrada | LightGBM/CatBoost sobre F0+R1 |
-| T3 | logística con pesos | LightGBM, cascada T2→T3, outcome multiclase |
-| T4 | logística R0 + historial F0 | LightGBM/CatBoost + calibración temporal |
+| `type_full_corpus` | `tipado.parquet` + auditoría | Completa |
+| `prepare_eda_sample` | muestra, hashes y conflictos | Completa |
+| `build_tfidf` | matriz R0, índice y vectorizadores | Completa |
+| `e12_baseline` | métricas y predicciones diagnósticas | Completa |
+| `build_embeddings` | cache R1, índice y manifiesto | Completa |
+| `e14` | clusters, topics y estabilidad | Siguiente |
+| `canonicalize/split/features` | artefactos completos por split | Pendiente del gate |
 
-No se propone una GNN porque el dato no contiene un grafo natural. PyMC puede utilizarse de
-forma opcional sobre conteos agregados para tasas jerárquicas e incertidumbre de T3/T4, no
-como clasificador de millones de textos.
+DVC versiona datos y matrices; Git versiona `dvc.yaml`, `dvc.lock`, `params.yaml`, código,
+contratos y documentación.
 
-## Mockup web y agente
+## 9. Arquitectura futura del sistema
 
-La primera versión puede implementarse en Streamlit. La pantalla debería incluir:
-
-- formulario con narrativa y metadatos F0;
-- top-3 de T1 y confianza;
-- probabilidades calibradas T2-T4;
-- fecha límite, días restantes y semáforo;
-- casos similares y fuentes aprobadas;
-- borrador editable;
-- alertas de grounding/PII;
-- acciones aprobar, editar y rechazar.
-
-LangGraph coordinará saneo, inferencia, recuperación, redacción, validación y una
-interrupción de revisión humana. El agente no tendrá permiso para enviar respuestas.
-
-## Estructura
-
-```text
-configs/             Contratos, taxonomía, features, embeddings y modelos
-data/raw/            Fuente inmutable versionada con DVC
-data/interim/        Transformaciones intermedias
-data/processed/      Features entrenables
-src/data/            Tipado, taxonomía, repetidos, splits y E14
-src/features/        R0, R1 y ensamblado
-src/models/          Baselines y modelos T1-T4
-src/evaluation/      Métricas, calibración, cortes y simulación
-reports/artefactos/  Resultados pequeños por etapa
-reports/informe/     Informe Quarto
+```mermaid
+flowchart TD
+    A[Nuevo reclamo] --> B[Validar y sanear F0]
+    B --> C[Features seleccionadas]
+    C --> D[Modelos calibrados T1-T4]
+    D --> E[Motor de triaje<br/>equipo, prioridad y riesgo]
+    B --> F[Regla de plazo legal]
+    F --> E
+    E --> G[Scores y casos similares]
+    G --> H[Agente LangGraph]
+    H --> I[Borrador con fuentes aprobadas]
+    I --> J[Guardrails de PII y cumplimiento]
+    J --> K[Revisión humana obligatoria]
+    K --> L[Aprobar, editar o rechazar]
 ```
 
-## Reproducibilidad actual
+Los modelos y el LLM son componentes separados. LangGraph consume scores y fuentes para
+redactar, pero no redefine etiquetas ni envía respuestas automáticamente.
+
+## 10. Reproducibilidad
 
 ```bash
 uv sync
 dvc pull
-uv run python -m src.data.profile
-uv run python -m src.data.agregados
-uv run python -m src.data.narrativa
-uv run python -m src.evaluation.slices
-uv run quarto render reports/informe
-```
-
-Cuando se implemente el DAG de transformaciones, la ejecución principal será:
-
-```bash
 uv run dvc repro
 uv run quarto render reports/informe
 ```
 
-Consulta `docs/plan-eda-y-transformacion.md` para las decisiones, gates, riesgos y métricas
-detalladas.
+Estructura principal:
+
+```text
+configs/             Contratos, taxonomía y parámetros
+data/raw/            Fuente inmutable DVC
+data/interim/        Tipado, taxonomía, hashes y splits
+data/processed/      Matrices sparse, embeddings e índices
+src/data/            Preparación y E14
+src/features/        R0, R1 y ensamblado
+src/models/          Sondas y modelos T1-T4
+src/evaluation/      Métricas, calibración y cortes
+reports/artefactos/  CSV pequeños para Quarto
+reports/informe/     Informe reproducible
+```
+
+Para decisiones, riesgos y métricas detalladas consulta
+[`docs/plan-eda-y-transformacion.md`](docs/plan-eda-y-transformacion.md).
