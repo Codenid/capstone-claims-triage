@@ -5143,7 +5143,8 @@ z-index: 1000;
   <li><a href="#estabilidad-y-atajo-por-empresa" id="toc-estabilidad-y-atajo-por-empresa" class="nav-link" data-scroll-target="#estabilidad-y-atajo-por-empresa"><span class="header-section-number">11.4.1</span> Estabilidad y atajo por empresa</a></li>
   <li><a href="#topics-c-tf-idf" id="toc-topics-c-tf-idf" class="nav-link" data-scroll-target="#topics-c-tf-idf"><span class="header-section-number">11.4.2</span> Topics c-TF-IDF</a></li>
   </ul></li>
-  <li><a href="#sec-features" id="toc-sec-features" class="nav-link" data-scroll-target="#sec-features"><span class="header-section-number">11.5</span> Fases 2-5 — Del parquet crudo a matrices entrenables</a></li>
+  <li><a href="#sec-cierre-crisp2" id="toc-sec-cierre-crisp2" class="nav-link" data-scroll-target="#sec-cierre-crisp2"><span class="header-section-number">11.5</span> Cierre de CRISP-DM 2 — Comprensión de los Datos</a></li>
+  <li><a href="#sec-features" id="toc-sec-features" class="nav-link" data-scroll-target="#sec-features"><span class="header-section-number">11.6</span> Preparación CRISP-DM — Fases técnicas 2-5</a></li>
   </ul></li>
   <li><a href="#sec-quiebre" id="toc-sec-quiebre" class="nav-link" data-scroll-target="#sec-quiebre"><span class="header-section-number">12</span> El quiebre de 2026</a></li>
   <li><a href="#sec-decisiones" id="toc-sec-decisiones" class="nav-link" data-scroll-target="#sec-decisiones"><span class="header-section-number">13</span> Decisiones de diseño registradas</a></li>
@@ -5190,16 +5191,17 @@ z-index: 1000;
 
 <section id="resumen-ejecutivo" class="level1 unnumbered">
 <h1 class="unnumbered">Resumen ejecutivo</h1>
-<p>Este informe documenta la <strong>exploración y creación de features</strong> del proyecto de triaje automático de reclamos financieros. Su alcance termina en matrices F0/R0/R1 validadas y versionadas. E12 y E13 usan clasificadores pequeños como sondas para medir señal y comparar representaciones; no son la selección final de modelos, que pertenece al Informe II. El mockup web y el agente redactor se describen para fijar el destino de las features, pero no forman parte del entregable de este informe.</p>
+<p>Este informe documenta la <strong>exploración y creación de features</strong> del proyecto de triaje automático de reclamos financieros. Esta versión cierra la etapa 2 de CRISP-DM —Comprensión de los Datos— con E1-E14 completos y deja iniciada la etapa 3 con el tipado del corpus completo. E12 y E13 usan clasificadores pequeños como sondas para medir señal y comparar representaciones; no son la selección final de modelos, que pertenece al Informe II. El mockup web y el agente redactor se describen para fijar el destino de las features, pero no forman parte del entregable de este informe.</p>
 <p><strong>El dato.</strong> 3,837,184 reclamos del <em>Consumer Financial Protection Bureau</em> (CFPB) con narrativa escrita por el consumidor, 16 columnas, marzo 2015 – julio 2026. Todas las columnas llegan como texto y ocupan <strong>5.12 GB</strong> en memoria, de los cuales el 72% es la narrativa. De las 3,837,184 filas, solo <strong>2,583,683 narrativas son únicas</strong> (67.3%): casi un tercio del corpus son textos repetidos, casi siempre plantillas.</p>
-<p><strong>Cuatro hallazgos que cambian el alcance.</strong></p>
+<p><strong>Cinco hallazgos que cambian el alcance.</strong></p>
 <ol type="1">
 <li><p><strong>El objetivo prometido en la propuesta no existe en el dato.</strong> Las diapositivas ofrecían predecir <em>riesgo de disputa</em> usando el campo «Disputa del consumidor». Ese campo no está entre las 16 columnas: el CFPB dejó de publicarlo en 2017. El objetivo se redefine como <strong>¿la respuesta final registró algún relief?</strong>, declarado explícitamente como <em>proxy</em> y no como prueba de obligación, validez o disputa.</p></li>
 <li><p><strong>La variable de resultado no es binaria.</strong> <code>Company response to consumer</code> tiene seis valores, no dos, y uno de ellos marca casos aún sin resolver. Tratarlos como «no hubo compensación» habría metido ruido dirigido en la etiqueta. La regla caso por caso está en la <a href="#sec-targets" class="quarto-xref">Sección 3</a>.</p></li>
 <li><p><strong>La tasa base se mueve más que cualquier modelo.</strong> La proporción de reclamos con compensación pasa de 20% en 2015 a 11% en 2020, 46% en 2024 y 37% en 2025. Entrenar sobre la historia completa es entrenar sobre un fenómeno que ya no existe: el dataset principal se restringe al régimen <strong>2023-2025</strong>.</p></li>
 <li><p><strong>2026 es un régimen distinto y hubo que excluirlo del conjunto de prueba.</strong> El volumen cae 61% en un solo mes, la composición por producto se da vuelta y las tres tasas base se invierten a la vez. La explicación fácil —casos aún abiertos— queda descartada por el propio dato. El detalle está en <a href="#sec-quiebre" class="quarto-xref">Sección 12</a>; es el hallazgo que más afecta el diseño de la evaluación.</p></li>
+<li><p><strong>El embedding local no reemplaza a TF-IDF como feature predictiva.</strong> E13 encuentra que R1 solo pierde frente a R0 en T1-T3 y empata T4. La fusión R0+R1 mejora modestamente T1, pero empeora los outcomes y aumenta memoria. R0 queda como representación principal; R1 se conserva para estructura temática y recuperación futura (<a href="#sec-e13" class="quarto-xref">Sección 11.3</a>).</p></li>
 </ol>
-<p><strong>Avance.</strong> 13 de 20 etapas del pipeline tienen su artefacto producido y verificado (<a href="#sec-estado" class="quarto-xref">Sección 1</a>).</p>
+<p><strong>Avance.</strong> 14 de 20 etapas del pipeline tienen su artefacto producido y verificado (<a href="#sec-estado" class="quarto-xref">Sección 1</a>).</p>
 </section>
 <section id="sec-estado" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Estado del pipeline</h1>
@@ -5301,7 +5303,7 @@ z-index: 1000;
 <td style="text-align: left;">E13</td>
 <td style="text-align: left;">EDA</td>
 <td style="text-align: left;">¿Vale un embedding? TF-IDF vs embedding local</td>
-<td style="text-align: left;">pendiente</td>
+<td style="text-align: left;">listo</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">E14</td>
@@ -6883,21 +6885,201 @@ Tabla 12: Cortes por <code>State</code> en el régimen 2023-2025, ordenados por
 </section>
 <section id="sec-e13" class="level2" data-number="11.3">
 <h2 data-number="11.3" class="anchored" data-anchor-id="sec-e13"><span class="header-section-number">11.3</span> E13 — ¿Aporta R1 local?</h2>
-<p>Sobre exactamente las mismas filas, splits y clasificadores, E13 compara: F0 tabular, R0, F0+R0, R1 local, F0+R1 y F0+R0+R1. La primera implementación usa <code>all-MiniLM-L6-v2</code>; sus vectores se cachean por <code>hash_narrativa</code>. El criterio es mejora predictiva, memoria y latencia, no que el método sea más moderno.</p>
-<div class="callout callout-style-simple callout-warning callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-<span class="screen-reader-only">Advertencia</span>Pendiente — E13
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>¿Vale un embedding? TF-IDF vs embedding local. El artefacto <code>e13_embeddings.csv</code> todavía no existe; esta sección se completa sola al ejecutar:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.features.embeddings</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
-</div>
-</div>
+<p>E13 compara R0, R1 y R0+R1 sobre exactamente las mismas filas, targets, splits, pesos y <code>SGDClassifier</code>. La lectura principal vuelve a ser test 2025-H2 purgado. Además de la métrica, se registran tamaño de artefacto, RAM y latencia; el costo de generar MiniLM no está incluido en la inferencia del clasificador y se considera por separado.</p>
+<table class="table">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 12%">
+<col style="width: 13%">
+<col style="width: 6%">
+<col style="width: 10%">
+<col style="width: 11%">
+<col style="width: 12%">
+<col style="width: 10%">
+<col style="width: 17%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">target</th>
+<th style="text-align: left;">representation</th>
+<th style="text-align: left;">metric</th>
+<th style="text-align: right;">value</th>
+<th style="text-align: right;">delta_vs_r0</th>
+<th style="text-align: right;">artifact_mib</th>
+<th style="text-align: right;">ram_matrix_mib</th>
+<th style="text-align: right;">fit_seconds</th>
+<th style="text-align: right;">inference_ms_per_1000</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">T1</td>
+<td style="text-align: left;">R0_word_char</td>
+<td style="text-align: left;">macro_f1</td>
+<td style="text-align: right;">0.2227</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">950.351</td>
+<td style="text-align: right;">1579.35</td>
+<td style="text-align: right;">298.099</td>
+<td style="text-align: right;">116.871</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">T1</td>
+<td style="text-align: left;">R0_word_char</td>
+<td style="text-align: left;">top_3_accuracy</td>
+<td style="text-align: right;">0.7631</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">950.351</td>
+<td style="text-align: right;">1579.35</td>
+<td style="text-align: right;">298.099</td>
+<td style="text-align: right;">116.871</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">T2</td>
+<td style="text-align: left;">R0_word_char</td>
+<td style="text-align: left;">average_precision</td>
+<td style="text-align: right;">0.4526</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">950.351</td>
+<td style="text-align: right;">1579.35</td>
+<td style="text-align: right;">10.1521</td>
+<td style="text-align: right;">2.9393</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">T3</td>
+<td style="text-align: left;">R0_word_char</td>
+<td style="text-align: left;">average_precision</td>
+<td style="text-align: right;">0.3067</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">950.351</td>
+<td style="text-align: right;">1579.35</td>
+<td style="text-align: right;">10.0613</td>
+<td style="text-align: right;">2.9043</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">T4</td>
+<td style="text-align: left;">R0_word_char</td>
+<td style="text-align: left;">average_precision</td>
+<td style="text-align: right;">0.0373</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">950.351</td>
+<td style="text-align: right;">1579.35</td>
+<td style="text-align: right;">9.1701</td>
+<td style="text-align: right;">2.9028</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">T1</td>
+<td style="text-align: left;">R1_MiniLM</td>
+<td style="text-align: left;">macro_f1</td>
+<td style="text-align: right;">0.2118</td>
+<td style="text-align: right;">-0.0109</td>
+<td style="text-align: right;">192.391</td>
+<td style="text-align: right;">256.348</td>
+<td style="text-align: right;">61.4697</td>
+<td style="text-align: right;">1.5848</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">T1</td>
+<td style="text-align: left;">R1_MiniLM</td>
+<td style="text-align: left;">top_3_accuracy</td>
+<td style="text-align: right;">0.7165</td>
+<td style="text-align: right;">-0.0466</td>
+<td style="text-align: right;">192.391</td>
+<td style="text-align: right;">256.348</td>
+<td style="text-align: right;">61.4697</td>
+<td style="text-align: right;">1.5848</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">T2</td>
+<td style="text-align: left;">R1_MiniLM</td>
+<td style="text-align: left;">average_precision</td>
+<td style="text-align: right;">0.4438</td>
+<td style="text-align: right;">-0.0088</td>
+<td style="text-align: right;">192.391</td>
+<td style="text-align: right;">256.348</td>
+<td style="text-align: right;">2.515</td>
+<td style="text-align: right;">0.427</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">T3</td>
+<td style="text-align: left;">R1_MiniLM</td>
+<td style="text-align: left;">average_precision</td>
+<td style="text-align: right;">0.2341</td>
+<td style="text-align: right;">-0.0725</td>
+<td style="text-align: right;">192.391</td>
+<td style="text-align: right;">256.348</td>
+<td style="text-align: right;">2.388</td>
+<td style="text-align: right;">0.4389</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">T4</td>
+<td style="text-align: left;">R1_MiniLM</td>
+<td style="text-align: left;">average_precision</td>
+<td style="text-align: right;">0.0375</td>
+<td style="text-align: right;">0.0003</td>
+<td style="text-align: right;">192.391</td>
+<td style="text-align: right;">256.348</td>
+<td style="text-align: right;">2.3641</td>
+<td style="text-align: right;">0.3631</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">T1</td>
+<td style="text-align: left;">R0_plus_R1</td>
+<td style="text-align: left;">macro_f1</td>
+<td style="text-align: right;">0.2278</td>
+<td style="text-align: right;">0.005</td>
+<td style="text-align: right;">1142.74</td>
+<td style="text-align: right;">2092.04</td>
+<td style="text-align: right;">388.984</td>
+<td style="text-align: right;">128.437</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">T1</td>
+<td style="text-align: left;">R0_plus_R1</td>
+<td style="text-align: left;">top_3_accuracy</td>
+<td style="text-align: right;">0.7804</td>
+<td style="text-align: right;">0.0173</td>
+<td style="text-align: right;">1142.74</td>
+<td style="text-align: right;">2092.04</td>
+<td style="text-align: right;">388.984</td>
+<td style="text-align: right;">128.437</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">T2</td>
+<td style="text-align: left;">R0_plus_R1</td>
+<td style="text-align: left;">average_precision</td>
+<td style="text-align: right;">0.4517</td>
+<td style="text-align: right;">-0.0009</td>
+<td style="text-align: right;">1142.74</td>
+<td style="text-align: right;">2092.04</td>
+<td style="text-align: right;">12.095</td>
+<td style="text-align: right;">3.8643</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">T3</td>
+<td style="text-align: left;">R0_plus_R1</td>
+<td style="text-align: left;">average_precision</td>
+<td style="text-align: right;">0.2838</td>
+<td style="text-align: right;">-0.0229</td>
+<td style="text-align: right;">1142.74</td>
+<td style="text-align: right;">2092.04</td>
+<td style="text-align: right;">12.3801</td>
+<td style="text-align: right;">3.7446</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">T4</td>
+<td style="text-align: left;">R0_plus_R1</td>
+<td style="text-align: left;">average_precision</td>
+<td style="text-align: right;">0.0364</td>
+<td style="text-align: right;">-0.0008</td>
+<td style="text-align: right;">1142.74</td>
+<td style="text-align: right;">2092.04</td>
+<td style="text-align: right;">12.032</td>
+<td style="text-align: right;">3.6901</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Decisión del gate.</strong> R1 solo es más liviano y rápido para el clasificador, pero pierde 0.047 en top-3 de T1, 0.009 de PR-AUC en T2 y 0.073 en T3. R0+R1 mejora T1 (+0.005 macro-F1; +0.017 top-3), pero no mejora T2-T4 y eleva la matriz en RAM de 1,579 a 2,092 MiB. Para la preparación completa se selecciona <strong>R0 como feature textual principal</strong>. R1 no se escala todavía al corpus completo: se conserva para E14, búsqueda de casos similares y como challenger futuro específico de T1.</p>
 </section>
 <section id="sec-e14" class="level2" data-number="11.4">
 <h2 data-number="11.4" class="anchored" data-anchor-id="sec-e14"><span class="header-section-number">11.4</span> E14 — Estructura latente</h2>
@@ -7304,9 +7486,22 @@ Tabla 12: Cortes por <code>State</code> en el régimen 2023-2025, ordenados por
 <p>Los términos recuperan subtemas reconocibles —deuda no reconocida, consultas no autorizadas, robo de identidad y pagos tardíos—, pero también tokens de enmascarado como <code>xxxx</code>. Esa contaminación debe tratarse en la limpieza léxica antes de considerar <code>topic_id</code> como feature.</p>
 </section>
 </section>
-<section id="sec-features" class="level2" data-number="11.5">
-<h2 data-number="11.5" class="anchored" data-anchor-id="sec-features"><span class="header-section-number">11.5</span> Fases 2-5 — Del parquet crudo a matrices entrenables</h2>
-<p>El Informe I documenta cada transformación con entradas, parámetros, salidas, conteos y pruebas. La Fase 2 ya procesó el corpus completo:</p>
+<section id="sec-cierre-crisp2" class="level2" data-number="11.5">
+<h2 data-number="11.5" class="anchored" data-anchor-id="sec-cierre-crisp2"><span class="header-section-number">11.5</span> Cierre de CRISP-DM 2 — Comprensión de los Datos</h2>
+<p>La etapa se considera <strong>completada</strong> porque E1-E14 ya tienen método, parámetros, artefactos y conclusión reproducible. Quedan congeladas estas decisiones para pasar a Preparación:</p>
+<ul>
+<li>régimen principal 2023-2025 y 2026 como OOD;</li>
+<li>contrato anti-fuga F0/F1/FX;</li>
+<li>hash normalizado y doble vista operacional/purgada;</li>
+<li>R0 TF-IDF como representación predictiva principal;</li>
+<li>R1 reservado para topics, recuperación y challengers, no como feature global por defecto;</li>
+<li>E14 como evidencia para revisión humana, no como taxonomía automática.</li>
+</ul>
+<p>Que el tipado completo ya exista no contradice CRISP-DM: fue infraestructura mínima adelantada y marca el inicio iterativo de la etapa 3. Desde este punto no se añaden nuevos experimentos de comprensión; el trabajo continúa con taxonomía, hashes/splits completos y features finales.</p>
+</section>
+<section id="sec-features" class="level2" data-number="11.6">
+<h2 data-number="11.6" class="anchored" data-anchor-id="sec-features"><span class="header-section-number">11.6</span> Preparación CRISP-DM — Fases técnicas 2-5</h2>
+<p>El Informe I documenta cada transformación con entradas, parámetros, salidas, conteos y pruebas. La fase técnica de tipado ya procesó el corpus completo:</p>
 <table class="table">
 <thead>
 <tr class="header">
@@ -7406,7 +7601,7 @@ Tabla 12: Cortes por <code>State</code> en el régimen 2023-2025, ordenados por
 </div>
 <div class="callout-body-container callout-body">
 <p>Matrices F0/R0/R1 y auditoría de fuga. El artefacto <code>f5_features.csv</code> todavía no existe; esta sección se completa sola al ejecutar:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.features.build</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.features.build</span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </div>
 <p>DVC debe rastrear el DAG completo, no solo el parquet crudo:</p>
@@ -7416,25 +7611,42 @@ Tabla 12: Cortes por <code>State</code> en el régimen 2023-2025, ordenados por
 <p></p><figure class="figure"><p></p>
 <div>
 <pre class="mermaid mermaid-js">flowchart TD
-    A[raw completo] --&gt; B[type_full_corpus]
-    A --&gt; C[prepare_eda_sample]
-    C --&gt; D[build_tfidf]
-    D --&gt; E[e12_baseline]
-    C --&gt; F[build_embeddings]
-    F --&gt; G[prepare_e14]
-    D --&gt; H[e14_clustering]
-    G --&gt; H
-    H --&gt; I[canonicalize completo]
-    I --&gt; J[split completo]
-    J --&gt; K[features completas]
-    E --&gt; L[artefactos del informe]
-    H --&gt; L
+    A[raw completo]
+    subgraph U[CRISP-DM 2 - Comprensión]
+        B[prepare_eda_sample]
+        C[build_tfidf]
+        D[build_embeddings]
+        E[e12_baseline]
+        F[e13_compare_representations]
+        G[prepare_e14]
+        H[e14_clustering]
+        B --&gt; C
+        B --&gt; D
+        C --&gt; E
+        C --&gt; F
+        D --&gt; F
+        D --&gt; G
+        C --&gt; H
+        G --&gt; H
+    end
+    subgraph P[CRISP-DM 3 - Preparación]
+        I[type_full_corpus]
+        J[canonicalize completo]
+        K[split completo]
+        L[features R0 completas]
+        I --&gt; J --&gt; K --&gt; L
+    end
+    A --&gt; B
+    A --&gt; I
+    F --&gt; J
+    H --&gt; J
 </pre>
 </div>
 <p></p></figure><p></p>
 </div>
 </div>
 </div>
+<p><code>dvc.yaml</code> conserva estos mismos bloques mediante comentarios CRISP-DM. No se renombran las etapas ya publicadas porque sus nombres forman parte del historial de <code>dvc.lock</code>.</p>
 <p>Cada etapa declara código/configuración como dependencia, artefactos como salidas y semillas, ventanas, muestra y modelo de embedding en <code>params.yaml</code>. <code>dvc.lock</code> fija los hashes que permiten reproducir cada tabla del informe.</p>
 </section>
 </section>
@@ -7578,14 +7790,14 @@ Tabla 12: Cortes por <code>State</code> en el régimen 2023-2025, ordenados por
 <div id="quarto-appendix" class="default"><section id="sec-repro" class="level1 appendix" data-number="16"><h2 class="anchored quarto-appendix-heading"><span class="header-section-number">16</span> Reproducibilidad</h2><div class="quarto-appendix-contents">
 
 <p>Todo el contenido de este informe se regenera desde el dato crudo con:</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> sync</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="ex">dvc</span> pull                                 <span class="co"># descarga artefactos versionados</span></span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.data.profile         <span class="co"># E1</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.data.agregados       <span class="co"># D1b, E2, E3, E4, E7, E8, E9</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.data.narrativa       <span class="co"># E5, E6</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.evaluation.slices    <span class="co"># E11</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run dvc repro                          <span class="co"># F2, R0, R1, E12 y E14 implementados</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run quarto render reports/informe      <span class="co"># este documento</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode bash code-with-copy"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> sync</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="ex">dvc</span> pull                                 <span class="co"># descarga artefactos versionados</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.data.profile         <span class="co"># E1</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.data.agregados       <span class="co"># D1b, E2, E3, E4, E7, E8, E9</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.data.narrativa       <span class="co"># E5, E6</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.evaluation.slices    <span class="co"># E11</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run dvc repro                          <span class="co"># F2, R0, R1, E12 y E14 implementados</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run quarto render reports/informe      <span class="co"># este documento</span></span></code></pre></div><button title="Copiar al portapapeles" class="code-copy-button"><i class="bi"></i></button></div>
 <p>El informe lee exclusivamente los CSV de <code>reports/artefactos/</code>, nunca los Parquet o matrices grandes. Las secciones sin artefacto se marcan como pendientes en lugar de fallar, así que el documento siempre compila.</p>
 </div></section><section id="nota-sobre-uso-de-ia-generativa" class="level1 appendix unnumbered"><h2 class="anchored quarto-appendix-heading">Nota sobre uso de IA generativa</h2><div class="quarto-appendix-contents">
 

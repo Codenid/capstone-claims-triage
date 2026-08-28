@@ -5,11 +5,11 @@ información disponible cuando ingresa un caso. El proyecto usa reclamos públic
 **Consumer Financial Protection Bureau (CFPB)** como proxy y sigue **CRISP-DM** para separar
 comprensión, preparación, modelado y despliegue.
 
-> **Resumen para revisión rápida:** el raw completo contiene **3,837,184 reclamos**. Ya se
-> completaron el EDA E1–E12, el tipado del corpus completo, el baseline TF-IDF y los
-> embeddings MiniLM locales sobre una muestra experimental. El siguiente paso es **E14** para
-> estudiar estructura temática en train. La muestra de 175k sirve para decidir features; no
-> reemplaza la creación posterior de features sobre el corpus completo de modelado.
+> **Resumen para revisión rápida:** el raw completo contiene **3,837,184 reclamos**. La etapa
+> 2 de CRISP-DM está cerrada con E1–E14 completos. El gate E13 selecciona TF-IDF R0 como
+> representación predictiva principal; MiniLM R1 se conserva para topics, recuperación y
+> challengers. El tipado completo ya inició la etapa 3. La muestra de 175k permitió decidir,
+> pero no reemplaza las features finales sobre el corpus completo de modelado.
 
 ## 1. Valor para el negocio
 
@@ -43,8 +43,8 @@ flowchart TD
 | Etapa CRISP-DM | Estado | Evidencia principal |
 |---|---|---|
 | 1. Comprensión del negocio | Completada para Informe I | T1–T4, F0/F1/FX y arquitectura humana |
-| 2. Comprensión de datos | En curso | E1–E12 completos; E13–E14 pendientes |
-| 3. Preparación | En curso | Tipado completo; taxonomía, splits y features finales pendientes |
+| 2. Comprensión de datos | **Completada** | E1–E14 reproducibles; R0 seleccionado por E13 |
+| 3. Preparación | En curso | Tipado completo; taxonomía, splits y features R0 finales pendientes |
 | 4. Modelado | No iniciado formalmente | E12 es una sonda diagnóstica, no selección final |
 | 5. Evaluación | Diseñada | Split temporal, vista purgada, calibración y métricas de capacidad |
 | 6. Despliegue | Diseñado | Streamlit/LangGraph, todavía fuera del Informe I |
@@ -190,12 +190,13 @@ adecuadas al desbalance y dos vistas:
 
 ### E13 — ¿aporta valor R1?
 
-Comparará R0 y R1 sobre exactamente las mismas filas, splits y clasificador. El gate considera
-métrica, memoria, latencia y costo de generación.
+Comparó R0, R1 y R0+R1 sobre las mismas filas, splits y clasificador. R1 solo perdió frente a
+R0 en T1–T3 y empató T4. La fusión mejoró modestamente T1, pero empeoró T2–T4 y aumentó
+memoria. **Gate: R0 es la feature textual principal; R1 no se escala por defecto.**
 
 ### E14 — estructura latente
 
-Se ajustará únicamente con textos únicos de train:
+Se ajustó únicamente con 73,512 textos únicos de train:
 
 1. control R0 → SVD → KMeans;
 2. R1 → UMAP 10–15D → HDBSCAN;
@@ -221,17 +222,26 @@ El hash normalizado se usa para:
 
 ```mermaid
 flowchart TD
-    A[raw.parquet] --> B[type_full_corpus]
-    A --> C[prepare_eda_sample]
-    C --> D[build_tfidf]
-    D --> E[e12_baseline]
-    C --> F[build_embeddings]
-    D -. siguiente .-> G[E14]
-    F -. siguiente .-> G
-    G -.-> H[canonicalize full]
-    H -.-> I[split full]
-    I -.-> J[features full]
-    J -.-> K[E13/modelado]
+    A[raw completo]
+    subgraph U[CRISP-DM 2 - Comprensión]
+        B[prepare_eda_sample] --> C[build_tfidf]
+        B --> D[build_embeddings]
+        C --> E[e12_baseline]
+        C --> F[e13_compare_representations]
+        D --> F
+        D --> G[prepare_e14]
+        C --> H[e14_clustering]
+        G --> H
+    end
+    subgraph P[CRISP-DM 3 - Preparación]
+        I[type_full_corpus] --> J[canonicalize full]
+        J --> K[split full]
+        K --> L[features R0 full]
+    end
+    A --> B
+    A --> I
+    F --> J
+    H --> J
 ```
 
 | Etapa DVC | Salida | Estado |
@@ -241,8 +251,9 @@ flowchart TD
 | `build_tfidf` | matriz R0, índice y vectorizadores | Completa |
 | `e12_baseline` | métricas y predicciones diagnósticas | Completa |
 | `build_embeddings` | cache R1, índice y manifiesto | Completa |
-| `e14` | clusters, topics y estabilidad | Siguiente |
-| `canonicalize/split/features` | artefactos completos por split | Pendiente del gate |
+| `e13_compare_representations` | gate R0/R1/R0+R1 | Completa |
+| `prepare_e14` / `e14_clustering` | clusters, topics y estabilidad | Completa |
+| `canonicalize/split/features` | artefactos completos R0 por split | Siguiente |
 
 DVC versiona datos y matrices; Git versiona `dvc.yaml`, `dvc.lock`, `params.yaml`, código,
 contratos y documentación.

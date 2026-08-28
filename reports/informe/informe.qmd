@@ -81,8 +81,9 @@ listas, total_etapas = resumen_avance()
 # Resumen ejecutivo {.unnumbered}
 
 Este informe documenta la **exploración y creación de features** del proyecto de triaje
-automático de reclamos financieros. Su alcance termina en matrices F0/R0/R1 validadas y
-versionadas. E12 y E13 usan clasificadores pequeños como sondas para medir señal y comparar
+automático de reclamos financieros. Esta versión cierra la etapa 2 de CRISP-DM —Comprensión
+de los Datos— con E1-E14 completos y deja iniciada la etapa 3 con el tipado del corpus
+completo. E12 y E13 usan clasificadores pequeños como sondas para medir señal y comparar
 representaciones; no son la selección final de modelos, que pertenece al Informe II. El
 mockup web y el agente redactor se describen para fijar el destino de las features, pero no
 forman parte del entregable de este informe.
@@ -104,7 +105,7 @@ casi un tercio del corpus son textos repetidos, casi siempre plantillas.
 """)
 ```
 
-**Cuatro hallazgos que cambian el alcance.**
+**Cinco hallazgos que cambian el alcance.**
 
 1. **El objetivo prometido en la propuesta no existe en el dato.** Las diapositivas
    ofrecían predecir *riesgo de disputa* usando el campo «Disputa del consumidor». Ese
@@ -127,6 +128,11 @@ casi un tercio del corpus son textos repetidos, casi siempre plantillas.
    se invierten a la vez. La explicación fácil —casos aún abiertos— queda descartada por el
    propio dato. El detalle está en @sec-quiebre; es el hallazgo que más afecta el diseño de
    la evaluación.
+
+5. **El embedding local no reemplaza a TF-IDF como feature predictiva.** E13 encuentra que
+   R1 solo pierde frente a R0 en T1-T3 y empata T4. La fusión R0+R1 mejora modestamente T1,
+   pero empeora los outcomes y aumenta memoria. R0 queda como representación principal;
+   R1 se conserva para estructura temática y recuperación futura (@sec-e13).
 
 ```{python}
 # | output: asis
@@ -1243,18 +1249,43 @@ absoluta sigue siendo baja por el desbalance extremo.
 
 ## E13 — ¿Aporta R1 local? {#sec-e13}
 
-Sobre exactamente las mismas filas, splits y clasificadores, E13 compara: F0 tabular, R0,
-F0+R0, R1 local, F0+R1 y F0+R0+R1. La primera implementación usa
-`all-MiniLM-L6-v2`; sus vectores se cachean por `hash_narrativa`. El criterio es mejora
-predictiva, memoria y latencia, no que el método sea más moderno.
+E13 compara R0, R1 y R0+R1 sobre exactamente las mismas filas, targets, splits, pesos y
+`SGDClassifier`. La lectura principal vuelve a ser test 2025-H2 purgado. Además de la métrica,
+se registran tamaño de artefacto, RAM y latencia; el costo de generar MiniLM no está incluido
+en la inferencia del clasificador y se considera por separado.
 
 ```{python}
 # | output: asis
 if embeddings is None:
     print(pendiente("E13"))
 else:
-    display(tabla(embeddings.head(30)))
+    e13_claves = embeddings[
+        (embeddings["split"] == "test")
+        & (embeddings["view"] == "purged")
+        & (
+            (
+                (embeddings["target"] == "T1")
+                & embeddings["metric"].isin(["macro_f1", "top_3_accuracy"])
+            )
+            | (
+                (embeddings["target"] != "T1")
+                & (embeddings["metric"] == "average_precision")
+            )
+        )
+    ].copy()
+    columnas_e13 = [
+        "target", "representation", "metric", "value", "delta_vs_r0",
+        "artifact_mib", "ram_matrix_mib", "fit_seconds", "inference_ms_per_1000",
+    ]
+    display(tabla(e13_claves[columnas_e13].round(4)))
 ```
+
+**Decisión del gate.** R1 solo es más liviano y rápido para el clasificador, pero pierde
+0.047 en top-3 de T1, 0.009 de PR-AUC en T2 y 0.073 en T3. R0+R1 mejora T1
+(+0.005 macro-F1; +0.017 top-3), pero no mejora T2-T4 y eleva la matriz en RAM de
+1,579 a 2,092 MiB. Para la preparación completa se selecciona **R0 como feature textual
+principal**. R1 no se escala todavía al corpus completo: se conserva para E14, búsqueda de
+casos similares y como challenger futuro específico de T1.
 
 ## E14 — Estructura latente {#sec-e14}
 
@@ -1335,10 +1366,26 @@ Los términos recuperan subtemas reconocibles —deuda no reconocida, consultas 
 robo de identidad y pagos tardíos—, pero también tokens de enmascarado como `xxxx`. Esa
 contaminación debe tratarse en la limpieza léxica antes de considerar `topic_id` como feature.
 
-## Fases 2-5 — Del parquet crudo a matrices entrenables {#sec-features}
+## Cierre de CRISP-DM 2 — Comprensión de los Datos {#sec-cierre-crisp2}
+
+La etapa se considera **completada** porque E1-E14 ya tienen método, parámetros, artefactos y
+conclusión reproducible. Quedan congeladas estas decisiones para pasar a Preparación:
+
+- régimen principal 2023-2025 y 2026 como OOD;
+- contrato anti-fuga F0/F1/FX;
+- hash normalizado y doble vista operacional/purgada;
+- R0 TF-IDF como representación predictiva principal;
+- R1 reservado para topics, recuperación y challengers, no como feature global por defecto;
+- E14 como evidencia para revisión humana, no como taxonomía automática.
+
+Que el tipado completo ya exista no contradice CRISP-DM: fue infraestructura mínima adelantada
+y marca el inicio iterativo de la etapa 3. Desde este punto no se añaden nuevos experimentos
+de comprensión; el trabajo continúa con taxonomía, hashes/splits completos y features finales.
+
+## Preparación CRISP-DM — Fases técnicas 2-5 {#sec-features}
 
 El Informe I documenta cada transformación con entradas, parámetros, salidas, conteos y
-pruebas. La Fase 2 ya procesó el corpus completo:
+pruebas. La fase técnica de tipado ya procesó el corpus completo:
 
 ```{python}
 # | output: asis
@@ -1373,20 +1420,39 @@ DVC debe rastrear el DAG completo, no solo el parquet crudo:
 
 ```{mermaid}
 flowchart TD
-    A[raw completo] --> B[type_full_corpus]
-    A --> C[prepare_eda_sample]
-    C --> D[build_tfidf]
-    D --> E[e12_baseline]
-    C --> F[build_embeddings]
-    F --> G[prepare_e14]
-    D --> H[e14_clustering]
-    G --> H
-    H --> I[canonicalize completo]
-    I --> J[split completo]
-    J --> K[features completas]
-    E --> L[artefactos del informe]
-    H --> L
+    A[raw completo]
+    subgraph U[CRISP-DM 2 - Comprensión]
+        B[prepare_eda_sample]
+        C[build_tfidf]
+        D[build_embeddings]
+        E[e12_baseline]
+        F[e13_compare_representations]
+        G[prepare_e14]
+        H[e14_clustering]
+        B --> C
+        B --> D
+        C --> E
+        C --> F
+        D --> F
+        D --> G
+        C --> H
+        G --> H
+    end
+    subgraph P[CRISP-DM 3 - Preparación]
+        I[type_full_corpus]
+        J[canonicalize completo]
+        K[split completo]
+        L[features R0 completas]
+        I --> J --> K --> L
+    end
+    A --> B
+    A --> I
+    F --> J
+    H --> J
 ```
+
+`dvc.yaml` conserva estos mismos bloques mediante comentarios CRISP-DM. No se renombran las
+etapas ya publicadas porque sus nombres forman parte del historial de `dvc.lock`.
 
 Cada etapa declara código/configuración como dependencia, artefactos como salidas y semillas,
 ventanas, muestra y modelo de embedding en `params.yaml`. `dvc.lock` fija los hashes que
