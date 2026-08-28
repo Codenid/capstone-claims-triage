@@ -61,6 +61,15 @@ baseline:
   average: true
   class_weight_cap: 20.0
 
+e14:
+  company_mask:
+    min_alias_chars: 5
+  umap_seeds: [42, 43, 44]
+  kmeans_clusters: [30, 40, 50]
+  hdbscan_min_cluster_sizes: [50, 100, 200]
+  silhouette_sample_size: 5000
+  topic_max_features: 30000
+
 clustering:
   svd_components: 100
   kmeans_clusters: 40

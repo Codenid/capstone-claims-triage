@@ -237,3 +237,59 @@ stages:
       hash: md5
       md5: 28e8d910162db35ca438f15b733d000a
       size: 456
+  prepare_e14:
+    cmd: uv run python -m src.features.e14_prepare
+    deps:
+    - path: data/interim/eda_sample.parquet
+      hash: md5
+      md5: 7eb58e21982828c3f3e7152ad37cca21
+      size: 53721622
+    - path: data/processed/r1_embeddings.npy
+      hash: md5
+      md5: 889dd0319804fae2341fd4f8a389d0df
+      size: 198701696
+    - path: data/processed/r1_hash_index.parquet
+      hash: md5
+      md5: 0252d03c84e8376d138763c3c1631062
+      size: 3035080
+    - path: src/data/prepare_eda.py
+      hash: md5
+      md5: f81c63f8bbb4c22632a3acd729057248
+      size: 11041
+    - path: src/features/e14_prepare.py
+      hash: md5
+      md5: b93cfa8f8c517f95df54698ce06ab83e
+      size: 9881
+    - path: src/paths.py
+      hash: md5
+      md5: 7bcaff4d98841997471c8e2e43928977
+      size: 748
+    params:
+      params.yaml:
+        e14.company_mask:
+          min_alias_chars: 5
+        embedding:
+          model: sentence-transformers/all-MiniLM-L6-v2
+          revision: 1110a243fdf4706b3f48f1d95db1a4f5529b4d41
+          max_seq_length: 256
+          batch_size: 256
+          checkpoint_size: 4096
+          normalize: true
+        text.normalization_version: lower-whitespace-v1
+    outs:
+    - path: data/processed/e14_masked_embeddings.npy
+      hash: md5
+      md5: 91e50aa360692060b63230e82b01f03a
+      size: 112914560
+    - path: data/processed/e14_prepare_manifest.json
+      hash: md5
+      md5: 8f1e4fe48caa0913b6179b7f8b34cb38
+      size: 489
+    - path: data/processed/e14_train_index.parquet
+      hash: md5
+      md5: 7f5c81576b75247b567dd60bcdced3a8
+      size: 3434266
+    - path: reports/artefactos/e14_company_ablation.csv
+      hash: md5
+      md5: 62d18f98fde55aa18ae5d93f083cf93d
+      size: 318
