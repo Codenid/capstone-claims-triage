@@ -28,8 +28,10 @@ text:
 
 embedding:
   model: "sentence-transformers/all-MiniLM-L6-v2"
-  revision: null
+  revision: "1110a243fdf4706b3f48f1d95db1a4f5529b4d41"
+  max_seq_length: 256
   batch_size: 256
+  checkpoint_size: 4096
   normalize: true
 
 tfidf:

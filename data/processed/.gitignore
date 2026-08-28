@@ -3,3 +3,8 @@
 /r0_vectorizers.joblib
 /r0_manifest.json
 /e12_predictions.parquet
+/r1_embeddings.partial.npy
+/r1_embeddings.partial.json
+/r1_embeddings.npy
+/r1_hash_index.parquet
+/r1_manifest.json

@@ -47,3 +47,18 @@ stages:
     outs:
       - data/processed/e12_predictions.parquet
       - reports/artefactos/e12_piso_senal.csv
+
+  build_embeddings:
+    cmd: uv run python -m src.features.embeddings
+    deps:
+      - data/interim/eda_sample.parquet
+      - src/data/prepare_eda.py
+      - src/features/embeddings.py
+      - src/paths.py
+    params:
+      - embedding
+      - text.normalization_version
+    outs:
+      - data/processed/r1_embeddings.npy
+      - data/processed/r1_hash_index.parquet
+      - data/processed/r1_manifest.json
