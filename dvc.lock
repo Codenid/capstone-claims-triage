@@ -198,3 +198,42 @@ stages:
       hash: md5
       md5: 00936fdb82496ce62ba23375af008c0c
       size: 405
+  type_full_corpus:
+    cmd: uv run python -m src.data.typing
+    deps:
+    - path: configs/dtypes.yaml
+      hash: md5
+      md5: 51bc1ee4c06ae05059fb400ac300a252
+      size: 1125
+    - path: data/raw/cfpb_reclamos_narrativa.parquet
+      hash: md5
+      md5: 68f4560aca0967779f118e8225e72c26
+      size: 1616005038
+    - path: src/data/agregados.py
+      hash: md5
+      md5: acb7f7bce1e665d7a166cd9acade6446
+      size: 16774
+    - path: src/data/typing.py
+      hash: md5
+      md5: e6c575f94403a240013505cd775758c5
+      size: 12822
+    - path: src/paths.py
+      hash: md5
+      md5: 7bcaff4d98841997471c8e2e43928977
+      size: 748
+    params:
+      params.yaml:
+        typing:
+          batch_size: 131072
+          date_min: '2011-01-01'
+          date_max: '2026-12-31'
+          min_memory_reduction_pct: 80.0
+    outs:
+    - path: data/interim/tipado.parquet
+      hash: md5
+      md5: 4207e4f141fab5d4c3f6792f02975636
+      size: 786612838
+    - path: reports/artefactos/f02_tipado_audit.csv
+      hash: md5
+      md5: 28e8d910162db35ca438f15b733d000a
+      size: 456

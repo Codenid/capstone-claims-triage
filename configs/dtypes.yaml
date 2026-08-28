@@ -1,0 +1,59 @@
+schema_version: "1.0"
+missing_category: "SIN_DATO"
+
+source_columns:
+  - Date received
+  - Product
+  - Sub-product
+  - Issue
+  - Sub-issue
+  - Consumer complaint narrative
+  - Company public response
+  - Company
+  - State
+  - ZIP code
+  - Tags
+  - Submitted via
+  - Date sent to company
+  - Company response to consumer
+  - Timely response?
+  - Complaint ID
+
+required_non_null:
+  - Date received
+  - Consumer complaint narrative
+  - Date sent to company
+  - Timely response?
+  - Complaint ID
+
+drop_columns:
+  Submitted via: "Constante: solo contiene Web"
+
+categorical_columns:
+  - product
+  - sub_product
+  - issue
+  - sub_issue
+  - company_public_response
+  - company
+  - state
+  - zip_code
+  - company_response
+
+domains:
+  Submitted via:
+    - Web
+  Timely response?:
+    - "Yes"
+    - "No"
+  Tags:
+    - Servicemember
+    - Older American
+    - Older American, Servicemember
+  Company response to consumer:
+    - Closed with explanation
+    - Closed with non-monetary relief
+    - Closed with monetary relief
+    - Untimely response
+    - Closed
+    - In progress

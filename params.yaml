@@ -1,5 +1,11 @@
 random_seed: 42
 
+typing:
+  batch_size: 131072
+  date_min: "2011-01-01"
+  date_max: "2026-12-31"
+  min_memory_reduction_pct: 80.0
+
 splits:
   train:
     start: "2023-01-01"

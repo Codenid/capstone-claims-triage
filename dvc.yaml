@@ -1,4 +1,18 @@
 stages:
+  type_full_corpus:
+    cmd: uv run python -m src.data.typing
+    deps:
+      - configs/dtypes.yaml
+      - data/raw/cfpb_reclamos_narrativa.parquet
+      - src/data/agregados.py
+      - src/data/typing.py
+      - src/paths.py
+    params:
+      - typing
+    outs:
+      - data/interim/tipado.parquet
+      - reports/artefactos/f02_tipado_audit.csv
+
   prepare_eda_sample:
     cmd: uv run python -m src.data.prepare_eda
     deps:
