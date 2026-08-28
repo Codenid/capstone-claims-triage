@@ -131,6 +131,24 @@ stages:
       - reports/artefactos/e14_stability.csv
       - reports/artefactos/e14_topics.csv
 
+  e14_visualization:
+    cmd: uv run python -m src.evaluation.e14_visualization
+    deps:
+      - data/processed/e14_assignments.parquet
+      - data/processed/e14_masked_embeddings.npy
+      - data/processed/e14_train_index.parquet
+      - data/processed/r1_embeddings.npy
+      - data/processed/r1_hash_index.parquet
+      - src/evaluation/e14_visualization.py
+      - src/paths.py
+    params:
+      - random_seed
+      - visualization
+      - clustering.hdbscan.min_cluster_size
+    outs:
+      - data/processed/e14_visualization_manifest.json
+      - reports/artefactos/e14_visualization.csv
+
   # ---------------------------------------------------------------------------
   # CRISP-DM 3 — Preparación de los datos
   # Esta rama procesa el corpus completo. La canonicalización, los hashes/splits

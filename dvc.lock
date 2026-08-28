@@ -459,3 +459,52 @@ stages:
       hash: md5
       md5: f11fa61a5b2c9f3669eaf1990e7cd6d4
       size: 168792
+  e14_visualization:
+    cmd: uv run python -m src.evaluation.e14_visualization
+    deps:
+    - path: data/processed/e14_assignments.parquet
+      hash: md5
+      md5: 620eeaf1849fe287e371b4d8f6281e61
+      size: 16143265
+    - path: data/processed/e14_masked_embeddings.npy
+      hash: md5
+      md5: 91e50aa360692060b63230e82b01f03a
+      size: 112914560
+    - path: data/processed/e14_train_index.parquet
+      hash: md5
+      md5: 7f5c81576b75247b567dd60bcdced3a8
+      size: 3434266
+    - path: data/processed/r1_embeddings.npy
+      hash: md5
+      md5: 889dd0319804fae2341fd4f8a389d0df
+      size: 198701696
+    - path: data/processed/r1_hash_index.parquet
+      hash: md5
+      md5: 0252d03c84e8376d138763c3c1631062
+      size: 3035080
+    - path: src/evaluation/e14_visualization.py
+      hash: md5
+      md5: 6927599a5e565bef7c66f8b9e740fa53
+      size: 6266
+    - path: src/paths.py
+      hash: md5
+      md5: 7bcaff4d98841997471c8e2e43928977
+      size: 748
+    params:
+      params.yaml:
+        clustering.hdbscan.min_cluster_size: 100
+        random_seed: 42
+        visualization:
+          n_neighbors: 30
+          min_dist: 0.1
+          metric: cosine
+          plot_sample_size: 20000
+    outs:
+    - path: data/processed/e14_visualization_manifest.json
+      hash: md5
+      md5: 3958aa6366e61bb6cde99295e00ce434
+      size: 668
+    - path: reports/artefactos/e14_visualization.csv
+      hash: md5
+      md5: 73f326c7e3efc9a2871936eb8fe0a69b
+      size: 4198159

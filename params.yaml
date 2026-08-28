@@ -70,6 +70,12 @@ e14:
   silhouette_sample_size: 5000
   topic_max_features: 30000
 
+visualization:
+  n_neighbors: 30
+  min_dist: 0.1
+  metric: "cosine"
+  plot_sample_size: 20000
+
 clustering:
   svd_components: 100
   kmeans_clusters: 40

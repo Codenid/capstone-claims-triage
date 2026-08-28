@@ -66,6 +66,7 @@ clusters = artefacto("e14_clusters")
 e14_company = artefacto("e14_company_ablation")
 e14_stability = artefacto("e14_stability")
 e14_topics = artefacto("e14_topics")
+e14_visual = artefacto("e14_visualization")
 features = artefacto("f5_features")
 
 REGIMEN = "2023_2025"
@@ -1254,6 +1255,15 @@ E13 compara R0, R1 y R0+R1 sobre exactamente las mismas filas, targets, splits, 
 se registran tamaño de artefacto, RAM y latencia; el costo de generar MiniLM no está incluido
 en la inferencia del clasificador y se considera por separado.
 
+Para separar preguntas que suelen confundirse:
+
+- **E12 pregunta si existe señal predictiva** usando R0, un vector disperso de palabras y
+  fragmentos de caracteres ponderados con TF-IDF.
+- **E13 cambia la representación, no el problema:** compara R0 con R1 —un vector denso
+  MiniLM de 384 dimensiones— usando el mismo clasificador para T1-T4.
+- **E14 no predice T1-T4:** usa R1 sin etiquetas para visualizar vecindades y descubrir
+  subtemas que ayuden a diseñar la taxonomía canónica.
+
 ```{python}
 # | output: asis
 if embeddings is None:
@@ -1278,6 +1288,74 @@ else:
         "artifact_mib", "ram_matrix_mib", "fit_seconds", "inference_ms_per_1000",
     ]
     display(tabla(e13_claves[columnas_e13].round(4)))
+```
+
+```{python}
+# | label: fig-e13-delta
+# | fig-cap: "Cambio frente a R0 en el test temporal purgado. Un valor positivo mejora la métrica; uno negativo la empeora."
+if embeddings is not None:
+    etiquetas_metrica = {
+        ("T1", "macro_f1"): "T1 · macro-F1",
+        ("T1", "top_3_accuracy"): "T1 · top-3",
+        ("T2", "average_precision"): "T2 · PR-AUC",
+        ("T3", "average_precision"): "T3 · PR-AUC",
+        ("T4", "average_precision"): "T4 · PR-AUC",
+    }
+    delta = e13_claves[e13_claves["representation"].isin(["R1_MiniLM", "R0_plus_R1"])].copy()
+    delta["objetivo"] = [etiquetas_metrica[(t, m)] for t, m in zip(delta["target"], delta["metric"])]
+    orden_objetivos = list(etiquetas_metrica.values())
+    posiciones = np.arange(len(orden_objetivos))
+    fig, ax = plt.subplots(figsize=(8.2, 3.6))
+    for desplazamiento, representacion, etiqueta, color in [
+        (-0.16, "R1_MiniLM", "R1 MiniLM", SERIE_2),
+        (0.16, "R0_plus_R1", "R0 + R1", SERIE_3),
+    ]:
+        valores = (
+            delta[delta["representation"] == representacion]
+            .set_index("objetivo")["delta_vs_r0"]
+            .reindex(orden_objetivos)
+            .to_numpy()
+        )
+        ax.barh(posiciones + desplazamiento, valores, height=0.28, label=etiqueta, color=color)
+    ax.axvline(0, color=TINTA_2, linewidth=1)
+    ax.set_yticks(posiciones, orden_objetivos)
+    ax.set_xlabel("Diferencia absoluta frente a R0")
+    ax.invert_yaxis()
+    ax.legend(ncol=2, loc="lower right")
+    sin_marco(ax)
+    plt.show()
+```
+
+```{python}
+# | label: fig-e13-coste
+# | fig-cap: "Costo técnico de las representaciones en E13. La latencia corresponde al clasificador T2 y no incluye generar el embedding MiniLM."
+if embeddings is not None:
+    costo = embeddings[
+        (embeddings["split"] == "test")
+        & (embeddings["view"] == "purged")
+        & (embeddings["target"] == "T2")
+        & (embeddings["metric"] == "average_precision")
+    ].copy()
+    orden_rep = ["R0_word_char", "R1_MiniLM", "R0_plus_R1"]
+    nombres_rep = ["R0 TF-IDF", "R1 MiniLM", "R0 + R1"]
+    costo = costo.set_index("representation").reindex(orden_rep)
+    colores = [SERIE_1, SERIE_2, SERIE_3]
+    paneles = [
+        ("artifact_mib", "Artefacto", "MiB"),
+        ("ram_matrix_mib", "Matriz en RAM", "MiB"),
+        ("inference_ms_per_1000", "Inferencia T2", "ms / 1,000"),
+    ]
+    fig, axes = plt.subplots(1, 3, figsize=(8.5, 3.2))
+    for ax, (columna, titulo, unidad) in zip(axes, paneles):
+        valores = costo[columna].to_numpy()
+        barras = ax.bar(nombres_rep, valores, color=colores)
+        ax.set_title(titulo)
+        ax.set_ylabel(unidad)
+        ax.tick_params(axis="x", rotation=28)
+        ax.bar_label(barras, fmt="%.1f", fontsize=8, padding=2)
+        sin_marco(ax)
+    fig.tight_layout()
+    plt.show()
 ```
 
 **Decisión del gate.** R1 solo es más liviano y rápido para el clasificador, pero pierde
@@ -1322,6 +1400,75 @@ else:
     display(tabla(e14_resumen))
 ```
 
+La proyección siguiente es una **vista 2D adicional para comunicación**. HDBSCAN no fue
+reajustado aquí: sus clusters siguen proviniendo del UMAP 12D. Reducir 384 dimensiones a dos
+inevitablemente deforma distancias, por lo que la figura permite ver vecindades generales,
+no medir separación ni calidad del modelo.
+
+```{python}
+# | label: fig-e14-umap-cluster
+# | fig-cap: "UMAP 2D de R1 coloreado por los diez clusters HDBSCAN más grandes. Gris claro reúne clusters menores y gris oscuro representa ruido."
+if e14_visual is not None:
+    visual = e14_visual.copy()
+    top_clusters = visual.loc[~visual["is_noise"], "cluster"].value_counts().head(10).index.tolist()
+    visual["grupo_cluster"] = np.where(
+        visual["is_noise"],
+        "Ruido",
+        np.where(visual["cluster"].isin(top_clusters), "C" + visual["cluster"].astype(str), "Otros clusters"),
+    )
+    categorias = ["Otros clusters", "Ruido"] + [f"C{c}" for c in top_clusters]
+    colores_cluster = {"Otros clusters": REJILLA, "Ruido": TINTA_3}
+    paleta = plt.get_cmap("tab20")
+    colores_cluster.update({f"C{c}": paleta(i) for i, c in enumerate(top_clusters)})
+    fig, ax = plt.subplots(figsize=(8.2, 5.0))
+    for categoria in categorias:
+        puntos = visual[visual["grupo_cluster"] == categoria]
+        ax.scatter(
+            puntos["umap_2d_x"], puntos["umap_2d_y"], s=3,
+            alpha=0.32 if categoria == "Otros clusters" else 0.62,
+            color=colores_cluster[categoria], label=categoria, rasterized=True,
+        )
+    ax.set(xlabel="UMAP 1", ylabel="UMAP 2")
+    ax.legend(ncol=4, markerscale=3, loc="upper center", bbox_to_anchor=(0.5, -0.12))
+    ax.grid(False)
+    sin_marco(ax)
+    plt.show()
+```
+
+```{python}
+# | label: fig-e14-umap-producto
+# | fig-cap: "La misma proyección R1, coloreada por Product como referencia externa. Las dos categorías de reporte crediticio evidencian deriva histórica de la taxonomía."
+if e14_visual is not None:
+    top_productos = visual["product_unique"].value_counts().head(7).index.tolist()
+    alias_producto = {
+        "Credit reporting or other personal consumer reports": "Reporte crediticio · actual",
+        "Credit reporting, credit repair services, or other personal consumer reports": "Reporte crediticio · histórico",
+        "Debt collection": "Cobro de deuda",
+        "Checking or savings account": "Cuenta bancaria",
+        "Credit card": "Tarjeta de crédito",
+        "Credit card or prepaid card": "Tarjeta o prepaga · histórico",
+        "Mortgage": "Hipoteca",
+        "Money transfer, virtual currency, or money service": "Transferencias",
+    }
+    visual["grupo_producto"] = visual["product_unique"].where(
+        visual["product_unique"].isin(top_productos), "Otros / conflicto"
+    ).fillna("Otros / conflicto").map(lambda x: alias_producto.get(x, x))
+    orden_productos = ["Otros / conflicto"] + [alias_producto.get(p, p) for p in top_productos]
+    colores_producto = [REJILLA, SERIE_1, SERIE_2, SERIE_3] + [plt.get_cmap("tab10")(i) for i in range(3, 7)]
+    fig, ax = plt.subplots(figsize=(8.2, 5.0))
+    for categoria, color in zip(orden_productos, colores_producto):
+        puntos = visual[visual["grupo_producto"] == categoria]
+        ax.scatter(
+            puntos["umap_2d_x"], puntos["umap_2d_y"], s=3, alpha=0.48,
+            color=color, label=categoria, rasterized=True,
+        )
+    ax.set(xlabel="UMAP 1", ylabel="UMAP 2")
+    ax.legend(ncol=2, markerscale=3, loc="upper center", bbox_to_anchor=(0.5, -0.12))
+    ax.grid(False)
+    sin_marco(ax)
+    plt.show()
+```
+
 R1 produce grupos más alineados con Product/Issue que el control R0, pero con una
 contrapartida importante: entre 30% y 41% queda como ruido y aparecen 120–130 clusters,
 muchos más que las 25–40 categorías operativas buscadas. Por eso E14 **no descubre la
@@ -1345,7 +1492,59 @@ enmascarado modificó 9,688 textos (13.18%), aumentó el ruido de 30.1% a 40.7% 
 ARI 0.856 sobre los hashes no-ruido compartidos. La empresa influye, pero no explica por sí
 sola la estructura semántica.
 
+```{python}
+# | label: fig-e14-company-mask
+# | fig-cap: "UMAP 2D antes y después de ocultar aliases de empresa. Naranja identifica los mismos textos cuyo contenido sí cambió por el enmascarado."
+if e14_visual is not None:
+    fig, axes = plt.subplots(1, 2, figsize=(8.5, 4.0))
+    vistas = [
+        ("umap_2d_x", "umap_2d_y", "Texto original"),
+        ("masked_umap_2d_x", "masked_umap_2d_y", "Empresa enmascarada"),
+    ]
+    for ax, (x, y, titulo) in zip(axes, vistas):
+        for cambia, etiqueta, color, alpha in [
+            (False, "Sin cambio", REJILLA, 0.40),
+            (True, "Alias encontrado", SERIE_2, 0.62),
+        ]:
+            puntos = visual[visual["mask_changed"] == cambia]
+            ax.scatter(puntos[x], puntos[y], s=3, alpha=alpha, color=color,
+                       label=etiqueta, rasterized=True)
+        ax.set_title(titulo)
+        ax.set_xticks([])
+        ax.set_yticks([])
+        ax.grid(False)
+        sin_marco(ax)
+    axes[1].legend(markerscale=3, loc="lower right")
+    fig.tight_layout()
+    plt.show()
+```
+
+Los dos UMAP se ajustan independientemente; sus ejes pueden rotar o desplazarse y por eso no
+se comparan coordenadas punto a punto. La evidencia cuantitativa del cambio es el ARI y la
+tasa de ruido reportados arriba.
+
 ### Topics c-TF-IDF
+
+```{python}
+# | label: fig-e14-topics
+# | fig-cap: "Ocho clusters originales con más narrativas únicas. Las etiquetas muestran sus tres términos c-TF-IDF principales."
+if e14_topics is not None:
+    topics_fig = (
+        e14_topics[e14_topics["condition"] == "unmasked"]
+        .nlargest(8, "n_hashes")
+        .sort_values("n_hashes")
+        .copy()
+    )
+    topics_fig["etiqueta"] = topics_fig.apply(
+        lambda r: f"C{r['cluster']} · " + " · ".join(str(r["top_terms"]).split(" | ")[:3]), axis=1
+    )
+    fig, ax = plt.subplots(figsize=(8.2, 4.2))
+    barras = ax.barh(topics_fig["etiqueta"], topics_fig["n_hashes"], color=SERIE_1)
+    ax.set_xlabel("Narrativas únicas")
+    ax.bar_label(barras, fmt="%d", fontsize=8, padding=3)
+    sin_marco(ax)
+    plt.show()
+```
 
 ```{python}
 # | output: asis
@@ -1356,9 +1555,11 @@ else:
         e14_topics.sort_values(["condition", "n_hashes"], ascending=[True, False])
         .groupby("condition", observed=True)
         .head(6)
+        .copy()
     )
+    topics_grandes["representative_excerpt"] = topics_grandes["representative_excerpt"].str.slice(0, 110) + "…"
     display(tabla(topics_grandes[
-        ["condition", "cluster", "n_hashes", "n_events", "top_terms", "top_product", "top_issue"]
+        ["condition", "cluster", "n_hashes", "top_terms", "top_product", "representative_excerpt"]
     ]))
 ```
 
