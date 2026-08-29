@@ -5180,7 +5180,7 @@ z-index: 1000;
     <div>
     <div class="quarto-title-meta-heading">Fecha de publicación</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">28 de agosto de 2026</p>
+      <p class="date">29 de agosto de 2026</p>
     </div>
   </div>
   
@@ -7797,7 +7797,7 @@ Figura 17: Doce motivos canónicos con mayor soporte en train. Validación y te
 <p><strong>Evidencia 2 — el volumen no decae, se quiebra.</strong> Diciembre de 2025 cierra con 56,510 reclamos y enero de 2026 con 22,211: una caída del 61% en un mes. Después el volumen se queda en una meseta de entre 10 mil y 22 mil durante seis meses. Un rezago de publicación produce una cola que se desvanece en los últimos uno o dos meses, no un escalón seguido de una meseta estable.</p>
 <p><strong>Evidencia 3 — cambia la composición, no solo la cantidad.</strong> Es el argumento decisivo. En 2025 la familia <em>credit reporting</em> representaba el 75% de los reclamos del año; en 2026 cae al 4%, mientras <em>debt collection</em> sube de 8% a 34% y <em>checking or savings account</em> de 4% a 18% (<a href="#fig-deriva" class="quarto-xref">Figura 2</a>). Un rezago de publicación retrasa reclamos de todos los tipos por igual y <strong>conserva la mezcla</strong>. Aquí la mezcla se da vuelta por completo.</p>
 <p><strong>Conclusión.</strong> Las tres piezas apuntan a lo mismo: 2026 no es 2025 con menos datos, es un <strong>proceso generador distinto</strong>. El dato por sí solo no dice por qué —eso exige verificar qué cambió en la operación o en la política de publicación del CFPB durante ese periodo, y es una pregunta abierta que el equipo debe resolver con fuentes externas, no con el parquet.</p>
-<p><strong>Consecuencia operativa, que ya se aplicó:</strong> el régimen de entrenamiento se cierra en <strong>diciembre de 2025</strong>, y la división temporal se reacomoda íntegramente dentro de él — entrenamiento 2023-01 a 2024-12, validación 2025-01 a 2025-06, prueba 2025-07 a 2025-12. La propuesta original usaba 2026 como periodo de prueba; hacerlo habría significado medir el modelo contra una distribución que no es la que verá en producción, y habría producido un número de evaluación pesimista y sin sentido.</p>
+<p><strong>Consecuencia operativa, que ya se aplicó:</strong> el régimen de desarrollo se cierra en diciembre de 2025: entrenamiento 2023-01 a 2024-12, validación 2025-01 a 2025-06 y evaluación diagnóstica 2025-07 a 2025-12. La muestra de 25,000 casos de este último periodo ya se consultó en E12/E13 y no se presenta como holdout final intacto. F4 debe separar esos IDs y bloquear los restantes eventos de 2025-H2 antes del modelado definitivo. 2026 queda como prueba de estrés OOD parcial, no como reemplazo de una evaluación final en régimen.</p>
 </section>
 <section id="sec-decisiones" class="level1" data-number="13">
 <h1 data-number="13"><span class="header-section-number">13</span> Decisiones de diseño registradas</h1>
@@ -7837,13 +7837,13 @@ Figura 17: Doce motivos canónicos con mayor soporte en train. Validación y te
 </tr>
 <tr class="odd">
 <td><strong>D4</strong></td>
-<td>División temporal, nunca aleatoria; prueba operacional y prueba purgada por hash en 2025-07 a 2025-12</td>
-<td>separa rendimiento real con plantillas recurrentes de generalización a texto nuevo</td>
+<td>División temporal, nunca aleatoria; vistas operacional y purgada por hash</td>
+<td>2025-H2 fue diagnóstico; F4 debe bloquear un holdout final</td>
 </tr>
 <tr class="even">
 <td><strong>D5</strong></td>
-<td>Muestra de desarrollo de 300 mil filas estratificada</td>
-<td>itera en minutos, no en horas</td>
+<td>Muestra de desarrollo de 175 mil filas: 100 mil train y 25 mil por cada corte restante</td>
+<td>permite comparar métodos antes de escalar</td>
 </tr>
 <tr class="odd">
 <td><strong>D6</strong></td>
@@ -7887,8 +7887,8 @@ Figura 17: Doce motivos canónicos con mayor soporte en train. Validación y te
 </tr>
 <tr class="even">
 <td>El quiebre de 2026 no tiene causa identificada</td>
-<td><strong>abierto</strong>, aislado del test principal</td>
-<td>prueba principal en 2025-07/12 y 2026 como stress test OOD separado; falta confirmar la causa externa</td>
+<td><strong>abierto</strong>, aislado del desarrollo principal</td>
+<td>2025-H2 queda como diagnóstico y 2026 como stress OOD parcial; falta confirmar la causa externa</td>
 </tr>
 <tr class="odd">
 <td>Fuga por columnas post-respuesta</td>
@@ -7916,12 +7916,11 @@ Figura 17: Doce motivos canónicos con mayor soporte en train. Validación y te
 <section id="sec-proximos" class="level1" data-number="15">
 <h1 data-number="15"><span class="header-section-number">15</span> Próximos pasos</h1>
 <ol type="1">
-<li>Revisar los 122 topics E14 y congelar una taxonomía manual de 25–40 motivos.</li>
-<li>Ejecutar E13 sobre las mismas filas para decidir R0, R1 o su combinación.</li>
-<li>Aplicar la taxonomía al corpus completo y construir hashes/splits completos.</li>
-<li>Regenerar la representación ganadora sobre todo train/validation/test y auditar FX.</li>
-<li>Completar F5, actualizar este informe y renderizar el entregable EDA + features.</li>
-<li>Confirmar con fuentes externas qué originó el quiebre de 2026 (<a href="#sec-quiebre" class="quarto-xref">Sección 12</a>); mientras tanto se conserva como stress test OOD separado.</li>
+<li>Aprobar o ajustar con negocio el borrador de 33 motivos en <code>configs/taxonomia.yaml</code>.</li>
+<li>Implementar F4: separar los 25,000 IDs de 2025-H2 ya consultados, bloquear el holdout candidato restante y construir hashes/splits completos sin borrar eventos.</li>
+<li>Implementar F5: reajustar R0 con todo train y transformar los demás cortes sin usar FX.</li>
+<li>Añadir intervalos de incertidumbre y evaluar el holdout solo después de congelar modelos.</li>
+<li>Confirmar con fuentes externas qué originó el quiebre de 2026 (<a href="#sec-quiebre" class="quarto-xref">Sección 12</a>); mientras tanto se conserva como stress test OOD parcial.</li>
 </ol>
 </section>
 

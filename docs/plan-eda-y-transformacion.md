@@ -143,7 +143,7 @@ independientes:
 Conclusión: 2026 es un **proceso generador distinto**. El dato no dice por qué; hay que
 verificar con fuentes externas qué cambió en la operación o en la política de publicación
 del CFPB. **El diseño ya no depende de esa respuesta**: 2026 queda fuera del entrenamiento
-y del test principal, pero se conserva como stress test OOD. El informe final debería
+y de la evaluación principal en régimen, pero se conserva como stress test OOD parcial. El informe final debería
 poder nombrar la causa en vez de solo describirla.
 
 ### D4 — Split temporal, nunca aleatorio; dos lecturas de repetidos
@@ -161,8 +161,8 @@ poder nombrar la causa en vez de solo describirla.
 
 ### D5 — Muestra de desarrollo
 
-300 k filas estratificadas por (mes × producto canónico) para iterar; entrenamiento
-final sobre el dataset completo. Ambas versionadas con DVC.
+175 k filas temporales: 100 k de train y 25 k de validación, 2025-H2 y OOD 2026. Sirve para
+comparar métodos; las features finales se reajustan sobre el corpus completo. Versionada con DVC.
 
 ### D6 — Dos representaciones del texto; el LLM no es una feature
 
@@ -196,8 +196,8 @@ como feature ni como etiqueta.
 
 Cada bloque produce **una figura o tabla reutilizable en las slides**. Cada etapa deja un
 CSV pequeño en `reports/artefactos/` y el informe de Quarto lo grafica; el informe nunca
-lee el parquet. Estado al día de hoy: **E1-E9 y E11 hechas**, E10 es un acuerdo de equipo y
-E12-E14 están definidos y son el siguiente bloque de implementación.
+lee el parquet. Estado al día de hoy: **E1-E9 y E11-E14 completos**, E10 es el contrato F0/F1/FX y
+la comprensión de datos está cerrada. F2/F3 del corpus completo también están ejecutadas.
 
 | # | Pregunta | Entregable |
 |---|---|---|
@@ -415,8 +415,8 @@ Dos parámetros de Gemini que hay que fijar y documentar, porque cambian el resu
 
 **Costo de una pasada completa (orden de magnitud; verificar precio vigente antes de
 presupuestar):** ~1.75 M textos únicos en el régimen 2023+ × ~260 tokens de media
-(1,022 caracteres) ≈ **455 M tokens** ≈ **US$68**. Sobre la muestra de desarrollo de 300 k:
-~US$12. La API de lotes baja eso a la mitad si la latencia no importa. El nivel gratuito
+(1,022 caracteres) ≈ **455 M tokens** ≈ **US$68**. Sobre una muestra de desarrollo de 300 k:
+~US$12. Este es solo un cálculo de referencia; la muestra local ejecutada tiene 175 k y no usó API. La API de lotes baja eso a la mitad si la latencia no importa. El nivel gratuito
 tiene límite de solicitudes por minuto: sirve para probar el código, no para producir el
 artefacto — a ese ritmo la pasada completa tarda días.
 
@@ -500,8 +500,8 @@ Reglas de comparación:
 
 **Evaluación por cortes, obligatoria:** motivo/producto, mes, estado, top empresas vs cola,
 `Tags`, narrativas largas y evaluación con/sin `Company`. El último corte distingue señal
-transferible de un atajo basado en los grandes burós. Mantener 2026 como stress test OOD
-separado del test principal 2025; no mezclar ambas métricas.
+transferible de un atajo basado en los grandes burós. Mantener 2026 como stress test OOD parcial
+separado de la evaluación en régimen 2025; no mezclar ambas métricas.
 
 **Predicción selectiva:** curva de abstención → "% de reclamos con recomendación confiable
 con precisión ≥ 0.90". Los demás continúan a revisión humana, que en el mockup es siempre
@@ -659,18 +659,14 @@ Dependencias duras: los repetidos se agrupan antes del clustering; E14 y cualqui
 de taxonomía solo ven train; R1 se genera una vez y se reutiliza; E12/E13 usan exactamente
 las mismas filas y splits; nada de API antes de demostrar valor local.
 
-### Próximo bloque de implementación — cierre de comprensión de datos
+### Próximo bloque de implementación — F4 y F5
 
-1. Crear `params.yaml` y el primer `dvc.yaml` con fronteras temporales y semilla.
-2. Implementar tipado mínimo, targets, `hash_narrativa` y auditoría de conflictos.
-3. Producir una muestra reproducible de 100 k textos de train para E12-E14.
-4. Generar y cachear `all-MiniLM-L6-v2` una vez por hash.
-5. Ejecutar E14: control TF-IDF/SVD/KMeans, UMAP/HDBSCAN y BERTopic/c-TF-IDF, con y sin
-   nombres de empresa.
-6. Congelar `taxonomia.yaml` usando solo evidencia de train.
-7. Ejecutar E12 y E13 sobre las mismas filas y cortes.
-8. Escribir `e12_piso_senal.csv`, `e13_embeddings.csv`, `e14_clusters.csv` y las tablas de
-   topics; incorporarlos al Quarto y renderizar el Informe I.
+1. Revisar con negocio el borrador de 33 motivos en `taxonomia.yaml`.
+2. Separar los 25,000 IDs de 2025-H2 ya consultados en E12/E13.
+3. Bloquear como holdout candidato los eventos restantes de 2025-H2 y sus hashes.
+4. Construir hashes y splits completos, conservando 2015-2022 como histórico.
+5. Reajustar R0 solo con train completo y transformar los demás cortes.
+6. Auditar que ninguna feature use FX o información futura.
 
 **No objetivos de este bloque:** optimizar modelos finales, Von Mises, TabPFN, PyMC,
 embeddings de API, base relacional, KumoRFM, Streamlit o LangGraph.
@@ -681,9 +677,9 @@ embeddings de API, base relacional, KumoRFM, Streamlit o LangGraph.
 | Fuga por campos post-respuesta | métricas sospechosamente altas | `test_no_leakage.py` |
 | Memorización de plantillas | gap operacional vs texto nuevo | reportar evaluación temporal natural y purgada por hash |
 | Deriva de etiquetas y de tasa base | clases ausentes en test | régimen 2023+, split temporal, PSI mensual |
-| Cambio de régimen en 2026 | tasa base, volumen y mezcla se mueven juntos | test principal 2025-07/12 + stress OOD 2026 separado; confirmar causa externa |
+| Cambio de régimen en 2026 | tasa base, volumen y mezcla se mueven juntos | evaluación en régimen 2025 + stress OOD parcial 2026; confirmar causa externa |
 | Sesgo por `Tags`/`State` | diferencias sin controlar por producto | cortes estratificados en cada evaluación |
-| Costo de iteración (3.8 M filas) | notebooks que no terminan | muestra de 300 k + etapas DVC cacheadas |
+| Costo de iteración (3.8 M filas) | notebooks que no terminan | muestra de 175 k + etapas DVC cacheadas |
 | Gasto de API sin techo | el mockup llama al agente repetidamente | límite por sesión, cache, modelo pequeño y presupuesto en `agent.yaml` |
 | Agente confunde scores con hechos | afirma que habrá compensación o retraso | prompt y UI dicen probabilidad; grounding y revisión humana obligatoria |
 | Alucinación del borrador | inventa monto, fecha, acción o compromiso | validadores deterministas, citas a fuentes, fail closed y auditoría |

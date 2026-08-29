@@ -1739,12 +1739,12 @@ qué cambió en la operación o en la política de publicación del CFPB durante
 es una pregunta abierta que el equipo debe resolver con fuentes externas, no con el
 parquet.
 
-**Consecuencia operativa, que ya se aplicó:** el régimen de entrenamiento se cierra en
-**diciembre de 2025**, y la división temporal se reacomoda íntegramente dentro de él —
-entrenamiento 2023-01 a 2024-12, validación 2025-01 a 2025-06, prueba 2025-07 a 2025-12.
-La propuesta original usaba 2026 como periodo de prueba; hacerlo habría significado medir
-el modelo contra una distribución que no es la que verá en producción, y habría producido
-un número de evaluación pesimista y sin sentido.
+**Consecuencia operativa, que ya se aplicó:** el régimen de desarrollo se cierra en
+diciembre de 2025: entrenamiento 2023-01 a 2024-12, validación 2025-01 a 2025-06 y
+evaluación diagnóstica 2025-07 a 2025-12. La muestra de 25,000 casos de este último periodo
+ya se consultó en E12/E13 y no se presenta como holdout final intacto. F4 debe separar esos
+IDs y bloquear los restantes eventos de 2025-H2 antes del modelado definitivo. 2026 queda
+como prueba de estrés OOD parcial, no como reemplazo de una evaluación final en régimen.
 
 # Decisiones de diseño registradas {#sec-decisiones}
 
@@ -1754,8 +1754,8 @@ un número de evaluación pesimista y sin sentido.
 | **D1b** | Regla de etiquetado caso por caso; `In progress` y nulos se excluyen | evita ruido dirigido en la etiqueta |
 | **D2** | Contrato F0 / F1 / FX de disponibilidad temporal | ninguna columna post-respuesta puede ser variable predictora |
 | **D3** | Ventana principal restringida a 2023-2025 | 2026 no se mezcla con la métrica principal y se conserva como stress test OOD |
-| **D4** | División temporal, nunca aleatoria; prueba operacional y prueba purgada por hash en 2025-07 a 2025-12 | separa rendimiento real con plantillas recurrentes de generalización a texto nuevo |
-| **D5** | Muestra de desarrollo de 300 mil filas estratificada | itera en minutos, no en horas |
+| **D4** | División temporal, nunca aleatoria; vistas operacional y purgada por hash | 2025-H2 fue diagnóstico; F4 debe bloquear un holdout final |
+| **D5** | Muestra de desarrollo de 175 mil filas: 100 mil train y 25 mil por cada corte restante | permite comparar métodos antes de escalar |
 | **D6** | R0 TF-IDF y R1 local son las únicas representaciones predictivas; el LLM queda después de T1-T4 | el agente puede cambiar sin regenerar features y no contamina la evaluación |
 
 La justificación completa de cada una está en `docs/plan-eda-y-transformacion.md`.
@@ -1767,7 +1767,7 @@ La justificación completa de cada una está en `docs/plan-eda-y-transformacion.
 | El objetivo de la propuesta no existe | **confirmado** | D1: se usa un proxy y se declara como tal |
 | Empresa como atajo del modelo | **medido, no cerrado** | E14 enmascaró 13.18% de textos; subió el ruido y cambió fronteras, pero la estructura no-ruido conservó ARI 0.856 (@sec-e14) |
 | PII residual en la narrativa | **medido**, mitigación obligatoria | menos del 1% de los textos, pero no cero: segundo enmascarado antes de cualquier llamada externa (@sec-contenido) |
-| El quiebre de 2026 no tiene causa identificada | **abierto**, aislado del test principal | prueba principal en 2025-07/12 y 2026 como stress test OOD separado; falta confirmar la causa externa |
+| El quiebre de 2026 no tiene causa identificada | **abierto**, aislado del desarrollo principal | 2025-H2 queda como diagnóstico y 2026 como stress OOD parcial; falta confirmar la causa externa |
 | Fuga por columnas post-respuesta | contrato definido; prueba pendiente | F5 debe añadir una prueba automática que falle si aparece FX |
 | Memorización de plantillas | **implementada en la muestra** | hash, cache por texto, E14 unique-only y evaluación E12 operacional/purgada; falta extender hashes al corpus completo (@sec-plantillas) |
 | Deriva de etiquetas y de tasa base | cuantificado | régimen 2023+, mapa canónico versionado, prueba de regresión |
@@ -1775,13 +1775,13 @@ La justificación completa de cada una está en `docs/plan-eda-y-transformacion.
 
 # Próximos pasos {#sec-proximos}
 
-1. Revisar los 122 topics E14 y congelar una taxonomía manual de 25–40 motivos.
-2. Ejecutar E13 sobre las mismas filas para decidir R0, R1 o su combinación.
-3. Aplicar la taxonomía al corpus completo y construir hashes/splits completos.
-4. Regenerar la representación ganadora sobre todo train/validation/test y auditar FX.
-5. Completar F5, actualizar este informe y renderizar el entregable EDA + features.
-6. Confirmar con fuentes externas qué originó el quiebre de 2026 (@sec-quiebre); mientras
-   tanto se conserva como stress test OOD separado.
+1. Aprobar o ajustar con negocio el borrador de 33 motivos en `configs/taxonomia.yaml`.
+2. Implementar F4: separar los 25,000 IDs de 2025-H2 ya consultados, bloquear el holdout
+   candidato restante y construir hashes/splits completos sin borrar eventos.
+3. Implementar F5: reajustar R0 con todo train y transformar los demás cortes sin usar FX.
+4. Añadir intervalos de incertidumbre y evaluar el holdout solo después de congelar modelos.
+5. Confirmar con fuentes externas qué originó el quiebre de 2026 (@sec-quiebre); mientras
+   tanto se conserva como stress test OOD parcial.
 
 # Reproducibilidad {.appendix #sec-repro}
 
