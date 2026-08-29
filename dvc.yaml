@@ -167,3 +167,15 @@ stages:
     outs:
       - data/interim/tipado.parquet
       - reports/artefactos/f02_tipado_audit.csv
+
+  canonicalize_taxonomy:
+    cmd: uv run python -m src.data.canonicalize
+    deps:
+      - configs/taxonomia.yaml
+      - data/interim/tipado.parquet
+      - src/data/canonicalize.py
+      - src/paths.py
+    outs:
+      - data/interim/canonico.parquet
+      - reports/artefactos/f03_taxonomia.csv
+      - reports/artefactos/f03_taxonomia_mapping.csv

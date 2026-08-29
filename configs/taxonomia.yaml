@@ -1,0 +1,276 @@
+version: "1.0.0-draft"
+status: "draft_for_stakeholder_review"
+unknown_policy: "error"
+
+product_groups:
+  CUENTAS_CORRIENTES_Y_AHORRO:
+    - Bank account or service
+    - Checking or savings account
+  TARJETA_CREDITO:
+    - Credit card
+  TARJETA_PREPAGO:
+    - Prepaid card
+  REPORTE_CREDITO_Y_MONITOREO:
+    - Credit reporting
+    - Credit reporting, credit repair services, or other personal consumer reports
+    - Credit reporting or other personal consumer reports
+  COBRO_DE_DEUDAS:
+    - Debt collection
+  GESTION_Y_REPARACION_DE_DEUDA:
+    - Debt or credit management
+  TRANSFERENCIAS_DINERO_Y_ACTIVOS_VIRTUALES:
+    - Money transfers
+    - Money transfer, virtual currency, or money service
+    - Virtual currency
+  HIPOTECA:
+    - Mortgage
+  PRESTAMO_CONSUMO_PERSONAL_O_CORTO_PLAZO:
+    - Payday loan
+    - Payday loan, title loan, or personal loan
+    - Payday loan, title loan, personal loan, or advance loan
+  PRESTAMO_ESTUDIANTIL:
+    - Student loan
+  PRESTAMO_O_LEASING_DE_VEHICULO:
+    - Vehicle loan or lease
+
+product_subproduct_groups:
+  TARJETA_CREDITO:
+    Credit card or prepaid card:
+      - General-purpose credit card or charge card
+      - Store credit card
+  TARJETA_PREPAGO:
+    Credit card or prepaid card:
+      - General-purpose prepaid card
+      - Gift card
+      - Government benefit card
+      - Payroll card
+      - Student prepaid card
+  PRESTAMO_CONSUMO_PERSONAL_O_CORTO_PLAZO:
+    Consumer Loan:
+      - Installment loan
+      - Pawn loan
+      - Personal line of credit
+      - Title loan
+  PRESTAMO_O_LEASING_DE_VEHICULO:
+    Consumer Loan:
+      - Vehicle lease
+      - Vehicle loan
+  GESTION_Y_REPARACION_DE_DEUDA:
+    Other financial service:
+      - Credit repair
+      - Debt settlement
+  TRANSFERENCIAS_DINERO_Y_ACTIVOS_VIRTUALES:
+    Other financial service:
+      - Check cashing
+      - Foreign currency exchange
+      - Money order
+      - Refund anticipation check
+      - Traveler’s/Cashier’s checks
+
+issue_groups:
+  CONTRATACION_ORIGINACION_Y_DESEMBOLSO:
+    - Application processing delay
+    - Application, originator, mortgage broker
+    - Applied for loan/did not receive money
+    - Applying for a mortgage or refinancing an existing mortgage
+    - Credit decision / Underwriting
+    - Credit determination
+    - Getting a credit card
+    - Getting a line of credit
+    - Getting a loan
+    - Getting a loan or lease
+    - Getting the loan
+    - Opening an account
+    - Problems receiving the advance
+    - Shopping for a line of credit
+    - Shopping for a loan or lease
+    - Taking out the loan or lease
+    - Was approved for a loan, but didn't receive money
+    - Was approved for a loan, but didn't receive the money
+  CIERRE_O_CANCELACION_DE_CUENTA:
+    - Closing an account
+    - Closing your account
+    - Closing/Cancelling account
+  GESTION_ACCESO_Y_TERMINOS_DE_CUENTA:
+    - Account opening, closing, or management
+    - Account terms and changes
+    - Balance transfer
+    - Credit limit changed
+    - Credit line increase/decrease
+    - Managing an account
+    - Managing the line of credit
+    - Managing, opening, or closing account
+    - Managing, opening, or closing your mobile wallet account
+    - Other features, terms, or problems
+    - Problem getting a card or closing an account
+    - Sale of account
+  PUBLICIDAD_PROMOCIONES_Y_DIVULGACION:
+    - Advertising
+    - Advertising and marketing
+    - Advertising and marketing, including promotional offers
+    - Advertising, marketing or disclosures
+    - Confusing or misleading advertising or marketing
+    - Confusing or missing disclosures
+    - Disclosures
+    - Incorrect/missing disclosures or info
+  COMISIONES_INTERESES_Y_PRECIO:
+    - APR or interest rate
+    - Balance transfer fee
+    - Cash advance fee
+    - Charged fees or interest I didn't expect
+    - Charged fees or interest you didn't expect
+    - Charged upfront or unexpected fees
+    - Excessive fees
+    - Fees
+    - Fees or interest
+    - Late fee
+    - Other fee
+    - Overlimit fee
+    - Unexpected fees
+    - Unexpected or other fees
+    - Unexpected/Other fees
+  FACTURACION_ESTADO_DE_CUENTA_Y_PAGOS:
+    - Billing disputes
+    - Billing statement
+    - Loan payment wasn't credited to your account
+    - Payment to acct not credited
+    - Problem when making payments
+  COMPRA_O_TRANSACCION_DISPUTADA:
+    - Problem with a purchase or transfer
+    - Problem with a purchase shown on your statement
+  TRANSACCION_NO_AUTORIZADA:
+    - Unauthorized transactions or other transaction problem
+    - Unauthorized transactions/trans. issues
+    - Unauthorized withdrawals or charges
+  FRAUDE_ESTAFA_O_PRODUCTO_NO_SOLICITADO:
+    - Fraud or scam
+    - Identity theft / Fraud / Embezzlement
+    - Received a loan I didn't apply for
+    - Received a loan you didn't apply for
+    - Unsolicited issuance of credit card
+  TRANSFERENCIA_ENVIO_O_RECEPCION_DE_DINERO:
+    - Lost or stolen check
+    - Lost or stolen money order
+    - Lost or stolen refund
+    - Making/receiving payments, sending money
+    - Other transaction problem
+  DISPONIBILIDAD_CARGA_Y_ACCESO_A_FONDOS:
+    - Adding money
+    - Deposits and withdrawals
+    - Money was not available when promised
+    - Problem adding money
+    - Trouble accessing funds in your mobile or digital wallet
+  DEBITOS_RETIROS_Y_CARGOS_BANCARIOS:
+    - Can't stop charges to bank account
+    - Can't stop withdrawals from your bank account
+    - Charged bank acct wrong day or amt
+    - Money was taken from your bank account on the wrong day or for the wrong amount
+    - Problem with a lender or other company charging your account
+  SOBREGIRO_O_FONDOS_INSUFICIENTES:
+    - Problem caused by your funds being low
+    - Problem with an overdraft
+    - Problem with overdraft
+    - Problems caused by my funds being low
+  BENEFICIOS_RECOMPENSAS_Y_SERVICIOS_ADICIONALES:
+    - Credit card protection / Debt protection
+    - Overdraft, savings or rewards features
+    - Overdraft, savings, or rewards features
+    - Problem with additional add-on products or services
+    - Rewards
+  SERVICIO_AL_CLIENTE_Y_CONTACTO:
+    - Can't contact lender
+    - Can't contact lender or servicer
+    - Customer service / Customer relations
+    - Customer service/Customer relations
+    - Problem with customer service
+  REPORTE_CON_INFORMACION_INCORRECTA:
+    - Incorrect information on credit report
+    - Incorrect information on your report
+  REPORTE_USADO_O_ACCEDIDO_INDEBIDAMENTE:
+    - Improper use of my credit report
+    - Improper use of your report
+    - Privacy
+  INVESTIGACION_DE_DISPUTA_NO_RESUELTA:
+    - Credit reporting company's investigation
+    - Problem with a company's investigation into an existing issue
+    - Problem with a company's investigation into an existing problem
+    - Problem with a credit reporting company's investigation into an existing problem
+  ACCESO_MONITOREO_Y_PROTECCION_DEL_REPORTE:
+    - Credit monitoring or identity protection
+    - Credit monitoring or identity theft protection services
+    - Identity theft protection or other monitoring services
+    - Problem with fraud alerts or security freezes
+    - Unable to get credit report/credit score
+    - Unable to get your credit report or credit score
+  COBRO_DE_DEUDA_NO_DEBIDA:
+    - Attempts to collect debt not owed
+    - Cont'd attempts collect debt not owed
+  COBRO_COMUNICACION_ACOSO_Y_PRIVACIDAD:
+    - Communication tactics
+    - Electronic communications
+    - Improper contact or sharing of info
+    - Threatened to contact someone or share information improperly
+  COBRO_CON_ENGANO_O_REPRESENTACION_FALSA:
+    - False statements or representation
+  COBRO_CON_AMENAZA_O_ACCION_ILEGAL:
+    - Taking/threatening an illegal action
+    - Took or threatened to take negative or legal action
+  COBRO_VALIDACION_Y_NOTIFICACION_DE_DEUDA:
+    - Disclosure verification of debt
+    - Written notification about debt
+  DIFICULTAD_DE_PAGO_Y_REESTRUCTURACION:
+    - Bankruptcy
+    - Can't repay my loan
+    - Delinquent account
+    - Forbearance / Workout plans
+    - Issues with repayment
+    - Loan modification,collection,foreclosure
+    - Problems when you are unable to pay
+    - Struggling to pay mortgage
+    - Struggling to pay your bill
+    - Struggling to pay your loan
+    - Struggling to repay your loan
+  ADMINISTRACION_DE_PRESTAMO_O_LEASING:
+    - Dealing with my lender or servicer
+    - Dealing with your lender or servicer
+    - Issue where my lender is my school
+    - Issue with income share agreement
+    - Managing the loan or lease
+  SERVICIO_HIPOTECARIO_PAGO_Y_ESCROW:
+    - Loan servicing, payments, escrow account
+    - Trouble during payment process
+  CIERRE_HIPOTECARIO:
+    - Closing on a mortgage
+    - Settlement process and costs
+  GARANTIA_DANADA_REPOSEIDA_O_VENDIDA:
+    - Lender damaged or destroyed property
+    - Lender damaged or destroyed vehicle
+    - Lender repossessed or sold the vehicle
+    - Lender sold the property
+    - Property was damaged or destroyed property
+    - Property was sold
+    - Repossession
+    - Vehicle was damaged or destroyed the vehicle
+    - Vehicle was repossessed or sold the vehicle
+  LIQUIDACION_Y_FIN_DE_PRESTAMO_O_LEASING:
+    - Payoff process
+    - Problem with the payoff process at the end of the loan
+    - Problems at the end of the loan or lease
+  MONTO_O_TIPO_DE_CAMBIO_INCORRECTO:
+    - Incorrect exchange rate
+    - Wrong amount charged or received
+  SERVICIO_DE_GESTION_DE_DEUDA_INCUMPLIDO:
+    - Didn't provide services promised
+  OTRO_PROBLEMA_TRANSACCIONAL_O_DE_SERVICIO:
+    - Arbitration
+    - Cash advance
+    - Convenience checks
+    - Other
+    - Other service issues
+    - Other service problem
+    - Other transaction issues
+    - Problem with cash advance
+    - Transaction issue
+    - Trouble using the card
+    - Trouble using your card
+    - Using a debit or ATM card

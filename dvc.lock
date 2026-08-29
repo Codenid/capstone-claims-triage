@@ -508,3 +508,35 @@ stages:
       hash: md5
       md5: 73f326c7e3efc9a2871936eb8fe0a69b
       size: 4198159
+  canonicalize_taxonomy:
+    cmd: uv run python -m src.data.canonicalize
+    deps:
+    - path: configs/taxonomia.yaml
+      hash: md5
+      md5: 3f29655d93a35e06411cbfd065c593a5
+      size: 10076
+    - path: data/interim/tipado.parquet
+      hash: md5
+      md5: 4207e4f141fab5d4c3f6792f02975636
+      size: 786612838
+    - path: src/data/canonicalize.py
+      hash: md5
+      md5: 415615b58ef4a93b46a4712026c0d7b2
+      size: 8267
+    - path: src/paths.py
+      hash: md5
+      md5: 7bcaff4d98841997471c8e2e43928977
+      size: 748
+    outs:
+    - path: data/interim/canonico.parquet
+      hash: md5
+      md5: 025129f1f97f1d2e9f7c8b69053d1956
+      size: 796916379
+    - path: reports/artefactos/f03_taxonomia.csv
+      hash: md5
+      md5: 63a92b5cd5667925b95fc3a8f26b5004
+      size: 3740
+    - path: reports/artefactos/f03_taxonomia_mapping.csv
+      hash: md5
+      md5: 4133bb53307014eb98049635fb23e235
+      size: 16570

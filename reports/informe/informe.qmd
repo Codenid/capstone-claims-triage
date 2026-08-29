@@ -60,6 +60,8 @@ empresas = artefacto("e07_empresas")
 geografia = artefacto("e08_geografia")
 sesgo = artefacto("e11_sesgo")
 tipado_audit = artefacto("f02_tipado_audit")
+taxonomia_audit = artefacto("f03_taxonomia")
+taxonomia_mapping = artefacto("f03_taxonomia_mapping")
 piso_senal = artefacto("e12_piso_senal")
 embeddings = artefacto("e13_embeddings")
 clusters = artefacto("e14_clusters")
@@ -1598,8 +1600,10 @@ else:
 
 1. **Tipado — completo:** 3,837,184 filas, fechas, booleanos, categorías, tags separados,
    targets y contrato de dominios; reducción de memoria no-texto de 84.55%.
-2. **Repetidos:** hash, conflictos de etiquetas y vistas operacional/texto único.
-3. **Canonicalización:** mapa manual versionado, definido con train y aplicado sin cambios.
+2. **Canonicalización — borrador v1 ejecutado:** mapa manual versionado de 21 productos a
+   11 y de 173 `Issue` a 33 motivos. El mapa es completo y determinista, pero debe ser
+   aprobado por negocio antes de considerarlo estable.
+3. **Repetidos — pendiente:** hash, conflictos de etiquetas y vistas operacional/texto único.
 4. **Split:** train 2023-2024, validación 2025-01/06 y test 2025-07/12; 2026 queda como
    stress test OOD separado.
 5. **R0:** word/character TF-IDF y señales deterministas, con `fit` solo en train.
@@ -1608,6 +1612,52 @@ else:
    índices/manifiestos en Parquet.
 8. **Auditoría:** dimensiones, memoria, nulos, cobertura, columnas por tier y prueba que
    prohíbe FX.
+
+### F3 — Canonicalización de Product e Issue
+
+`configs/taxonomia.yaml` enumera cada etiqueta permitida; no usa narrativa, empresa,
+outcomes ni clusters para asignar el target. Las tres familias históricas que mezclan
+productos (`Consumer Loan`, `Credit card or prepaid card` y `Other financial service`) se
+resuelven con reglas explícitas de `Sub-product`. Una etiqueta nueva genera error en vez de
+caer silenciosamente en `OTRO`.
+
+```{python}
+# | output: asis
+if taxonomia_audit is None:
+    print(pendiente("F3-taxonomía"))
+else:
+    resumen_taxonomia = (
+        taxonomia_audit.groupby("dimension", as_index=False)
+        .agg(clases=("canonical", "nunique"), train=("train", "sum"),
+             validation=("validation", "sum"), test=("test", "sum"),
+             ood_2026=("ood_2026", "sum"))
+    )
+    display(tabla(resumen_taxonomia))
+```
+
+```{python}
+# | label: fig-f3-taxonomia
+# | fig-cap: "Doce motivos canónicos con mayor soporte en train. Validación y test se muestran para verificar continuidad temporal, no para diseñar el mapa."
+if taxonomia_audit is not None:
+    motivos = taxonomia_audit[taxonomia_audit["dimension"] == "motivo_canonico"].nlargest(12, "train").copy()
+    motivos["etiqueta"] = motivos["canonical"].str.replace("_", " ").str.title()
+    motivos = motivos.sort_values("train")
+    y = np.arange(len(motivos))
+    fig, ax = plt.subplots(figsize=(8.4, 5.0))
+    ax.barh(y - 0.22, motivos["train"], height=0.22, color=SERIE_1, label="Train")
+    ax.barh(y, motivos["validation"], height=0.22, color=SERIE_2, label="Validación")
+    ax.barh(y + 0.22, motivos["test"], height=0.22, color=SERIE_3, label="Test")
+    ax.set_yticks(y, motivos["etiqueta"])
+    ax.set_xlabel("Reclamos")
+    ax.legend(ncol=3)
+    sin_marco(ax)
+    plt.show()
+```
+
+Las 33 clases tienen soporte distinto de cero en train, validación y test. El parquet
+`canonico.parquet` conserva las 3,837,184 filas y mantiene `product`/`issue` crudos junto a
+`producto_canonico`, `motivo_canonico`, `target_t1_motivo_canonico` y la versión del mapa.
+La tabla completa de 173 equivalencias queda en `f03_taxonomia_mapping.csv`.
 
 ```{python}
 # | output: asis
@@ -1630,6 +1680,7 @@ flowchart TD
         F[e13_compare_representations]
         G[prepare_e14]
         H[e14_clustering]
+        V[e14_visualization]
         B --> C
         B --> D
         C --> E
@@ -1638,10 +1689,11 @@ flowchart TD
         D --> G
         C --> H
         G --> H
+        H --> V
     end
     subgraph P[CRISP-DM 3 - Preparación]
         I[type_full_corpus]
-        J[canonicalize completo]
+        J[canonicalize_taxonomy]
         K[split completo]
         L[features R0 completas]
         I --> J --> K --> L
