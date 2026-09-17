@@ -28,7 +28,7 @@ Esta rama no entrena modelos finales.
 ## Plan del EDA
 
 - [x] **E0 — Verificar el raw:** lectura, filas, columnas, memoria e identidad del archivo.
-- [ ] **E1 — Revisar el esquema:** tipos, nulos, dominios y ejemplos.
+- [x] **E1 — Revisar el esquema:** tipos, nulos, dominios y ejemplos.
 - [ ] **E2 — Revisar el tiempo:** cobertura, volumen por periodo y 2026 parcial.
 - [ ] **E3 — Revisar categorías:** producto, subproducto, issue, empresa y canal de envío.
 - [ ] **E4 — Revisar respuestas:** respuesta de la empresa, respuesta oportuna y variables objetivo posibles.

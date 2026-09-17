@@ -16,6 +16,9 @@ __pycache__/
 .ruff_cache/
 .mypy_cache/
 
+# IDE
+.idea/
+
 # OS
 .DS_Store
 Thumbs.db
