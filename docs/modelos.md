@@ -1,0 +1,293 @@
+# Propuesta de modelos para el triaje
+
+<!-- markdownlint-disable MD013 MD060 -->
+
+Este documento registra la propuesta de modelado. No significa que todos los
+modelos serán implementados. Cada opción deberá superar una comparación simple
+y demostrar valor con datos que no fueron usados para entrenarla.
+
+## Alcance real
+
+El sistema busca **apoyar al agente humano**, no reemplazarlo. Con los datos
+CFPB disponibles podemos construir un prototipo para:
+
+- sugerir el motivo de un reclamo;
+- estimar resultados históricos registrados por CFPB;
+- recuperar reclamos con significado parecido;
+- descubrir grupos de narrativas relacionadas;
+- alertar cuando un patrón aumenta de forma inusual.
+
+No podemos afirmar que detectamos fraude confirmado, pérdidas económicas, el
+tiempo real de resolución de un banco ni su plazo interno de 15 días. Esas
+etiquetas no existen en el archivo.
+
+## Diccionario de resultados
+
+| Nombre | Resultado propuesto | Límite |
+|---|---|---|
+| **T1** | Motivo CFPB (`Issue`) más probable | No equivale al equipo interno de un banco |
+| **T2** | Probabilidad de alguna solución o compensación registrada | Puede usarse como señal auxiliar |
+| **T3** | Probabilidad de compensación monetaria registrada | Es una aproximación a reembolso, no un reembolso bancario confirmado |
+| **T4** | Probabilidad de respuesta no oportuna según CFPB | No mide resolución ni el plazo bancario de 15 días |
+| **A1** | Alerta de patrón semántico emergente | Un patrón atípico no implica fraude |
+
+Una **variable de entrada** es información disponible cuando llega el reclamo.
+Un **objetivo** es el resultado histórico que intentamos predecir.
+
+`Issue`, `Company response to consumer`, `Company public response` y
+`Timely response?` no pueden entrar como variables del modelo que intenta
+predecirlas, porque revelarían el resultado.
+
+## Valor esperado
+
+Los centros de atención suelen usar reglas para clasificar reclamos conocidos.
+La propuesta añade una segunda capa:
+
+1. Sugiere categorías para reducir clasificación manual.
+2. Muestra probabilidades y reclamos históricos parecidos.
+3. Identifica casos que no encajan bien en patrones conocidos.
+4. Detecta aumentos de grupos semánticos relacionados.
+5. Entrega evidencia al agente para que tome la decisión final.
+
+El principal valor adicional frente a reglas estáticas es encontrar reclamos
+parecidos aunque usen palabras diferentes y advertir cuándo aumentan juntos.
+
+## Flujo propuesto
+
+```mermaid
+flowchart TD
+    A[Nuevo reclamo] --> B[Narrativa, producto, empresa y fecha]
+
+    B --> C0[TF-IDF: comparación sencilla]
+    B --> C1[BGE: representación semántica]
+
+    C0 --> D[T1: motivo probable]
+    C1 --> D
+    C0 --> E[T2 y T3: solución y compensación monetaria]
+    C1 --> E
+    C0 --> F[T4: respuesta no oportuna CFPB]
+    C1 --> F
+
+    C1 --> G[FAISS: buscar reclamos parecidos]
+    G --> H{¿Encaja en un patrón conocido?}
+    H -->|Sí| I[Asignar grupo semántico]
+    H -->|No| J[Reservorio de patrones nuevos]
+
+    I --> K[Conteo semanal por patrón]
+    J --> K
+
+    K --> L[Negative Binomial: volumen esperado]
+    K --> M[Dirichlet-Multinomial: composición esperada]
+    L --> N[CUSUM o detección de cambio]
+    M --> N
+
+    N --> O{¿Cambio anormal?}
+    O -->|No| P[Triaje normal]
+    O -->|Sí| Q[Alerta de patrón emergente]
+
+    D --> R[Recomendación de triaje]
+    E --> R
+    F --> R
+    P --> R
+    Q --> R
+
+    R --> S[Agente humano revisa y decide]
+```
+
+En el archivo actual, `Submitted via` siempre vale `Web`. Por tanto, ese campo
+no aporta información al modelo. Podría ser útil en una futura aplicación si
+el banco dispone de varios canales reales.
+
+## Representación del texto
+
+### TF-IDF: comparación inicial
+
+**TF-IDF** representa cada narrativa mediante la importancia de sus palabras.
+Es rápido, económico y suele funcionar bien cuando ciertas palabras están muy
+relacionadas con una categoría.
+
+Se usará con regresión logística como primera comparación. Un modelo posterior
+solo se justifica si mejora claramente esta referencia.
+
+### BGE: representación semántica
+
+Un **embedding** es una lista de números que intenta representar el significado
+del texto. Narrativas con significado parecido deberían quedar cerca aunque no
+usen exactamente las mismas palabras.
+
+Modelo candidato: `BAAI/bge-large-en-v1.5`.
+
+La A100 disponible puede utilizarse para generar embeddings e índices de
+similitud. Antes de procesar todo el corpus, BGE deberá compararse contra
+TF-IDF sobre las mismas filas y periodos.
+
+Las narrativas largas requieren decidir si se recortan o se dividen en
+fragmentos. E5 encontró que 8.43% supera 400 palabras.
+
+## Modelos por componente
+
+| Componente | Comparación inicial | Modelo candidato | Razón |
+|---|---|---|---|
+| T1 — motivo | TF-IDF + regresión logística | BGE + clasificador lineal o red pequeña | Comparar palabras exactas contra significado semántico |
+| T2 — alguna solución | TF-IDF + regresión logística | BGE + clasificador calibrado | Señal auxiliar con desbalance moderado |
+| T3 — compensación monetaria | TF-IDF + regresión logística | BGE + clasificador calibrado | Solo 2.568% de positivos en todo el corpus |
+| T4 — no oportuna CFPB | TF-IDF + regresión logística | BGE + clasificador calibrado | Solo 1.111% de positivos y cambio temporal |
+| Vecinos similares | No aplica | FAISS | Búsqueda rápida entre millones de embeddings |
+| Grupos semánticos | k-means sobre embeddings | HDBSCAN por muestra o segmento | Descubrir patrones sin etiquetas confirmadas |
+| Descripción del grupo | Palabras frecuentes | c-TF-IDF | Explicar cada grupo con términos representativos |
+| Volumen temporal | Media histórica | Negative Binomial con PyMC | Estimar el conteo esperado y su incertidumbre |
+| Composición temporal | Proporción histórica | Dirichlet-Multinomial con PyMC | Detectar cambios relativos entre todos los grupos |
+| Cambio persistente | Regla por exceso semanal | CUSUM o BOCPD | Detectar aumentos pequeños que continúan varias semanas |
+
+Un modelo **calibrado** produce probabilidades interpretables. Por ejemplo, de
+100 casos con probabilidad cercana a 20%, aproximadamente 20 deberían resultar
+positivos.
+
+## Descubrimiento de patrones
+
+### FAISS y vecinos cercanos
+
+FAISS permite buscar rápidamente qué reclamos históricos tienen embeddings
+más cercanos al reclamo nuevo.
+
+Esto aporta dos señales:
+
+- **similitud:** el reclamo se parece a un patrón conocido;
+- **novedad:** está lejos de los reclamos históricos comparables.
+
+También ofrece una explicación útil al agente: puede mostrar ejemplos
+históricos similares sin depender únicamente de una probabilidad.
+
+### Grupos semánticos
+
+Un **grupo semántico** reúne narrativas con significado parecido. Se puede
+crear con k-means a gran escala y usar HDBSCAN en muestras o segmentos para
+buscar formas más irregulares.
+
+c-TF-IDF ayuda a describir el grupo mediante las palabras que lo distinguen de
+los demás. No determina fraude ni reemplaza la revisión humana.
+
+E6 mostró que muchos textos son plantillas exactas o casi exactas. Antes de
+generar alertas, deberá comprobarse si esas plantillas dominan un grupo y si
+conviene marcarlas o reducir su influencia.
+
+## Modelos temporales
+
+Los modelos temporales se aplican **después** de crear grupos semánticos. No
+procesan directamente millones de embeddings: reciben conteos por grupo y
+semana.
+
+### Negative Binomial
+
+La distribución **Negative Binomial** modela cuántos reclamos esperamos para un
+grupo. Permite más variación que una distribución Poisson simple, algo común en
+reclamos con picos y campañas.
+
+Pregunta principal:
+
+> ¿Este patrón tiene más reclamos de los esperados en términos absolutos,
+> considerando el volumen general?
+
+PyMC puede estimar el valor esperado, diferencias entre grupos y la
+incertidumbre de la estimación.
+
+### Dirichlet-Multinomial
+
+La **Dirichlet-Multinomial** modela cómo se reparte el total semanal entre los
+diferentes grupos.
+
+Pregunta principal:
+
+> ¿Cambió la proporción que representa este patrón dentro de todos los
+> reclamos?
+
+No crea los grupos. Recibe grupos ya definidos mediante embeddings y analiza
+su composición conjunta.
+
+### Por qué se usan juntas
+
+| Modelo | Pregunta |
+|---|---|
+| Negative Binomial | ¿El conteo del patrón es mayor que el esperado? |
+| Dirichlet-Multinomial | ¿El patrón ocupa una proporción inusual del total? |
+
+Ejemplo:
+
+- Históricamente llegan 10,000 reclamos semanales.
+- Un patrón representa 0.5%, aproximadamente 50 reclamos.
+- Esta semana aparecen 120, es decir, 1.2% del total.
+
+Negative Binomial detectaría el exceso de 50 a 120. Dirichlet-Multinomial
+confirmaría que la participación aumentó de 0.5% a 1.2%.
+
+Si el volumen total se duplicara a 20,000 y el patrón subiera a 100, su
+participación seguiría siendo 0.5%. Al considerar el volumen total, ninguno de
+los dos modelos debería tratar ese aumento proporcional como una alerta por sí
+solo.
+
+### CUSUM y detección de cambio
+
+**CUSUM** acumula desviaciones pequeñas respecto de lo esperado. Puede detectar
+un aumento persistente que no parece extremo en una sola semana.
+
+Otra opción es **Bayesian Online Change-Point Detection (BOCPD)**, que estima la
+probabilidad de que haya comenzado un comportamiento nuevo. Se comparará solo
+después de construir una referencia temporal sencilla.
+
+## Cómo una alerta cambia el triaje
+
+| Situación | Acción sugerida |
+|---|---|
+| Patrón conocido y estable | Triaje normal |
+| Reclamo aislado y novedoso | Revisión manual; no elevar automáticamente |
+| Patrón conocido con crecimiento anormal | Agrupar casos y alertar a un equipo especializado |
+| Grupo dominado por una plantilla habitual | Evitar una alerta automática hasta validar su importancia |
+| Patrón nuevo que continúa creciendo | Priorizar investigación y considerar una nueva regla |
+
+Una alerta no afirma fraude. Informa al agente que varios reclamos pueden estar
+relacionados y que conviene revisarlos juntos.
+
+## Orden de experimentación
+
+1. Terminar EDA, transformaciones y divisiones temporales.
+2. Entrenar TF-IDF + regresión logística para T1–T4.
+3. Comparar BGE usando las mismas filas y métricas.
+4. Construir FAISS y grupos semánticos con el mejor embedding.
+5. Describir grupos y revisar posibles plantillas.
+6. Crear conteos semanales sin consultar periodos reservados.
+7. Probar Negative Binomial como modelo temporal principal.
+8. Probar Dirichlet-Multinomial como comprobación de composición.
+9. Añadir CUSUM si mejora la detección de cambios persistentes.
+10. Integrar las señales en una recomendación revisada por una persona.
+
+## Evaluación
+
+Las divisiones respetarán el tiempo. También se evitará que un mismo grupo de
+texto normalizado aparezca simultáneamente en aprendizaje y evaluación.
+
+- **T1:** Macro-F1, top-3 y resultados por motivo.
+- **T2–T4:** PR-AUC, precisión, cobertura y calibración.
+- **Patrones:** revisión humana de las alertas principales, tiempo hasta detectar
+  un crecimiento y cantidad de falsas alertas por semana.
+
+A partir de esta nueva rama, ningún modelo será elegido usando 2025-H2 o 2026.
+Sin embargo, un experimento anterior ya consultó una muestra de 25,000 casos de
+2025-H2. Esos IDs deberán recuperarse y excluirse de una evaluación final
+intacta. El resto de 2025-H2 permanecerá reservado hasta congelar las
+transformaciones y decisiones de modelado. 2026 seguirá separado porque su
+cobertura es parcial.
+
+## Aplicación web futura
+
+La aplicación puede mostrar:
+
+- motivo probable y alternativas;
+- probabilidades T2–T4 con sus límites;
+- reclamos históricos similares;
+- grupo semántico y evolución semanal;
+- explicación de la alerta;
+- decisión y comentario del agente humano.
+
+Después del triaje, un agente construido con LangGraph podría redactar una
+respuesta sugerida usando información aprobada. Esa respuesta siempre deberá
+ser revisada por una persona antes de enviarse.

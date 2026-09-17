@@ -69,6 +69,12 @@ flowchart LR
 Puede usarse una muestra pequeña para experimentar rápidamente, pero las
 transformaciones aprobadas deberán ejecutarse sobre el conjunto completo.
 
+## Diseño futuro del sistema
+
+La propuesta de modelos, alertas temporales y aplicación web se conserva en
+[`docs/modelos.md`](docs/modelos.md). Ese documento registra opciones futuras;
+no implica que ya hayan sido validadas.
+
 ## Git y DVC
 
 Esta sección contiene instrucciones para el equipo técnico; no es necesaria
