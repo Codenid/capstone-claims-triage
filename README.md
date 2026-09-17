@@ -1,58 +1,78 @@
 # Triaje de reclamos — rama EDA
 
-Esta rama reconstruye el análisis exploratorio desde `develop` con un flujo simple, reproducible y fácil de revisar.
+Este documento resume el **análisis exploratorio de datos (EDA)**: la
+revisión que hacemos antes de transformar información o entrenar modelos.
 
 ## Objetivo
 
-Entender qué información contiene el dataset CFPB, qué problemas de calidad tiene y qué transformaciones están justificadas antes de crear modelos.
+Entender qué información contiene el conjunto de reclamos CFPB, qué problemas
+de calidad tiene y qué transformaciones están justificadas antes de crear
+modelos.
 
 Esta rama no entrena modelos finales.
 
 ## Datos disponibles
 
 - Fuente: Consumer Financial Protection Bureau (CFPB).
-- Archivo raw: `data/raw/cfpb_reclamos_narrativa.parquet`.
+- Archivo original, sin modificaciones —llamado `raw` por el equipo técnico—:
+  `data/raw/cfpb_reclamos_narrativa.parquet`.
+- Formato Parquet: formato eficiente para guardar tablas grandes.
 - Tamaño registrado: 3,837,184 reclamos con narrativa.
-- El raw es inmutable y está versionado con DVC.
-- No contamos con datos internos de un banco, fraude confirmado, pérdidas ni tiempo bancario de resolución.
+- El archivo original es inmutable: no se modifica.
+- DVC conserva las versiones de los datos grandes; Git conserva código y documentación.
+- No contamos con datos internos de un banco, fraude confirmado, pérdidas ni
+  tiempo bancario de resolución.
 
 ## Forma de trabajo
 
 1. Cada paso se implementa de forma visible en `notebooks/01_eda.ipynb`.
-2. El notebook se ejecuta de arriba hacia abajo y explica qué pregunta responde cada sección.
+2. El notebook se ejecuta de arriba hacia abajo y explica qué pregunta
+   responde cada sección.
 3. Solo extraeremos funciones a `src/` cuando exista reutilización real.
 4. No avanzaremos al siguiente paso hasta revisar y aprobar el resultado.
 5. Las transformaciones aprobadas se declararán en `dvc.yaml`.
-6. Git versiona código y documentación; DVC versiona datos y artefactos pesados.
+6. Git conserva el historial del código y la documentación; DVC conserva el
+   historial de los archivos de datos grandes.
 
 ## Plan del EDA
 
-- [x] **E0 — Verificar el raw:** lectura, filas, columnas, memoria e identidad del archivo.
-- [x] **E1 — Revisar el esquema:** tipos, nulos, dominios y ejemplos.
+- [x] **E0 — Verificar el archivo original:** filas, columnas, tamaño e identidad.
+- [x] **E1 — Revisar las columnas:** tipos, valores ausentes y categorías observadas.
 - [x] **E2 — Revisar el tiempo:** cobertura, volumen por periodo y 2026 parcial.
-- [x] **E3 — Revisar categorías:** producto, subproducto, issue, empresa y canal de envío.
-- [x] **E4 — Revisar respuestas:** respuesta de la empresa, respuesta oportuna y variables objetivo posibles.
-- [x] **E5 — Revisar narrativas:** longitud, vacíos, idioma aparente y calidad del texto.
-- [ ] **E6 — Revisar repetidos:** IDs duplicados, textos idénticos y textos normalizados iguales.
-- [ ] **E7 — Revisar desbalance:** frecuencia de las etiquetas candidatas.
-- [ ] **E8 — Revisar cambios temporales:** diferencias entre entrenamiento, validación y periodos futuros.
-- [ ] **E9 — Acordar transformaciones:** tipado, canonicalización, splits y features justificadas por el EDA.
-- [ ] **E10 — Documentar conclusiones:** figuras, tablas, limitaciones y decisiones aprobadas.
+- [x] **E3 — Revisar categorías:** producto, subproducto, motivo, empresa y
+  canal de envío.
+- [x] **E4 — Revisar respuestas:** resultados históricos que podrían predecirse.
+- [x] **E5 — Revisar narrativas:** longitud, vacíos, idioma aparente y calidad
+  del texto.
+- [x] **E6 — Revisar repeticiones:** IDs duplicados, textos iguales, posibles
+  plantillas y concentraciones puntuales.
+- [ ] **E7 — Revisar clases poco frecuentes:** proporción de casos positivos y
+  negativos.
+- [ ] **E8 — Revisar cambios temporales:** diferencias entre periodos
+  anteriores y posteriores.
+- [ ] **E9 — Acordar transformaciones:** tipos correctos, agrupación de
+  categorías equivalentes, divisiones temporales y variables de entrada.
+- [ ] **E10 — Documentar conclusiones:** figuras, tablas, limitaciones y
+  decisiones aprobadas.
 
 ## Flujo de datos previsto
 
 ```mermaid
 flowchart LR
-    A[Raw CFPB inmutable] --> B[Notebook EDA]
+    A[Datos originales CFPB] --> B[Notebook de análisis]
     B --> C[Hallazgos revisados]
     C --> D[Transformaciones aprobadas]
-    D --> E[Datos interim con DVC]
-    E --> F[Features para Modeling]
+    D --> E[Datos intermedios versionados]
+    E --> F[Variables para modelado]
 ```
 
-La muestra puede usarse para iterar rápidamente, pero las transformaciones aprobadas deberán ejecutarse sobre el corpus completo.
+Puede usarse una muestra pequeña para experimentar rápidamente, pero las
+transformaciones aprobadas deberán ejecutarse sobre el conjunto completo.
 
 ## Git y DVC
+
+Esta sección contiene instrucciones para el equipo técnico; no es necesaria
+para interpretar los hallazgos.
 
 Al comenzar una sesión:
 
@@ -72,15 +92,18 @@ git commit -m "Document EDA step"
 git push
 ```
 
-El raw ya está rastreado mediante `data/raw/cfpb_reclamos_narrativa.parquet.dvc`. No debe agregarse directamente a Git.
+El archivo original ya está rastreado mediante
+`data/raw/cfpb_reclamos_narrativa.parquet.dvc`. No debe agregarse directamente
+a Git.
 
 ## Criterio para cerrar esta rama
 
 El EDA termina cuando podemos explicar con evidencia:
 
 - qué datos tenemos y qué no tenemos;
-- qué objetivos son proxies válidos;
-- qué columnas pueden existir al recibir un reclamo nuevo;
-- cómo se dividirán los periodos sin fuga temporal;
-- qué transformaciones y features se crearán;
+- qué resultados disponibles pueden servir como aproximaciones a lo que
+  interesa al negocio;
+- qué columnas estarán disponibles al recibir un reclamo nuevo;
+- cómo separar periodos sin compartir información entre aprendizaje y evaluación;
+- qué transformaciones y variables de entrada se crearán;
 - qué limitaciones tendrá la interpretación del sistema.
