@@ -32,7 +32,7 @@ Esta rama no entrena modelos finales.
 - [x] **E2 — Revisar el tiempo:** cobertura, volumen por periodo y 2026 parcial.
 - [x] **E3 — Revisar categorías:** producto, subproducto, issue, empresa y canal de envío.
 - [x] **E4 — Revisar respuestas:** respuesta de la empresa, respuesta oportuna y variables objetivo posibles.
-- [ ] **E5 — Revisar narrativas:** longitud, vacíos, idioma aparente y calidad del texto.
+- [x] **E5 — Revisar narrativas:** longitud, vacíos, idioma aparente y calidad del texto.
 - [ ] **E6 — Revisar repetidos:** IDs duplicados, textos idénticos y textos normalizados iguales.
 - [ ] **E7 — Revisar desbalance:** frecuencia de las etiquetas candidatas.
 - [ ] **E8 — Revisar cambios temporales:** diferencias entre entrenamiento, validación y periodos futuros.
