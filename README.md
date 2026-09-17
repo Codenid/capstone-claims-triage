@@ -46,7 +46,7 @@ Esta rama no entrena modelos finales.
   del texto.
 - [x] **E6 — Revisar repeticiones:** IDs duplicados, textos iguales, posibles
   plantillas y concentraciones puntuales.
-- [ ] **E7 — Revisar clases poco frecuentes:** proporción de casos positivos y
+- [x] **E7 — Revisar clases poco frecuentes:** proporción de casos positivos y
   negativos.
 - [ ] **E8 — Revisar cambios temporales:** diferencias entre periodos
   anteriores y posteriores.
