@@ -31,7 +31,7 @@ Esta rama no entrena modelos finales.
 - [x] **E1 — Revisar el esquema:** tipos, nulos, dominios y ejemplos.
 - [x] **E2 — Revisar el tiempo:** cobertura, volumen por periodo y 2026 parcial.
 - [x] **E3 — Revisar categorías:** producto, subproducto, issue, empresa y canal de envío.
-- [ ] **E4 — Revisar respuestas:** respuesta de la empresa, respuesta oportuna y variables objetivo posibles.
+- [x] **E4 — Revisar respuestas:** respuesta de la empresa, respuesta oportuna y variables objetivo posibles.
 - [ ] **E5 — Revisar narrativas:** longitud, vacíos, idioma aparente y calidad del texto.
 - [ ] **E6 — Revisar repetidos:** IDs duplicados, textos idénticos y textos normalizados iguales.
 - [ ] **E7 — Revisar desbalance:** frecuencia de las etiquetas candidatas.
