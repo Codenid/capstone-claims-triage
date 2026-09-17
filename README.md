@@ -30,7 +30,7 @@ Esta rama no entrena modelos finales.
 - [x] **E0 — Verificar el raw:** lectura, filas, columnas, memoria e identidad del archivo.
 - [x] **E1 — Revisar el esquema:** tipos, nulos, dominios y ejemplos.
 - [x] **E2 — Revisar el tiempo:** cobertura, volumen por periodo y 2026 parcial.
-- [ ] **E3 — Revisar categorías:** producto, subproducto, issue, empresa y canal de envío.
+- [x] **E3 — Revisar categorías:** producto, subproducto, issue, empresa y canal de envío.
 - [ ] **E4 — Revisar respuestas:** respuesta de la empresa, respuesta oportuna y variables objetivo posibles.
 - [ ] **E5 — Revisar narrativas:** longitud, vacíos, idioma aparente y calidad del texto.
 - [ ] **E6 — Revisar repetidos:** IDs duplicados, textos idénticos y textos normalizados iguales.
