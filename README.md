@@ -58,6 +58,22 @@ Esta rama no entrena modelos finales.
 - [x] **E10 — Documentar conclusiones:** figuras, tablas, limitaciones y
   decisiones aprobadas.
 
+## Plan de preparación de datos
+
+La preparación convierte los datos originales en una tabla lista para la rama
+de modelado. Cada paso se revisa antes de continuar.
+
+- [x] **P1 — Corregir tipos:** validar las columnas y convertir las fechas a un
+  tipo de fecha real.
+- [ ] **P2 — Normalizar narrativas:** conservar el texto original, crear una
+  versión comparable y calcular un identificador estable de cada texto.
+- [ ] **P3 — Ordenar la taxonomía:** definir un mapa estable de productos y
+  motivos, y detectar categorías nuevas.
+- [ ] **P4 — Crear objetivos y periodos:** derivar T1–T4, indicar qué filas son
+  elegibles para cada objetivo y separar los periodos de evaluación.
+- [ ] **P5 — Generar la tabla preparada:** unir las transformaciones aprobadas
+  en el archivo que recibirá la rama `Modeling/pipaber`.
+
 ## Flujo de datos previsto
 
 ```mermaid

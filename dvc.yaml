@@ -1,0 +1,8 @@
+stages:
+  type_data:
+    cmd: uv run python src/data/type_data.py
+    deps:
+      - data/raw/cfpb_reclamos_narrativa.parquet
+      - src/data/type_data.py
+    outs:
+      - data/interim/typed.parquet

@@ -1,0 +1,18 @@
+schema: '2.0'
+stages:
+  type_data:
+    cmd: uv run python src/data/type_data.py
+    deps:
+    - path: data/raw/cfpb_reclamos_narrativa.parquet
+      hash: md5
+      md5: 68f4560aca0967779f118e8225e72c26
+      size: 1616005038
+    - path: src/data/type_data.py
+      hash: md5
+      md5: cffb2ebdd380e6442573acb6af894073
+      size: 2695
+    outs:
+    - path: data/interim/typed.parquet
+      hash: md5
+      md5: 2647f1c469e9ec64b42267a72145ef47
+      size: 908544467
