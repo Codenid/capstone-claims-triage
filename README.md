@@ -11,6 +11,8 @@ modelos.
 
 Esta rama no entrena modelos finales.
 
+**Estado:** EDA E0–E10 aprobado. El siguiente bloque es preparación de datos.
+
 ## Datos disponibles
 
 - Fuente: Consumer Financial Protection Bureau (CFPB).
@@ -19,7 +21,8 @@ Esta rama no entrena modelos finales.
 - Formato Parquet: formato eficiente para guardar tablas grandes.
 - Tamaño registrado: 3,837,184 reclamos con narrativa.
 - El archivo original es inmutable: no se modifica.
-- DVC conserva las versiones de los datos grandes; Git conserva código y documentación.
+- DVC conserva las versiones de los datos grandes; Git conserva código y
+  documentación.
 - No contamos con datos internos de un banco, fraude confirmado, pérdidas ni
   tiempo bancario de resolución.
 
@@ -52,7 +55,7 @@ Esta rama no entrena modelos finales.
   anteriores y posteriores.
 - [x] **E9 — Acordar transformaciones:** tipos correctos, agrupación de
   categorías equivalentes, divisiones temporales y variables de entrada.
-- [ ] **E10 — Documentar conclusiones:** figuras, tablas, limitaciones y
+- [x] **E10 — Documentar conclusiones:** figuras, tablas, limitaciones y
   decisiones aprobadas.
 
 ## Flujo de datos previsto
