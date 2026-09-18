@@ -48,7 +48,7 @@ Esta rama no entrena modelos finales.
   plantillas y concentraciones puntuales.
 - [x] **E7 — Revisar clases poco frecuentes:** proporción de casos positivos y
   negativos.
-- [ ] **E8 — Revisar cambios temporales:** diferencias entre periodos
+- [x] **E8 — Revisar cambios temporales:** diferencias entre periodos
   anteriores y posteriores.
 - [ ] **E9 — Acordar transformaciones:** tipos correctos, agrupación de
   categorías equivalentes, divisiones temporales y variables de entrada.
