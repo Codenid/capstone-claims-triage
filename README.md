@@ -67,7 +67,7 @@ de modelado. Cada paso se revisa antes de continuar.
   tipo de fecha real.
 - [x] **P2 — Normalizar narrativas:** conservar el texto original, crear una
   versión comparable y calcular un identificador estable de cada texto.
-- [ ] **P3 — Ordenar la taxonomía:** definir un mapa estable de productos y
+- [x] **P3 — Ordenar la taxonomía:** definir un mapa estable de productos y
   motivos, y detectar categorías nuevas.
 - [ ] **P4 — Crear objetivos y periodos:** derivar T1–T4, indicar qué filas son
   elegibles para cada objetivo y separar los periodos de evaluación.

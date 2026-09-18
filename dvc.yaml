@@ -14,3 +14,14 @@ stages:
       - src/data/normalize_text.py
     outs:
       - data/interim/normalized.parquet
+
+  apply_taxonomy:
+    cmd: uv run python src/data/apply_taxonomy.py
+    deps:
+      - data/interim/normalized.parquet
+      - configs/product_taxonomy_v1.csv
+      - configs/issue_taxonomy_v1.csv
+      - configs/valid_product_issue_pairs_v1.csv
+      - src/data/apply_taxonomy.py
+    outs:
+      - data/interim/taxonomy.parquet

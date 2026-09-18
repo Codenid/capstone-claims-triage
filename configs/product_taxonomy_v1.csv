@@ -1,0 +1,22 @@
+raw_product,canonical_product,mapping_reason,review_status
+Bank account or service,Checking or savings account,clear_rename,proposed_no_business_review
+Checking or savings account,Checking or savings account,identity,proposed_no_business_review
+Consumer Loan,Consumer Loan,identity,proposed_no_business_review
+Credit card,Credit card,identity,proposed_no_business_review
+Credit card or prepaid card,Credit card or prepaid card,identity,proposed_no_business_review
+Credit reporting,Credit reporting or other personal consumer reports,clear_rename,proposed_no_business_review
+Credit reporting or other personal consumer reports,Credit reporting or other personal consumer reports,identity,proposed_no_business_review
+"Credit reporting, credit repair services, or other personal consumer reports",Credit reporting or other personal consumer reports,clear_rename,proposed_no_business_review
+Debt collection,Debt collection,identity,proposed_no_business_review
+Debt or credit management,Debt or credit management,identity,proposed_no_business_review
+"Money transfer, virtual currency, or money service","Money transfer, virtual currency, or money service",identity,proposed_no_business_review
+Money transfers,Money transfers,identity,proposed_no_business_review
+Mortgage,Mortgage,identity,proposed_no_business_review
+Other financial service,Other financial service,identity,proposed_no_business_review
+Payday loan,Payday loan,identity,proposed_no_business_review
+"Payday loan, title loan, or personal loan","Payday loan, title loan, or personal loan",identity,proposed_no_business_review
+"Payday loan, title loan, personal loan, or advance loan","Payday loan, title loan, personal loan, or advance loan",identity,proposed_no_business_review
+Prepaid card,Prepaid card,identity,proposed_no_business_review
+Student loan,Student loan,identity,proposed_no_business_review
+Vehicle loan or lease,Vehicle loan or lease,identity,proposed_no_business_review
+Virtual currency,Virtual currency,identity,proposed_no_business_review

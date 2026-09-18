@@ -32,3 +32,31 @@ stages:
       hash: md5
       md5: 1b86d9d939f239def4bef9af3c9c06bf
       size: 1829100354
+  apply_taxonomy:
+    cmd: uv run python src/data/apply_taxonomy.py
+    deps:
+    - path: configs/issue_taxonomy_v1.csv
+      hash: md5
+      md5: 0154d5084a193f0dc291413249dbaaaf
+      size: 17869
+    - path: configs/product_taxonomy_v1.csv
+      hash: md5
+      md5: 0550432baca470764a911c0fe78b15f6
+      size: 2014
+    - path: configs/valid_product_issue_pairs_v1.csv
+      hash: md5
+      md5: 7c362ce05969a11af889865caf23ec65
+      size: 21815
+    - path: data/interim/normalized.parquet
+      hash: md5
+      md5: 1b86d9d939f239def4bef9af3c9c06bf
+      size: 1829100354
+    - path: src/data/apply_taxonomy.py
+      hash: md5
+      md5: 8009249839fd5c7b441195db4030e0fb
+      size: 6242
+    outs:
+    - path: data/interim/taxonomy.parquet
+      hash: md5
+      md5: 8222473644f1b729dce3c62f4eb38830
+      size: 1832663530

@@ -1,0 +1,174 @@
+raw_issue,canonical_issue,mapping_reason,review_status
+APR or interest rate,APR or interest rate,identity,proposed_no_business_review
+"Account opening, closing, or management","Account opening, closing, or management",identity,proposed_no_business_review
+Account terms and changes,Account terms and changes,identity,proposed_no_business_review
+Adding money,Problem adding money,clear_rename,proposed_no_business_review
+Advertising,Advertising,identity,proposed_no_business_review
+Advertising and marketing,"Advertising and marketing, including promotional offers",clear_rename,proposed_no_business_review
+"Advertising and marketing, including promotional offers","Advertising and marketing, including promotional offers",identity,proposed_no_business_review
+"Advertising, marketing or disclosures","Advertising, marketing or disclosures",identity,proposed_no_business_review
+Application processing delay,Application processing delay,identity,proposed_no_business_review
+"Application, originator, mortgage broker","Application, originator, mortgage broker",identity,proposed_no_business_review
+Applied for loan/did not receive money,Applied for loan/did not receive money,identity,proposed_no_business_review
+Applying for a mortgage or refinancing an existing mortgage,Applying for a mortgage or refinancing an existing mortgage,identity,proposed_no_business_review
+Arbitration,Arbitration,identity,proposed_no_business_review
+Attempts to collect debt not owed,Attempts to collect debt not owed,identity,proposed_no_business_review
+Balance transfer,Balance transfer,identity,proposed_no_business_review
+Balance transfer fee,Balance transfer fee,identity,proposed_no_business_review
+Bankruptcy,Bankruptcy,identity,proposed_no_business_review
+Billing disputes,Billing disputes,identity,proposed_no_business_review
+Billing statement,Billing statement,identity,proposed_no_business_review
+Can't contact lender,Can't contact lender,identity,proposed_no_business_review
+Can't contact lender or servicer,Can't contact lender or servicer,identity,proposed_no_business_review
+Can't repay my loan,Struggling to repay your loan,clear_rename,proposed_no_business_review
+Can't stop charges to bank account,Can't stop withdrawals from your bank account,clear_rename,proposed_no_business_review
+Can't stop withdrawals from your bank account,Can't stop withdrawals from your bank account,identity,proposed_no_business_review
+Cash advance,Cash advance,identity,proposed_no_business_review
+Cash advance fee,Cash advance fee,identity,proposed_no_business_review
+Charged bank acct wrong day or amt,Money was taken from your bank account on the wrong day or for the wrong amount,clear_rename,proposed_no_business_review
+Charged fees or interest I didn't expect,Charged fees or interest you didn't expect,clear_rename,proposed_no_business_review
+Charged fees or interest you didn't expect,Charged fees or interest you didn't expect,identity,proposed_no_business_review
+Charged upfront or unexpected fees,Charged upfront or unexpected fees,identity,proposed_no_business_review
+Closing an account,Closing an account,identity,proposed_no_business_review
+Closing on a mortgage,Closing on a mortgage,identity,proposed_no_business_review
+Closing your account,Closing your account,identity,proposed_no_business_review
+Closing/Cancelling account,Closing your account,clear_rename,proposed_no_business_review
+Communication tactics,Communication tactics,identity,proposed_no_business_review
+Confusing or misleading advertising or marketing,Confusing or misleading advertising or marketing,identity,proposed_no_business_review
+Confusing or missing disclosures,Confusing or missing disclosures,identity,proposed_no_business_review
+Cont'd attempts collect debt not owed,Attempts to collect debt not owed,clear_rename,proposed_no_business_review
+Convenience checks,Convenience checks,identity,proposed_no_business_review
+Credit card protection / Debt protection,Credit card protection / Debt protection,identity,proposed_no_business_review
+Credit decision / Underwriting,Credit decision / Underwriting,identity,proposed_no_business_review
+Credit determination,Credit determination,identity,proposed_no_business_review
+Credit limit changed,Credit limit changed,identity,proposed_no_business_review
+Credit line increase/decrease,Credit line increase/decrease,identity,proposed_no_business_review
+Credit monitoring or identity protection,Credit monitoring or identity theft protection services,clear_rename,proposed_no_business_review
+Credit monitoring or identity theft protection services,Credit monitoring or identity theft protection services,identity,proposed_no_business_review
+Credit reporting company's investigation,Problem with a company's investigation into an existing problem,clear_rename,proposed_no_business_review
+Customer service / Customer relations,Customer service / Customer relations,identity,proposed_no_business_review
+Customer service/Customer relations,Customer service / Customer relations,clear_rename,proposed_no_business_review
+Dealing with my lender or servicer,Dealing with your lender or servicer,clear_rename,proposed_no_business_review
+Dealing with your lender or servicer,Dealing with your lender or servicer,identity,proposed_no_business_review
+Delinquent account,Delinquent account,identity,proposed_no_business_review
+Deposits and withdrawals,Deposits and withdrawals,identity,proposed_no_business_review
+Didn't provide services promised,Didn't provide services promised,identity,proposed_no_business_review
+Disclosure verification of debt,Disclosure verification of debt,identity,proposed_no_business_review
+Disclosures,Disclosures,identity,proposed_no_business_review
+Electronic communications,Electronic communications,identity,proposed_no_business_review
+Excessive fees,Excessive fees,identity,proposed_no_business_review
+False statements or representation,False statements or representation,identity,proposed_no_business_review
+Fees,Fees,identity,proposed_no_business_review
+Fees or interest,Fees or interest,identity,proposed_no_business_review
+Forbearance / Workout plans,Forbearance / Workout plans,identity,proposed_no_business_review
+Fraud or scam,Fraud or scam,identity,proposed_no_business_review
+Getting a credit card,Getting a credit card,identity,proposed_no_business_review
+Getting a line of credit,Getting a line of credit,identity,proposed_no_business_review
+Getting a loan,Getting a loan,identity,proposed_no_business_review
+Getting a loan or lease,Getting a loan or lease,identity,proposed_no_business_review
+Getting the loan,Getting the loan,identity,proposed_no_business_review
+Identity theft / Fraud / Embezzlement,Identity theft / Fraud / Embezzlement,identity,proposed_no_business_review
+Identity theft protection or other monitoring services,Identity theft protection or other monitoring services,identity,proposed_no_business_review
+Improper contact or sharing of info,Improper contact or sharing of info,identity,proposed_no_business_review
+Improper use of my credit report,Improper use of your report,clear_rename,proposed_no_business_review
+Improper use of your report,Improper use of your report,identity,proposed_no_business_review
+Incorrect exchange rate,Incorrect exchange rate,identity,proposed_no_business_review
+Incorrect information on credit report,Incorrect information on your report,clear_rename,proposed_no_business_review
+Incorrect information on your report,Incorrect information on your report,identity,proposed_no_business_review
+Incorrect/missing disclosures or info,Incorrect/missing disclosures or info,identity,proposed_no_business_review
+Issue where my lender is my school,Issue where my lender is my school,identity,proposed_no_business_review
+Issue with income share agreement,Issue with income share agreement,identity,proposed_no_business_review
+Issues with repayment,Issues with repayment,identity,proposed_no_business_review
+Late fee,Late fee,identity,proposed_no_business_review
+Lender damaged or destroyed property,Property was damaged or destroyed property,clear_rename,proposed_no_business_review
+Lender damaged or destroyed vehicle,Vehicle was damaged or destroyed the vehicle,clear_rename,proposed_no_business_review
+Lender repossessed or sold the vehicle,Vehicle was repossessed or sold the vehicle,clear_rename,proposed_no_business_review
+Lender sold the property,Property was sold,clear_rename,proposed_no_business_review
+"Loan modification,collection,foreclosure","Loan modification,collection,foreclosure",identity,proposed_no_business_review
+Loan payment wasn't credited to your account,Loan payment wasn't credited to your account,identity,proposed_no_business_review
+"Loan servicing, payments, escrow account","Loan servicing, payments, escrow account",identity,proposed_no_business_review
+Lost or stolen check,Lost or stolen check,identity,proposed_no_business_review
+Lost or stolen money order,Lost or stolen money order,identity,proposed_no_business_review
+Lost or stolen refund,Lost or stolen refund,identity,proposed_no_business_review
+"Making/receiving payments, sending money","Making/receiving payments, sending money",identity,proposed_no_business_review
+Managing an account,Managing an account,identity,proposed_no_business_review
+Managing the line of credit,Managing the line of credit,identity,proposed_no_business_review
+Managing the loan or lease,Managing the loan or lease,identity,proposed_no_business_review
+"Managing, opening, or closing account","Managing, opening, or closing account",identity,proposed_no_business_review
+"Managing, opening, or closing your mobile wallet account","Managing, opening, or closing your mobile wallet account",identity,proposed_no_business_review
+Money was not available when promised,Money was not available when promised,identity,proposed_no_business_review
+Money was taken from your bank account on the wrong day or for the wrong amount,Money was taken from your bank account on the wrong day or for the wrong amount,identity,proposed_no_business_review
+Opening an account,Opening an account,identity,proposed_no_business_review
+Other,Other,identity,proposed_no_business_review
+"Other features, terms, or problems","Other features, terms, or problems",identity,proposed_no_business_review
+Other fee,Other fee,identity,proposed_no_business_review
+Other service issues,Other service problem,clear_rename,proposed_no_business_review
+Other service problem,Other service problem,identity,proposed_no_business_review
+Other transaction issues,Other transaction problem,clear_rename,proposed_no_business_review
+Other transaction problem,Other transaction problem,identity,proposed_no_business_review
+"Overdraft, savings or rewards features","Overdraft, savings, or rewards features",clear_rename,proposed_no_business_review
+"Overdraft, savings, or rewards features","Overdraft, savings, or rewards features",identity,proposed_no_business_review
+Overlimit fee,Overlimit fee,identity,proposed_no_business_review
+Payment to acct not credited,Loan payment wasn't credited to your account,clear_rename,proposed_no_business_review
+Payoff process,Problem with the payoff process at the end of the loan,clear_rename,proposed_no_business_review
+Privacy,Privacy,identity,proposed_no_business_review
+Problem adding money,Problem adding money,identity,proposed_no_business_review
+Problem caused by your funds being low,Problem caused by your funds being low,identity,proposed_no_business_review
+Problem getting a card or closing an account,Problem getting a card or closing an account,identity,proposed_no_business_review
+Problem when making payments,Problem when making payments,identity,proposed_no_business_review
+Problem with a company's investigation into an existing issue,Problem with a company's investigation into an existing issue,identity,proposed_no_business_review
+Problem with a company's investigation into an existing problem,Problem with a company's investigation into an existing problem,identity,proposed_no_business_review
+Problem with a credit reporting company's investigation into an existing problem,Problem with a company's investigation into an existing problem,clear_rename,proposed_no_business_review
+Problem with a lender or other company charging your account,Problem with a lender or other company charging your account,identity,proposed_no_business_review
+Problem with a purchase or transfer,Problem with a purchase or transfer,identity,proposed_no_business_review
+Problem with a purchase shown on your statement,Problem with a purchase shown on your statement,identity,proposed_no_business_review
+Problem with additional add-on products or services,Problem with additional add-on products or services,identity,proposed_no_business_review
+Problem with an overdraft,Problem with overdraft,clear_rename,proposed_no_business_review
+Problem with cash advance,Problem with cash advance,identity,proposed_no_business_review
+Problem with customer service,Problem with customer service,identity,proposed_no_business_review
+Problem with fraud alerts or security freezes,Problem with fraud alerts or security freezes,identity,proposed_no_business_review
+Problem with overdraft,Problem with overdraft,identity,proposed_no_business_review
+Problem with the payoff process at the end of the loan,Problem with the payoff process at the end of the loan,identity,proposed_no_business_review
+Problems at the end of the loan or lease,Problems at the end of the loan or lease,identity,proposed_no_business_review
+Problems caused by my funds being low,Problem caused by your funds being low,clear_rename,proposed_no_business_review
+Problems receiving the advance,Problems receiving the advance,identity,proposed_no_business_review
+Problems when you are unable to pay,Struggling to pay your loan,clear_rename,proposed_no_business_review
+Property was damaged or destroyed property,Property was damaged or destroyed property,identity,proposed_no_business_review
+Property was sold,Property was sold,identity,proposed_no_business_review
+Received a loan I didn't apply for,Received a loan you didn't apply for,clear_rename,proposed_no_business_review
+Received a loan you didn't apply for,Received a loan you didn't apply for,identity,proposed_no_business_review
+Repossession,Repossession,identity,proposed_no_business_review
+Rewards,Rewards,identity,proposed_no_business_review
+Sale of account,Sale of account,identity,proposed_no_business_review
+Settlement process and costs,Settlement process and costs,identity,proposed_no_business_review
+Shopping for a line of credit,Shopping for a line of credit,identity,proposed_no_business_review
+Shopping for a loan or lease,Shopping for a loan or lease,identity,proposed_no_business_review
+Struggling to pay mortgage,Struggling to pay mortgage,identity,proposed_no_business_review
+Struggling to pay your bill,Struggling to pay your bill,identity,proposed_no_business_review
+Struggling to pay your loan,Struggling to pay your loan,identity,proposed_no_business_review
+Struggling to repay your loan,Struggling to repay your loan,identity,proposed_no_business_review
+Taking out the loan or lease,Getting a loan or lease,clear_rename,proposed_no_business_review
+Taking/threatening an illegal action,Taking/threatening an illegal action,identity,proposed_no_business_review
+Threatened to contact someone or share information improperly,Threatened to contact someone or share information improperly,identity,proposed_no_business_review
+Took or threatened to take negative or legal action,Took or threatened to take negative or legal action,identity,proposed_no_business_review
+Transaction issue,Transaction issue,identity,proposed_no_business_review
+Trouble accessing funds in your mobile or digital wallet,Trouble accessing funds in your mobile or digital wallet,identity,proposed_no_business_review
+Trouble during payment process,Trouble during payment process,identity,proposed_no_business_review
+Trouble using the card,Trouble using the card,identity,proposed_no_business_review
+Trouble using your card,Trouble using your card,identity,proposed_no_business_review
+Unable to get credit report/credit score,Unable to get your credit report or credit score,clear_rename,proposed_no_business_review
+Unable to get your credit report or credit score,Unable to get your credit report or credit score,identity,proposed_no_business_review
+Unauthorized transactions or other transaction problem,Unauthorized transactions or other transaction problem,identity,proposed_no_business_review
+Unauthorized transactions/trans. issues,Unauthorized transactions or other transaction problem,clear_rename,proposed_no_business_review
+Unauthorized withdrawals or charges,Unauthorized withdrawals or charges,identity,proposed_no_business_review
+Unexpected fees,Unexpected fees,identity,proposed_no_business_review
+Unexpected or other fees,Unexpected or other fees,identity,proposed_no_business_review
+Unexpected/Other fees,Unexpected or other fees,clear_rename,proposed_no_business_review
+Unsolicited issuance of credit card,Unsolicited issuance of credit card,identity,proposed_no_business_review
+Using a debit or ATM card,Using a debit or ATM card,identity,proposed_no_business_review
+Vehicle was damaged or destroyed the vehicle,Vehicle was damaged or destroyed the vehicle,identity,proposed_no_business_review
+Vehicle was repossessed or sold the vehicle,Vehicle was repossessed or sold the vehicle,identity,proposed_no_business_review
+"Was approved for a loan, but didn't receive money","Was approved for a loan, but didn't receive the money",clear_rename,proposed_no_business_review
+"Was approved for a loan, but didn't receive the money","Was approved for a loan, but didn't receive the money",identity,proposed_no_business_review
+Written notification about debt,Written notification about debt,identity,proposed_no_business_review
+Wrong amount charged or received,Wrong amount charged or received,identity,proposed_no_business_review
