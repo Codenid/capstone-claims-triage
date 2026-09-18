@@ -50,7 +50,7 @@ Esta rama no entrena modelos finales.
   negativos.
 - [x] **E8 — Revisar cambios temporales:** diferencias entre periodos
   anteriores y posteriores.
-- [ ] **E9 — Acordar transformaciones:** tipos correctos, agrupación de
+- [x] **E9 — Acordar transformaciones:** tipos correctos, agrupación de
   categorías equivalentes, divisiones temporales y variables de entrada.
 - [ ] **E10 — Documentar conclusiones:** figuras, tablas, limitaciones y
   decisiones aprobadas.
