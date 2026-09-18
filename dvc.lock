@@ -16,3 +16,19 @@ stages:
       hash: md5
       md5: 2647f1c469e9ec64b42267a72145ef47
       size: 908544467
+  normalize_text:
+    cmd: uv run python src/data/normalize_text.py
+    deps:
+    - path: data/interim/typed.parquet
+      hash: md5
+      md5: 2647f1c469e9ec64b42267a72145ef47
+      size: 908544467
+    - path: src/data/normalize_text.py
+      hash: md5
+      md5: aede41c667ba6539d52e95fd5f13696b
+      size: 3227
+    outs:
+    - path: data/interim/normalized.parquet
+      hash: md5
+      md5: 1b86d9d939f239def4bef9af3c9c06bf
+      size: 1829100354

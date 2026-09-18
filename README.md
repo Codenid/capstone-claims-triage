@@ -65,7 +65,7 @@ de modelado. Cada paso se revisa antes de continuar.
 
 - [x] **P1 — Corregir tipos:** validar las columnas y convertir las fechas a un
   tipo de fecha real.
-- [ ] **P2 — Normalizar narrativas:** conservar el texto original, crear una
+- [x] **P2 — Normalizar narrativas:** conservar el texto original, crear una
   versión comparable y calcular un identificador estable de cada texto.
 - [ ] **P3 — Ordenar la taxonomía:** definir un mapa estable de productos y
   motivos, y detectar categorías nuevas.

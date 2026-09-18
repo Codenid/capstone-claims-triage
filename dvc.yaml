@@ -6,3 +6,11 @@ stages:
       - src/data/type_data.py
     outs:
       - data/interim/typed.parquet
+
+  normalize_text:
+    cmd: uv run python src/data/normalize_text.py
+    deps:
+      - data/interim/typed.parquet
+      - src/data/normalize_text.py
+    outs:
+      - data/interim/normalized.parquet
