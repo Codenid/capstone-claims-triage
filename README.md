@@ -69,11 +69,13 @@ flowchart LR
 Puede usarse una muestra pequeña para experimentar rápidamente, pero las
 transformaciones aprobadas deberán ejecutarse sobre el conjunto completo.
 
-## Diseño futuro del sistema
+## Documentos de lectura rápida
 
-La propuesta de modelos, alertas temporales y aplicación web se conserva en
-[`docs/modelos.md`](docs/modelos.md). Ese documento registra opciones futuras;
-no implica que ya hayan sido validadas.
+- [Resumen ejecutivo del EDA](docs/resumen-eda.md).
+- [Propuesta de modelos, alertas y aplicación](docs/modelos.md).
+
+La propuesta de modelos registra opciones futuras; no implica que ya hayan
+sido validadas.
 
 ## Git y DVC
 
