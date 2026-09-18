@@ -272,10 +272,15 @@ texto normalizado aparezca simultáneamente en aprendizaje y evaluación.
 
 A partir de esta nueva rama, ningún modelo será elegido usando 2025-H2 o 2026.
 Sin embargo, un experimento anterior ya consultó una muestra de 25,000 casos de
-2025-H2. Esos IDs deberán recuperarse y excluirse de una evaluación final
-intacta. El resto de 2025-H2 permanecerá reservado hasta congelar las
-transformaciones y decisiones de modelado. 2026 seguirá separado porque su
-cobertura es parcial.
+2025-H2. Esos IDs y todos los registros que compartan sus grupos de texto
+deberán excluirse de una evaluación final intacta. El tamaño elegible se
+calculará después de esa exclusión. Si la lista no puede recuperarse, 2025-H2
+se declarará contaminado y no se presentará como evaluación final intacta.
+
+2026 seguirá separado porque su cobertura es parcial. Como la fecha de
+extracción no está documentada, T2–T4 no se evaluarán allí hasta definir cuánto
+tiempo debe pasar para considerar que la respuesta histórica ya maduró. T1 y la
+disponibilidad de entradas sí podrán estudiarse.
 
 ## Aplicación web futura
 
