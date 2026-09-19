@@ -11,7 +11,7 @@ modelos.
 
 Esta rama no entrena modelos finales.
 
-**Estado:** EDA E0–E10 aprobado. El siguiente bloque es preparación de datos.
+**Estado:** EDA E0–E10 y preparación P1–P5 completados.
 
 ## Datos disponibles
 
@@ -28,8 +28,9 @@ Esta rama no entrena modelos finales.
 
 ## Forma de trabajo
 
-1. Cada paso se implementa de forma visible en `notebooks/01_eda.ipynb`.
-2. El notebook se ejecuta de arriba hacia abajo y explica qué pregunta
+1. El EDA está en `notebooks/01_eda.ipynb` y la preparación reproducible en
+   `notebooks/02_revision_preparacion.ipynb`.
+2. Los notebooks se ejecutan de arriba hacia abajo y explican qué pregunta
    responde cada sección.
 3. Solo extraeremos funciones a `src/` cuando exista reutilización real.
 4. No avanzaremos al siguiente paso hasta revisar y aprobar el resultado.
@@ -69,12 +70,24 @@ de modelado. Cada paso se revisa antes de continuar.
   versión comparable y calcular un identificador estable de cada texto.
 - [x] **P3 — Ordenar la taxonomía:** definir un mapa estable de productos y
   motivos, y detectar categorías nuevas.
-- [ ] **P4 — Crear objetivos y periodos:** derivar T1–T4, indicar qué filas son
+- [x] **P4 — Crear objetivos y periodos:** derivar T1–T4, indicar qué filas son
   elegibles para cada objetivo y separar los periodos de evaluación.
-- [ ] **P5 — Generar la tabla preparada:** unir las transformaciones aprobadas
-  en el archivo que recibirá la rama `Modeling/pipaber`.
+- [x] **P5 — Generar la tabla preparada:** validar y publicar el archivo que
+  recibirá la rama `Modeling/pipaber`.
 
-## Flujo de datos previsto
+## Entrega preparada
+
+- Archivo: `data/processed/prepared.parquet`.
+- Contenido: 3,837,184 filas y 44 columnas.
+- Periodos: contexto 2015–2022, entrenamiento 2023–2024, validación 2025-H1,
+  reserva 2025-H2 y 2026 parcial.
+- `2025-H2` está bloqueado para evaluación: no se recuperaron los 25,000 IDs
+  revisados previamente ni se pueden identificar sus grupos de texto.
+- En 2026 puede evaluarse T1; T2–T4 quedan bloqueados hasta definir cuánto
+  tiempo deben madurar sus resultados.
+- DVC versiona el archivo. La rama no contiene TF-IDF, BGE, FAISS ni modelos.
+
+## Flujo de datos implementado
 
 ```mermaid
 flowchart LR
@@ -82,7 +95,7 @@ flowchart LR
     B --> C[Hallazgos revisados]
     C --> D[Transformaciones aprobadas]
     D --> E[Datos intermedios versionados]
-    E --> F[Variables para modelado]
+    E --> F[Tabla preparada para modelado]
 ```
 
 Puede usarse una muestra pequeña para experimentar rápidamente, pero las
@@ -123,9 +136,10 @@ El archivo original ya está rastreado mediante
 `data/raw/cfpb_reclamos_narrativa.parquet.dvc`. No debe agregarse directamente
 a Git.
 
-## Criterio para cerrar esta rama
+## Cierre de esta rama
 
-El EDA termina cuando podemos explicar con evidencia:
+El EDA y la preparación se consideran cerrados porque podemos explicar con
+evidencia:
 
 - qué datos tenemos y qué no tenemos;
 - qué resultados disponibles pueden servir como aproximaciones a lo que

@@ -60,3 +60,39 @@ stages:
       hash: md5
       md5: 8222473644f1b729dce3c62f4eb38830
       size: 1832663530
+  build_targets:
+    cmd: uv run python src/data/build_targets.py
+    deps:
+    - path: configs/holdout_review_status.json
+      hash: md5
+      md5: 0a2b307bd9b61f6703dbb6f4a0fb04e8
+      size: 365
+    - path: data/interim/taxonomy.parquet
+      hash: md5
+      md5: 8222473644f1b729dce3c62f4eb38830
+      size: 1832663530
+    - path: src/data/build_targets.py
+      hash: md5
+      md5: 21470cd285dd18442b7274398e15158d
+      size: 10849
+    outs:
+    - path: data/interim/targets_periods.parquet
+      hash: md5
+      md5: d189a3ae6ea7a8f9041fc8210968eda6
+      size: 1836831076
+  finalize_prepared:
+    cmd: uv run python src/data/finalize_prepared.py
+    deps:
+    - path: data/interim/targets_periods.parquet
+      hash: md5
+      md5: d189a3ae6ea7a8f9041fc8210968eda6
+      size: 1836831076
+    - path: src/data/finalize_prepared.py
+      hash: md5
+      md5: 291b3b90aca2c469787175c0e5ef1900
+      size: 5000
+    outs:
+    - path: data/processed/prepared.parquet
+      hash: md5
+      md5: d189a3ae6ea7a8f9041fc8210968eda6
+      size: 1836831076

@@ -123,32 +123,41 @@ Un modelo debe evaluarse en periodos posteriores a los usados para aprender.
 - Crear elegibilidad separada para T1, T2, T3 y T4.
 - Mantener 2015–2022 como contexto histórico.
 - Usar 2023–2024 para entrenamiento y 2025-H1 para validación.
-- Mantener 2025-H2 como candidato reservado y 2026 como periodo parcial.
+- Bloquear 2025-H2 como evaluación final porque no se recuperaron los IDs
+  revisados previamente; mantener 2026 como periodo parcial.
 - Reportar una evaluación con casos elegibles y otra sin grupos compartidos con
   periodos usados para aprender.
 - Terminar esta rama con una tabla preparada mediante DVC.
 - Desarrollar TF-IDF, BGE, FAISS y modelos temporales en `Modeling/pipaber`.
 
-## Riesgos pendientes
+## Tabla preparada
+
+La preparación P1–P5 produce `data/processed/prepared.parquet`:
+
+- 3,837,184 filas y 44 columnas;
+- 3,837,184 identificadores únicos;
+- versiones del normalizador, taxonomía y objetivos dentro del Parquet;
+- periodos y elegibilidad separados para T1–T4;
+- una vista completa y otra que excluye textos compartidos con periodos usados
+  como referencia.
+
+## Limitaciones que permanecen
 
 - Falta la fecha oficial de extracción del archivo.
-- Falta recuperar los 25,000 IDs de 2025-H2 consultados anteriormente.
-- La exclusión deberá cerrarse por grupo de texto, no solo por ID.
-- Si la lista no se recupera, 2025-H2 no podrá presentarse como evaluación final
-  intacta.
+- Los 25,000 IDs revisados previamente no se recuperaron. Por ello, 2025-H2
+  queda bloqueado y no se presentará como evaluación final intacta.
 - T2–T4 no se evaluarán en 2026 hasta definir cuánto deben madurar sus
   resultados.
 - El mapa canónico será una propuesta mientras no exista revisión de negocio.
+- La fuente CFPB no representa reglas ni resultados internos de un banco.
 
 ## Siguientes pasos
 
-1. Recuperar la procedencia y fecha de extracción del archivo.
-2. Recuperar los 25,000 IDs de 2025-H2 y cerrar sus grupos de texto.
-3. Implementar tipado, mapa de categorías, objetivos y periodos.
-4. Añadir pruebas automáticas del contrato E9.
-5. Declarar las transformaciones en `dvc.yaml`.
-6. Generar y publicar con DVC la tabla preparada para modelado.
-7. Entregar esa tabla a `Modeling/pipaber`.
+1. Recuperar, si fuera posible, la procedencia y fecha de extracción del archivo.
+2. Crear `Modeling/pipaber` desde `develop` y consumir la tabla preparada mediante
+   DVC.
+3. Desarrollar y comparar los modelos propuestos sin modificar esta preparación.
+4. Mantener revisión humana sobre toda recomendación de triaje.
 
 La propuesta posterior de modelos y alertas está en
 [`docs/modelos.md`](modelos.md).

@@ -25,3 +25,20 @@ stages:
       - src/data/apply_taxonomy.py
     outs:
       - data/interim/taxonomy.parquet
+
+  build_targets:
+    cmd: uv run python src/data/build_targets.py
+    deps:
+      - data/interim/taxonomy.parquet
+      - configs/holdout_review_status.json
+      - src/data/build_targets.py
+    outs:
+      - data/interim/targets_periods.parquet
+
+  finalize_prepared:
+    cmd: uv run python src/data/finalize_prepared.py
+    deps:
+      - data/interim/targets_periods.parquet
+      - src/data/finalize_prepared.py
+    outs:
+      - data/processed/prepared.parquet

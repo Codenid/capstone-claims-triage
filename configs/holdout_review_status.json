@@ -1,0 +1,8 @@
+{
+  "holdout": "holdout_2025_h2",
+  "status": "ids_not_recovered",
+  "expected_reviewed_ids": 25000,
+  "recovered_reviewed_ids": 0,
+  "final_evaluation_allowed": false,
+  "reason": "The 25,000 previously reviewed IDs are not available. Their text groups cannot be closed, so 2025-H2 is contaminated and cannot be presented as an intact final evaluation."
+}
