@@ -10,4 +10,4 @@
 set -euo pipefail
 
 uv run python src/evaluation/verify_modeling_input.py
-uv run dvc status
+uv run dvc status -c data/processed/prepared.parquet
