@@ -59,6 +59,9 @@ MLFLOW_TRACKING_URI=file:./mlruns \
 
 ## Trabajos SLURM
 
+Los nodos de cómputo no tienen acceso a internet. Por eso el entorno se prepara
+con `uv sync` en el nodo de acceso y los scripts usan `uv run --no-sync`.
+
 Verificar el contrato de entrada en CPU:
 
 ```bash

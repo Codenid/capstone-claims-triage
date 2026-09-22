@@ -12,4 +12,4 @@ set -euo pipefail
 
 hostname
 nvidia-smi --query-gpu=name,memory.total,driver_version --format=csv,noheader
-uv run python -c "import platform; print(platform.python_version())"
+uv run --no-sync python -c "import platform; print(platform.python_version())"
