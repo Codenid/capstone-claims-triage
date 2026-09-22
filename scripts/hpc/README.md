@@ -40,11 +40,20 @@ set +a
 uv run python src/evaluation/smoke_mlflow.py
 ```
 
-Para probar MLflow sin credenciales remotas puede usarse temporalmente una base
-SQLite local:
+En una máquina con SQLite 3.31 o posterior puede probarse MLflow con una base
+local:
 
 ```bash
 MLFLOW_TRACKING_URI=sqlite:///mlflow.db \
+  uv run python src/evaluation/smoke_mlflow.py
+```
+
+Khipu tiene SQLite 3.26. Para su prueba local se permite temporalmente el backend
+de archivos; los experimentos reales usarán DagsHub:
+
+```bash
+MLFLOW_ALLOW_FILE_STORE=true \
+MLFLOW_TRACKING_URI=file:./mlruns \
   uv run python src/evaluation/smoke_mlflow.py
 ```
 
