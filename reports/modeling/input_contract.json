@@ -1,0 +1,85 @@
+{
+  "columns": 44,
+  "eligible_complete": {
+    "context_2015_2022": {
+      "T1": 1206176,
+      "T2": 1198659,
+      "T3": 1198659,
+      "T4": 1206176
+    },
+    "holdout_2025_h2": {
+      "T1": 0,
+      "T2": 0,
+      "T3": 0,
+      "T4": 0
+    },
+    "ood_2026_partial": {
+      "T1": 107155,
+      "T2": 0,
+      "T3": 0,
+      "T4": 0
+    },
+    "train_2023_2024": {
+      "T1": 1301794,
+      "T2": 1300650,
+      "T3": 1300650,
+      "T4": 1301794
+    },
+    "validation_2025_h1": {
+      "T1": 695184,
+      "T2": 693502,
+      "T3": 693502,
+      "T4": 695184
+    }
+  },
+  "eligible_no_shared_text": {
+    "context_2015_2022": {
+      "T1": 1206176,
+      "T2": 1198659,
+      "T3": 1198659,
+      "T4": 1206176
+    },
+    "holdout_2025_h2": {
+      "T1": 0,
+      "T2": 0,
+      "T3": 0,
+      "T4": 0
+    },
+    "ood_2026_partial": {
+      "T1": 102557,
+      "T2": 0,
+      "T3": 0,
+      "T4": 0
+    },
+    "train_2023_2024": {
+      "T1": 1301794,
+      "T2": 1300650,
+      "T3": 1300650,
+      "T4": 1301794
+    },
+    "validation_2025_h1": {
+      "T1": 564813,
+      "T2": 563148,
+      "T3": 563148,
+      "T4": 564813
+    }
+  },
+  "input": "data/processed/prepared.parquet",
+  "period_rows": {
+    "context_2015_2022": 1206176,
+    "holdout_2025_h2": 526872,
+    "ood_2026_partial": 107158,
+    "train_2023_2024": 1301794,
+    "validation_2025_h1": 695184
+  },
+  "rows": 3837184,
+  "size_bytes": 1836831076,
+  "versions": {
+    "holdout_final_evaluation_allowed": "false",
+    "targets_periods_version": "targets_periods_v1",
+    "taxonomy_freeze_date": "2025-06-30",
+    "taxonomy_status": "proposed_no_business_review",
+    "taxonomy_version": "taxonomy_v1_proposed",
+    "text_normalizer": "text_normalizer_v1"
+  }
+}

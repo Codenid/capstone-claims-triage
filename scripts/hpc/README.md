@@ -1,0 +1,69 @@
+# Ejecución en Khipu
+
+Ejecutar los comandos desde la raíz del repositorio.
+
+## Preparación inicial
+
+```bash
+git clone --branch Modeling/pipaber \
+  https://github.com/Codenid/capstone-claims-triage.git
+cd capstone-claims-triage
+uv sync
+```
+
+DVC usa un archivo local ignorado por Git para las credenciales:
+
+```bash
+uv run dvc remote modify --local dagshub auth basic
+uv run dvc remote modify --local dagshub user YOUR_DAGSHUB_USERNAME
+uv run dvc remote modify --local dagshub password YOUR_DAGSHUB_TOKEN
+uv run dvc pull data/processed/prepared.parquet
+```
+
+No escribir el token en un script versionado ni compartirlo en el chat.
+
+## MLflow
+
+Crear el archivo privado a partir de la plantilla:
+
+```bash
+cp .env.example .env
+chmod 600 .env
+```
+
+Completar `.env` directamente en Khipu. Para cargar sus valores:
+
+```bash
+set -a
+source .env
+set +a
+uv run python src/evaluation/smoke_mlflow.py
+```
+
+Para probar MLflow sin credenciales remotas puede usarse temporalmente una base
+SQLite local:
+
+```bash
+MLFLOW_TRACKING_URI=sqlite:///mlflow.db \
+  uv run python src/evaluation/smoke_mlflow.py
+```
+
+## Trabajos SLURM
+
+Verificar el contrato de entrada en CPU:
+
+```bash
+sbatch scripts/hpc/m0_verify.slurm
+```
+
+Verificar acceso a la A100:
+
+```bash
+sbatch scripts/hpc/gpu_smoke.slurm
+```
+
+Consultar los trabajos:
+
+```bash
+squeue -u piero.palacios
+```

@@ -1,1 +1,3 @@
 configs/*.csv text eol=lf
+uv.lock text eol=lf
+*.slurm text eol=lf

@@ -1,6 +1,7 @@
 # Python
 __pycache__/
 *.py[cod]
+*.egg-info/
 
 # Virtual environment
 .venv/
@@ -10,6 +11,14 @@ __pycache__/
 
 # Environment variables
 .env
+
+# MLflow local storage
+mlruns/
+mlflow.db
+
+# SLURM outputs
+reports/modeling/slurm-*.out
+reports/modeling/slurm-*.err
 
 # Tool caches
 .pytest_cache/

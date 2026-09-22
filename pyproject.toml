@@ -1,12 +1,22 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "capstone-claims-triage"
 version = "0.1.0"
 requires-python = ">=3.12"
 dependencies = [
     "matplotlib>=3.11.1",
+    "mlflow>=3.0,<4",
     "pandas>=3.0.5",
     "pyarrow>=25.0.1",
+    "pyyaml>=6.0",
 ]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["src*"]
 
 [dependency-groups]
 dev = [
