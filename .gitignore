@@ -19,6 +19,7 @@ mlflow.db
 # SLURM outputs
 reports/modeling/slurm-*.out
 reports/modeling/slurm-*.err
+reports/modeling/*-latest.out
 
 # Tool caches
 .pytest_cache/

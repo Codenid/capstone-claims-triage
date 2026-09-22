@@ -1,5 +1,6 @@
 """Verify the prepared table before starting modeling."""
 
+from hashlib import md5
 import json
 from pathlib import Path
 from typing import Any, cast
@@ -7,6 +8,7 @@ from typing import Any, cast
 import pyarrow as pa
 import pyarrow.compute as pc
 import pyarrow.parquet as pq
+import yaml
 
 from src.data.build_targets import (
     COMPLETE_COLUMNS,
@@ -26,6 +28,7 @@ from src.data.finalize_prepared import (
 compute = cast(Any, pc)
 
 INPUT_PATH = Path("data/processed/prepared.parquet")
+LOCK_PATH = Path("dvc.lock")
 REPORT_PATH = Path("reports/modeling/input_contract.json")
 
 
@@ -43,8 +46,34 @@ def row_count(table: pa.Table, period: str) -> int:
     return int(compute.sum(compute.cast(period_mask, pa.int64())).as_py())
 
 
-def build_contract(input_path: Path) -> dict[str, object]:
+def prepared_data_hash(lock_path: Path) -> str:
+    """Read the prepared Parquet hash recorded by DVC."""
+    lock = yaml.safe_load(lock_path.read_text(encoding="utf-8"))
+    output = lock["stages"]["finalize_prepared"]["outs"][0]
+    return str(output["md5"])
+
+
+def file_md5(path: Path, chunk_size: int = 8 * 1024 * 1024) -> str:
+    """Calculate an MD5 without loading the complete file into memory."""
+    digest = md5()
+    with path.open("rb") as file:
+        while chunk := file.read(chunk_size):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+def build_contract(
+    input_path: Path,
+    lock_path: Path = LOCK_PATH,
+) -> dict[str, object]:
     """Validate the prepared Parquet and return its modeling contract."""
+    expected_hash = prepared_data_hash(lock_path)
+    actual_hash = file_md5(input_path)
+    if actual_hash != expected_hash:
+        raise ValueError(
+            f"Prepared data hash mismatch: expected {expected_hash}, found {actual_hash}."
+        )
+
     validate_prepared_source(input_path)
     source = pq.ParquetFile(input_path)
     columns = [
@@ -82,6 +111,7 @@ def build_contract(input_path: Path) -> dict[str, object]:
         "rows": source.metadata.num_rows,
         "columns": source.metadata.num_columns,
         "size_bytes": input_path.stat().st_size,
+        "dvc_md5": actual_hash,
         "versions": {
             key.decode("utf-8"): metadata[key].decode("utf-8")
             for key in EXPECTED_METADATA
@@ -102,6 +132,7 @@ def main() -> None:
 
     print(f"Rows: {contract['rows']:,}")
     print(f"Columns: {contract['columns']}")
+    print(f"DVC MD5: {contract['dvc_md5']}")
     print("2025-H2 evaluation: blocked")
     print("2026 T2-T4 evaluation: blocked")
     print(f"Report: {REPORT_PATH}")

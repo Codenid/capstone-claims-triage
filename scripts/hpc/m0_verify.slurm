@@ -10,4 +10,3 @@
 set -euo pipefail
 
 uv run --no-sync python src/evaluation/verify_modeling_input.py
-uv run --no-sync dvc status -c data/processed/prepared.parquet

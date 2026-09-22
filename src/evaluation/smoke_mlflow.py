@@ -6,17 +6,8 @@ from pathlib import Path
 import subprocess
 
 import mlflow
-import yaml
 
 CONTRACT_PATH = Path("reports/modeling/input_contract.json")
-LOCK_PATH = Path("dvc.lock")
-
-
-def prepared_data_hash(lock_path: Path) -> str:
-    """Read the prepared Parquet hash recorded by DVC."""
-    lock = yaml.safe_load(lock_path.read_text(encoding="utf-8"))
-    output = lock["stages"]["finalize_prepared"]["outs"][0]
-    return str(output["md5"])
 
 
 def main() -> None:
@@ -40,7 +31,7 @@ def main() -> None:
         mlflow.set_tags(
             {
                 "git_commit": git_commit,
-                "dvc_data_hash": prepared_data_hash(LOCK_PATH),
+                "dvc_data_hash": contract["dvc_md5"],
                 "stage": "M0",
                 "target": "input_contract",
             }

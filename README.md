@@ -62,7 +62,7 @@ conjunto completo de reclamos.
 
 ## Plan de modelado
 
-- [ ] **M0 — Verificar la entrega:** revisar DVC, esquema y periodos; confirmar
+- [x] **M0 — Verificar la entrega:** revisar DVC, esquema y periodos; confirmar
   objetivos y restricciones antes de entrenar.
 - [ ] **M1 — Preparar experimentos:** configurar MLflow, semillas y ejecución
   reproducible local y en HPC.
