@@ -1,0 +1,347 @@
+class,support,precision,recall,f1,split,view
+Advertising,8,0.0,0.0,0.0,calibration,complete
+"Advertising and marketing, including promotional offers",423,0.7168674698795181,0.28132387706855794,0.40407470288624786,calibration,complete
+Applying for a mortgage or refinancing an existing mortgage,313,0.7272727272727273,0.28115015974440893,0.4055299539170507,calibration,complete
+Attempts to collect debt not owed,8648,0.5934345268356452,0.9448427382053654,0.7290003122630146,calibration,complete
+Can't contact lender or servicer,33,0.0,0.0,0.0,calibration,complete
+Can't stop withdrawals from your bank account,30,0.0,0.0,0.0,calibration,complete
+Charged fees or interest you didn't expect,356,0.28187919463087246,0.9438202247191011,0.43410852713178294,calibration,complete
+Charged upfront or unexpected fees,116,0.0,0.0,0.0,calibration,complete
+Closing an account,1205,0.7397260273972602,0.3136929460580913,0.4405594405594406,calibration,complete
+Closing on a mortgage,233,0.7272727272727273,0.034334763948497854,0.06557377049180328,calibration,complete
+Closing your account,668,0.6864754098360656,0.5014970059880239,0.5795847750865052,calibration,complete
+Communication tactics,937,0.6791744840525328,0.3863393810032017,0.4925170068027211,calibration,complete
+Confusing or misleading advertising or marketing,103,0.0,0.0,0.0,calibration,complete
+Confusing or missing disclosures,130,0.0,0.0,0.0,calibration,complete
+Credit limit changed,6,0.0,0.0,0.0,calibration,complete
+Credit monitoring or identity theft protection services,803,0.21541950113378686,0.11830635118306351,0.1527331189710611,calibration,complete
+Dealing with your lender or servicer,1395,0.7142857142857143,1.0,0.8333333333333334,calibration,complete
+Didn't provide services promised,195,0.3585951940850277,0.9948717948717949,0.5271739130434783,calibration,complete
+Electronic communications,345,0.0,0.0,0.0,calibration,complete
+False statements or representation,2811,0.8486238532110092,0.13162575595873355,0.22790267939636588,calibration,complete
+Fees or interest,1034,0.634959349593496,0.7553191489361702,0.6899293286219081,calibration,complete
+Fraud or scam,1012,0.370397917441428,0.9841897233201581,0.5382329100243177,calibration,complete
+Getting a credit card,1084,0.6217331499312242,0.8339483394833949,0.7123719464144996,calibration,complete
+Getting a line of credit,53,0.0,0.0,0.0,calibration,complete
+Getting a loan,38,0.0,0.0,0.0,calibration,complete
+Getting a loan or lease,254,0.6732673267326733,0.2677165354330709,0.38309859154929576,calibration,complete
+Getting the loan,112,1.0,0.008928571428571428,0.017699115044247787,calibration,complete
+Identity theft protection or other monitoring services,80,0.0,0.0,0.0,calibration,complete
+Improper use of your report,48278,0.6488965780844516,0.6681304113674966,0.6583730494861564,calibration,complete
+Incorrect exchange rate,5,0.0,0.0,0.0,calibration,complete
+Incorrect information on your report,98405,0.7501789881821309,0.8198872008536152,0.7834856327141012,calibration,complete
+Issue where my lender is my school,9,0.0,0.0,0.0,calibration,complete
+Issue with income share agreement,12,0.0,0.0,0.0,calibration,complete
+Issues with repayment,13,0.0,0.0,0.0,calibration,complete
+Loan payment wasn't credited to your account,14,0.0,0.0,0.0,calibration,complete
+Lost or stolen money order,26,0.0,0.0,0.0,calibration,complete
+Lost or stolen refund,1,0.0,0.0,0.0,calibration,complete
+Managing an account,4491,0.6060100166944908,0.969939879759519,0.7459542769072695,calibration,complete
+Managing the loan or lease,607,0.3537794299876084,0.9406919275123559,0.5141828005402972,calibration,complete
+"Managing, opening, or closing your mobile wallet account",108,0.34615384615384615,0.08333333333333333,0.13432835820895522,calibration,complete
+Money was not available when promised,285,0.6666666666666666,0.007017543859649123,0.013888888888888888,calibration,complete
+Money was taken from your bank account on the wrong day or for the wrong amount,20,0.0,0.0,0.0,calibration,complete
+Opening an account,641,0.7875457875457875,0.33541341653666146,0.47045951859956237,calibration,complete
+"Other features, terms, or problems",1028,0.4332129963898917,0.35019455252918286,0.3873050026896181,calibration,complete
+Other service problem,125,0.0,0.0,0.0,calibration,complete
+Other transaction problem,551,0.4044943820224719,0.1306715063520871,0.19753086419753085,calibration,complete
+"Overdraft, savings, or rewards features",4,0.0,0.0,0.0,calibration,complete
+Problem adding money,17,0.0,0.0,0.0,calibration,complete
+Problem caused by your funds being low,898,0.8962962962962963,0.26948775055679286,0.4143835616438356,calibration,complete
+Problem getting a card or closing an account,115,0.0,0.0,0.0,calibration,complete
+Problem when making payments,742,0.5254901960784314,0.3611859838274933,0.4281150159744409,calibration,complete
+Problem with a company's investigation into an existing issue,151,0.0,0.0,0.0,calibration,complete
+Problem with a company's investigation into an existing problem,38765,0.6326154476261988,0.4781374951631627,0.5446344616831218,calibration,complete
+Problem with a lender or other company charging your account,990,0.5925925925925926,0.01616161616161616,0.03146509341199607,calibration,complete
+Problem with a purchase or transfer,180,0.5,0.6888888888888889,0.5794392523364486,calibration,complete
+Problem with a purchase shown on your statement,2176,0.6340703830582373,0.9356617647058824,0.7558938184518285,calibration,complete
+Problem with additional add-on products or services,109,0.0,0.0,0.0,calibration,complete
+Problem with cash advance,8,0.0,0.0,0.0,calibration,complete
+Problem with customer service,130,0.0,0.0,0.0,calibration,complete
+Problem with fraud alerts or security freezes,723,0.8023952095808383,0.18533886583679116,0.30112359550561796,calibration,complete
+Problem with overdraft,4,0.0,0.0,0.0,calibration,complete
+Problem with the payoff process at the end of the loan,122,0.0,0.0,0.0,calibration,complete
+Problems at the end of the loan or lease,332,0.7714285714285715,0.24397590361445784,0.3707093821510298,calibration,complete
+Problems receiving the advance,6,0.0,0.0,0.0,calibration,complete
+Property was sold,1,0.0,0.0,0.0,calibration,complete
+Received a loan you didn't apply for,35,0.0,0.0,0.0,calibration,complete
+Repossession,513,0.8809523809523809,0.2884990253411306,0.434654919236417,calibration,complete
+Struggling to pay mortgage,604,0.7573696145124716,0.5529801324503312,0.6392344497607656,calibration,complete
+Struggling to pay your bill,124,0.0,0.0,0.0,calibration,complete
+Struggling to pay your loan,238,0.4722222222222222,0.07142857142857142,0.12408759124087591,calibration,complete
+Struggling to repay your loan,374,0.0,0.0,0.0,calibration,complete
+Threatened to contact someone or share information improperly,224,0.0,0.0,0.0,calibration,complete
+Took or threatened to take negative or legal action,1695,0.7248677248677249,0.1616519174041298,0.2643511818620357,calibration,complete
+Trouble accessing funds in your mobile or digital wallet,268,0.717948717948718,0.1044776119402985,0.18241042345276873,calibration,complete
+Trouble during payment process,1774,0.6929611650485437,0.9656144306651635,0.8068770607630711,calibration,complete
+Trouble using the card,530,0.7001414427157001,0.9339622641509434,0.8003233629749393,calibration,complete
+Trouble using your card,372,0.6231884057971014,0.11559139784946236,0.19501133786848074,calibration,complete
+Unable to get your credit report or credit score,1029,0.7894736842105263,0.13119533527696792,0.225,calibration,complete
+Unauthorized transactions or other transaction problem,286,0.4,0.013986013986013986,0.02702702702702703,calibration,complete
+Unauthorized withdrawals or charges,55,0.0,0.0,0.0,calibration,complete
+Unexpected fees,7,0.0,0.0,0.0,calibration,complete
+Unexpected or other fees,172,0.0,0.0,0.0,calibration,complete
+Vehicle was damaged or destroyed the vehicle,6,0.0,0.0,0.0,calibration,complete
+Vehicle was repossessed or sold the vehicle,8,0.0,0.0,0.0,calibration,complete
+"Was approved for a loan, but didn't receive the money",19,0.0,0.0,0.0,calibration,complete
+Written notification about debt,3717,0.6840330983757279,0.6004842615012107,0.639541547277937,calibration,complete
+Wrong amount charged or received,33,0.0,0.0,0.0,calibration,complete
+Advertising,8,0.0,0.0,0.0,calibration,no_shared_text
+"Advertising and marketing, including promotional offers",422,0.7168674698795181,0.28199052132701424,0.40476190476190477,calibration,no_shared_text
+Applying for a mortgage or refinancing an existing mortgage,313,0.7272727272727273,0.28115015974440893,0.4055299539170507,calibration,no_shared_text
+Attempts to collect debt not owed,7157,0.5465990843688685,0.9341903031996647,0.6896694001753572,calibration,no_shared_text
+Can't contact lender or servicer,33,0.0,0.0,0.0,calibration,no_shared_text
+Can't stop withdrawals from your bank account,30,0.0,0.0,0.0,calibration,no_shared_text
+Charged fees or interest you didn't expect,356,0.28187919463087246,0.9438202247191011,0.43410852713178294,calibration,no_shared_text
+Charged upfront or unexpected fees,116,0.0,0.0,0.0,calibration,no_shared_text
+Closing an account,1205,0.7397260273972602,0.3136929460580913,0.4405594405594406,calibration,no_shared_text
+Closing on a mortgage,233,0.7272727272727273,0.034334763948497854,0.06557377049180328,calibration,no_shared_text
+Closing your account,668,0.6864754098360656,0.5014970059880239,0.5795847750865052,calibration,no_shared_text
+Communication tactics,933,0.6791744840525328,0.3879957127545552,0.49386084583901774,calibration,no_shared_text
+Confusing or misleading advertising or marketing,103,0.0,0.0,0.0,calibration,no_shared_text
+Confusing or missing disclosures,130,0.0,0.0,0.0,calibration,no_shared_text
+Credit limit changed,6,0.0,0.0,0.0,calibration,no_shared_text
+Credit monitoring or identity theft protection services,729,0.10775862068965517,0.03429355281207133,0.05202913631633715,calibration,no_shared_text
+Dealing with your lender or servicer,1395,0.7142857142857143,1.0,0.8333333333333334,calibration,no_shared_text
+Didn't provide services promised,195,0.3585951940850277,0.9948717948717949,0.5271739130434783,calibration,no_shared_text
+Electronic communications,344,0.0,0.0,0.0,calibration,no_shared_text
+False statements or representation,2744,0.8425,0.1228134110787172,0.2143765903307888,calibration,no_shared_text
+Fees or interest,1034,0.6354759967453214,0.7553191489361702,0.690234202386213,calibration,no_shared_text
+Fraud or scam,1012,0.370397917441428,0.9841897233201581,0.5382329100243177,calibration,no_shared_text
+Getting a credit card,963,0.5882794891059354,0.8130841121495327,0.6826503923278117,calibration,no_shared_text
+Getting a line of credit,53,0.0,0.0,0.0,calibration,no_shared_text
+Getting a loan,38,0.0,0.0,0.0,calibration,no_shared_text
+Getting a loan or lease,253,0.6868686868686869,0.26877470355731226,0.38636363636363635,calibration,no_shared_text
+Getting the loan,112,1.0,0.008928571428571428,0.017699115044247787,calibration,no_shared_text
+Identity theft protection or other monitoring services,79,0.0,0.0,0.0,calibration,no_shared_text
+Improper use of your report,35937,0.7010067696580454,0.6742632940980049,0.6873750053189226,calibration,no_shared_text
+Incorrect exchange rate,5,0.0,0.0,0.0,calibration,no_shared_text
+Incorrect information on your report,63445,0.6871696433539197,0.7786586807471038,0.7300590378093205,calibration,no_shared_text
+Issue where my lender is my school,9,0.0,0.0,0.0,calibration,no_shared_text
+Issue with income share agreement,12,0.0,0.0,0.0,calibration,no_shared_text
+Issues with repayment,13,0.0,0.0,0.0,calibration,no_shared_text
+Loan payment wasn't credited to your account,14,0.0,0.0,0.0,calibration,no_shared_text
+Lost or stolen money order,26,0.0,0.0,0.0,calibration,no_shared_text
+Lost or stolen refund,1,0.0,0.0,0.0,calibration,no_shared_text
+Managing an account,4491,0.6060100166944908,0.969939879759519,0.7459542769072695,calibration,no_shared_text
+Managing the loan or lease,605,0.3535980148883375,0.9421487603305785,0.5142083897158322,calibration,no_shared_text
+"Managing, opening, or closing your mobile wallet account",108,0.34615384615384615,0.08333333333333333,0.13432835820895522,calibration,no_shared_text
+Money was not available when promised,284,0.5,0.0035211267605633804,0.006993006993006993,calibration,no_shared_text
+Money was taken from your bank account on the wrong day or for the wrong amount,20,0.0,0.0,0.0,calibration,no_shared_text
+Opening an account,641,0.7875457875457875,0.33541341653666146,0.47045951859956237,calibration,no_shared_text
+"Other features, terms, or problems",1028,0.43425814234016885,0.35019455252918286,0.3877221324717286,calibration,no_shared_text
+Other service problem,125,0.0,0.0,0.0,calibration,no_shared_text
+Other transaction problem,551,0.4044943820224719,0.1306715063520871,0.19753086419753085,calibration,no_shared_text
+"Overdraft, savings, or rewards features",4,0.0,0.0,0.0,calibration,no_shared_text
+Problem adding money,17,0.0,0.0,0.0,calibration,no_shared_text
+Problem caused by your funds being low,898,0.8962962962962963,0.26948775055679286,0.4143835616438356,calibration,no_shared_text
+Problem getting a card or closing an account,115,0.0,0.0,0.0,calibration,no_shared_text
+Problem when making payments,735,0.5254901960784314,0.36462585034013606,0.43052208835341366,calibration,no_shared_text
+Problem with a company's investigation into an existing issue,149,0.0,0.0,0.0,calibration,no_shared_text
+Problem with a company's investigation into an existing problem,22966,0.5276328898786848,0.39201428198206045,0.4498238776886757,calibration,no_shared_text
+Problem with a lender or other company charging your account,990,0.5925925925925926,0.01616161616161616,0.03146509341199607,calibration,no_shared_text
+Problem with a purchase or transfer,179,0.4979757085020243,0.6871508379888268,0.5774647887323944,calibration,no_shared_text
+Problem with a purchase shown on your statement,2176,0.6340703830582373,0.9356617647058824,0.7558938184518285,calibration,no_shared_text
+Problem with additional add-on products or services,109,0.0,0.0,0.0,calibration,no_shared_text
+Problem with cash advance,8,0.0,0.0,0.0,calibration,no_shared_text
+Problem with customer service,130,0.0,0.0,0.0,calibration,no_shared_text
+Problem with fraud alerts or security freezes,717,0.8159509202453987,0.18549511854951187,0.30227272727272725,calibration,no_shared_text
+Problem with overdraft,4,0.0,0.0,0.0,calibration,no_shared_text
+Problem with the payoff process at the end of the loan,122,0.0,0.0,0.0,calibration,no_shared_text
+Problems at the end of the loan or lease,332,0.7714285714285715,0.24397590361445784,0.3707093821510298,calibration,no_shared_text
+Problems receiving the advance,6,0.0,0.0,0.0,calibration,no_shared_text
+Property was sold,1,0.0,0.0,0.0,calibration,no_shared_text
+Received a loan you didn't apply for,35,0.0,0.0,0.0,calibration,no_shared_text
+Repossession,511,0.8802395209580839,0.2876712328767123,0.4336283185840708,calibration,no_shared_text
+Struggling to pay mortgage,603,0.7573696145124716,0.5538971807628524,0.6398467432950191,calibration,no_shared_text
+Struggling to pay your bill,124,0.0,0.0,0.0,calibration,no_shared_text
+Struggling to pay your loan,238,0.4722222222222222,0.07142857142857142,0.12408759124087591,calibration,no_shared_text
+Struggling to repay your loan,374,0.0,0.0,0.0,calibration,no_shared_text
+Threatened to contact someone or share information improperly,223,0.0,0.0,0.0,calibration,no_shared_text
+Took or threatened to take negative or legal action,1576,0.6104868913857678,0.1034263959390863,0.17688551275094955,calibration,no_shared_text
+Trouble accessing funds in your mobile or digital wallet,268,0.717948717948718,0.1044776119402985,0.18241042345276873,calibration,no_shared_text
+Trouble during payment process,1774,0.6932416025900445,0.9656144306651635,0.8070671378091873,calibration,no_shared_text
+Trouble using the card,527,0.6998577524893315,0.9335863377609108,0.8,calibration,no_shared_text
+Trouble using your card,372,0.6231884057971014,0.11559139784946236,0.19501133786848074,calibration,no_shared_text
+Unable to get your credit report or credit score,966,0.7894736842105263,0.13975155279503104,0.23746701846965698,calibration,no_shared_text
+Unauthorized transactions or other transaction problem,286,0.4,0.013986013986013986,0.02702702702702703,calibration,no_shared_text
+Unauthorized withdrawals or charges,55,0.0,0.0,0.0,calibration,no_shared_text
+Unexpected fees,7,0.0,0.0,0.0,calibration,no_shared_text
+Unexpected or other fees,171,0.0,0.0,0.0,calibration,no_shared_text
+Vehicle was damaged or destroyed the vehicle,6,0.0,0.0,0.0,calibration,no_shared_text
+Vehicle was repossessed or sold the vehicle,8,0.0,0.0,0.0,calibration,no_shared_text
+"Was approved for a loan, but didn't receive the money",19,0.0,0.0,0.0,calibration,no_shared_text
+Written notification about debt,2160,0.3995313415348565,0.31574074074074077,0.35272821308507885,calibration,no_shared_text
+Wrong amount charged or received,33,0.0,0.0,0.0,calibration,no_shared_text
+Advertising,28,0.0,0.0,0.0,validation,complete
+"Advertising and marketing, including promotional offers",953,0.7209302325581395,0.29275970619097585,0.4164179104477612,validation,complete
+Applying for a mortgage or refinancing an existing mortgage,707,0.6820276497695853,0.20933521923620935,0.3203463203463203,validation,complete
+Attempts to collect debt not owed,23076,0.5524776149776149,0.9411943144392443,0.6962556901968328,validation,complete
+Can't contact lender or servicer,55,0.0,0.0,0.0,validation,complete
+Can't stop withdrawals from your bank account,65,0.0,0.0,0.0,validation,complete
+Charged fees or interest you didn't expect,968,0.3084643693542991,0.9524793388429752,0.4660096032347738,validation,complete
+Charged upfront or unexpected fees,234,0.0,0.0,0.0,validation,complete
+Closing an account,3065,0.717948717948718,0.2923327895595432,0.41548805935543703,validation,complete
+Closing on a mortgage,564,0.8235294117647058,0.04964539007092199,0.09364548494983277,validation,complete
+Closing your account,1783,0.7108239095315024,0.49355019629837354,0.5825885468387951,validation,complete
+Communication tactics,2625,0.6735588972431078,0.4095238095238095,0.5093579720445393,validation,complete
+Confusing or misleading advertising or marketing,360,0.0,0.0,0.0,validation,complete
+Confusing or missing disclosures,1114,0.5,0.0008976660682226212,0.0017921146953405018,validation,complete
+Credit limit changed,7,0.0,0.0,0.0,validation,complete
+Credit monitoring or identity theft protection services,2103,0.0,0.0,0.0,validation,complete
+Dealing with your lender or servicer,4130,0.5901943967981704,0.9997578692493947,0.7422254179399604,validation,complete
+Didn't provide services promised,421,0.302158273381295,0.997624703087886,0.46383213694091663,validation,complete
+Electronic communications,1110,0.0,0.0,0.0,validation,complete
+False statements or representation,6869,0.781437125748503,0.03799679720483331,0.07246980424822991,validation,complete
+Fees or interest,2555,0.662148070907195,0.7455968688845401,0.7013991163475699,validation,complete
+Fraud or scam,3886,0.0725189393939394,0.985331960885229,0.13509508520622376,validation,complete
+Getting a credit card,2383,0.5838341346153846,0.8153587914393622,0.6804412537208895,validation,complete
+Getting a line of credit,105,0.0,0.0,0.0,validation,complete
+Getting a loan,97,0.0,0.0,0.0,validation,complete
+Getting a loan or lease,741,0.8201058201058201,0.20917678812415655,0.3333333333333333,validation,complete
+Getting the loan,257,0.0,0.0,0.0,validation,complete
+Identity theft protection or other monitoring services,186,0.0,0.0,0.0,validation,complete
+Improper use of your report,141081,0.49084312631054927,0.4612598436359255,0.475591886252599,validation,complete
+Incorrect exchange rate,7,0.0,0.0,0.0,validation,complete
+Incorrect information on your report,268512,0.6349912350971513,0.705551334763437,0.6684143026244529,validation,complete
+Issue where my lender is my school,25,0.0,0.0,0.0,validation,complete
+Issue with income share agreement,29,0.0,0.0,0.0,validation,complete
+Issues with repayment,34,0.0,0.0,0.0,validation,complete
+Loan payment wasn't credited to your account,51,0.0,0.0,0.0,validation,complete
+Lost or stolen money order,72,0.0,0.0,0.0,validation,complete
+Managing an account,14360,0.5278498627251871,0.9773676880222841,0.6854868250750934,validation,complete
+Managing the loan or lease,1604,0.36282562778690447,0.9638403990024937,0.5271952259164535,validation,complete
+"Managing, opening, or closing your mobile wallet account",435,0.3114754098360656,0.08735632183908046,0.13644524236983843,validation,complete
+Money was not available when promised,783,0.4,0.002554278416347382,0.005076142131979695,validation,complete
+Money was taken from your bank account on the wrong day or for the wrong amount,39,0.0,0.0,0.0,validation,complete
+Opening an account,1499,0.7815699658703071,0.3055370246831221,0.43932853717026377,validation,complete
+"Other features, terms, or problems",2404,0.4316546762589928,0.34941763727121466,0.38620689655172413,validation,complete
+Other service problem,1215,0.0,0.0,0.0,validation,complete
+Other transaction problem,42556,0.35946462715105165,0.004417708431243538,0.008728150607024305,validation,complete
+"Overdraft, savings, or rewards features",25,0.0,0.0,0.0,validation,complete
+Problem adding money,74,0.0,0.0,0.0,validation,complete
+Problem caused by your funds being low,7900,0.9555555555555556,0.15240506329113923,0.262882096069869,validation,complete
+Problem getting a card or closing an account,272,0.0,0.0,0.0,validation,complete
+Problem when making payments,1707,0.49403578528827036,0.29115407147041594,0.3663840766678953,validation,complete
+Problem with a company's investigation into an existing issue,622,0.0,0.0,0.0,validation,complete
+Problem with a company's investigation into an existing problem,102796,0.5893513717356462,0.4864975290867349,0.5330079082557073,validation,complete
+Problem with a lender or other company charging your account,2794,0.6730769230769231,0.012526843235504653,0.024595924104005622,validation,complete
+Problem with a purchase or transfer,540,0.5231416549789621,0.6907407407407408,0.5953711093375897,validation,complete
+Problem with a purchase shown on your statement,5116,0.6231030873888017,0.9310007818608288,0.746551724137931,validation,complete
+Problem with additional add-on products or services,233,0.0,0.0,0.0,validation,complete
+Problem with cash advance,14,0.0,0.0,0.0,validation,complete
+Problem with customer service,348,1.0,0.0028735632183908046,0.0057306590257879654,validation,complete
+Problem with fraud alerts or security freezes,3068,0.9300699300699301,0.39015645371577573,0.5497129735935706,validation,complete
+Problem with overdraft,10,0.0,0.0,0.0,validation,complete
+Problem with the payoff process at the end of the loan,287,0.0,0.0,0.0,validation,complete
+Problems at the end of the loan or lease,719,0.7549407114624506,0.26564673157162727,0.39300411522633744,validation,complete
+Problems receiving the advance,22,0.0,0.0,0.0,validation,complete
+Property was sold,1,0.0,0.0,0.0,validation,complete
+Received a loan you didn't apply for,91,0.0,0.0,0.0,validation,complete
+Repossession,1539,0.8788819875776398,0.3677712800519818,0.5185524507558406,validation,complete
+Struggling to pay mortgage,1462,0.7497665732959851,0.5492476060191519,0.6340307935254639,validation,complete
+Struggling to pay your bill,268,0.0,0.0,0.0,validation,complete
+Struggling to pay your loan,630,0.4842105263157895,0.07301587301587302,0.12689655172413794,validation,complete
+Struggling to repay your loan,1516,0.0,0.0,0.0,validation,complete
+Threatened to contact someone or share information improperly,665,0.0,0.0,0.0,validation,complete
+Took or threatened to take negative or legal action,3816,0.6091160220994475,0.11556603773584906,0.19427312775330396,validation,complete
+Trouble accessing funds in your mobile or digital wallet,868,0.5849056603773585,0.03571428571428571,0.06731813246471227,validation,complete
+Trouble during payment process,3767,0.6618128867855843,0.9652243164321741,0.7852283770651117,validation,complete
+Trouble using the card,799,0.616484440706476,0.9173967459324155,0.7374245472837022,validation,complete
+Trouble using your card,898,0.6231884057971014,0.14365256124721604,0.2334841628959276,validation,complete
+Unable to get your credit report or credit score,2524,0.7960687960687961,0.12836767036450078,0.2210849539406346,validation,complete
+Unauthorized transactions or other transaction problem,2039,0.43478260869565216,0.014713094654242276,0.028462998102466792,validation,complete
+Unauthorized withdrawals or charges,146,0.0,0.0,0.0,validation,complete
+Unexpected fees,23,0.0,0.0,0.0,validation,complete
+Unexpected or other fees,493,0.0,0.0,0.0,validation,complete
+Vehicle was damaged or destroyed the vehicle,15,0.0,0.0,0.0,validation,complete
+Vehicle was repossessed or sold the vehicle,47,0.0,0.0,0.0,validation,complete
+"Was approved for a loan, but didn't receive the money",39,0.0,0.0,0.0,validation,complete
+Written notification about debt,11646,0.6599974512552568,0.4447020436201271,0.5313702354691427,validation,complete
+Wrong amount charged or received,192,0.0,0.0,0.0,validation,complete
+Advertising,28,0.0,0.0,0.0,validation,no_shared_text
+"Advertising and marketing, including promotional offers",951,0.7209302325581395,0.29337539432176657,0.4170403587443946,validation,no_shared_text
+Applying for a mortgage or refinancing an existing mortgage,707,0.6820276497695853,0.20933521923620935,0.3203463203463203,validation,no_shared_text
+Attempts to collect debt not owed,18035,0.490718984962406,0.9264208483504297,0.6415913061843596,validation,no_shared_text
+Can't contact lender or servicer,55,0.0,0.0,0.0,validation,no_shared_text
+Can't stop withdrawals from your bank account,65,0.0,0.0,0.0,validation,no_shared_text
+Charged fees or interest you didn't expect,968,0.3084643693542991,0.9524793388429752,0.4660096032347738,validation,no_shared_text
+Charged upfront or unexpected fees,234,0.0,0.0,0.0,validation,no_shared_text
+Closing an account,3064,0.717948717948718,0.2924281984334204,0.4155844155844156,validation,no_shared_text
+Closing on a mortgage,564,0.8235294117647058,0.04964539007092199,0.09364548494983277,validation,no_shared_text
+Closing your account,1783,0.7108239095315024,0.49355019629837354,0.5825885468387951,validation,no_shared_text
+Communication tactics,2615,0.6735588972431078,0.4110898661567878,0.5105675611493707,validation,no_shared_text
+Confusing or misleading advertising or marketing,360,0.0,0.0,0.0,validation,no_shared_text
+Confusing or missing disclosures,1114,0.5,0.0008976660682226212,0.0017921146953405018,validation,no_shared_text
+Credit limit changed,7,0.0,0.0,0.0,validation,no_shared_text
+Credit monitoring or identity theft protection services,1971,0.0,0.0,0.0,validation,no_shared_text
+Dealing with your lender or servicer,4129,0.5901358112937812,0.9997578106078954,0.7421790722761596,validation,no_shared_text
+Didn't provide services promised,421,0.302158273381295,0.997624703087886,0.46383213694091663,validation,no_shared_text
+Electronic communications,1110,0.0,0.0,0.0,validation,no_shared_text
+False statements or representation,6716,0.744,0.02769505658129839,0.053402239448751075,validation,no_shared_text
+Fees or interest,2555,0.662148070907195,0.7455968688845401,0.7013991163475699,validation,no_shared_text
+Fraud or scam,3886,0.07252306002234976,0.985331960885229,0.13510223523807843,validation,no_shared_text
+Getting a credit card,2154,0.5550888529886915,0.797585886722377,0.6546008763574014,validation,no_shared_text
+Getting a line of credit,105,0.0,0.0,0.0,validation,no_shared_text
+Getting a loan,97,0.0,0.0,0.0,validation,no_shared_text
+Getting a loan or lease,740,0.8201058201058201,0.20945945945945946,0.333692142088267,validation,no_shared_text
+Getting the loan,257,0.0,0.0,0.0,validation,no_shared_text
+Identity theft protection or other monitoring services,185,0.0,0.0,0.0,validation,no_shared_text
+Improper use of your report,113234,0.4515370138017566,0.43222883586202027,0.44167200599207673,validation,no_shared_text
+Incorrect exchange rate,7,0.0,0.0,0.0,validation,no_shared_text
+Incorrect information on your report,202051,0.5890563088692982,0.6379181493781273,0.6125143158565041,validation,no_shared_text
+Issue where my lender is my school,25,0.0,0.0,0.0,validation,no_shared_text
+Issue with income share agreement,29,0.0,0.0,0.0,validation,no_shared_text
+Issues with repayment,34,0.0,0.0,0.0,validation,no_shared_text
+Loan payment wasn't credited to your account,51,0.0,0.0,0.0,validation,no_shared_text
+Lost or stolen money order,72,0.0,0.0,0.0,validation,no_shared_text
+Managing an account,14360,0.5279888646452486,0.9773676880222841,0.6856040252063895,validation,no_shared_text
+Managing the loan or lease,1603,0.3630169172932331,0.9638178415470992,0.5273937532002048,validation,no_shared_text
+"Managing, opening, or closing your mobile wallet account",435,0.3114754098360656,0.08735632183908046,0.13644524236983843,validation,no_shared_text
+Money was not available when promised,783,0.4,0.002554278416347382,0.005076142131979695,validation,no_shared_text
+Money was taken from your bank account on the wrong day or for the wrong amount,39,0.0,0.0,0.0,validation,no_shared_text
+Opening an account,1494,0.7808219178082192,0.30522088353413657,0.43888354186718,validation,no_shared_text
+"Other features, terms, or problems",2404,0.4318766066838046,0.34941763727121466,0.38629570016095655,validation,no_shared_text
+Other service problem,1215,0.0,0.0,0.0,validation,no_shared_text
+Other transaction problem,42553,0.35946462715105165,0.004418019881089465,0.008728758473395859,validation,no_shared_text
+"Overdraft, savings, or rewards features",25,0.0,0.0,0.0,validation,no_shared_text
+Problem adding money,74,0.0,0.0,0.0,validation,no_shared_text
+Problem caused by your funds being low,7898,0.9555555555555556,0.1524436566219296,0.2629395064424547,validation,no_shared_text
+Problem getting a card or closing an account,272,0.0,0.0,0.0,validation,no_shared_text
+Problem when making payments,1703,0.49403578528827036,0.2918379330593071,0.3669250645994832,validation,no_shared_text
+Problem with a company's investigation into an existing issue,622,0.0,0.0,0.0,validation,no_shared_text
+Problem with a company's investigation into an existing problem,76093,0.5472666418743027,0.48348731157925173,0.5134037594719435,validation,no_shared_text
+Problem with a lender or other company charging your account,2793,0.6730769230769231,0.012531328320802004,0.02460456942003515,validation,no_shared_text
+Problem with a purchase or transfer,540,0.5231416549789621,0.6907407407407408,0.5953711093375897,validation,no_shared_text
+Problem with a purchase shown on your statement,5114,0.6232661606909186,0.9313648807195932,0.7467858262778301,validation,no_shared_text
+Problem with additional add-on products or services,232,0.0,0.0,0.0,validation,no_shared_text
+Problem with cash advance,14,0.0,0.0,0.0,validation,no_shared_text
+Problem with customer service,348,1.0,0.0028735632183908046,0.0057306590257879654,validation,no_shared_text
+Problem with fraud alerts or security freezes,2430,0.896551724137931,0.28888888888888886,0.4369747899159664,validation,no_shared_text
+Problem with overdraft,10,0.0,0.0,0.0,validation,no_shared_text
+Problem with the payoff process at the end of the loan,287,0.0,0.0,0.0,validation,no_shared_text
+Problems at the end of the loan or lease,719,0.7549407114624506,0.26564673157162727,0.39300411522633744,validation,no_shared_text
+Problems receiving the advance,22,0.0,0.0,0.0,validation,no_shared_text
+Property was sold,1,0.0,0.0,0.0,validation,no_shared_text
+Received a loan you didn't apply for,91,0.0,0.0,0.0,validation,no_shared_text
+Repossession,1536,0.8788819875776398,0.3684895833333333,0.5192660550458715,validation,no_shared_text
+Struggling to pay mortgage,1462,0.7497665732959851,0.5492476060191519,0.6340307935254639,validation,no_shared_text
+Struggling to pay your bill,268,0.0,0.0,0.0,validation,no_shared_text
+Struggling to pay your loan,629,0.4842105263157895,0.07313195548489666,0.1270718232044199,validation,no_shared_text
+Struggling to repay your loan,1516,0.0,0.0,0.0,validation,no_shared_text
+Threatened to contact someone or share information improperly,661,0.0,0.0,0.0,validation,no_shared_text
+Took or threatened to take negative or legal action,3789,0.6091160220994475,0.1163895486935867,0.19543540881896743,validation,no_shared_text
+Trouble accessing funds in your mobile or digital wallet,868,0.5849056603773585,0.03571428571428571,0.06731813246471227,validation,no_shared_text
+Trouble during payment process,3767,0.6618128867855843,0.9652243164321741,0.7852283770651117,validation,no_shared_text
+Trouble using the card,799,0.616484440706476,0.9173967459324155,0.7374245472837022,validation,no_shared_text
+Trouble using your card,898,0.6231884057971014,0.14365256124721604,0.2334841628959276,validation,no_shared_text
+Unable to get your credit report or credit score,2199,0.7945544554455446,0.14597544338335608,0.2466384940453323,validation,no_shared_text
+Unauthorized transactions or other transaction problem,2039,0.43478260869565216,0.014713094654242276,0.028462998102466792,validation,no_shared_text
+Unauthorized withdrawals or charges,146,0.0,0.0,0.0,validation,no_shared_text
+Unexpected fees,22,0.0,0.0,0.0,validation,no_shared_text
+Unexpected or other fees,493,0.0,0.0,0.0,validation,no_shared_text
+Vehicle was damaged or destroyed the vehicle,15,0.0,0.0,0.0,validation,no_shared_text
+Vehicle was repossessed or sold the vehicle,47,0.0,0.0,0.0,validation,no_shared_text
+"Was approved for a loan, but didn't receive the money",39,0.0,0.0,0.0,validation,no_shared_text
+Written notification about debt,8875,0.4935440354596261,0.28856338028169015,0.3641922639362912,validation,no_shared_text
+Wrong amount charged or received,192,0.0,0.0,0.0,validation,no_shared_text

@@ -70,7 +70,7 @@ conjunto completo de reclamos.
   las métricas y las vistas completa y sin texto compartido.
 - [x] **M3 — Crear referencias simples:** comparar contra frecuencias globales y
   reglas basadas en producto.
-- [ ] **M4 — Entrenar TF-IDF:** evaluar modelos lineales para T1–T4.
+- [x] **M4 — Entrenar TF-IDF:** evaluar modelos lineales para T1–T4.
 - [ ] **M5 — Evaluar BGE:** generar una muestra en la A100 y compararla con
   TF-IDF sobre las mismas filas.
 - [ ] **M6 — Buscar patrones semánticos:** crear vecinos FAISS, grupos y una
@@ -192,6 +192,43 @@ la frecuencia global.
 Los resultados completos están en `reports/modeling/baseline_results.json` y
 el detalle de T1 por motivo está en
 `reports/modeling/baseline_t1_per_class.csv`.
+
+## Resultados de TF-IDF M4
+
+**TF-IDF** representa una narrativa mediante la importancia de sus palabras y
+pares de palabras. El modelo M4 combina esa representación con el producto y
+usa un clasificador lineal. Un clasificador lineal suma evidencia a favor o en
+contra de cada resultado sin construir una red neuronal.
+
+En la validación sin texto compartido:
+
+| Objetivo | Regla por producto | TF-IDF + producto | Decisión |
+| --- | ---: | ---: | --- |
+| T1 — Macro-F1 | 0.0684 | 0.1984 | Conservar TF-IDF |
+| T1 — top-3 | 90.98% | 95.92% | Conservar TF-IDF |
+| T2 — precisión promedio | 0.4509 | 0.5744 | Conservar TF-IDF |
+| T3 — precisión promedio | 0.1272 | 0.2904 | Conservar TF-IDF |
+| T4 — precisión promedio | 0.1208 | 0.0781 | Conservar regla por producto |
+
+La narrativa aporta valor claro para T1–T3. En T3, TF-IDF alcanza 21.49% de
+precisión y 54.89% de cobertura, frente a 11.82% y 80.49% de la regla por
+producto. Reduce falsos positivos, pero también encuentra menos positivos; la
+capacidad real de revisión deberá decidir qué equilibrio conviene.
+
+T4 muestra inestabilidad temporal: TF-IDF superó a la regla por producto en
+calibración, pero quedó por debajo en 2025-H1. No promoveremos ese modelo. El
+resultado no prueba la causa del cambio; indica que la relación entre palabras
+y respuesta no oportuna no fue estable en el periodo posterior.
+
+Los modelos convergieron y se guardaron con DVC:
+
+- Ruta: `artifacts/models/tfidf`.
+- Hash DVC: `94536b940d1546580c62b80078e2bbfc.dir`.
+- Tamaño: 105,258,065 bytes.
+- Ejecución SLURM: 9 minutos 9 segundos y aproximadamente 11.9 GiB de memoria.
+
+Los resultados completos están en `reports/modeling/tfidf_results.json` y el
+detalle de T1 por motivo en `reports/modeling/tfidf_t1_per_class.csv`.
 
 ## Orden de comparación
 

@@ -1,0 +1,206 @@
+{
+  "split_version": "temporal_v1",
+  "dvc_data_hash": "d189a3ae6ea7a8f9041fc8210968eda6",
+  "selection_view": "no_shared_text",
+  "features": [
+    "Consumer complaint narrative normalized",
+    "Product canonical"
+  ],
+  "tfidf": {
+    "max_features": 100000,
+    "ngram_range": [
+      1,
+      2
+    ],
+    "min_df": 5,
+    "sublinear_tf": true,
+    "alpha": 1e-05,
+    "max_iter": 30,
+    "class_weight": {
+      "T1": null,
+      "T2": null,
+      "T3": "balanced",
+      "T4": "balanced"
+    },
+    "calibration_method": "sigmoid"
+  },
+  "results": {
+    "T1": {
+      "metrics": {
+        "calibration": {
+          "complete": {
+            "eligible": 234600,
+            "macro_f1": 0.2218760333378401,
+            "top_3_accuracy": 0.9660443307757886
+          },
+          "no_shared_text": {
+            "eligible": 167973,
+            "macro_f1": 0.21424215055912837,
+            "top_3_accuracy": 0.9536294523524614
+          }
+        },
+        "validation": {
+          "complete": {
+            "eligible": 695184,
+            "macro_f1": 0.2037039299528526,
+            "top_3_accuracy": 0.965892483141154
+          },
+          "no_shared_text": {
+            "eligible": 564813,
+            "macro_f1": 0.19837534269522059,
+            "top_3_accuracy": 0.9592325247471287
+          }
+        }
+      },
+      "product_baseline_primary_metric": 0.06837433404137419,
+      "primary_metric_improvement": 0.1300010086538464
+    },
+    "T2": {
+      "class_weight": null,
+      "threshold": 0.3141058810976897,
+      "calibration_no_shared_f1_at_threshold": 0.634886602691565,
+      "metrics": {
+        "calibration": {
+          "complete": {
+            "eligible": 234362,
+            "positive": 100652,
+            "average_precision": 0.6155355924788303,
+            "precision": 0.5206397145422531,
+            "recall": 0.8871855502126138,
+            "f1": 0.6561951162158388,
+            "brier_score": 0.21333271123760042
+          },
+          "no_shared_text": {
+            "eligible": 167738,
+            "positive": 65624,
+            "average_precision": 0.6119403060817248,
+            "precision": 0.5105440253612777,
+            "recall": 0.8392965988053152,
+            "f1": 0.634886602691565,
+            "brier_score": 0.2021422169662912
+          }
+        },
+        "validation": {
+          "complete": {
+            "eligible": 693502,
+            "positive": 268539,
+            "average_precision": 0.5746887241887031,
+            "precision": 0.5146792767732963,
+            "recall": 0.8612678232956852,
+            "f1": 0.6443223004426714,
+            "brier_score": 0.20008875040916235
+          },
+          "no_shared_text": {
+            "eligible": 563148,
+            "positive": 200336,
+            "average_precision": 0.5744127176892788,
+            "precision": 0.5075586081660763,
+            "recall": 0.8203667838032106,
+            "f1": 0.6271199052159828,
+            "brier_score": 0.18888306399417998
+          }
+        }
+      },
+      "product_baseline_primary_metric": 0.45085971003115005,
+      "primary_metric_improvement": 0.12355300765812877
+    },
+    "T3": {
+      "class_weight": "balanced",
+      "threshold": 0.19603226811898045,
+      "calibration_no_shared_f1_at_threshold": 0.4328661385334146,
+      "metrics": {
+        "calibration": {
+          "complete": {
+            "eligible": 234362,
+            "positive": 3685,
+            "average_precision": 0.3694362091844332,
+            "precision": 0.3454928664072633,
+            "recall": 0.5782903663500678,
+            "f1": 0.43255861159037856,
+            "brier_score": 0.011701543823240812
+          },
+          "no_shared_text": {
+            "eligible": 167738,
+            "positive": 3682,
+            "average_precision": 0.36987826998800455,
+            "precision": 0.3457170668397145,
+            "recall": 0.5787615426398697,
+            "f1": 0.4328661385334146,
+            "brier_score": 0.016327985808733337
+          }
+        },
+        "validation": {
+          "complete": {
+            "eligible": 693502,
+            "positive": 7479,
+            "average_precision": 0.2903528558992865,
+            "precision": 0.2149141181399246,
+            "recall": 0.5487364620938628,
+            "f1": 0.30886171213546565,
+            "brier_score": 0.009069956980363378
+          },
+          "no_shared_text": {
+            "eligible": 563148,
+            "positive": 7477,
+            "average_precision": 0.2904324603962946,
+            "precision": 0.2149366293076359,
+            "recall": 0.5488832419419554,
+            "f1": 0.3089082081969064,
+            "brier_score": 0.011165610968301282
+          }
+        }
+      },
+      "product_baseline_primary_metric": 0.12722600220820834,
+      "primary_metric_improvement": 0.16320645818808627
+    },
+    "T4": {
+      "class_weight": "balanced",
+      "threshold": 0.06093102335898961,
+      "calibration_no_shared_f1_at_threshold": 0.12546125461254615,
+      "metrics": {
+        "calibration": {
+          "complete": {
+            "eligible": 234600,
+            "positive": 956,
+            "average_precision": 0.05467642890275107,
+            "precision": 0.09170731707317073,
+            "recall": 0.19665271966527198,
+            "f1": 0.12508316699933467,
+            "brier_score": 0.003962281083200969
+          },
+          "no_shared_text": {
+            "eligible": 167973,
+            "positive": 935,
+            "average_precision": 0.05505940143045083,
+            "precision": 0.0913978494623656,
+            "recall": 0.2,
+            "f1": 0.12546125461254612,
+            "brier_score": 0.005411582609438733
+          }
+        },
+        "validation": {
+          "complete": {
+            "eligible": 695184,
+            "positive": 6171,
+            "average_precision": 0.07772033213179223,
+            "precision": 0.13371571966302204,
+            "recall": 0.12088802463134014,
+            "f1": 0.1269787234042553,
+            "brier_score": 0.008550940884327661
+          },
+          "no_shared_text": {
+            "eligible": 564813,
+            "positive": 6097,
+            "average_precision": 0.07812841008014162,
+            "precision": 0.13387241689128482,
+            "recall": 0.12219124159422667,
+            "f1": 0.12776539187103414,
+            "brier_score": 0.010396808868307903
+          }
+        }
+      },
+      "product_baseline_primary_metric": 0.12081351692933462,
+      "primary_metric_improvement": -0.042685106849192994
+    }
+  }
+}

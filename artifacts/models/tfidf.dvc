@@ -1,0 +1,6 @@
+outs:
+- md5: 94536b940d1546580c62b80078e2bbfc.dir
+  size: 105258065
+  nfiles: 7
+  hash: md5
+  path: tfidf

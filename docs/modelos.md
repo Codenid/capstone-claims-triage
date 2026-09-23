@@ -106,8 +106,10 @@ el banco dispone de varios canales reales.
 Es rápido, económico y suele funcionar bien cuando ciertas palabras están muy
 relacionadas con una categoría.
 
-Se usará con regresión logística como primera comparación. Un modelo posterior
-solo se justifica si mejora claramente esta referencia.
+Se evaluó con un clasificador logístico lineal entrenado por descenso de
+gradiente. En 2025-H1 sin texto compartido mejoró la regla por producto para
+T1–T3, pero no para T4. Un modelo posterior solo se justifica si mejora estas
+referencias por objetivo.
 
 ### BGE: representación semántica
 
