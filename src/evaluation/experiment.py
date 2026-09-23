@@ -73,6 +73,7 @@ def build_run_record(
 
     tags = {
         "run_contract_version": experiment["run_contract_version"],
+        "evaluation_split_version": config["evaluation"]["split_version"],
         "git_commit": git_commit(),
         "dvc_data_hash": contract["dvc_md5"],
         "stage": stage,

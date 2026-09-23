@@ -262,13 +262,23 @@ relacionados y que conviene revisarlos juntos.
 
 ## Evaluación
 
-Las divisiones respetarán el tiempo. También se evitará que un mismo grupo de
-texto normalizado aparezca simultáneamente en aprendizaje y evaluación.
+Las divisiones respetarán el tiempo:
 
-- **T1:** Macro-F1, top-3 y resultados por motivo.
-- **T2–T4:** PR-AUC, precisión, cobertura y calibración.
+- ajuste: 2023-01-01 a 2024-09-30;
+- calibración: 2024-10-01 a 2024-12-31;
+- validación temporal: 2025-01-01 a 2025-06-30.
+
+Se reportará una vista completa y otra que excluye textos ya vistos en periodos
+usados para aprender. La vista sin texto compartido será la principal para
+elegir modelos.
+
+- **T1:** Macro-F1, top-3 y F1 por motivo.
+- **T2–T4:** average precision, precisión, cobertura y Brier score.
 - **Patrones:** revisión humana de las alertas principales, tiempo hasta detectar
   un crecimiento y cantidad de falsas alertas por semana.
+
+Para T2–T4, el umbral se elegirá maximizando F1 en la calibración sin texto
+compartido. Luego permanecerá fijo durante la validación.
 
 A partir de esta nueva rama, ningún modelo será elegido usando 2025-H2 o 2026.
 Sin embargo, un experimento anterior ya consultó una muestra de 25,000 casos de

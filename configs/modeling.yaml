@@ -6,4 +6,71 @@ experiment:
 paths:
   input_data: data/processed/prepared.parquet
   input_contract: reports/modeling/input_contract.json
+  evaluation_contract: reports/modeling/evaluation_contract.json
   offline_runs: reports/modeling/runs
+
+evaluation:
+  split_version: temporal_v1
+  splits:
+    fit:
+      start: 2023-01-01
+      end: 2024-10-01
+    calibration:
+      start: 2024-10-01
+      end: 2025-01-01
+    validation:
+      start: 2025-01-01
+      end: 2025-07-01
+  views:
+    - complete
+    - no_shared_text
+  selection_view: no_shared_text
+  blocked_periods:
+    - 2025-07-01/2026-01-01
+    - 2026_partial
+  metrics:
+    T1:
+      primary: macro_f1
+      secondary:
+        - top_3_accuracy
+        - per_class_f1
+    T2:
+      primary: average_precision
+      secondary:
+        - precision
+        - recall
+        - brier_score
+    T3:
+      primary: average_precision
+      secondary:
+        - precision
+        - recall
+        - brier_score
+    T4:
+      primary: average_precision
+      secondary:
+        - precision
+        - recall
+        - brier_score
+  binary_threshold: max_f1_on_calibration_no_shared_text
+
+features:
+  initial:
+    - Consumer complaint narrative normalized
+    - Product canonical
+  candidates:
+    - Company
+    - State
+    - Date received
+  excluded:
+    - Issue
+    - Sub-issue
+    - Issue canonical
+    - Company public response
+    - Company response to consumer
+    - Timely response?
+    - Date sent to company
+    - T1
+    - T2
+    - T3
+    - T4

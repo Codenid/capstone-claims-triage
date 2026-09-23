@@ -1,3 +1,4 @@
+from datetime import date
 import json
 import os
 import random
@@ -10,6 +11,11 @@ import numpy as np
 import pyarrow as pa
 
 from src.evaluation.experiment import build_run_record, set_seed
+from src.evaluation.freeze_evaluation import (
+    date_mask,
+    parse_splits,
+    true_count as array_true_count,
+)
 from src.evaluation.publish_run import load_run_record
 from src.evaluation.verify_modeling_input import (
     file_md5,
@@ -78,6 +84,7 @@ stages:
                     "input_data": "data.parquet",
                     "input_contract": str(contract_path),
                 },
+                "evaluation": {"split_version": "temporal-test-v1"},
             }
 
             with (
@@ -101,10 +108,40 @@ stages:
         self.assertEqual(record["tags"]["git_commit"], "git-hash")
         self.assertEqual(record["tags"]["dvc_data_hash"], "data-hash")
         self.assertEqual(record["tags"]["execution_host"], "khipu")
+        self.assertEqual(record["tags"]["evaluation_split_version"], "temporal-test-v1")
         self.assertEqual(record["tags"]["execution_mode"], "slurm")
         self.assertEqual(record["tags"]["slurm_job_id"], "123")
         self.assertEqual(record["parameters"]["seed"], 42)
         self.assertEqual(record["parameters"]["features"], '["narrative"]')
+
+    def test_parses_contiguous_evaluation_splits(self):
+        config = {
+            "evaluation": {
+                "splits": {
+                    "fit": {"start": "2023-01-01", "end": "2024-10-01"},
+                    "calibration": {"start": "2024-10-01", "end": "2025-01-01"},
+                    "validation": {"start": "2025-01-01", "end": "2025-07-01"},
+                }
+            }
+        }
+
+        splits = parse_splits(config)
+
+        self.assertEqual(splits["fit"], (date(2023, 1, 1), date(2024, 10, 1)))
+        self.assertEqual(splits["calibration"][0], splits["fit"][1])
+        self.assertEqual(splits["validation"][0], splits["calibration"][1])
+
+    def test_date_mask_uses_start_but_not_end(self):
+        values = pa.array(
+            [date(2022, 12, 31), date(2023, 1, 1), date(2024, 9, 30), date(2024, 10, 1)]
+        )
+
+        mask = date_mask(values, date(2023, 1, 1), date(2024, 10, 1))
+
+        self.assertEqual(mask.to_pylist(), [False, True, True, False])
+
+    def test_counts_empty_boolean_array_as_zero(self):
+        self.assertEqual(array_true_count(pa.array([], type=pa.bool_())), 0)
 
     def test_rejects_incomplete_offline_run(self):
         with tempfile.TemporaryDirectory() as directory:

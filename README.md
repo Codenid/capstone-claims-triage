@@ -66,7 +66,7 @@ conjunto completo de reclamos.
   objetivos y restricciones antes de entrenar.
 - [x] **M1 — Preparar experimentos:** configurar MLflow, semillas y ejecución
   reproducible local y en HPC.
-- [ ] **M2 — Congelar la evaluación:** definir el corte interno de calibración,
+- [x] **M2 — Congelar la evaluación:** definir el corte interno de calibración,
   las métricas y las vistas completa y sin texto compartido.
 - [ ] **M3 — Crear referencias simples:** comparar contra frecuencias globales y
   reglas basadas en producto.
@@ -104,6 +104,59 @@ JSON en `reports/modeling/runs/`. Después, desde el nodo de acceso, se publica
 en MLflow con `src/evaluation/publish_run.py`. Las credenciales permanecen en
 `.env` y `.dvc/config.local`; ninguno de esos archivos se versiona.
 
+## Contrato de evaluación M2
+
+Los periodos quedan fijados antes de entrenar:
+
+- **Ajuste:** 2023-01-01 a 2024-09-30; el modelo aprende aquí.
+- **Calibración:** 2024-10-01 a 2024-12-31; aquí se eligen parámetros y el
+  umbral de decisión.
+- **Validación temporal:** 2025-01-01 a 2025-06-30; mide el comportamiento en
+  datos posteriores.
+
+Un **umbral** es el punto desde el cual una probabilidad se convierte en una
+predicción positiva. Para T2–T4 se elegirá en calibración el umbral que maximice
+F1, que equilibra precisión y cobertura. Después permanecerá fijo en
+validación.
+
+Se reportarán dos vistas del mismo modelo:
+
+- **Completa:** incluye todos los casos elegibles.
+- **Sin texto compartido:** excluye de cada evaluación las narrativas que ya
+  aparecieron en periodos usados para aprender.
+
+La vista sin texto compartido será la principal para elegir modelos, porque
+reduce el beneficio artificial de memorizar plantillas. Conservamos la vista
+completa porque las plantillas también existen en la operación real. El corte
+deja 1,067,194 filas para ajuste, 167,973 para calibración sin texto compartido
+y 564,813 para validación sin texto compartido.
+
+T1 conserva 90 motivos en ajuste y no aparecen motivos nuevos en calibración o
+validación. Sin embargo, algunos motivos tienen muy pocos ejemplos. Sus
+resultados individuales se mostrarán como evidencia descriptiva, no como una
+estimación estable.
+
+Las métricas quedan definidas así:
+
+- **Macro-F1 (T1):** calcula F1 por motivo y da el mismo peso a cada motivo.
+- **Top-3 (T1):** revisa si el motivo correcto aparece entre tres sugerencias.
+- **Average precision o precisión promedio (T2–T4):** resume la relación entre
+  precisión y cobertura; es más útil que el porcentaje total de aciertos cuando
+  hay pocos positivos.
+- **Precisión:** de los casos marcados positivos, cuántos eran positivos.
+- **Cobertura o recall:** de los positivos reales, cuántos encontró el modelo.
+- **Brier score:** mide el error de las probabilidades; un valor menor es mejor.
+
+Las entradas iniciales serán la narrativa normalizada y el producto canónico.
+Empresa, estado y fecha quedan como candidatos que deberán demostrar valor. Se
+excluyen `Issue`, respuestas de la empresa y cualquier resultado T1–T4 porque
+revelarían lo que intentamos predecir.
+
+El detalle reproducible está en
+`reports/modeling/evaluation_contract.json`. Seguimos sin tener un test final
+intacto: 2025-H1 es validación temporal del prototipo, mientras 2025-H2 y 2026
+no se usarán para elegir modelos.
+
 ## Orden de comparación
 
 ```mermaid
@@ -130,7 +183,7 @@ volumen absoluto de un grupo es mayor de lo esperado.
 ## Evaluación
 
 - T1: Macro-F1, top-3 y resultados por motivo.
-- T2–T4: PR-AUC, precisión, cobertura y calibración.
+- T2–T4: precisión promedio, precisión, cobertura y Brier score.
 - Patrones: falsas alertas por semana, tiempo de detección, estabilidad y
   revisión de ejemplos.
 - Todas las comparaciones usarán las mismas filas y periodos.

@@ -89,6 +89,22 @@ uv run --no-sync python src/evaluation/publish_run.py \
   reports/modeling/runs/m1-experiment-setup-khipu/run.json
 ```
 
+Auditar y congelar la evaluación de M2:
+
+```bash
+sbatch scripts/hpc/m2_evaluation.slurm
+```
+
+Cuando termine, publicar el registro desde el nodo de acceso:
+
+```bash
+set -a
+source .env
+set +a
+uv run --no-sync python src/evaluation/publish_run.py \
+  reports/modeling/runs/m2-evaluation-contract/run.json
+```
+
 Verificar acceso a la A100:
 
 ```bash
