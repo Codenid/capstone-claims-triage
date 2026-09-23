@@ -67,7 +67,7 @@ tfidf:
   min_df: 5
   sublinear_tf: true
   alpha: 0.00001
-  max_iter: 10
+  max_iter: 30
   class_weight:
     T1: null
     T2: null
