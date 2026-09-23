@@ -9,6 +9,9 @@ paths:
   evaluation_contract: reports/modeling/evaluation_contract.json
   baseline_report: reports/modeling/baseline_results.json
   baseline_t1_classes: reports/modeling/baseline_t1_per_class.csv
+  tfidf_report: reports/modeling/tfidf_results.json
+  tfidf_t1_classes: reports/modeling/tfidf_t1_per_class.csv
+  tfidf_models: artifacts/models/tfidf
   offline_runs: reports/modeling/runs
 
 evaluation:
@@ -55,6 +58,22 @@ evaluation:
         - recall
         - brier_score
   binary_threshold: max_f1_on_calibration_no_shared_text
+
+tfidf:
+  max_features: 100000
+  ngram_range:
+    - 1
+    - 2
+  min_df: 5
+  sublinear_tf: true
+  alpha: 0.00001
+  max_iter: 10
+  class_weight:
+    T1: null
+    T2: null
+    T3: balanced
+    T4: balanced
+  calibration_method: sigmoid
 
 features:
   initial:

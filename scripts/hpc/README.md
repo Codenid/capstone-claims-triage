@@ -121,6 +121,29 @@ uv run --no-sync python src/evaluation/publish_run.py \
   reports/modeling/runs/m3
 ```
 
+Entrenar TF-IDF en CPU para M4:
+
+```bash
+sbatch scripts/hpc/m4_tfidf.slurm
+```
+
+Cuando termine, guardar los modelos grandes con DVC desde el nodo de acceso:
+
+```bash
+uv run --no-sync dvc add artifacts/models/tfidf
+uv run --no-sync dvc push artifacts/models/tfidf.dvc
+```
+
+Después publicar los cuatro runs pequeños en MLflow:
+
+```bash
+set -a
+source .env
+set +a
+uv run --no-sync python src/evaluation/publish_run.py \
+  reports/modeling/runs/m4
+```
+
 Verificar acceso a la A100:
 
 ```bash
