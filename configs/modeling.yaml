@@ -79,7 +79,7 @@ tfidf:
 
 bge:
   model: BAAI/bge-large-en-v1.5
-  revision: null
+  revision: d4aa6901d3a41ba39fb536a557fa166f842b0e09
   max_sequence_length: 512
   batch_size: 64
   sample_rows:
