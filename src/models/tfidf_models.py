@@ -214,7 +214,7 @@ def t1_metrics_for_view(
 def evaluate_t1(
     model: SGDClassifier,
     frames: dict[str, pd.DataFrame],
-    matrices: dict[str, csr_matrix],
+    matrices: dict[str, Any],
 ) -> tuple[dict[str, Any], list[dict[str, Any]]]:
     metrics: dict[str, Any] = {}
     all_class_rows: list[dict[str, Any]] = []
@@ -281,7 +281,7 @@ def evaluate_binary(
     model: CalibratedClassifierCV,
     target: str,
     frames: dict[str, pd.DataFrame],
-    matrices: dict[str, csr_matrix],
+    matrices: dict[str, Any],
 ) -> tuple[dict[str, Any], float, float]:
     calibration = frames["calibration"]
     calibration_complete = eligible_mask(calibration, target, "complete")
@@ -343,7 +343,7 @@ def new_classifier(
 def train_models(
     config: dict[str, Any],
     frames: dict[str, pd.DataFrame],
-    matrices: dict[str, csr_matrix],
+    matrices: dict[str, Any],
 ) -> tuple[dict[str, Any], dict[str, Any], list[dict[str, Any]]]:
     results: dict[str, Any] = {}
     models: dict[str, Any] = {}

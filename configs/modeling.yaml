@@ -12,6 +12,8 @@ paths:
   tfidf_report: reports/modeling/tfidf_results.json
   tfidf_t1_classes: reports/modeling/tfidf_t1_per_class.csv
   tfidf_models: artifacts/models/tfidf
+  bge_report: reports/modeling/bge_sample_results.json
+  bge_artifacts: artifacts/models/bge_sample
   offline_runs: reports/modeling/runs
 
 evaluation:
@@ -74,6 +76,16 @@ tfidf:
     T3: balanced
     T4: balanced
   calibration_method: sigmoid
+
+bge:
+  model: BAAI/bge-large-en-v1.5
+  revision: null
+  max_sequence_length: 512
+  batch_size: 64
+  sample_rows:
+    fit: 120000
+    calibration: 40000
+    validation: 80000
 
 features:
   initial:

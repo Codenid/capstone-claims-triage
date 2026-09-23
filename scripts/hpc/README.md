@@ -144,6 +144,21 @@ uv run --no-sync python src/evaluation/publish_run.py \
   reports/modeling/runs/m4
 ```
 
+Preparar BGE en el nodo de acceso:
+
+```bash
+uv sync --group gpu
+uv run --no-sync python -c \
+  "from huggingface_hub import snapshot_download; print(snapshot_download('BAAI/bge-large-en-v1.5'))"
+```
+
+El segundo comando descarga el modelo antes de entrar a SLURM, porque los nodos
+de cómputo no tienen internet. Después se ejecuta la comparación M5:
+
+```bash
+sbatch scripts/hpc/m5_bge.slurm
+```
+
 Verificar acceso a la A100:
 
 ```bash
