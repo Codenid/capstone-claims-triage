@@ -68,7 +68,7 @@ conjunto completo de reclamos.
   reproducible local y en HPC.
 - [x] **M2 — Congelar la evaluación:** definir el corte interno de calibración,
   las métricas y las vistas completa y sin texto compartido.
-- [ ] **M3 — Crear referencias simples:** comparar contra frecuencias globales y
+- [x] **M3 — Crear referencias simples:** comparar contra frecuencias globales y
   reglas basadas en producto.
 - [ ] **M4 — Entrenar TF-IDF:** evaluar modelos lineales para T1–T4.
 - [ ] **M5 — Evaluar BGE:** generar una muestra en la A100 y compararla con
@@ -156,6 +156,42 @@ El detalle reproducible está en
 `reports/modeling/evaluation_contract.json`. Seguimos sin tener un test final
 intacto: 2025-H1 es validación temporal del prototipo, mientras 2025-H2 y 2026
 no se usarán para elegir modelos.
+
+## Resultados de las referencias M3
+
+M3 compara dos referencias que no leen la narrativa:
+
+- **Frecuencia global:** siempre usa el resultado más común del ajuste.
+- **Frecuencia por producto:** usa el resultado histórico más común dentro de
+  cada producto.
+
+La segunda se parece a una regla sencilla de call center, pero no representa
+las reglas privadas de un banco. Fue aprendida únicamente de las frecuencias
+CFPB disponibles.
+
+En la validación sin texto compartido, la regla por producto obtuvo:
+
+| Objetivo | Resultado principal |
+| --- | ---: |
+| T1 — Macro-F1 | 0.0684 |
+| T1 — motivo correcto en top-3 | 90.98% |
+| T2 — precisión promedio | 0.4509 |
+| T3 — precisión promedio | 0.1272 |
+| T4 — precisión promedio | 0.1208 |
+
+Para T1, el producto reduce mucho las opciones, pero elegir solo el motivo más
+frecuente produce Macro-F1 bajo. Esto justifica probar la narrativa para ordenar
+mejor los motivos dentro de cada producto.
+
+Para T3, la regla por producto alcanza 11.82% de precisión y 80.49% de
+cobertura en el umbral fijado. Para T4 alcanza 18.35% de precisión y 41.38% de
+cobertura. Son referencias útiles, pero aún generan falsos positivos o pierden
+casos. Los modelos de texto deberán mejorar este equilibrio y no solo superar
+la frecuencia global.
+
+Los resultados completos están en `reports/modeling/baseline_results.json` y
+el detalle de T1 por motivo está en
+`reports/modeling/baseline_t1_per_class.csv`.
 
 ## Orden de comparación
 

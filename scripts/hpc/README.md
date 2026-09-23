@@ -105,6 +105,22 @@ uv run --no-sync python src/evaluation/publish_run.py \
   reports/modeling/runs/m2-evaluation-contract/run.json
 ```
 
+Ejecutar las referencias simples de M3:
+
+```bash
+sbatch scripts/hpc/m3_baselines.slurm
+```
+
+Publicar sus ocho runs desde el nodo de acceso:
+
+```bash
+set -a
+source .env
+set +a
+uv run --no-sync python src/evaluation/publish_run.py \
+  reports/modeling/runs/m3
+```
+
 Verificar acceso a la A100:
 
 ```bash

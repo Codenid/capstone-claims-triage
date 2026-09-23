@@ -62,14 +62,25 @@ def publish(record_path: Path) -> str:
     return run.info.run_id
 
 
+def find_records(path: Path) -> list[Path]:
+    if path.is_file():
+        return [path]
+    if path.is_dir():
+        records = sorted(path.rglob("run.json"))
+        if records:
+            return records
+    raise FileNotFoundError(f"No run records found at: {path}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("record", type=Path)
     args = parser.parse_args()
 
-    run_id = publish(args.record)
-    print(f"Run ID: {run_id}")
-    print(f"Record: {args.record}")
+    for record_path in find_records(args.record):
+        run_id = publish(record_path)
+        print(f"Run ID: {run_id}")
+        print(f"Record: {record_path}")
 
 
 if __name__ == "__main__":

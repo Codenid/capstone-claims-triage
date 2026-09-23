@@ -16,7 +16,7 @@ from src.evaluation.freeze_evaluation import (
     parse_splits,
     true_count as array_true_count,
 )
-from src.evaluation.publish_run import load_run_record
+from src.evaluation.publish_run import find_records, load_run_record
 from src.evaluation.verify_modeling_input import (
     file_md5,
     prepared_data_hash,
@@ -142,6 +142,18 @@ stages:
 
     def test_counts_empty_boolean_array_as_zero(self):
         self.assertEqual(array_true_count(pa.array([], type=pa.bool_())), 0)
+
+    def test_finds_nested_offline_runs(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            first = root / "a" / "run.json"
+            second = root / "b" / "run.json"
+            first.parent.mkdir()
+            second.parent.mkdir()
+            first.write_text("{}", encoding="utf-8")
+            second.write_text("{}", encoding="utf-8")
+
+            self.assertEqual(find_records(root), [first, second])
 
     def test_rejects_incomplete_offline_run(self):
         with tempfile.TemporaryDirectory() as directory:

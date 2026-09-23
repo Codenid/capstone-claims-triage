@@ -1,0 +1,693 @@
+model,split,view,class,support,precision,recall,f1
+global_frequency,calibration,complete,Advertising,8,0.0,0.0,0.0
+global_frequency,calibration,complete,"Advertising and marketing, including promotional offers",423,0.0,0.0,0.0
+global_frequency,calibration,complete,Applying for a mortgage or refinancing an existing mortgage,313,0.0,0.0,0.0
+global_frequency,calibration,complete,Attempts to collect debt not owed,8648,0.0,0.0,0.0
+global_frequency,calibration,complete,Can't contact lender or servicer,33,0.0,0.0,0.0
+global_frequency,calibration,complete,Can't stop withdrawals from your bank account,30,0.0,0.0,0.0
+global_frequency,calibration,complete,Charged fees or interest you didn't expect,356,0.0,0.0,0.0
+global_frequency,calibration,complete,Charged upfront or unexpected fees,116,0.0,0.0,0.0
+global_frequency,calibration,complete,Closing an account,1205,0.0,0.0,0.0
+global_frequency,calibration,complete,Closing on a mortgage,233,0.0,0.0,0.0
+global_frequency,calibration,complete,Closing your account,668,0.0,0.0,0.0
+global_frequency,calibration,complete,Communication tactics,937,0.0,0.0,0.0
+global_frequency,calibration,complete,Confusing or misleading advertising or marketing,103,0.0,0.0,0.0
+global_frequency,calibration,complete,Confusing or missing disclosures,130,0.0,0.0,0.0
+global_frequency,calibration,complete,Credit limit changed,6,0.0,0.0,0.0
+global_frequency,calibration,complete,Credit monitoring or identity theft protection services,803,0.0,0.0,0.0
+global_frequency,calibration,complete,Dealing with your lender or servicer,1395,0.0,0.0,0.0
+global_frequency,calibration,complete,Didn't provide services promised,195,0.0,0.0,0.0
+global_frequency,calibration,complete,Electronic communications,345,0.0,0.0,0.0
+global_frequency,calibration,complete,False statements or representation,2811,0.0,0.0,0.0
+global_frequency,calibration,complete,Fees or interest,1034,0.0,0.0,0.0
+global_frequency,calibration,complete,Fraud or scam,1012,0.0,0.0,0.0
+global_frequency,calibration,complete,Getting a credit card,1084,0.0,0.0,0.0
+global_frequency,calibration,complete,Getting a line of credit,53,0.0,0.0,0.0
+global_frequency,calibration,complete,Getting a loan,38,0.0,0.0,0.0
+global_frequency,calibration,complete,Getting a loan or lease,254,0.0,0.0,0.0
+global_frequency,calibration,complete,Getting the loan,112,0.0,0.0,0.0
+global_frequency,calibration,complete,Identity theft protection or other monitoring services,80,0.0,0.0,0.0
+global_frequency,calibration,complete,Improper use of your report,48278,0.0,0.0,0.0
+global_frequency,calibration,complete,Incorrect exchange rate,5,0.0,0.0,0.0
+global_frequency,calibration,complete,Incorrect information on your report,98405,0.419458653026428,1.0,0.5910121469647603
+global_frequency,calibration,complete,Issue where my lender is my school,9,0.0,0.0,0.0
+global_frequency,calibration,complete,Issue with income share agreement,12,0.0,0.0,0.0
+global_frequency,calibration,complete,Issues with repayment,13,0.0,0.0,0.0
+global_frequency,calibration,complete,Loan payment wasn't credited to your account,14,0.0,0.0,0.0
+global_frequency,calibration,complete,Lost or stolen money order,26,0.0,0.0,0.0
+global_frequency,calibration,complete,Lost or stolen refund,1,0.0,0.0,0.0
+global_frequency,calibration,complete,Managing an account,4491,0.0,0.0,0.0
+global_frequency,calibration,complete,Managing the loan or lease,607,0.0,0.0,0.0
+global_frequency,calibration,complete,"Managing, opening, or closing your mobile wallet account",108,0.0,0.0,0.0
+global_frequency,calibration,complete,Money was not available when promised,285,0.0,0.0,0.0
+global_frequency,calibration,complete,Money was taken from your bank account on the wrong day or for the wrong amount,20,0.0,0.0,0.0
+global_frequency,calibration,complete,Opening an account,641,0.0,0.0,0.0
+global_frequency,calibration,complete,"Other features, terms, or problems",1028,0.0,0.0,0.0
+global_frequency,calibration,complete,Other service problem,125,0.0,0.0,0.0
+global_frequency,calibration,complete,Other transaction problem,551,0.0,0.0,0.0
+global_frequency,calibration,complete,"Overdraft, savings, or rewards features",4,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem adding money,17,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem caused by your funds being low,898,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem getting a card or closing an account,115,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem when making payments,742,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem with a company's investigation into an existing issue,151,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem with a company's investigation into an existing problem,38765,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem with a lender or other company charging your account,990,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem with a purchase or transfer,180,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem with a purchase shown on your statement,2176,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem with additional add-on products or services,109,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem with cash advance,8,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem with customer service,130,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem with fraud alerts or security freezes,723,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem with overdraft,4,0.0,0.0,0.0
+global_frequency,calibration,complete,Problem with the payoff process at the end of the loan,122,0.0,0.0,0.0
+global_frequency,calibration,complete,Problems at the end of the loan or lease,332,0.0,0.0,0.0
+global_frequency,calibration,complete,Problems receiving the advance,6,0.0,0.0,0.0
+global_frequency,calibration,complete,Property was sold,1,0.0,0.0,0.0
+global_frequency,calibration,complete,Received a loan you didn't apply for,35,0.0,0.0,0.0
+global_frequency,calibration,complete,Repossession,513,0.0,0.0,0.0
+global_frequency,calibration,complete,Struggling to pay mortgage,604,0.0,0.0,0.0
+global_frequency,calibration,complete,Struggling to pay your bill,124,0.0,0.0,0.0
+global_frequency,calibration,complete,Struggling to pay your loan,238,0.0,0.0,0.0
+global_frequency,calibration,complete,Struggling to repay your loan,374,0.0,0.0,0.0
+global_frequency,calibration,complete,Threatened to contact someone or share information improperly,224,0.0,0.0,0.0
+global_frequency,calibration,complete,Took or threatened to take negative or legal action,1695,0.0,0.0,0.0
+global_frequency,calibration,complete,Trouble accessing funds in your mobile or digital wallet,268,0.0,0.0,0.0
+global_frequency,calibration,complete,Trouble during payment process,1774,0.0,0.0,0.0
+global_frequency,calibration,complete,Trouble using the card,530,0.0,0.0,0.0
+global_frequency,calibration,complete,Trouble using your card,372,0.0,0.0,0.0
+global_frequency,calibration,complete,Unable to get your credit report or credit score,1029,0.0,0.0,0.0
+global_frequency,calibration,complete,Unauthorized transactions or other transaction problem,286,0.0,0.0,0.0
+global_frequency,calibration,complete,Unauthorized withdrawals or charges,55,0.0,0.0,0.0
+global_frequency,calibration,complete,Unexpected fees,7,0.0,0.0,0.0
+global_frequency,calibration,complete,Unexpected or other fees,172,0.0,0.0,0.0
+global_frequency,calibration,complete,Vehicle was damaged or destroyed the vehicle,6,0.0,0.0,0.0
+global_frequency,calibration,complete,Vehicle was repossessed or sold the vehicle,8,0.0,0.0,0.0
+global_frequency,calibration,complete,"Was approved for a loan, but didn't receive the money",19,0.0,0.0,0.0
+global_frequency,calibration,complete,Written notification about debt,3717,0.0,0.0,0.0
+global_frequency,calibration,complete,Wrong amount charged or received,33,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Advertising,8,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,"Advertising and marketing, including promotional offers",422,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Applying for a mortgage or refinancing an existing mortgage,313,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Attempts to collect debt not owed,7157,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Can't contact lender or servicer,33,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Can't stop withdrawals from your bank account,30,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Charged fees or interest you didn't expect,356,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Charged upfront or unexpected fees,116,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Closing an account,1205,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Closing on a mortgage,233,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Closing your account,668,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Communication tactics,933,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Confusing or misleading advertising or marketing,103,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Confusing or missing disclosures,130,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Credit limit changed,6,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Credit monitoring or identity theft protection services,729,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Dealing with your lender or servicer,1395,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Didn't provide services promised,195,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Electronic communications,344,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,False statements or representation,2744,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Fees or interest,1034,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Fraud or scam,1012,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Getting a credit card,963,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Getting a line of credit,53,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Getting a loan,38,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Getting a loan or lease,253,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Getting the loan,112,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Identity theft protection or other monitoring services,79,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Improper use of your report,35937,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Incorrect exchange rate,5,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Incorrect information on your report,63445,0.37770951283837284,1.0,0.5483151699522077
+global_frequency,calibration,no_shared_text,Issue where my lender is my school,9,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Issue with income share agreement,12,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Issues with repayment,13,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Loan payment wasn't credited to your account,14,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Lost or stolen money order,26,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Lost or stolen refund,1,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Managing an account,4491,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Managing the loan or lease,605,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,"Managing, opening, or closing your mobile wallet account",108,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Money was not available when promised,284,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Money was taken from your bank account on the wrong day or for the wrong amount,20,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Opening an account,641,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,"Other features, terms, or problems",1028,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Other service problem,125,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Other transaction problem,551,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,"Overdraft, savings, or rewards features",4,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem adding money,17,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem caused by your funds being low,898,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem getting a card or closing an account,115,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem when making payments,735,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem with a company's investigation into an existing issue,149,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem with a company's investigation into an existing problem,22966,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem with a lender or other company charging your account,990,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem with a purchase or transfer,179,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem with a purchase shown on your statement,2176,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem with additional add-on products or services,109,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem with cash advance,8,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem with customer service,130,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem with fraud alerts or security freezes,717,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem with overdraft,4,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problem with the payoff process at the end of the loan,122,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problems at the end of the loan or lease,332,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Problems receiving the advance,6,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Property was sold,1,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Received a loan you didn't apply for,35,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Repossession,511,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Struggling to pay mortgage,603,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Struggling to pay your bill,124,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Struggling to pay your loan,238,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Struggling to repay your loan,374,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Threatened to contact someone or share information improperly,223,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Took or threatened to take negative or legal action,1576,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Trouble accessing funds in your mobile or digital wallet,268,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Trouble during payment process,1774,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Trouble using the card,527,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Trouble using your card,372,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Unable to get your credit report or credit score,966,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Unauthorized transactions or other transaction problem,286,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Unauthorized withdrawals or charges,55,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Unexpected fees,7,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Unexpected or other fees,171,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Vehicle was damaged or destroyed the vehicle,6,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Vehicle was repossessed or sold the vehicle,8,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,"Was approved for a loan, but didn't receive the money",19,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Written notification about debt,2160,0.0,0.0,0.0
+global_frequency,calibration,no_shared_text,Wrong amount charged or received,33,0.0,0.0,0.0
+global_frequency,validation,complete,Advertising,28,0.0,0.0,0.0
+global_frequency,validation,complete,"Advertising and marketing, including promotional offers",953,0.0,0.0,0.0
+global_frequency,validation,complete,Applying for a mortgage or refinancing an existing mortgage,707,0.0,0.0,0.0
+global_frequency,validation,complete,Attempts to collect debt not owed,23076,0.0,0.0,0.0
+global_frequency,validation,complete,Can't contact lender or servicer,55,0.0,0.0,0.0
+global_frequency,validation,complete,Can't stop withdrawals from your bank account,65,0.0,0.0,0.0
+global_frequency,validation,complete,Charged fees or interest you didn't expect,968,0.0,0.0,0.0
+global_frequency,validation,complete,Charged upfront or unexpected fees,234,0.0,0.0,0.0
+global_frequency,validation,complete,Closing an account,3065,0.0,0.0,0.0
+global_frequency,validation,complete,Closing on a mortgage,564,0.0,0.0,0.0
+global_frequency,validation,complete,Closing your account,1783,0.0,0.0,0.0
+global_frequency,validation,complete,Communication tactics,2625,0.0,0.0,0.0
+global_frequency,validation,complete,Confusing or misleading advertising or marketing,360,0.0,0.0,0.0
+global_frequency,validation,complete,Confusing or missing disclosures,1114,0.0,0.0,0.0
+global_frequency,validation,complete,Credit limit changed,7,0.0,0.0,0.0
+global_frequency,validation,complete,Credit monitoring or identity theft protection services,2103,0.0,0.0,0.0
+global_frequency,validation,complete,Dealing with your lender or servicer,4130,0.0,0.0,0.0
+global_frequency,validation,complete,Didn't provide services promised,421,0.0,0.0,0.0
+global_frequency,validation,complete,Electronic communications,1110,0.0,0.0,0.0
+global_frequency,validation,complete,False statements or representation,6869,0.0,0.0,0.0
+global_frequency,validation,complete,Fees or interest,2555,0.0,0.0,0.0
+global_frequency,validation,complete,Fraud or scam,3886,0.0,0.0,0.0
+global_frequency,validation,complete,Getting a credit card,2383,0.0,0.0,0.0
+global_frequency,validation,complete,Getting a line of credit,105,0.0,0.0,0.0
+global_frequency,validation,complete,Getting a loan,97,0.0,0.0,0.0
+global_frequency,validation,complete,Getting a loan or lease,741,0.0,0.0,0.0
+global_frequency,validation,complete,Getting the loan,257,0.0,0.0,0.0
+global_frequency,validation,complete,Identity theft protection or other monitoring services,186,0.0,0.0,0.0
+global_frequency,validation,complete,Improper use of your report,141081,0.0,0.0,0.0
+global_frequency,validation,complete,Incorrect exchange rate,7,0.0,0.0,0.0
+global_frequency,validation,complete,Incorrect information on your report,268512,0.386245943519989,1.0,0.5572545699058624
+global_frequency,validation,complete,Issue where my lender is my school,25,0.0,0.0,0.0
+global_frequency,validation,complete,Issue with income share agreement,29,0.0,0.0,0.0
+global_frequency,validation,complete,Issues with repayment,34,0.0,0.0,0.0
+global_frequency,validation,complete,Loan payment wasn't credited to your account,51,0.0,0.0,0.0
+global_frequency,validation,complete,Lost or stolen money order,72,0.0,0.0,0.0
+global_frequency,validation,complete,Managing an account,14360,0.0,0.0,0.0
+global_frequency,validation,complete,Managing the loan or lease,1604,0.0,0.0,0.0
+global_frequency,validation,complete,"Managing, opening, or closing your mobile wallet account",435,0.0,0.0,0.0
+global_frequency,validation,complete,Money was not available when promised,783,0.0,0.0,0.0
+global_frequency,validation,complete,Money was taken from your bank account on the wrong day or for the wrong amount,39,0.0,0.0,0.0
+global_frequency,validation,complete,Opening an account,1499,0.0,0.0,0.0
+global_frequency,validation,complete,"Other features, terms, or problems",2404,0.0,0.0,0.0
+global_frequency,validation,complete,Other service problem,1215,0.0,0.0,0.0
+global_frequency,validation,complete,Other transaction problem,42556,0.0,0.0,0.0
+global_frequency,validation,complete,"Overdraft, savings, or rewards features",25,0.0,0.0,0.0
+global_frequency,validation,complete,Problem adding money,74,0.0,0.0,0.0
+global_frequency,validation,complete,Problem caused by your funds being low,7900,0.0,0.0,0.0
+global_frequency,validation,complete,Problem getting a card or closing an account,272,0.0,0.0,0.0
+global_frequency,validation,complete,Problem when making payments,1707,0.0,0.0,0.0
+global_frequency,validation,complete,Problem with a company's investigation into an existing issue,622,0.0,0.0,0.0
+global_frequency,validation,complete,Problem with a company's investigation into an existing problem,102796,0.0,0.0,0.0
+global_frequency,validation,complete,Problem with a lender or other company charging your account,2794,0.0,0.0,0.0
+global_frequency,validation,complete,Problem with a purchase or transfer,540,0.0,0.0,0.0
+global_frequency,validation,complete,Problem with a purchase shown on your statement,5116,0.0,0.0,0.0
+global_frequency,validation,complete,Problem with additional add-on products or services,233,0.0,0.0,0.0
+global_frequency,validation,complete,Problem with cash advance,14,0.0,0.0,0.0
+global_frequency,validation,complete,Problem with customer service,348,0.0,0.0,0.0
+global_frequency,validation,complete,Problem with fraud alerts or security freezes,3068,0.0,0.0,0.0
+global_frequency,validation,complete,Problem with overdraft,10,0.0,0.0,0.0
+global_frequency,validation,complete,Problem with the payoff process at the end of the loan,287,0.0,0.0,0.0
+global_frequency,validation,complete,Problems at the end of the loan or lease,719,0.0,0.0,0.0
+global_frequency,validation,complete,Problems receiving the advance,22,0.0,0.0,0.0
+global_frequency,validation,complete,Property was sold,1,0.0,0.0,0.0
+global_frequency,validation,complete,Received a loan you didn't apply for,91,0.0,0.0,0.0
+global_frequency,validation,complete,Repossession,1539,0.0,0.0,0.0
+global_frequency,validation,complete,Struggling to pay mortgage,1462,0.0,0.0,0.0
+global_frequency,validation,complete,Struggling to pay your bill,268,0.0,0.0,0.0
+global_frequency,validation,complete,Struggling to pay your loan,630,0.0,0.0,0.0
+global_frequency,validation,complete,Struggling to repay your loan,1516,0.0,0.0,0.0
+global_frequency,validation,complete,Threatened to contact someone or share information improperly,665,0.0,0.0,0.0
+global_frequency,validation,complete,Took or threatened to take negative or legal action,3816,0.0,0.0,0.0
+global_frequency,validation,complete,Trouble accessing funds in your mobile or digital wallet,868,0.0,0.0,0.0
+global_frequency,validation,complete,Trouble during payment process,3767,0.0,0.0,0.0
+global_frequency,validation,complete,Trouble using the card,799,0.0,0.0,0.0
+global_frequency,validation,complete,Trouble using your card,898,0.0,0.0,0.0
+global_frequency,validation,complete,Unable to get your credit report or credit score,2524,0.0,0.0,0.0
+global_frequency,validation,complete,Unauthorized transactions or other transaction problem,2039,0.0,0.0,0.0
+global_frequency,validation,complete,Unauthorized withdrawals or charges,146,0.0,0.0,0.0
+global_frequency,validation,complete,Unexpected fees,23,0.0,0.0,0.0
+global_frequency,validation,complete,Unexpected or other fees,493,0.0,0.0,0.0
+global_frequency,validation,complete,Vehicle was damaged or destroyed the vehicle,15,0.0,0.0,0.0
+global_frequency,validation,complete,Vehicle was repossessed or sold the vehicle,47,0.0,0.0,0.0
+global_frequency,validation,complete,"Was approved for a loan, but didn't receive the money",39,0.0,0.0,0.0
+global_frequency,validation,complete,Written notification about debt,11646,0.0,0.0,0.0
+global_frequency,validation,complete,Wrong amount charged or received,192,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Advertising,28,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,"Advertising and marketing, including promotional offers",951,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Applying for a mortgage or refinancing an existing mortgage,707,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Attempts to collect debt not owed,18035,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Can't contact lender or servicer,55,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Can't stop withdrawals from your bank account,65,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Charged fees or interest you didn't expect,968,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Charged upfront or unexpected fees,234,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Closing an account,3064,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Closing on a mortgage,564,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Closing your account,1783,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Communication tactics,2615,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Confusing or misleading advertising or marketing,360,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Confusing or missing disclosures,1114,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Credit limit changed,7,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Credit monitoring or identity theft protection services,1971,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Dealing with your lender or servicer,4129,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Didn't provide services promised,421,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Electronic communications,1110,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,False statements or representation,6716,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Fees or interest,2555,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Fraud or scam,3886,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Getting a credit card,2154,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Getting a line of credit,105,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Getting a loan,97,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Getting a loan or lease,740,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Getting the loan,257,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Identity theft protection or other monitoring services,185,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Improper use of your report,113234,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Incorrect exchange rate,7,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Incorrect information on your report,202051,0.3577307887743377,1.0,0.5269539318575392
+global_frequency,validation,no_shared_text,Issue where my lender is my school,25,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Issue with income share agreement,29,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Issues with repayment,34,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Loan payment wasn't credited to your account,51,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Lost or stolen money order,72,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Managing an account,14360,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Managing the loan or lease,1603,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,"Managing, opening, or closing your mobile wallet account",435,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Money was not available when promised,783,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Money was taken from your bank account on the wrong day or for the wrong amount,39,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Opening an account,1494,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,"Other features, terms, or problems",2404,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Other service problem,1215,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Other transaction problem,42553,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,"Overdraft, savings, or rewards features",25,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem adding money,74,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem caused by your funds being low,7898,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem getting a card or closing an account,272,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem when making payments,1703,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem with a company's investigation into an existing issue,622,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem with a company's investigation into an existing problem,76093,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem with a lender or other company charging your account,2793,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem with a purchase or transfer,540,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem with a purchase shown on your statement,5114,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem with additional add-on products or services,232,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem with cash advance,14,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem with customer service,348,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem with fraud alerts or security freezes,2430,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem with overdraft,10,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problem with the payoff process at the end of the loan,287,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problems at the end of the loan or lease,719,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Problems receiving the advance,22,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Property was sold,1,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Received a loan you didn't apply for,91,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Repossession,1536,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Struggling to pay mortgage,1462,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Struggling to pay your bill,268,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Struggling to pay your loan,629,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Struggling to repay your loan,1516,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Threatened to contact someone or share information improperly,661,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Took or threatened to take negative or legal action,3789,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Trouble accessing funds in your mobile or digital wallet,868,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Trouble during payment process,3767,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Trouble using the card,799,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Trouble using your card,898,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Unable to get your credit report or credit score,2199,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Unauthorized transactions or other transaction problem,2039,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Unauthorized withdrawals or charges,146,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Unexpected fees,22,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Unexpected or other fees,493,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Vehicle was damaged or destroyed the vehicle,15,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Vehicle was repossessed or sold the vehicle,47,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,"Was approved for a loan, but didn't receive the money",39,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Written notification about debt,8875,0.0,0.0,0.0
+global_frequency,validation,no_shared_text,Wrong amount charged or received,192,0.0,0.0,0.0
+product_frequency,calibration,complete,Advertising,8,0.0,0.0,0.0
+product_frequency,calibration,complete,"Advertising and marketing, including promotional offers",423,0.0,0.0,0.0
+product_frequency,calibration,complete,Applying for a mortgage or refinancing an existing mortgage,313,0.0,0.0,0.0
+product_frequency,calibration,complete,Attempts to collect debt not owed,8648,0.47058823529411764,1.0,0.64
+product_frequency,calibration,complete,Can't contact lender or servicer,33,0.0,0.0,0.0
+product_frequency,calibration,complete,Can't stop withdrawals from your bank account,30,0.0,0.0,0.0
+product_frequency,calibration,complete,Charged fees or interest you didn't expect,356,0.25176803394625175,1.0,0.40225988700564974
+product_frequency,calibration,complete,Charged upfront or unexpected fees,116,0.0,0.0,0.0
+product_frequency,calibration,complete,Closing an account,1205,0.0,0.0,0.0
+product_frequency,calibration,complete,Closing on a mortgage,233,0.0,0.0,0.0
+product_frequency,calibration,complete,Closing your account,668,0.0,0.0,0.0
+product_frequency,calibration,complete,Communication tactics,937,0.0,0.0,0.0
+product_frequency,calibration,complete,Confusing or misleading advertising or marketing,103,0.0,0.0,0.0
+product_frequency,calibration,complete,Confusing or missing disclosures,130,0.0,0.0,0.0
+product_frequency,calibration,complete,Credit limit changed,6,0.0,0.0,0.0
+product_frequency,calibration,complete,Credit monitoring or identity theft protection services,803,0.0,0.0,0.0
+product_frequency,calibration,complete,Dealing with your lender or servicer,1395,0.7142857142857143,1.0,0.8333333333333334
+product_frequency,calibration,complete,Didn't provide services promised,195,0.3577981651376147,1.0,0.527027027027027
+product_frequency,calibration,complete,Electronic communications,345,0.0,0.0,0.0
+product_frequency,calibration,complete,False statements or representation,2811,0.0,0.0,0.0
+product_frequency,calibration,complete,Fees or interest,1034,0.0,0.0,0.0
+product_frequency,calibration,complete,Fraud or scam,1012,0.3436332767402377,1.0,0.5114986100581248
+product_frequency,calibration,complete,Getting a credit card,1084,0.0,0.0,0.0
+product_frequency,calibration,complete,Getting a line of credit,53,0.0,0.0,0.0
+product_frequency,calibration,complete,Getting a loan,38,0.0,0.0,0.0
+product_frequency,calibration,complete,Getting a loan or lease,254,0.0,0.0,0.0
+product_frequency,calibration,complete,Getting the loan,112,0.0,0.0,0.0
+product_frequency,calibration,complete,Identity theft protection or other monitoring services,80,0.0,0.0,0.0
+product_frequency,calibration,complete,Improper use of your report,48278,0.0,0.0,0.0
+product_frequency,calibration,complete,Incorrect exchange rate,5,0.0,0.0,0.0
+product_frequency,calibration,complete,Incorrect information on your report,98405,0.5230877951891727,0.9928967024033332,0.6851945356110971
+product_frequency,calibration,complete,Issue where my lender is my school,9,0.0,0.0,0.0
+product_frequency,calibration,complete,Issue with income share agreement,12,0.0,0.0,0.0
+product_frequency,calibration,complete,Issues with repayment,13,0.0,0.0,0.0
+product_frequency,calibration,complete,Loan payment wasn't credited to your account,14,0.0,0.0,0.0
+product_frequency,calibration,complete,Lost or stolen money order,26,0.0,0.0,0.0
+product_frequency,calibration,complete,Lost or stolen refund,1,0.0,0.0,0.0
+product_frequency,calibration,complete,Managing an account,4491,0.5431128310557504,1.0,0.7039184952978056
+product_frequency,calibration,complete,Managing the loan or lease,607,0.3012406947890819,1.0,0.4630053394355454
+product_frequency,calibration,complete,"Managing, opening, or closing your mobile wallet account",108,0.0,0.0,0.0
+product_frequency,calibration,complete,Money was not available when promised,285,0.0,0.0,0.0
+product_frequency,calibration,complete,Money was taken from your bank account on the wrong day or for the wrong amount,20,0.0,0.0,0.0
+product_frequency,calibration,complete,Opening an account,641,0.0,0.0,0.0
+product_frequency,calibration,complete,"Other features, terms, or problems",1028,0.0,0.0,0.0
+product_frequency,calibration,complete,Other service problem,125,0.0,0.0,0.0
+product_frequency,calibration,complete,Other transaction problem,551,0.0,0.0,0.0
+product_frequency,calibration,complete,"Overdraft, savings, or rewards features",4,0.0,0.0,0.0
+product_frequency,calibration,complete,Problem adding money,17,0.0,0.0,0.0
+product_frequency,calibration,complete,Problem caused by your funds being low,898,0.0,0.0,0.0
+product_frequency,calibration,complete,Problem getting a card or closing an account,115,0.0,0.0,0.0
+product_frequency,calibration,complete,Problem when making payments,742,0.0,0.0,0.0
+product_frequency,calibration,complete,Problem with a company's investigation into an existing issue,151,0.0,0.0,0.0
+product_frequency,calibration,complete,Problem with a company's investigation into an existing problem,38765,0.0,0.0,0.0
+product_frequency,calibration,complete,Problem with a lender or other company charging your account,990,0.0,0.0,0.0
+product_frequency,calibration,complete,Problem with a purchase or transfer,180,0.0,0.0,0.0
+product_frequency,calibration,complete,Problem with a purchase shown on your statement,2176,0.26232670283303194,1.0,0.4156241046700411
+product_frequency,calibration,complete,Problem with additional add-on products or services,109,0.0,0.0,0.0
+product_frequency,calibration,complete,Problem with cash advance,8,0.0,0.0,0.0
+product_frequency,calibration,complete,Problem with customer service,130,0.0,0.0,0.0
+product_frequency,calibration,complete,Problem with fraud alerts or security freezes,723,0.0,0.0,0.0
+product_frequency,calibration,complete,Problem with overdraft,4,0.0,0.0,0.0
+product_frequency,calibration,complete,Problem with the payoff process at the end of the loan,122,0.0,0.0,0.0
+product_frequency,calibration,complete,Problems at the end of the loan or lease,332,0.0,0.0,0.0
+product_frequency,calibration,complete,Problems receiving the advance,6,0.0,0.0,0.0
+product_frequency,calibration,complete,Property was sold,1,0.0,0.0,0.0
+product_frequency,calibration,complete,Received a loan you didn't apply for,35,0.0,0.0,0.0
+product_frequency,calibration,complete,Repossession,513,0.0,0.0,0.0
+product_frequency,calibration,complete,Struggling to pay mortgage,604,0.0,0.0,0.0
+product_frequency,calibration,complete,Struggling to pay your bill,124,0.0,0.0,0.0
+product_frequency,calibration,complete,Struggling to pay your loan,238,0.0,0.0,0.0
+product_frequency,calibration,complete,Struggling to repay your loan,374,0.0,0.0,0.0
+product_frequency,calibration,complete,Threatened to contact someone or share information improperly,224,0.0,0.0,0.0
+product_frequency,calibration,complete,Took or threatened to take negative or legal action,1695,0.0,0.0,0.0
+product_frequency,calibration,complete,Trouble accessing funds in your mobile or digital wallet,268,0.0,0.0,0.0
+product_frequency,calibration,complete,Trouble during payment process,1774,0.5825944170771757,1.0,0.7362523345092343
+product_frequency,calibration,complete,Trouble using the card,530,0.5549738219895288,1.0,0.7138047138047138
+product_frequency,calibration,complete,Trouble using your card,372,0.0,0.0,0.0
+product_frequency,calibration,complete,Unable to get your credit report or credit score,1029,0.0,0.0,0.0
+product_frequency,calibration,complete,Unauthorized transactions or other transaction problem,286,0.0,0.0,0.0
+product_frequency,calibration,complete,Unauthorized withdrawals or charges,55,0.0,0.0,0.0
+product_frequency,calibration,complete,Unexpected fees,7,0.0,0.0,0.0
+product_frequency,calibration,complete,Unexpected or other fees,172,0.0,0.0,0.0
+product_frequency,calibration,complete,Vehicle was damaged or destroyed the vehicle,6,0.0,0.0,0.0
+product_frequency,calibration,complete,Vehicle was repossessed or sold the vehicle,8,0.0,0.0,0.0
+product_frequency,calibration,complete,"Was approved for a loan, but didn't receive the money",19,0.0,0.0,0.0
+product_frequency,calibration,complete,Written notification about debt,3717,0.0,0.0,0.0
+product_frequency,calibration,complete,Wrong amount charged or received,33,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Advertising,8,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,"Advertising and marketing, including promotional offers",422,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Applying for a mortgage or refinancing an existing mortgage,313,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Attempts to collect debt not owed,7157,0.47281495672854595,1.0,0.6420561586076972
+product_frequency,calibration,no_shared_text,Can't contact lender or servicer,33,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Can't stop withdrawals from your bank account,30,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Charged fees or interest you didn't expect,356,0.25176803394625175,1.0,0.40225988700564974
+product_frequency,calibration,no_shared_text,Charged upfront or unexpected fees,116,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Closing an account,1205,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Closing on a mortgage,233,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Closing your account,668,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Communication tactics,933,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Confusing or misleading advertising or marketing,103,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Confusing or missing disclosures,130,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Credit limit changed,6,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Credit monitoring or identity theft protection services,729,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Dealing with your lender or servicer,1395,0.7142857142857143,1.0,0.8333333333333334
+product_frequency,calibration,no_shared_text,Didn't provide services promised,195,0.3577981651376147,1.0,0.527027027027027
+product_frequency,calibration,no_shared_text,Electronic communications,344,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,False statements or representation,2744,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Fees or interest,1034,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Fraud or scam,1012,0.34375,1.0,0.5116279069767442
+product_frequency,calibration,no_shared_text,Getting a credit card,963,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Getting a line of credit,53,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Getting a loan,38,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Getting a loan or lease,253,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Getting the loan,112,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Identity theft protection or other monitoring services,79,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Improper use of your report,35937,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Incorrect exchange rate,5,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Incorrect information on your report,63445,0.507838106876654,0.9890456300732918,0.6710942847364819
+product_frequency,calibration,no_shared_text,Issue where my lender is my school,9,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Issue with income share agreement,12,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Issues with repayment,13,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Loan payment wasn't credited to your account,14,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Lost or stolen money order,26,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Lost or stolen refund,1,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Managing an account,4491,0.5431128310557504,1.0,0.7039184952978056
+product_frequency,calibration,no_shared_text,Managing the loan or lease,605,0.3012948207171315,1.0,0.4630692690394183
+product_frequency,calibration,no_shared_text,"Managing, opening, or closing your mobile wallet account",108,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Money was not available when promised,284,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Money was taken from your bank account on the wrong day or for the wrong amount,20,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Opening an account,641,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,"Other features, terms, or problems",1028,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Other service problem,125,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Other transaction problem,551,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,"Overdraft, savings, or rewards features",4,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problem adding money,17,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problem caused by your funds being low,898,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problem getting a card or closing an account,115,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problem when making payments,735,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problem with a company's investigation into an existing issue,149,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problem with a company's investigation into an existing problem,22966,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problem with a lender or other company charging your account,990,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problem with a purchase or transfer,179,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problem with a purchase shown on your statement,2176,0.26712496931009083,1.0,0.4216237163340438
+product_frequency,calibration,no_shared_text,Problem with additional add-on products or services,109,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problem with cash advance,8,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problem with customer service,130,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problem with fraud alerts or security freezes,717,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problem with overdraft,4,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problem with the payoff process at the end of the loan,122,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problems at the end of the loan or lease,332,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Problems receiving the advance,6,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Property was sold,1,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Received a loan you didn't apply for,35,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Repossession,511,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Struggling to pay mortgage,603,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Struggling to pay your bill,124,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Struggling to pay your loan,238,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Struggling to repay your loan,374,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Threatened to contact someone or share information improperly,223,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Took or threatened to take negative or legal action,1576,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Trouble accessing funds in your mobile or digital wallet,268,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Trouble during payment process,1774,0.5827858081471747,1.0,0.7364051473640515
+product_frequency,calibration,no_shared_text,Trouble using the card,527,0.5547368421052632,1.0,0.7136086662153013
+product_frequency,calibration,no_shared_text,Trouble using your card,372,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Unable to get your credit report or credit score,966,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Unauthorized transactions or other transaction problem,286,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Unauthorized withdrawals or charges,55,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Unexpected fees,7,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Unexpected or other fees,171,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Vehicle was damaged or destroyed the vehicle,6,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Vehicle was repossessed or sold the vehicle,8,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,"Was approved for a loan, but didn't receive the money",19,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Written notification about debt,2160,0.0,0.0,0.0
+product_frequency,calibration,no_shared_text,Wrong amount charged or received,33,0.0,0.0,0.0
+product_frequency,validation,complete,Advertising,28,0.0,0.0,0.0
+product_frequency,validation,complete,"Advertising and marketing, including promotional offers",953,0.0,0.0,0.0
+product_frequency,validation,complete,Applying for a mortgage or refinancing an existing mortgage,707,0.0,0.0,0.0
+product_frequency,validation,complete,Attempts to collect debt not owed,23076,0.46330837030939426,1.0,0.633234087510119
+product_frequency,validation,complete,Can't contact lender or servicer,55,0.0,0.0,0.0
+product_frequency,validation,complete,Can't stop withdrawals from your bank account,65,0.0,0.0,0.0
+product_frequency,validation,complete,Charged fees or interest you didn't expect,968,0.2802547770700637,1.0,0.43781094527363185
+product_frequency,validation,complete,Charged upfront or unexpected fees,234,0.0,0.0,0.0
+product_frequency,validation,complete,Closing an account,3065,0.0,0.0,0.0
+product_frequency,validation,complete,Closing on a mortgage,564,0.0,0.0,0.0
+product_frequency,validation,complete,Closing your account,1783,0.0,0.0,0.0
+product_frequency,validation,complete,Communication tactics,2625,0.0,0.0,0.0
+product_frequency,validation,complete,Confusing or misleading advertising or marketing,360,0.0,0.0,0.0
+product_frequency,validation,complete,Confusing or missing disclosures,1114,0.0,0.0,0.0
+product_frequency,validation,complete,Credit limit changed,7,0.0,0.0,0.0
+product_frequency,validation,complete,Credit monitoring or identity theft protection services,2103,0.0,0.0,0.0
+product_frequency,validation,complete,Dealing with your lender or servicer,4130,0.5901943967981704,0.9997578692493947,0.7422254179399604
+product_frequency,validation,complete,Didn't provide services promised,421,0.3007142857142857,1.0,0.4623833058758924
+product_frequency,validation,complete,Electronic communications,1110,0.0,0.0,0.0
+product_frequency,validation,complete,False statements or representation,6869,0.0,0.0,0.0
+product_frequency,validation,complete,Fees or interest,2555,0.0,0.0,0.0
+product_frequency,validation,complete,Fraud or scam,3886,0.07253789292914209,1.0,0.13526401893557033
+product_frequency,validation,complete,Getting a credit card,2383,0.0,0.0,0.0
+product_frequency,validation,complete,Getting a line of credit,105,0.0,0.0,0.0
+product_frequency,validation,complete,Getting a loan,97,0.0,0.0,0.0
+product_frequency,validation,complete,Getting a loan or lease,741,0.0,0.0,0.0
+product_frequency,validation,complete,Getting the loan,257,0.0,0.0,0.0
+product_frequency,validation,complete,Identity theft protection or other monitoring services,186,0.0,0.0,0.0
+product_frequency,validation,complete,Improper use of your report,141081,0.0,0.0,0.0
+product_frequency,validation,complete,Incorrect exchange rate,7,0.0,0.0,0.0
+product_frequency,validation,complete,Incorrect information on your report,268512,0.5161691373684364,0.9926632701704207,0.6791770130348314
+product_frequency,validation,complete,Issue where my lender is my school,25,0.0,0.0,0.0
+product_frequency,validation,complete,Issue with income share agreement,29,0.0,0.0,0.0
+product_frequency,validation,complete,Issues with repayment,34,0.0,0.0,0.0
+product_frequency,validation,complete,Loan payment wasn't credited to your account,51,0.0,0.0,0.0
+product_frequency,validation,complete,Lost or stolen money order,72,0.0,0.0,0.0
+product_frequency,validation,complete,Managing an account,14360,0.482932571044224,1.0,0.6513210114525456
+product_frequency,validation,complete,Managing the loan or lease,1604,0.29479875022973717,1.0,0.4553584102200142
+product_frequency,validation,complete,"Managing, opening, or closing your mobile wallet account",435,0.0,0.0,0.0
+product_frequency,validation,complete,Money was not available when promised,783,0.0,0.0,0.0
+product_frequency,validation,complete,Money was taken from your bank account on the wrong day or for the wrong amount,39,0.0,0.0,0.0
+product_frequency,validation,complete,Opening an account,1499,0.0,0.0,0.0
+product_frequency,validation,complete,"Other features, terms, or problems",2404,0.0,0.0,0.0
+product_frequency,validation,complete,Other service problem,1215,0.0,0.0,0.0
+product_frequency,validation,complete,Other transaction problem,42556,0.0,0.0,0.0
+product_frequency,validation,complete,"Overdraft, savings, or rewards features",25,0.0,0.0,0.0
+product_frequency,validation,complete,Problem adding money,74,0.0,0.0,0.0
+product_frequency,validation,complete,Problem caused by your funds being low,7900,0.0,0.0,0.0
+product_frequency,validation,complete,Problem getting a card or closing an account,272,0.0,0.0,0.0
+product_frequency,validation,complete,Problem when making payments,1707,0.0,0.0,0.0
+product_frequency,validation,complete,Problem with a company's investigation into an existing issue,622,0.0,0.0,0.0
+product_frequency,validation,complete,Problem with a company's investigation into an existing problem,102796,0.0,0.0,0.0
+product_frequency,validation,complete,Problem with a lender or other company charging your account,2794,0.0,0.0,0.0
+product_frequency,validation,complete,Problem with a purchase or transfer,540,0.0,0.0,0.0
+product_frequency,validation,complete,Problem with a purchase shown on your statement,5116,0.2599613742630616,0.9998045347928068,0.41263310745401743
+product_frequency,validation,complete,Problem with additional add-on products or services,233,0.0,0.0,0.0
+product_frequency,validation,complete,Problem with cash advance,14,0.0,0.0,0.0
+product_frequency,validation,complete,Problem with customer service,348,0.0,0.0,0.0
+product_frequency,validation,complete,Problem with fraud alerts or security freezes,3068,0.0,0.0,0.0
+product_frequency,validation,complete,Problem with overdraft,10,0.0,0.0,0.0
+product_frequency,validation,complete,Problem with the payoff process at the end of the loan,287,0.0,0.0,0.0
+product_frequency,validation,complete,Problems at the end of the loan or lease,719,0.0,0.0,0.0
+product_frequency,validation,complete,Problems receiving the advance,22,0.0,0.0,0.0
+product_frequency,validation,complete,Property was sold,1,0.0,0.0,0.0
+product_frequency,validation,complete,Received a loan you didn't apply for,91,0.0,0.0,0.0
+product_frequency,validation,complete,Repossession,1539,0.0,0.0,0.0
+product_frequency,validation,complete,Struggling to pay mortgage,1462,0.0,0.0,0.0
+product_frequency,validation,complete,Struggling to pay your bill,268,0.0,0.0,0.0
+product_frequency,validation,complete,Struggling to pay your loan,630,0.0,0.0,0.0
+product_frequency,validation,complete,Struggling to repay your loan,1516,0.0,0.0,0.0
+product_frequency,validation,complete,Threatened to contact someone or share information improperly,665,0.0,0.0,0.0
+product_frequency,validation,complete,Took or threatened to take negative or legal action,3816,0.0,0.0,0.0
+product_frequency,validation,complete,Trouble accessing funds in your mobile or digital wallet,868,0.0,0.0,0.0
+product_frequency,validation,complete,Trouble during payment process,3767,0.5526701877934272,1.0,0.7118964376830766
+product_frequency,validation,complete,Trouble using the card,799,0.42008412197686645,1.0,0.5916327286190299
+product_frequency,validation,complete,Trouble using your card,898,0.0,0.0,0.0
+product_frequency,validation,complete,Unable to get your credit report or credit score,2524,0.0,0.0,0.0
+product_frequency,validation,complete,Unauthorized transactions or other transaction problem,2039,0.0,0.0,0.0
+product_frequency,validation,complete,Unauthorized withdrawals or charges,146,0.0,0.0,0.0
+product_frequency,validation,complete,Unexpected fees,23,0.0,0.0,0.0
+product_frequency,validation,complete,Unexpected or other fees,493,0.0,0.0,0.0
+product_frequency,validation,complete,Vehicle was damaged or destroyed the vehicle,15,0.0,0.0,0.0
+product_frequency,validation,complete,Vehicle was repossessed or sold the vehicle,47,0.0,0.0,0.0
+product_frequency,validation,complete,"Was approved for a loan, but didn't receive the money",39,0.0,0.0,0.0
+product_frequency,validation,complete,Written notification about debt,11646,0.0,0.0,0.0
+product_frequency,validation,complete,Wrong amount charged or received,192,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Advertising,28,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,"Advertising and marketing, including promotional offers",951,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Applying for a mortgage or refinancing an existing mortgage,707,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Attempts to collect debt not owed,18035,0.4314490083969283,1.0,0.6028143592486129
+product_frequency,validation,no_shared_text,Can't contact lender or servicer,55,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Can't stop withdrawals from your bank account,65,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Charged fees or interest you didn't expect,968,0.28041714947856317,1.0,0.43800904977375565
+product_frequency,validation,no_shared_text,Charged upfront or unexpected fees,234,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Closing an account,3064,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Closing on a mortgage,564,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Closing your account,1783,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Communication tactics,2615,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Confusing or misleading advertising or marketing,360,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Confusing or missing disclosures,1114,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Credit limit changed,7,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Credit monitoring or identity theft protection services,1971,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Dealing with your lender or servicer,4129,0.5901358112937812,0.9997578106078954,0.7421790722761596
+product_frequency,validation,no_shared_text,Didn't provide services promised,421,0.3007142857142857,1.0,0.4623833058758924
+product_frequency,validation,no_shared_text,Electronic communications,1110,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,False statements or representation,6716,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Fees or interest,2555,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Fraud or scam,3886,0.072541955235304,1.0,0.13527108171612567
+product_frequency,validation,no_shared_text,Getting a credit card,2154,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Getting a line of credit,105,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Getting a loan,97,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Getting a loan or lease,740,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Getting the loan,257,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Identity theft protection or other monitoring services,185,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Improper use of your report,113234,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Incorrect exchange rate,7,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Incorrect information on your report,202051,0.5073687146588229,0.9902994788444501,0.6709723500681566
+product_frequency,validation,no_shared_text,Issue where my lender is my school,25,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Issue with income share agreement,29,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Issues with repayment,34,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Loan payment wasn't credited to your account,51,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Lost or stolen money order,72,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Managing an account,14360,0.48307878624772926,1.0,0.6514539763190128
+product_frequency,validation,no_shared_text,Managing the loan or lease,1603,0.2949402023919043,1.0,0.45552713839158854
+product_frequency,validation,no_shared_text,"Managing, opening, or closing your mobile wallet account",435,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Money was not available when promised,783,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Money was taken from your bank account on the wrong day or for the wrong amount,39,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Opening an account,1494,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,"Other features, terms, or problems",2404,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Other service problem,1215,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Other transaction problem,42553,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,"Overdraft, savings, or rewards features",25,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problem adding money,74,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problem caused by your funds being low,7898,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problem getting a card or closing an account,272,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problem when making payments,1703,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problem with a company's investigation into an existing issue,622,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problem with a company's investigation into an existing problem,76093,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problem with a lender or other company charging your account,2793,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problem with a purchase or transfer,540,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problem with a purchase shown on your statement,5114,0.26427869953998034,0.9998044583496285,0.41805322758677077
+product_frequency,validation,no_shared_text,Problem with additional add-on products or services,232,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problem with cash advance,14,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problem with customer service,348,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problem with fraud alerts or security freezes,2430,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problem with overdraft,10,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problem with the payoff process at the end of the loan,287,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problems at the end of the loan or lease,719,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Problems receiving the advance,22,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Property was sold,1,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Received a loan you didn't apply for,91,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Repossession,1536,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Struggling to pay mortgage,1462,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Struggling to pay your bill,268,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Struggling to pay your loan,629,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Struggling to repay your loan,1516,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Threatened to contact someone or share information improperly,661,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Took or threatened to take negative or legal action,3789,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Trouble accessing funds in your mobile or digital wallet,868,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Trouble during payment process,3767,0.5526701877934272,1.0,0.7118964376830766
+product_frequency,validation,no_shared_text,Trouble using the card,799,0.42008412197686645,1.0,0.5916327286190299
+product_frequency,validation,no_shared_text,Trouble using your card,898,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Unable to get your credit report or credit score,2199,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Unauthorized transactions or other transaction problem,2039,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Unauthorized withdrawals or charges,146,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Unexpected fees,22,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Unexpected or other fees,493,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Vehicle was damaged or destroyed the vehicle,15,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Vehicle was repossessed or sold the vehicle,47,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,"Was approved for a loan, but didn't receive the money",39,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Written notification about debt,8875,0.0,0.0,0.0
+product_frequency,validation,no_shared_text,Wrong amount charged or received,192,0.0,0.0,0.0

@@ -1,0 +1,479 @@
+{
+  "split_version": "temporal_v1",
+  "dvc_data_hash": "d189a3ae6ea7a8f9041fc8210968eda6",
+  "selection_view": "no_shared_text",
+  "results": {
+    "T1": {
+      "global_frequency": {
+        "global_top_3": [
+          "Incorrect information on your report",
+          "Improper use of your report",
+          "Problem with a company's investigation into an existing problem"
+        ],
+        "product_top_3": null,
+        "metrics": {
+          "calibration": {
+            "complete": {
+              "eligible": 234600,
+              "macro_f1": 0.006793243068560464,
+              "top_3_accuracy": 0.7904859335038363
+            },
+            "no_shared_text": {
+              "eligible": 167973,
+              "macro_f1": 0.006302473217841468,
+              "top_3_accuracy": 0.7283789656671013
+            }
+          },
+          "validation": {
+            "complete": {
+              "eligible": 695184,
+              "macro_f1": 0.006479704301230959,
+              "top_3_accuracy": 0.7370552256668738
+            },
+            "no_shared_text": {
+              "eligible": 564813,
+              "macro_f1": 0.006127371300669061,
+              "top_3_accuracy": 0.6929337674593183
+            }
+          }
+        }
+      },
+      "product_frequency": {
+        "global_top_3": [
+          "Incorrect information on your report",
+          "Improper use of your report",
+          "Problem with a company's investigation into an existing problem"
+        ],
+        "product_top_3": {
+          "Checking or savings account": [
+            "Managing an account",
+            "Closing an account",
+            "Problem with a lender or other company charging your account"
+          ],
+          "Money transfer, virtual currency, or money service": [
+            "Fraud or scam",
+            "Other transaction problem",
+            "Unauthorized transactions or other transaction problem"
+          ],
+          "Mortgage": [
+            "Trouble during payment process",
+            "Struggling to pay mortgage",
+            "Applying for a mortgage or refinancing an existing mortgage"
+          ],
+          "Debt collection": [
+            "Attempts to collect debt not owed",
+            "Written notification about debt",
+            "Took or threatened to take negative or legal action"
+          ],
+          "Student loan": [
+            "Dealing with your lender or servicer",
+            "Struggling to repay your loan",
+            "Incorrect information on your report"
+          ],
+          "Credit reporting or other personal consumer reports": [
+            "Incorrect information on your report",
+            "Improper use of your report",
+            "Problem with a company's investigation into an existing problem"
+          ],
+          "Vehicle loan or lease": [
+            "Managing the loan or lease",
+            "Getting a loan or lease",
+            "Problems at the end of the loan or lease"
+          ],
+          "Debt or credit management": [
+            "Didn't provide services promised",
+            "Confusing or missing disclosures",
+            "Problem with customer service"
+          ],
+          "Credit card or prepaid card": [
+            "Problem with a purchase shown on your statement",
+            "Problem with a company's investigation into an existing problem",
+            "Getting a credit card"
+          ],
+          "Payday loan, title loan, or personal loan": [
+            "Charged fees or interest you didn't expect",
+            "Problem when making payments",
+            "Struggling to pay your loan"
+          ],
+          "Credit card": [
+            "Problem with a purchase shown on your statement",
+            "Problem with a company's investigation into an existing problem",
+            "Getting a credit card"
+          ],
+          "Payday loan, title loan, personal loan, or advance loan": [
+            "Charged fees or interest you didn't expect",
+            "Problem when making payments",
+            "Struggling to pay your loan"
+          ],
+          "Prepaid card": [
+            "Trouble using the card",
+            "Problem with a purchase or transfer",
+            "Unexpected or other fees"
+          ]
+        },
+        "metrics": {
+          "calibration": {
+            "complete": {
+              "eligible": 234600,
+              "macro_f1": 0.07622894690520197,
+              "top_3_accuracy": 0.9283972719522592
+            },
+            "no_shared_text": {
+              "eligible": 167973,
+              "macro_f1": 0.07616119416020176,
+              "top_3_accuracy": 0.9013948670322016
+            }
+          },
+          "validation": {
+            "complete": {
+              "eligible": 695184,
+              "macro_f1": 0.0687550753953336,
+              "top_3_accuracy": 0.9248918271997054
+            },
+            "no_shared_text": {
+              "eligible": 564813,
+              "macro_f1": 0.06837433404137419,
+              "top_3_accuracy": 0.9098427267077777
+            }
+          }
+        }
+      }
+    },
+    "T2": {
+      "global_frequency": {
+        "fit_positive_rate": 0.43286898098825083,
+        "product_positive_rates": null,
+        "threshold": 0.43286898098825083,
+        "calibration_no_shared_f1_at_threshold": 0.5624223309707665,
+        "metrics": {
+          "calibration": {
+            "complete": {
+              "eligible": 234362,
+              "positive": 100652,
+              "average_precision": 0.4294723547332759,
+              "precision": 0.4294723547332759,
+              "recall": 1.0,
+              "f1": 0.6008823511853236,
+              "brier_score": 0.24503738832304703
+            },
+            "no_shared_text": {
+              "eligible": 167738,
+              "positive": 65624,
+              "average_precision": 0.3912291788384266,
+              "precision": 0.3912291788384266,
+              "recall": 1.0,
+              "f1": 0.5624223309707664,
+              "brier_score": 0.23990278158691344
+            }
+          },
+          "validation": {
+            "complete": {
+              "eligible": 693502,
+              "positive": 268539,
+              "average_precision": 0.38722166626772525,
+              "precision": 0.38722166626772525,
+              "recall": 1.0,
+              "f1": 0.5582693461089496,
+              "brier_score": 0.23936472478176632
+            },
+            "no_shared_text": {
+              "eligible": 563148,
+              "positive": 200336,
+              "average_precision": 0.35574307286894385,
+              "precision": 0.35574307286894385,
+              "recall": 1.0,
+              "f1": 0.524794232754059,
+              "brier_score": 0.2351383446779329
+            }
+          }
+        }
+      },
+      "product_frequency": {
+        "fit_positive_rate": 0.43286898098825083,
+        "product_positive_rates": {
+          "Checking or savings account": 0.2169866910494768,
+          "Money transfer, virtual currency, or money service": 0.13451259862560447,
+          "Mortgage": 0.04932104091920614,
+          "Debt collection": 0.2481992108643788,
+          "Student loan": 0.0639501516766418,
+          "Credit reporting or other personal consumer reports": 0.5034617578612066,
+          "Vehicle loan or lease": 0.08423426926965855,
+          "Debt or credit management": 0.16813450760608487,
+          "Credit card or prepaid card": 0.3598383382677757,
+          "Payday loan, title loan, or personal loan": 0.09071504802561366,
+          "Credit card": 0.3807894933959202,
+          "Payday loan, title loan, personal loan, or advance loan": 0.08940144872283645,
+          "Prepaid card": 0.3448191593352884
+        },
+        "threshold": 0.3807894933959202,
+        "calibration_no_shared_f1_at_threshold": 0.5997911513037836,
+        "metrics": {
+          "calibration": {
+            "complete": {
+              "eligible": 234362,
+              "positive": 100652,
+              "average_precision": 0.47964995772240177,
+              "precision": 0.4756051912358156,
+              "recall": 0.9215216786551683,
+              "f1": 0.6274025697307498,
+              "brier_score": 0.23306620291230368
+            },
+            "no_shared_text": {
+              "eligible": 167738,
+              "positive": 65624,
+              "average_precision": 0.45357122553268986,
+              "precision": 0.4493877613028682,
+              "recall": 0.9015146897476533,
+              "f1": 0.5997911513037836,
+              "brier_score": 0.22572254115623092
+            }
+          },
+          "validation": {
+            "complete": {
+              "eligible": 693502,
+              "positive": 268539,
+              "average_precision": 0.46887348511179955,
+              "precision": 0.46511419464346737,
+              "recall": 0.9275524225531487,
+              "f1": 0.6195564576306599,
+              "brier_score": 0.21587996034780393
+            },
+            "no_shared_text": {
+              "eligible": 563148,
+              "positive": 200336,
+              "average_precision": 0.45085971003115005,
+              "precision": 0.44701947487772237,
+              "recall": 0.9219910550275537,
+              "f1": 0.6021107190298842,
+              "brier_score": 0.20728768203465503
+            }
+          }
+        }
+      }
+    },
+    "T3": {
+      "global_frequency": {
+        "fit_positive_rate": 0.021059038458652823,
+        "product_positive_rates": null,
+        "threshold": 0.021059038458652823,
+        "calibration_no_shared_f1_at_threshold": 0.04295881460739704,
+        "metrics": {
+          "calibration": {
+            "complete": {
+              "eligible": 234362,
+              "positive": 3685,
+              "average_precision": 0.01572353879895205,
+              "precision": 0.01572353879895205,
+              "recall": 1.0,
+              "f1": 0.030960272551218877,
+              "brier_score": 0.015504776683208566
+            },
+            "no_shared_text": {
+              "eligible": 167738,
+              "positive": 3682,
+              "average_precision": 0.021950899617260253,
+              "precision": 0.021950899617260253,
+              "recall": 1.0,
+              "f1": 0.04295881460739703,
+              "brier_score": 0.021469853039579448
+            }
+          },
+          "validation": {
+            "complete": {
+              "eligible": 693502,
+              "positive": 7479,
+              "average_precision": 0.01078439571911833,
+              "precision": 0.01078439571911833,
+              "recall": 1.0,
+              "f1": 0.02133866681122598,
+              "brier_score": 0.01077366081151686
+            },
+            "no_shared_text": {
+              "eligible": 563148,
+              "positive": 7477,
+              "average_precision": 0.013277149168602214,
+              "precision": 0.013277149168602214,
+              "recall": 1.0,
+              "f1": 0.026206352683461116,
+              "brier_score": 0.013161424279479502
+            }
+          }
+        }
+      },
+      "product_frequency": {
+        "fit_positive_rate": 0.021059038458652823,
+        "product_positive_rates": {
+          "Checking or savings account": 0.1482474855227065,
+          "Money transfer, virtual currency, or money service": 0.0836726902519725,
+          "Mortgage": 0.022934738180662155,
+          "Debt collection": 0.004714167737199486,
+          "Student loan": 0.012544068213495121,
+          "Credit reporting or other personal consumer reports": 0.0010437016956681962,
+          "Vehicle loan or lease": 0.028466982966477407,
+          "Debt or credit management": 0.05284227381905524,
+          "Credit card or prepaid card": 0.16607923304666572,
+          "Payday loan, title loan, or personal loan": 0.050515830665243684,
+          "Credit card": 0.1582482335022846,
+          "Payday loan, title loan, personal loan, or advance loan": 0.0440335493709493,
+          "Prepaid card": 0.3106060606060606
+        },
+        "threshold": 0.1482474855227065,
+        "calibration_no_shared_f1_at_threshold": 0.29092983456930976,
+        "metrics": {
+          "calibration": {
+            "complete": {
+              "eligible": 234362,
+              "positive": 3685,
+              "average_precision": 0.17145078975506625,
+              "precision": 0.17477724468814257,
+              "recall": 0.830393487109905,
+              "f1": 0.28877459538526873,
+              "brier_score": 0.013423658080057433
+            },
+            "no_shared_text": {
+              "eligible": 167738,
+              "positive": 3682,
+              "average_precision": 0.17388902137729625,
+              "precision": 0.17632822404056703,
+              "recall": 0.8310700706137969,
+              "f1": 0.29092983456930976,
+              "brier_score": 0.01871185266654866
+            }
+          },
+          "validation": {
+            "complete": {
+              "eligible": 693502,
+              "positive": 7479,
+              "average_precision": 0.12568493274493014,
+              "precision": 0.1173785839672323,
+              "recall": 0.8046530284797433,
+              "f1": 0.2048715722820814,
+              "brier_score": 0.010277426452140288
+            },
+            "no_shared_text": {
+              "eligible": 563148,
+              "positive": 7477,
+              "average_precision": 0.12722600220820834,
+              "precision": 0.11815754339118825,
+              "recall": 0.8048682626721947,
+              "f1": 0.20606413395195947,
+              "brier_score": 0.012637251002322871
+            }
+          }
+        }
+      }
+    },
+    "T4": {
+      "global_frequency": {
+        "fit_positive_rate": 0.005633464955762495,
+        "product_positive_rates": null,
+        "threshold": 0.005633464955762495,
+        "calibration_no_shared_f1_at_threshold": 0.011071115636914769,
+        "metrics": {
+          "calibration": {
+            "complete": {
+              "eligible": 234600,
+              "positive": 956,
+              "average_precision": 0.004075021312872976,
+              "precision": 0.004075021312872976,
+              "recall": 1.0,
+              "f1": 0.008116965817045628,
+              "brier_score": 0.004060844260760669
+            },
+            "no_shared_text": {
+              "eligible": 167973,
+              "positive": 935,
+              "average_precision": 0.005566370785781048,
+              "precision": 0.005566370785781048,
+              "recall": 1.0,
+              "f1": 0.01107111563691477,
+              "brier_score": 0.0055353908036838975
+            }
+          },
+          "validation": {
+            "complete": {
+              "eligible": 695184,
+              "positive": 6171,
+              "average_precision": 0.008876786577366567,
+              "precision": 0.008876786577366567,
+              "recall": 1.0,
+              "f1": 0.017597365100412772,
+              "brier_score": 0.008808508372567617
+            },
+            "no_shared_text": {
+              "eligible": 564813,
+              "positive": 6097,
+              "average_precision": 0.010794723209274574,
+              "precision": 0.010794723209274574,
+              "recall": 1.0,
+              "f1": 0.02135888318649174,
+              "brier_score": 0.01070483574686917
+            }
+          }
+        }
+      },
+      "product_frequency": {
+        "fit_positive_rate": 0.005633464955762495,
+        "product_positive_rates": {
+          "Checking or savings account": 0.008713844653883652,
+          "Money transfer, virtual currency, or money service": 0.021583190503396178,
+          "Mortgage": 0.010568331292239308,
+          "Debt collection": 0.020098033614789592,
+          "Student loan": 0.07985288107887209,
+          "Credit reporting or other personal consumer reports": 0.0015984557932983447,
+          "Vehicle loan or lease": 0.012328448476389859,
+          "Debt or credit management": 0.09961977186311786,
+          "Credit card or prepaid card": 0.0068129493022600195,
+          "Payday loan, title loan, or personal loan": 0.03786270346779901,
+          "Credit card": 0.00202191657721974,
+          "Payday loan, title loan, personal loan, or advance loan": 0.04121762147854037,
+          "Prepaid card": 0.04053724053724054
+        },
+        "threshold": 0.04053724053724054,
+        "calibration_no_shared_f1_at_threshold": 0.09798171468000691,
+        "metrics": {
+          "calibration": {
+            "complete": {
+              "eligible": 234600,
+              "positive": 956,
+              "average_precision": 0.029759432188887974,
+              "precision": 0.05876309841791658,
+              "recall": 0.29916317991631797,
+              "f1": 0.09823115232697922,
+              "brier_score": 0.004005529134319966
+            },
+            "no_shared_text": {
+              "eligible": 167973,
+              "positive": 935,
+              "average_precision": 0.031280146199871496,
+              "precision": 0.058412176059234884,
+              "recall": 0.3037433155080214,
+              "f1": 0.0979817146800069,
+              "brier_score": 0.005464689383526475
+            }
+          },
+          "validation": {
+            "complete": {
+              "eligible": 695184,
+              "positive": 6171,
+              "average_precision": 0.11863220165771939,
+              "precision": 0.18346422338568935,
+              "recall": 0.40884783665532326,
+              "f1": 0.25327510917030566,
+              "brier_score": 0.008366070936726252
+            },
+            "no_shared_text": {
+              "eligible": 564813,
+              "positive": 6097,
+              "average_precision": 0.12081351692933462,
+              "precision": 0.18350425485489855,
+              "recall": 0.41381007052648844,
+              "f1": 0.2542577849440693,
+              "brier_score": 0.010163515089485289
+            }
+          }
+        }
+      }
+    }
+  }
+}
