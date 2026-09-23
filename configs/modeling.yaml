@@ -1,0 +1,9 @@
+experiment:
+  name: claims-triage-modeling
+  seed: 42
+  run_contract_version: modeling_run_v1
+
+paths:
+  input_data: data/processed/prepared.parquet
+  input_contract: reports/modeling/input_contract.json
+  offline_runs: reports/modeling/runs

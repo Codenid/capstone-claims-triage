@@ -16,7 +16,8 @@ __pycache__/
 mlruns/
 mlflow.db
 
-# SLURM outputs
+# Modeling and SLURM outputs
+reports/modeling/runs/
 reports/modeling/slurm-*.out
 reports/modeling/slurm-*.err
 reports/modeling/*-latest.out

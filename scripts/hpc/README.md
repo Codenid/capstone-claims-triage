@@ -11,11 +11,15 @@ cd capstone-claims-triage
 uv sync
 ```
 
-DVC usa un archivo local ignorado por Git para las credenciales:
+DVC usa `.dvc/config.local`, un archivo ignorado por Git. En la instalación
+actual ya contiene las credenciales. El usuario de DagsHub es `pipaber`; no debe
+confundirse con la cuenta `piero.palacios` usada para entrar a Khipu.
+
+En una instalación nueva se configura así:
 
 ```bash
 uv run dvc remote modify --local dagshub auth basic
-uv run dvc remote modify --local dagshub user YOUR_DAGSHUB_USERNAME
+uv run dvc remote modify --local dagshub user pipaber
 uv run dvc remote modify --local dagshub password YOUR_DAGSHUB_TOKEN
 uv run dvc pull data/processed/prepared.parquet
 ```
@@ -66,6 +70,23 @@ Verificar el contrato de entrada en CPU:
 
 ```bash
 sbatch scripts/hpc/m0_verify.slurm
+```
+
+Verificar el contrato reproducible de M1:
+
+```bash
+sbatch scripts/hpc/m1_experiment.slurm
+```
+
+El trabajo crea el registro sin conectarse a internet. Cuando termine,
+publicarlo desde el nodo de acceso:
+
+```bash
+set -a
+source .env
+set +a
+uv run --no-sync python src/evaluation/publish_run.py \
+  reports/modeling/runs/m1-experiment-setup-khipu/run.json
 ```
 
 Verificar acceso a la A100:

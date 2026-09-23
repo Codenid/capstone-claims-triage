@@ -415,6 +415,7 @@ source = { editable = "." }
 dependencies = [
     { name = "matplotlib" },
     { name = "mlflow" },
+    { name = "numpy" },
     { name = "pandas" },
     { name = "pyarrow" },
     { name = "pyyaml" },
@@ -432,6 +433,7 @@ dev = [
 requires-dist = [
     { name = "matplotlib", specifier = ">=3.11.1" },
     { name = "mlflow", specifier = ">=3.0,<4" },
+    { name = "numpy", specifier = ">=2.0,<3" },
     { name = "pandas", specifier = ">=3.0.5" },
     { name = "pyarrow", specifier = ">=25.0.1" },
     { name = "pyyaml", specifier = ">=6.0" },

@@ -64,7 +64,7 @@ conjunto completo de reclamos.
 
 - [x] **M0 — Verificar la entrega:** revisar DVC, esquema y periodos; confirmar
   objetivos y restricciones antes de entrenar.
-- [ ] **M1 — Preparar experimentos:** configurar MLflow, semillas y ejecución
+- [x] **M1 — Preparar experimentos:** configurar MLflow, semillas y ejecución
   reproducible local y en HPC.
 - [ ] **M2 — Congelar la evaluación:** definir el corte interno de calibración,
   las métricas y las vistas completa y sin texto compartido.
@@ -83,6 +83,26 @@ conjunto completo de reclamos.
   comprobación y CUSUM para cambios persistentes.
 - [ ] **M10 — Integrar el triaje:** combinar predicciones, vecinos y alertas para
   revisión humana.
+
+## Contrato de ejecución M1
+
+`configs/modeling.yaml` define la semilla y las rutas comunes. Cada ejecución
+crea un registro pequeño con:
+
+- commit Git y hash DVC;
+- objetivo, periodo y vista evaluada;
+- variables de entrada y semilla;
+- ejecución local o en Khipu;
+- parámetros, métricas y artefactos.
+
+Un **artefacto** es un archivo producido por una ejecución, por ejemplo un
+gráfico o una tabla de resultados. MLflow guardará los artefactos pequeños. DVC
+guardará los archivos grandes, como embeddings o índices FAISS.
+
+Los nodos SLURM de Khipu no tienen internet. Allí se crea primero un registro
+JSON en `reports/modeling/runs/`. Después, desde el nodo de acceso, se publica
+en MLflow con `src/evaluation/publish_run.py`. Las credenciales permanecen en
+`.env` y `.dvc/config.local`; ninguno de esos archivos se versiona.
 
 ## Orden de comparación
 
@@ -148,8 +168,8 @@ adicional si reduce trabajo real.
 - Antes de ejecutar el corpus completo se medirá una muestra y se registrará el
   consumo de tiempo y memoria en MLflow.
 
-No se asumirán comandos del scheduler del HPC hasta verificar si usa SLURM u
-otro sistema.
+Khipu usa SLURM. Los scripts reproducibles y sus instrucciones están en
+`scripts/hpc/`.
 
 ## Forma de trabajo
 
@@ -160,13 +180,14 @@ otro sistema.
 5. Versionar artefactos grandes con DVC.
 6. Ejecutar primero una muestra antes de usar el corpus completo o la A100.
 7. No promover un modelo complejo si no demuestra valor.
-8. Revisar y aprobar cada etapa antes de continuar.
+8. Revisar cada etapa antes de continuar.
 
 ## Documentos relacionados
 
 - [Resumen del EDA](docs/resumen-eda.md).
 - [Propuesta detallada de modelos](docs/modelos.md).
 - [Notebook de preparación](notebooks/02_revision_preparacion.ipynb).
+- [Notebook de modelos base](notebooks/03_modelos_base.ipynb).
 
 ## Criterio para cerrar esta rama
 
