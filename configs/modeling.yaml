@@ -82,6 +82,7 @@ bge:
   revision: d4aa6901d3a41ba39fb536a557fa166f842b0e09
   max_sequence_length: 512
   batch_size: 64
+  linear_max_iter: 60
   sample_rows:
     fit: 120000
     calibration: 40000

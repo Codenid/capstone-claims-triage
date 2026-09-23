@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from copy import deepcopy
 import importlib
 import json
 from pathlib import Path
@@ -179,6 +180,46 @@ def encode_bge(
     return embeddings, revision
 
 
+def load_cached_embeddings(
+    output_dir: Path,
+    frames: dict[str, pd.DataFrame],
+) -> tuple[dict[str, np.ndarray], str | None] | None:
+    manifest_path = output_dir / "sample_manifest.parquet"
+    metadata_path = output_dir / "metadata.json"
+    embedding_paths = {
+        split: output_dir / f"{split}_embeddings.npy" for split in frames
+    }
+    required_paths = [manifest_path, metadata_path, *embedding_paths.values()]
+    if not all(path.exists() for path in required_paths):
+        return None
+
+    expected = pd.concat(
+        [
+            frame[[ID_COLUMN]].assign(sample_split=split)
+            for split, frame in frames.items()
+        ],
+        ignore_index=True,
+    ).astype(str)
+    cached = pd.read_parquet(
+        manifest_path,
+        columns=[ID_COLUMN, "sample_split"],
+    ).astype(str)
+    if not cached.equals(expected):
+        return None
+
+    embeddings = {
+        split: np.load(path) for split, path in embedding_paths.items()
+    }
+    if any(
+        values.ndim != 2 or len(values) != len(frames[split])
+        for split, values in embeddings.items()
+    ):
+        return None
+
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    return embeddings, metadata.get("bge_revision")
+
+
 def bge_feature_matrices(
     embeddings: dict[str, np.ndarray],
     frames: dict[str, pd.DataFrame],
@@ -276,6 +317,7 @@ def save_records(
                         "max_sequence_length": config["bge"][
                             "max_sequence_length"
                         ],
+                        "linear_max_iter": config["bge"]["linear_max_iter"],
                     }
                 )
             if target != "T1":
@@ -316,9 +358,17 @@ def main() -> None:
     tfidf_vectorizer, product_encoder, tfidf_matrices = build_features(frames, config)
     tfidf_results, tfidf_models, _ = train_models(config, frames, tfidf_matrices)
 
-    embeddings, revision = encode_bge(frames, config)
+    cached = load_cached_embeddings(output_dir, frames)
+    if cached is None:
+        embeddings, revision = encode_bge(frames, config)
+    else:
+        embeddings, revision = cached
+        print("Reusing cached BGE embeddings for the matching sample.")
+
     bge_matrices = bge_feature_matrices(embeddings, frames, product_encoder)
-    bge_results, bge_models, _ = train_models(config, frames, bge_matrices)
+    bge_config = deepcopy(config)
+    bge_config["tfidf"]["max_iter"] = config["bge"]["linear_max_iter"]
+    bge_results, bge_models, _ = train_models(bge_config, frames, bge_matrices)
 
     comparison = add_comparison(tfidf_results, bge_results)
     report = {
@@ -348,6 +398,7 @@ def main() -> None:
         "split_version": config["evaluation"]["split_version"],
         "bge_model": config["bge"]["model"],
         "bge_revision": revision,
+        "linear_max_iter": config["bge"]["linear_max_iter"],
         "sample_rows": config["bge"]["sample_rows"],
         "seed": seed,
     }
