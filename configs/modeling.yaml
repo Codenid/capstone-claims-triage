@@ -14,6 +14,11 @@ paths:
   tfidf_models: artifacts/models/tfidf
   bge_report: reports/modeling/bge_sample_results.json
   bge_artifacts: artifacts/models/bge_sample
+  bge_artifacts_dvc: artifacts/models/bge_sample.dvc
+  semantic_report: reports/modeling/semantic_space_results.json
+  semantic_pca_plot: reports/modeling/semantic_pca_variance.png
+  semantic_umap_plot: reports/modeling/semantic_umap_2d.png
+  semantic_artifacts: artifacts/models/semantic_space
   offline_runs: reports/modeling/runs
 
 evaluation:
@@ -87,6 +92,32 @@ bge:
     fit: 120000
     calibration: 40000
     validation: 80000
+
+semantic_space:
+  source_dvc_hash: 009e3b35e25d9df095cf753e0a05f041.dir
+  embedding_dimensions: 1024
+  normalization_tolerance: 0.001
+  batch_rows: 8192
+  pca:
+    n_components: 256
+    variance_checkpoints:
+      - 32
+      - 64
+      - 128
+      - 256
+  umap:
+    n_components: 2
+    n_neighbors: 15
+    min_dist: 0.1
+    metric: euclidean
+    plot_rows_per_split: 10000
+  faiss:
+    index_type: flat_inner_product
+    metric: cosine
+    neighbors: 10
+    query_rows_per_split: 1000
+    exact_check_rows_per_split: 8
+    threads: 16
 
 features:
   initial:

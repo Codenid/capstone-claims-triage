@@ -138,8 +138,9 @@ fragmentos. E5 encontró que 8.43% supera 400 palabras.
 | T2 — alguna solución | Regla por producto | TF-IDF + producto | BGE empató, pero cuesta más |
 | T3 — compensación monetaria | Regla por producto | TF-IDF + producto | TF-IDF superó a BGE |
 | T4 — no oportuna CFPB | Frecuencia global | Regla por producto | Los modelos de texto fueron menos estables |
+| Reducción y visualización | Embedding BGE | PCA y UMAP 2D | Reducir ruido y revisar visualmente el espacio semántico |
 | Vecinos similares | No aplica | FAISS | Búsqueda rápida entre millones de embeddings |
-| Grupos semánticos | k-means sobre embeddings | HDBSCAN por muestra o segmento | Descubrir patrones sin etiquetas confirmadas |
+| Grupos semánticos | MiniBatchKMeans con k-means++ | HDBSCAN y CURE | Comparar escalabilidad, ruido y formas irregulares |
 | Descripción del grupo | Palabras frecuentes | c-TF-IDF | Explicar cada grupo con términos representativos |
 | Volumen temporal | Media histórica | Negative Binomial con PyMC | Estimar el conteo esperado y su incertidumbre |
 | Composición temporal | Proporción histórica | Dirichlet-Multinomial con PyMC | Detectar cambios relativos entre todos los grupos |
@@ -181,18 +182,64 @@ Esto aporta dos señales:
 También ofrece una explicación útil al agente: puede mostrar ejemplos
 históricos similares sin depender únicamente de una probabilidad.
 
-### Grupos semánticos
+### PCA y UMAP
 
-Un **grupo semántico** reúne narrativas con significado parecido. Se puede
-crear con k-means a gran escala y usar HDBSCAN en muestras o segmentos para
-buscar formas más irregulares.
+M6 reutilizará los embeddings ya generados en M5. No volverá a ejecutar BGE
+sobre esas 240,000 filas. PCA se ajustará con las 120,000 filas de ajuste y
+transformará después las 40,000 de calibración y 80,000 de validación.
 
-c-TF-IDF ayuda a describir el grupo mediante las palabras que lo distinguen de
-los demás. No determina fraude ni reemplaza la revisión humana.
+**PCA** reduce las dimensiones de los embeddings y elimina parte del ruido. Se
+ajustará únicamente con el periodo de ajuste y luego transformará los periodos
+posteriores sin volver a aprender.
+
+**UMAP** creará una visualización bidimensional sobre una muestra fija. El
+resultado permite observar solapamientos, casos aislados y grupos dominados por
+plantillas, pero no demuestra por sí solo que un clustering sea correcto. Las
+distancias del gráfico 2D están distorsionadas y no se usarán como único insumo
+del clustering.
+
+Si HDBSCAN necesita una reducción adicional, se comparará:
+
+- clustering directamente sobre PCA;
+- clustering sobre PCA más UMAP de varias dimensiones.
+
+El UMAP de dos dimensiones permanecerá reservado para visualización.
+
+### Comparación de grupos semánticos
+
+Un **grupo semántico** reúne narrativas con significado parecido. Se evaluarán
+tres alternativas sobre las mismas filas:
+
+- **MiniBatchKMeans con k-means++:** referencia escalable que exige un número de
+  grupos y asigna todos los reclamos;
+- **HDBSCAN:** permite grupos con densidades distintas y puede dejar casos sin
+  asignar como ruido;
+- **CURE:** representa un grupo con varios puntos y puede capturar formas
+  irregulares, pero primero debe demostrar que puede escalar y asignar reclamos
+  futuros.
+
+La comparación incluirá:
+
+1. gráfico de silhouette y promedio sobre una muestra fija;
+2. estabilidad al cambiar la muestra o semilla;
+3. distribución de tamaños y porcentaje de ruido;
+4. ejemplos cercanos y términos c-TF-IDF por grupo;
+5. presencia de plantillas exactas o casi exactas;
+6. tiempo, memoria y facilidad para asignar nuevos reclamos.
+
+El **silhouette** compara qué tan cerca está un caso de su propio grupo frente a
+los otros grupos. Valores cercanos a 1 indican separación, cerca de 0 indican
+solapamiento y valores negativos sugieren una asignación dudosa. No será el
+único criterio porque suele favorecer grupos compactos y puede penalizar las
+formas irregulares de HDBSCAN o CURE.
+
+c-TF-IDF ayudará a describir cada grupo mediante las palabras que lo distinguen
+de los demás. No determina fraude ni reemplaza la revisión humana.
 
 E6 mostró que muchos textos son plantillas exactas o casi exactas. Antes de
-generar alertas, deberá comprobarse si esas plantillas dominan un grupo y si
-conviene marcarlas o reducir su influencia.
+generar alertas, se comprobará si esas plantillas dominan un grupo. Se
+reportarán tanto el conteo de reclamos como el número de textos normalizados
+diferentes.
 
 ## Modelos temporales
 
@@ -275,13 +322,16 @@ relacionados y que conviene revisarlos juntos.
 1. Terminar EDA, transformaciones y divisiones temporales.
 2. Entrenar TF-IDF + regresión logística para T1–T4.
 3. Comparar BGE usando las mismas filas y métricas.
-4. Construir FAISS y grupos semánticos con el mejor embedding.
-5. Describir grupos y revisar posibles plantillas.
-6. Crear conteos semanales sin consultar periodos reservados.
-7. Probar Negative Binomial como modelo temporal principal.
-8. Probar Dirichlet-Multinomial como comprobación de composición.
-9. Añadir CUSUM si mejora la detección de cambios persistentes.
-10. Integrar las señales en una recomendación revisada por una persona.
+4. Reutilizar los embeddings de M5 y validar vecinos FAISS.
+5. Ajustar PCA en el periodo de ajuste y crear una visualización UMAP.
+6. Comparar MiniBatchKMeans++, HDBSCAN y CURE con la misma muestra.
+7. Elegir y congelar grupos usando silhouette, estabilidad, coherencia y costo.
+8. Generar los embeddings faltantes, asignar el corpus elegible y crear conteos
+   semanales completos.
+9. Probar Negative Binomial como modelo temporal principal.
+10. Probar Dirichlet-Multinomial como comprobación de composición.
+11. Calibrar CUSUM para detectar cambios persistentes.
+12. Integrar las señales en una recomendación revisada por una persona.
 
 ## Evaluación
 
@@ -297,8 +347,10 @@ elegir modelos.
 
 - **T1:** Macro-F1, top-3 y F1 por motivo.
 - **T2–T4:** average precision, precisión, cobertura y Brier score.
-- **Patrones:** revisión humana de las alertas principales, tiempo hasta detectar
-  un crecimiento y cantidad de falsas alertas por semana.
+- **Clustering:** silhouette sobre una muestra fija, estabilidad, tamaños,
+  porcentaje de ruido, coherencia semántica, tiempo y memoria.
+- **Patrones temporales:** revisión humana, tiempo hasta detectar un crecimiento
+  y cantidad de falsas alertas por semana.
 
 Para T2–T4, el umbral se elegirá maximizando F1 en la calibración sin texto
 compartido. Luego permanecerá fijo durante la validación.

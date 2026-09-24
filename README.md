@@ -73,16 +73,90 @@ conjunto completo de reclamos.
 - [x] **M4 — Entrenar TF-IDF:** evaluar modelos lineales para T1–T4.
 - [x] **M5 — Evaluar BGE:** generar una muestra en la A100 y compararla con
   TF-IDF sobre las mismas filas.
-- [ ] **M6 — Buscar patrones semánticos:** crear vecinos FAISS, grupos y una
-  medida de novedad.
-- [ ] **M7 — Crear series semanales:** congelar grupos y construir conteos sin
-  consultar periodos futuros.
-- [ ] **M8 — Modelar volumen con PyMC:** usar Negative Binomial y revisar su
-  incertidumbre y diagnóstico de muestreo.
-- [ ] **M9 — Modelar composición y cambio:** usar Dirichlet-Multinomial como
-  comprobación y CUSUM para cambios persistentes.
-- [ ] **M10 — Integrar el triaje:** combinar predicciones, vecinos y alertas para
+- [ ] **M6 — Preparar el espacio semántico:** reutilizar los embeddings de M5,
+  ajustar PCA con la muestra del periodo de ajuste, crear una visualización UMAP
+  y validar vecinos con FAISS.
+- [ ] **M7 — Comparar métodos de clustering:** evaluar MiniBatchKMeans con
+  inicialización k-means++, HDBSCAN y CURE sobre la misma muestra. Comparar
+  silhouette, estabilidad, coherencia, ruido, costo y asignación futura.
+- [ ] **M8 — Congelar patrones y crear series:** elegir el método, fijar sus
+  grupos, generar solo los embeddings faltantes, asignar el corpus elegible y
+  construir conteos semanales completos.
+- [ ] **M9 — Modelar volumen con PyMC:** usar Negative Binomial para estimar el
+  conteo esperado y su incertidumbre.
+- [ ] **M10 — Modelar composición con PyMC:** usar Dirichlet-Multinomial para
+  comprobar cambios relativos entre patrones.
+- [ ] **M11 — Detectar cambios persistentes:** calibrar CUSUM sobre las
+  diferencias entre lo observado y lo esperado.
+- [ ] **M12 — Integrar el triaje:** combinar predicciones, vecinos y alertas para
   revisión humana.
+
+## Plan semántico M6–M8
+
+PCA, UMAP y clustering tienen responsabilidades distintas:
+
+- **PCA:** reduce dimensiones y ruido antes de comparar los métodos.
+- **UMAP 2D:** permite visualizar una muestra; no decide por sí solo los grupos.
+- **FAISS:** recupera reclamos históricos cercanos y ayuda a medir novedad.
+- **Clustering:** crea los grupos que después se contarán por semana.
+
+M6 reutilizará los 240,000 embeddings de M5: 120,000 de ajuste, 40,000 de
+calibración y 80,000 de validación. No volverá a ejecutar BGE sobre esas filas.
+PCA y UMAP se ajustarán solo con las 120,000 filas de ajuste y luego
+transformarán los periodos posteriores. UMAP 2D se usará para visualización. Si
+HDBSCAN necesita una reducción adicional, se comparará PCA
+solo contra PCA más UMAP de varias dimensiones; no se usará el gráfico 2D como
+única entrada del clustering.
+
+M7 comparará los métodos sobre las mismas filas, representación y semilla:
+
+| Evidencia | Qué revisa |
+| --- | --- |
+| Silhouette y su gráfico | Separación de cada grupo; cerca de 1 es mejor, 0 indica solapamiento y valores negativos sugieren asignaciones dudosas |
+| Estabilidad | Si grupos parecidos reaparecen al cambiar la muestra o semilla |
+| Tamaños y ruido | Grupos gigantes, grupos demasiado pequeños y porcentaje sin asignar |
+| Coherencia semántica | Si ejemplos y términos representativos describen un problema común |
+| Plantillas | Si un grupo existe por significado o por narrativas repetidas |
+| Costo | Tiempo, memoria y posibilidad de usar CPU o A100 |
+| Asignación futura | Cómo recibirá un grupo un reclamo que llegue después |
+
+El silhouette se calculará sobre una muestra fija porque hacerlo sobre millones
+de filas es costoso. No será el único criterio: favorece grupos compactos y
+puede evaluar injustamente las formas irregulares que busca HDBSCAN o CURE.
+
+La comparación tendrá tres candidatos:
+
+- **MiniBatchKMeans con k-means++:** referencia escalable que asigna todos los
+  reclamos.
+- **HDBSCAN:** candidato que permite grupos de distinta densidad y casos sin
+  asignar.
+- **CURE:** comparación sobre una muestra; solo continuará si su implementación
+  puede escalar y asignar reclamos futuros de forma reproducible.
+
+Antes de ejecutar M6–M7 se guardarán en configuración:
+
+- IDs y hash DVC de la muestra común;
+- número de componentes PCA y varianza conservada;
+- semilla y parámetros de UMAP;
+- valores de `k` probados por MiniBatchKMeans;
+- tamaños mínimos probados por HDBSCAN;
+- número de grupos, representantes y contracción probados por CURE;
+- distancia usada para vecinos, clustering y silhouette.
+
+Cada ejecución registrará en MLflow el gráfico de varianza PCA, UMAP 2D,
+silhouette, distribución de tamaños, porcentaje de ruido, ejemplos y términos
+por grupo, tiempo y memoria. Para HDBSCAN, el silhouette se calculará sobre los
+casos asignados y el ruido se reportará por separado. Los parámetros se elegirán
+con ajuste y calibración; validación no se usará para modificarlos.
+
+M8 congelará el método elegido antes de usar periodos posteriores. Recién en
+esa etapa se generarán por bloques los embeddings que falten para asignar todos
+los reclamos elegibles. La tabla semanal incluirá `week`, `cluster_id`,
+`complaint_count`,
+`unique_text_count`, `weekly_total` y `proportion`. También completará con cero
+las semanas sin casos para no confundir ausencia con datos faltantes. Los
+conteos se construirán con todos los reclamos elegibles, no con la muestra de
+M5.
 
 ## Contrato de ejecución M1
 
@@ -276,19 +350,34 @@ reporte completo está en `reports/modeling/bge_sample_results.json`.
 
 ```mermaid
 flowchart TD
-    A[Tabla preparada] --> B[Referencias simples]
-    B --> C[TF-IDF]
-    C --> D{¿BGE aporta valor?}
-    D -->|Sí| E[Embeddings BGE en A100]
-    D -->|No para clasificación| F[Conservar modelo simple]
-    E --> G[FAISS y grupos semánticos]
-    F --> G
-    G --> H[Conteos semanales]
-    H --> I[Negative Binomial con PyMC]
-    H --> J[Dirichlet-Multinomial con PyMC]
-    I --> K[CUSUM]
+    A[Tabla preparada] --> B[TF-IDF y BGE]
+    B --> C[Predicciones T1 a T4]
+    B --> D[Embeddings BGE]
+
+    D --> E[FAISS: vecinos]
+    D --> F[PCA]
+    F --> G[UMAP 2D: visualización]
+    F --> H[MiniBatchKMeans++]
+    F --> I[HDBSCAN]
+    F --> J[CURE en muestra]
+
+    E --> K[Comparar evidencia]
+    G --> K
+    H --> K
+    I --> K
     J --> K
-    K --> L[Recomendación revisada por una persona]
+
+    K --> L[Congelar grupos]
+    L --> M[Conteos semanales]
+    M --> N[Negative Binomial con PyMC]
+    M --> O[Dirichlet-Multinomial con PyMC]
+    N --> P[CUSUM]
+    O --> P
+
+    C --> Q[Recomendación de triaje]
+    E --> Q
+    P --> Q
+    Q --> R[Persona revisa y decide]
 ```
 
 Dirichlet-Multinomial no creará los grupos. Recibirá grupos ya definidos y
@@ -299,8 +388,10 @@ volumen absoluto de un grupo es mayor de lo esperado.
 
 - T1: Macro-F1, top-3 y resultados por motivo.
 - T2–T4: precisión promedio, precisión, cobertura y Brier score.
-- Patrones: falsas alertas por semana, tiempo de detección, estabilidad y
-  revisión de ejemplos.
+- Clustering: silhouette en muestra, estabilidad, tamaños, ruido, coherencia,
+  tiempo y memoria.
+- Patrones temporales: falsas alertas por semana, tiempo de detección y revisión
+  de ejemplos.
 - Todas las comparaciones usarán las mismas filas y periodos.
 - La vista sin texto compartido excluirá narrativas vistas en periodos usados
   como referencia.

@@ -159,6 +159,38 @@ de cómputo no tienen internet. Después se ejecuta la comparación M5:
 sbatch scripts/hpc/m5_bge.slurm
 ```
 
+M6 reutiliza los embeddings de M5 y se ejecuta en CPU. Preparar el entorno y
+verificar las pruebas desde el nodo de acceso:
+
+```bash
+uv sync --group semantic
+uv run --no-sync dvc pull artifacts/models/bge_sample.dvc
+uv run --no-sync python -m unittest tests.test_semantic_space -v
+```
+
+Enviar PCA, UMAP y FAISS a SLURM:
+
+```bash
+sbatch scripts/hpc/m6_semantic_space.slurm
+```
+
+Cuando termine, guardar el artefacto grande con DVC:
+
+```bash
+uv run --no-sync dvc add artifacts/models/semantic_space
+uv run --no-sync dvc push artifacts/models/semantic_space.dvc
+```
+
+Después publicar el run pequeño en MLflow:
+
+```bash
+set -a
+source .env
+set +a
+uv run --no-sync python src/evaluation/publish_run.py \
+  reports/modeling/runs/m6/semantic_space/run.json
+```
+
 Verificar acceso a la A100:
 
 ```bash
