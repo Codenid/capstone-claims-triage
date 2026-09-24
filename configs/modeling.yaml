@@ -26,6 +26,9 @@ paths:
   clustering_umap_plot: reports/modeling/clustering_umap_2d.png
   clustering_sizes_plot: reports/modeling/clustering_sizes.png
   clustering_artifacts: artifacts/models/clustering_comparison
+  bge_full_report: reports/modeling/bge_full_results.json
+  bge_full_artifacts: artifacts/models/bge_full
+  bge_full_staging: artifacts/models/.bge_full.inprogress
   offline_runs: reports/modeling/runs
 
 evaluation:
@@ -126,6 +129,23 @@ semantic_space:
     query_rows_per_split: 1000
     exact_check_rows_per_split: 8
     threads: 16
+
+bge_full:
+  contract_version: bge_full_v1
+  source_dvc_hash: 009e3b35e25d9df095cf753e0a05f041.dir
+  eligible_column: eligible_T1_complete
+  embedding_dimensions: 1024
+  source_batch_rows: 131072
+  arrow_batch_rows: 8192
+  normalization_tolerance: 0.001
+  expected_rows:
+    fit: 1067194
+    calibration: 234600
+    validation: 695184
+  expected_reused_rows:
+    fit: 120000
+    calibration: 40000
+    validation: 80000
 
 clustering:
   source_dvc_hash: 08662a82971a71666b06c9ccf8120d7f.dir

@@ -213,6 +213,32 @@ uv run --no-sync python src/evaluation/publish_run.py \
   reports/modeling/runs/m7/cluster_comparison/run.json
 ```
 
+M8A genera embeddings para todos los reclamos elegibles y reutiliza los de M5:
+
+```bash
+uv sync --group gpu --group semantic
+uv run --no-sync dvc pull data/processed/prepared.parquet
+uv run --no-sync dvc pull artifacts/models/bge_sample.dvc
+uv run --no-sync python -m unittest tests.test_bge_full -v
+sbatch scripts/hpc/m8a_bge_full.slurm
+```
+
+El job guarda checkpoints en `artifacts/models/.bge_full.inprogress`. Si SLURM lo
+interrumpe, se envía nuevamente el mismo script y continúa desde el último
+bloque confirmado. No borrar ese directorio durante una ejecución incompleta.
+
+Al terminar:
+
+```bash
+uv run --no-sync dvc add artifacts/models/bge_full
+uv run --no-sync dvc push artifacts/models/bge_full.dvc
+set -a
+source .env
+set +a
+uv run --no-sync python src/evaluation/publish_run.py \
+  reports/modeling/runs/m8a/bge_full/run.json
+```
+
 Verificar acceso a la A100:
 
 ```bash
