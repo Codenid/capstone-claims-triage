@@ -184,9 +184,9 @@ históricos similares sin depender únicamente de una probabilidad.
 
 ### PCA y UMAP
 
-M6 reutilizará los embeddings ya generados en M5. No volverá a ejecutar BGE
-sobre esas 240,000 filas. PCA se ajustará con las 120,000 filas de ajuste y
-transformará después las 40,000 de calibración y 80,000 de validación.
+M6 reutilizó los embeddings generados en M5 y no volvió a ejecutar BGE. PCA se
+ajustó con las 120,000 filas de ajuste y transformó después las 40,000 de
+calibración y 80,000 de validación.
 
 **PCA** reduce las dimensiones de los embeddings y elimina parte del ruido. Se
 ajustará únicamente con el periodo de ajuste y luego transformará los periodos
@@ -204,6 +204,25 @@ Si HDBSCAN necesita una reducción adicional, se comparará:
 - clustering sobre PCA más UMAP de varias dimensiones.
 
 El UMAP de dos dimensiones permanecerá reservado para visualización.
+
+### Resultado de M6
+
+PCA redujo los embeddings de 1,024 a 256 dimensiones y conservó 92.42% de la
+variación. Con 128 componentes conservaba 82.86%. M7 comenzará con las 256
+dimensiones para comparar todos los métodos sobre la misma representación.
+
+La visualización UMAP mostró amplia superposición entre ajuste, calibración y
+validación. También mostró zonas relacionadas con productos y casos aislados,
+pero no se usará como prueba de que existe un cluster.
+
+FAISS indexó las 120,000 filas de ajuste y recuperó vecinos para 1,000 consultas
+sin texto compartido de calibración y 1,000 de validación. La similitud mediana
+del vecino más cercano fue 0.9245 y 0.9177, respectivamente. En validación, el
+77.1% compartió producto y el 37.4% compartió T1.
+
+Esto justifica conservar FAISS para mostrar evidencia y estudiar novedad, pero
+no usar el vecino más cercano como sustituto del clasificador. El artefacto está
+en DVC con hash `08662a82971a71666b06c9ccf8120d7f.dir`.
 
 ### Comparación de grupos semánticos
 

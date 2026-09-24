@@ -1,0 +1,6 @@
+outs:
+- md5: 08662a82971a71666b06c9ccf8120d7f.dir
+  size: 741782513
+  nfiles: 12
+  hash: md5
+  path: semantic_space

@@ -1,0 +1,96 @@
+{
+  "stage": "M6",
+  "seed": 42,
+  "split_version": "temporal_v1",
+  "source": {
+    "path": "artifacts/models/bge_sample",
+    "dvc_hash": "009e3b35e25d9df095cf753e0a05f041.dir",
+    "bge_model": "BAAI/bge-large-en-v1.5",
+    "bge_revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09"
+  },
+  "input": {
+    "fit": {
+      "rows": 120000,
+      "dimensions": 1024,
+      "dtype": "float32",
+      "maximum_norm_error": 1.1920928955078125e-07
+    },
+    "calibration": {
+      "rows": 40000,
+      "dimensions": 1024,
+      "dtype": "float32",
+      "maximum_norm_error": 1.1920928955078125e-07
+    },
+    "validation": {
+      "rows": 80000,
+      "dimensions": 1024,
+      "dtype": "float32",
+      "maximum_norm_error": 1.1920928955078125e-07
+    }
+  },
+  "pca": {
+    "fitted_on": "fit",
+    "components": 256,
+    "explained_variance": 0.9242140054702759,
+    "variance_checkpoints": {
+      "32": 0.5809009671211243,
+      "64": 0.7094566822052002,
+      "128": 0.8285807967185974,
+      "256": 0.9242140054702759
+    },
+    "elapsed_seconds": 10.013993698987179
+  },
+  "umap": {
+    "fitted_on": "fit",
+    "n_components": 2,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "metric": "euclidean",
+    "init": "random",
+    "plot_rows_per_split": 10000,
+    "plotted_rows": 30000,
+    "elapsed_seconds": 236.19864192896057
+  },
+  "faiss": {
+    "reference_split": "fit",
+    "index_type": "flat_inner_product",
+    "metric": "cosine",
+    "neighbors": 10,
+    "query_rows_per_split": 1000,
+    "exact_check_rows_per_split": 8,
+    "threads": 16,
+    "index_rows": 120000,
+    "metrics": {
+      "calibration": {
+        "queries": 1000.0,
+        "top1_similarity_mean": 0.9256690144538879,
+        "top1_similarity_median": 0.9244886636734009,
+        "top1_similarity_p05": 0.8446587920188904,
+        "top1_similarity_p95": 0.9968782663345337,
+        "top1_same_product_rate": 0.827,
+        "top1_same_t1_rate": 0.477,
+        "exact_score_maximum_error": 0.0
+      },
+      "validation": {
+        "queries": 1000.0,
+        "top1_similarity_mean": 0.9153723120689392,
+        "top1_similarity_median": 0.9177341461181641,
+        "top1_similarity_p05": 0.8386479616165161,
+        "top1_similarity_p95": 0.9935206174850464,
+        "top1_same_product_rate": 0.771,
+        "top1_same_t1_rate": 0.374,
+        "exact_score_maximum_error": 0.0
+      }
+    },
+    "elapsed_seconds": 6.42505361296935
+  },
+  "versions": {
+    "faiss_cpu": "1.15.1",
+    "umap_learn": "0.5.12",
+    "scikit_learn": "1.9.1"
+  },
+  "resources": {
+    "elapsed_seconds": 253.58601271302905,
+    "maximum_rss_gib": 3.0220718383789062
+  }
+}

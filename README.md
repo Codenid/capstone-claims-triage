@@ -73,7 +73,7 @@ conjunto completo de reclamos.
 - [x] **M4 — Entrenar TF-IDF:** evaluar modelos lineales para T1–T4.
 - [x] **M5 — Evaluar BGE:** generar una muestra en la A100 y compararla con
   TF-IDF sobre las mismas filas.
-- [ ] **M6 — Preparar el espacio semántico:** reutilizar los embeddings de M5,
+- [x] **M6 — Preparar el espacio semántico:** reutilizar los embeddings de M5,
   ajustar PCA con la muestra del periodo de ajuste, crear una visualización UMAP
   y validar vecinos con FAISS.
 - [ ] **M7 — Comparar métodos de clustering:** evaluar MiniBatchKMeans con
@@ -346,6 +346,58 @@ de los clasificadores reutilizó esos embeddings y terminó en CPU en 4 minutos
 19 segundos. Los ocho runs de comparación están publicados en MLflow y el
 reporte completo está en `reports/modeling/bge_sample_results.json`.
 
+## Resultados del espacio semántico M6
+
+M6 reutilizó los 240,000 embeddings de M5. PCA y UMAP aprendieron únicamente
+con las 120,000 filas de ajuste; calibración y validación solo fueron
+transformadas.
+
+PCA redujo cada embedding de 1,024 a 256 dimensiones:
+
+| Componentes | Variación conservada |
+| ---: | ---: |
+| 32 | 58.09% |
+| 64 | 70.95% |
+| 128 | 82.86% |
+| 256 | 92.42% |
+
+La **variación conservada** resume cuánta información estadística del embedding
+original permanece después de reducir dimensiones. Las 256 dimensiones
+conservan 92.42% y serán la representación común inicial de M7.
+
+UMAP mostró superposición entre ajuste, calibración y validación. No aparece una
+separación temporal total, aunque existen casos aislados y zonas asociadas a
+productos. El gráfico sirve para explorar; no demuestra por sí solo que los
+grupos sean correctos.
+
+FAISS creó un índice exacto con las 120,000 filas de ajuste. Se consultaron
+1,000 narrativas sin texto compartido de cada periodo posterior:
+
+| Medida | Calibración | Validación |
+| --- | ---: | ---: |
+| Similitud mediana del vecino más cercano | 0.9245 | 0.9177 |
+| Percentil 5 de similitud | 0.8447 | 0.8386 |
+| Mismo producto | 82.7% | 77.1% |
+| Mismo motivo T1 | 47.7% | 37.4% |
+
+Una similitud cercana a 1 indica embeddings muy próximos. Los resultados
+confirman que FAISS recupera vecinos semánticos cercanos, pero el acuerdo T1
+muestra que el vecino más cercano no debe usarse como clasificador por sí solo.
+Servirá como evidencia para el agente y como apoyo para estudiar novedad.
+
+La búsqueda FAISS coincidió exactamente con el cálculo directo en las consultas
+de control. El artefacto quedó registrado con DVC:
+
+- Ruta: `artifacts/models/semantic_space`.
+- Hash DVC: `08662a82971a71666b06c9ccf8120d7f.dir`.
+- Tamaño: 741,782,513 bytes.
+- Ejecución SLURM: 4 minutos 19 segundos y aproximadamente 2.45 GiB.
+
+El run `m6-semantic-space` está publicado en MLflow. El reporte y los gráficos
+están en `reports/modeling/semantic_space_results.json`,
+`reports/modeling/semantic_pca_variance.png` y
+`reports/modeling/semantic_umap_2d.png`.
+
 ## Orden de comparación
 
 ```mermaid
@@ -448,6 +500,7 @@ Khipu usa SLURM. Los scripts reproducibles y sus instrucciones están en
 - [Notebook de preparación](notebooks/02_revision_preparacion.ipynb).
 - [Notebook de modelos base](notebooks/03_modelos_base.ipynb).
 - [Notebook de comparación BGE](notebooks/04_bge.ipynb).
+- [Notebook del espacio semántico](notebooks/05_espacio_semantico.ipynb).
 
 ## Criterio para cerrar esta rama
 
