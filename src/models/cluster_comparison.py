@@ -661,6 +661,13 @@ def save_offline_record(config: dict[str, Any], report: dict[str, Any]) -> None:
             metrics[f"{algorithm}_{name}"] = float(values[name])
 
     settings = config["clustering"]
+    artifacts = [
+        config["paths"]["clustering_report"],
+        config["paths"]["clustering_candidates"],
+        config["paths"]["clustering_silhouette_plot"],
+        config["paths"]["clustering_umap_plot"],
+        config["paths"]["clustering_sizes_plot"],
+    ]
     record = build_run_record(
         config=config,
         run_name="m7-cluster-comparison",
@@ -678,22 +685,62 @@ def save_offline_record(config: dict[str, Any], report: dict[str, Any]) -> None:
             "model_artifact": config["paths"]["clustering_artifacts"],
         },
         metrics=metrics,
-        artifacts=[
-            config["paths"]["clustering_report"],
-            config["paths"]["clustering_candidates"],
-            config["paths"]["clustering_silhouette_plot"],
-            config["paths"]["clustering_umap_plot"],
-            config["paths"]["clustering_sizes_plot"],
-        ],
+        artifacts=artifacts,
     )
-    path = (
-        PROJECT_ROOT
-        / config["paths"]["offline_runs"]
-        / "m7"
-        / "cluster_comparison"
-        / "run.json"
+    run_root = PROJECT_ROOT / config["paths"]["offline_runs"] / "m7"
+    save_run_record(record, run_root / "cluster_comparison" / "run.json")
+
+    common_metric_names = (
+        "clusters",
+        "silhouette_mean",
+        "negative_silhouette_fraction",
+        "stability_ari",
+        "noise_fraction",
+        "largest_cluster_fraction",
+        "neighbor_lift",
+        "future_coverage",
+        "template_dominated_rows_fraction",
     )
-    save_run_record(record, path)
+    recommended = report["decision"]["recommended_algorithm"]
+    for algorithm, values in report["selected"].items():
+        method_record = build_run_record(
+            config=config,
+            run_name=f"m7-{values['id']}",
+            stage="M7",
+            target="A1",
+            split="fit_sample_calibration_assignment",
+            view="semantic_patterns",
+            features=["BGE", "PCA 256D", "UMAP 15D"],
+            parameters={
+                "algorithm": algorithm,
+                "candidate_id": values["id"],
+                "algorithm_parameters": json.dumps(values["parameters"]),
+                "assignment_type": values["assignment_type"],
+                "source_dvc_hash": settings["source_dvc_hash"],
+                "model_artifact": config["paths"]["clustering_artifacts"],
+            },
+            metrics={
+                **{
+                    name: float(values[name])
+                    for name in common_metric_names
+                },
+                "accepted": float(values["accepted"]),
+            },
+            artifacts=artifacts,
+        )
+        method_record["tags"].update(
+            {
+                "comparison_group": "m7_selected_methods",
+                "algorithm": algorithm,
+                "candidate_id": values["id"],
+                "accepted": str(values["accepted"]).lower(),
+                "recommended": str(algorithm == recommended).lower(),
+            }
+        )
+        save_run_record(
+            method_record,
+            run_root / "selected_methods" / algorithm / "run.json",
+        )
 
 
 def main() -> None:

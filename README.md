@@ -434,8 +434,9 @@ La evidencia es útil pero moderada: silhouette es 0.1376, 28.96% de la muestra
 tiene silhouette negativo y la estabilidad ARI es 0.6260. Por eso hablaremos de
 una **partición de trabajo**, no de 40 categorías naturales confirmadas.
 
-M8 volverá a ajustar `k=40` sobre todas las 120,000 filas de ajuste antes de
-asignar el corpus elegible y crear los conteos semanales.
+M8 generará los embeddings faltantes y volverá a ajustar `k=40` con todos los
+reclamos elegibles del periodo de ajuste. Las 120,000 filas fueron la muestra
+disponible para escoger el método, no el límite del entrenamiento final.
 
 El artefacto quedó registrado con DVC:
 

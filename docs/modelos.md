@@ -271,8 +271,9 @@ grupo. Su estabilidad ARI fue 0.4307. Por eso también fue rechazado.
 
 La elección de k-means es operacional, no una afirmación de que existan 40
 categorías naturales. Su silhouette es moderado y 28.96% de los casos evaluados
-tiene silhouette negativo. M8 deberá ajustar nuevamente `k=40` con todas las
-120,000 filas de ajuste y conservar una señal separada de novedad.
+tiene silhouette negativo. M8 generará los embeddings faltantes y ajustará
+`k=40` con todos los reclamos elegibles del periodo de ajuste. También conservará
+una señal separada de novedad.
 
 El artefacto M7 está en DVC con hash
 `425408aa84d0e2a44b8c5becd467e724.dir`.
