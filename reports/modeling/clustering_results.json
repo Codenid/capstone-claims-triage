@@ -1,0 +1,180 @@
+{
+  "stage": "M7",
+  "seed": 42,
+  "split_version": "temporal_v1",
+  "source": {
+    "path": "artifacts/models/semantic_space",
+    "dvc_hash": "08662a82971a71666b06c9ccf8120d7f.dir"
+  },
+  "sample": {
+    "fit_rows": 20000,
+    "silhouette_rows": 5000,
+    "id_sha256": "b3a4600faf201f8cd22e52448394f2cb4bc2a803641a915f0d8e4d0437c7723a",
+    "validation_used": false
+  },
+  "umap": {
+    "n_components": 15,
+    "n_neighbors": 15,
+    "min_dist": 0.1,
+    "metric": "euclidean",
+    "init": "random",
+    "fitted_on_rows": 120000,
+    "elapsed_seconds": 448.36344012100017
+  },
+  "candidate_count": 12,
+  "selected": {
+    "kmeans": {
+      "id": "kmeans_k40",
+      "algorithm": "kmeans",
+      "clusters": 40.0,
+      "noise_fraction": 0.0,
+      "small_cluster_fraction": 0.0,
+      "largest_cluster_fraction": 0.13885,
+      "minimum_cluster_rows": 61.0,
+      "median_cluster_rows": 196.5,
+      "maximum_cluster_rows": 2777.0,
+      "silhouette_rows": 5000.0,
+      "silhouette_mean": 0.13756345212459564,
+      "silhouette_median": 0.1435348391532898,
+      "negative_silhouette_fraction": 0.2896,
+      "neighbor_same_cluster_rate": 0.71008,
+      "neighbor_chance_rate": 0.071541695,
+      "neighbor_lift": 0.6385383050000001,
+      "unique_hash_fraction": 0.80195,
+      "template_dominated_rows_fraction": 0.0,
+      "product_nmi": 0.203007916138429,
+      "t1_nmi": 0.20373495742209882,
+      "elapsed_seconds": 0.7402007529744878,
+      "initial_failures": [],
+      "stability_ari": 0.6260025961209845,
+      "stability_ari_all": 0.6260025961209845,
+      "assignment_type": "native_centers",
+      "future_coverage": 0.9899,
+      "future_rejected_fraction": 0.010099999999999998,
+      "final_failures": [],
+      "accepted": true,
+      "selected": true,
+      "parameters": {
+        "clusters": 40
+      }
+    },
+    "hdbscan": {
+      "id": "hdbscan_mcs500_ms30",
+      "algorithm": "hdbscan",
+      "clusters": 2.0,
+      "noise_fraction": 0.4891,
+      "small_cluster_fraction": 0.0,
+      "largest_cluster_fraction": 0.46555,
+      "minimum_cluster_rows": 907.0,
+      "median_cluster_rows": 5109.0,
+      "maximum_cluster_rows": 9311.0,
+      "silhouette_rows": 2558.0,
+      "silhouette_mean": 0.5454990267753601,
+      "silhouette_median": 0.592538595199585,
+      "negative_silhouette_fraction": 0.029319781078967943,
+      "neighbor_same_cluster_rate": 0.9928194558021262,
+      "neighbor_chance_rate": 0.8382285744081048,
+      "neighbor_lift": 0.15459088139402133,
+      "unique_hash_fraction": 0.9935408103347034,
+      "template_dominated_rows_fraction": 0.0,
+      "product_nmi": 0.04833946556011386,
+      "t1_nmi": 0.05831700545236487,
+      "mean_probability": 0.4839662601824457,
+      "elapsed_seconds": 8.161148182000034,
+      "initial_failures": [
+        "cluster_count",
+        "noise"
+      ],
+      "stability_ari": 1.0,
+      "stability_ari_all": 0.9520471183490403,
+      "assignment_type": "centroid_adapter",
+      "future_coverage": 0.626325,
+      "future_rejected_fraction": 0.373675,
+      "final_failures": [
+        "cluster_count",
+        "noise",
+        "future_coverage"
+      ],
+      "accepted": false,
+      "selected": true,
+      "parameters": {
+        "min_cluster_size": 500,
+        "min_samples": 30
+      }
+    },
+    "cure": {
+      "id": "cure_k20_r5_c0.5",
+      "algorithm": "cure",
+      "clusters": 20.0,
+      "noise_fraction": 0.0,
+      "small_cluster_fraction": 0.0079,
+      "largest_cluster_fraction": 0.9921,
+      "minimum_cluster_rows": 3.0,
+      "median_cluster_rows": 8.5,
+      "maximum_cluster_rows": 19842.0,
+      "silhouette_rows": 5000.0,
+      "silhouette_mean": 0.40929749608039856,
+      "silhouette_median": 0.5251033306121826,
+      "negative_silhouette_fraction": 0.0892,
+      "neighbor_same_cluster_rate": 0.988085,
+      "neighbor_chance_rate": 0.984266,
+      "neighbor_lift": 0.003819000000000017,
+      "unique_hash_fraction": 0.80195,
+      "template_dominated_rows_fraction": 0.0079,
+      "product_nmi": 0.004014505591932826,
+      "t1_nmi": 0.007440514848456529,
+      "elapsed_seconds": 180.15977998601738,
+      "initial_failures": [
+        "largest_cluster",
+        "neighbor_lift"
+      ],
+      "stability_ari": 0.4307434357964067,
+      "stability_ari_all": 0.4307434357964067,
+      "assignment_type": "representative_adapter",
+      "future_coverage": 0.95755,
+      "future_rejected_fraction": 0.04244999999999999,
+      "final_failures": [
+        "largest_cluster",
+        "neighbor_lift",
+        "stability"
+      ],
+      "accepted": false,
+      "selected": true,
+      "parameters": {
+        "clusters": 20,
+        "representatives": 5,
+        "compression": 0.5
+      }
+    }
+  },
+  "decision": {
+    "recommended_algorithm": "kmeans",
+    "best_geometry": "kmeans",
+    "accepted_algorithms": [
+      "kmeans"
+    ]
+  },
+  "acceptance": {
+    "minimum_clusters": 5,
+    "maximum_clusters": 100,
+    "maximum_largest_cluster_fraction": 0.5,
+    "maximum_small_cluster_fraction": 0.1,
+    "small_cluster_rows": 50,
+    "maximum_noise_fraction": 0.4,
+    "minimum_silhouette": 0.0,
+    "maximum_negative_silhouette_fraction": 0.35,
+    "minimum_neighbor_lift": 0.1,
+    "minimum_stability_ari": 0.6,
+    "minimum_future_coverage": 0.7,
+    "maximum_template_dominated_fraction": 0.25
+  },
+  "versions": {
+    "scikit_learn": "1.9.1",
+    "umap_learn": "0.5.12",
+    "pyclustering": "0.10.1.2"
+  },
+  "resources": {
+    "elapsed_seconds": 1582.6698580030352,
+    "maximum_rss_gib": 3.0247421264648438
+  }
+}

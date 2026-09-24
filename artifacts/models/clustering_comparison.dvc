@@ -1,0 +1,6 @@
+outs:
+- md5: 425408aa84d0e2a44b8c5becd467e724.dir
+  size: 345751521
+  nfiles: 28
+  hash: md5
+  path: clustering_comparison

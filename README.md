@@ -76,7 +76,7 @@ conjunto completo de reclamos.
 - [x] **M6 — Preparar el espacio semántico:** reutilizar los embeddings de M5,
   ajustar PCA con la muestra del periodo de ajuste, crear una visualización UMAP
   y validar vecinos con FAISS.
-- [ ] **M7 — Comparar métodos de clustering:** evaluar MiniBatchKMeans con
+- [x] **M7 — Comparar métodos de clustering:** evaluar MiniBatchKMeans con
   inicialización k-means++, HDBSCAN y CURE sobre la misma muestra. Comparar
   silhouette, estabilidad, coherencia, ruido, costo y asignación futura.
 - [ ] **M8 — Congelar patrones y crear series:** elegir el método, fijar sus
@@ -398,6 +398,56 @@ están en `reports/modeling/semantic_space_results.json`,
 `reports/modeling/semantic_pca_variance.png` y
 `reports/modeling/semantic_umap_2d.png`.
 
+## Resultados de clustering M7
+
+M7 ajustó un UMAP de 15 dimensiones con las 120,000 filas de ajuste y comparó
+12 configuraciones sobre la misma muestra de 20,000 reclamos. La validación no
+se utilizó.
+
+| Método seleccionado | Silhouette | Estabilidad ARI | Resultado |
+| --- | ---: | ---: | --- |
+| MiniBatchKMeans, `k=40` | 0.1376 | 0.6260 | Aceptado como prototipo |
+| HDBSCAN | 0.5455 | 1.0000 | Rechazado |
+| CURE | 0.4093 | 0.4307 | Rechazado |
+
+El **ARI** mide si aparecen grupos parecidos al repetir el método sobre muestras
+diferentes. Un valor de 1 representa acuerdo completo y 0 indica que el acuerdo
+no supera lo esperado por azar.
+
+El silhouette alto no fue suficiente para aceptar HDBSCAN o CURE:
+
+- **HDBSCAN** produjo solo 2 grupos, dejó 48.91% como ruido y su adaptador solo
+  pudo asignar 62.63% de calibración.
+- **CURE** colocó 99.21% de los reclamos en un único grupo. Su estabilidad fue
+  0.4307 y su mejora sobre la coincidencia esperada de vecinos fue casi nula.
+
+MiniBatchKMeans con `k=40` fue el único que pasó todos los criterios congelados:
+
+- ningún reclamo quedó sin grupo;
+- el grupo más grande contiene 13.89% de la muestra;
+- 71.01% de los diez vecinos BGE comparten grupo, frente a 7.15% esperado solo
+  por los tamaños;
+- 98.99% de calibración quedó dentro de las distancias observadas en ajuste;
+- ningún grupo quedó dominado en más de 50% por una sola plantilla.
+
+La evidencia es útil pero moderada: silhouette es 0.1376, 28.96% de la muestra
+tiene silhouette negativo y la estabilidad ARI es 0.6260. Por eso hablaremos de
+una **partición de trabajo**, no de 40 categorías naturales confirmadas.
+
+M8 volverá a ajustar `k=40` sobre todas las 120,000 filas de ajuste antes de
+asignar el corpus elegible y crear los conteos semanales.
+
+El artefacto quedó registrado con DVC:
+
+- Ruta: `artifacts/models/clustering_comparison`.
+- Hash DVC: `425408aa84d0e2a44b8c5becd467e724.dir`.
+- Tamaño: 345,751,521 bytes.
+- Ejecución SLURM: 26 minutos 29 segundos y aproximadamente 2.68 GiB.
+
+El run `m7-cluster-comparison` está publicado en MLflow. Los resultados están en
+`reports/modeling/clustering_results.json` y
+`reports/modeling/clustering_candidates.csv`.
+
 ## Orden de comparación
 
 ```mermaid
@@ -501,6 +551,7 @@ Khipu usa SLURM. Los scripts reproducibles y sus instrucciones están en
 - [Notebook de modelos base](notebooks/03_modelos_base.ipynb).
 - [Notebook de comparación BGE](notebooks/04_bge.ipynb).
 - [Notebook del espacio semántico](notebooks/05_espacio_semantico.ipynb).
+- [Notebook de comparación de clustering](notebooks/06_comparacion_clustering.ipynb).
 
 ## Criterio para cerrar esta rama
 

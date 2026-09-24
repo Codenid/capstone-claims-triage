@@ -140,7 +140,7 @@ fragmentos. E5 encontró que 8.43% supera 400 palabras.
 | T4 — no oportuna CFPB | Frecuencia global | Regla por producto | Los modelos de texto fueron menos estables |
 | Reducción y visualización | Embedding BGE | PCA y UMAP 2D | Reducir ruido y revisar visualmente el espacio semántico |
 | Vecinos similares | No aplica | FAISS | Búsqueda rápida entre millones de embeddings |
-| Grupos semánticos | MiniBatchKMeans con k-means++ | HDBSCAN y CURE | Comparar escalabilidad, ruido y formas irregulares |
+| Grupos semánticos | HDBSCAN y CURE | MiniBatchKMeans con `k=40` | Único método que pasó separación, estabilidad, tamaño y asignación futura |
 | Descripción del grupo | Palabras frecuentes | c-TF-IDF | Explicar cada grupo con términos representativos |
 | Volumen temporal | Media histórica | Negative Binomial con PyMC | Estimar el conteo esperado y su incertidumbre |
 | Composición temporal | Proporción histórica | Dirichlet-Multinomial con PyMC | Detectar cambios relativos entre todos los grupos |
@@ -251,6 +251,31 @@ los otros grupos. Valores cercanos a 1 indican separación, cerca de 0 indican
 solapamiento y valores negativos sugieren una asignación dudosa. No será el
 único criterio porque suele favorecer grupos compactos y puede penalizar las
 formas irregulares de HDBSCAN o CURE.
+
+### Resultado de M7
+
+Se compararon 12 configuraciones sobre las mismas 20,000 filas de ajuste y un
+UMAP común de 15 dimensiones.
+
+MiniBatchKMeans con `k=40` fue el único método aceptado. Obtuvo silhouette
+0.1376, estabilidad ARI 0.6260, ningún caso sin grupo y 98.99% de cobertura al
+aplicar su regla de novedad en calibración. El grupo más grande representa
+13.89% de la muestra.
+
+HDBSCAN obtuvo silhouette 0.5455, pero formó solo 2 grupos y marcó 48.91% como
+ruido. El valor alto describe únicamente la parte que decidió agrupar; no
+compensa la baja cobertura.
+
+CURE obtuvo silhouette 0.4093, pero colocó 99.21% de los reclamos en un solo
+grupo. Su estabilidad ARI fue 0.4307. Por eso también fue rechazado.
+
+La elección de k-means es operacional, no una afirmación de que existan 40
+categorías naturales. Su silhouette es moderado y 28.96% de los casos evaluados
+tiene silhouette negativo. M8 deberá ajustar nuevamente `k=40` con todas las
+120,000 filas de ajuste y conservar una señal separada de novedad.
+
+El artefacto M7 está en DVC con hash
+`425408aa84d0e2a44b8c5becd467e724.dir`.
 
 c-TF-IDF ayudará a describir cada grupo mediante las palabras que lo distinguen
 de los demás. No determina fraude ni reemplaza la revisión humana.
