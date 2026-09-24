@@ -1,0 +1,6 @@
+outs:
+- md5: 009e3b35e25d9df095cf753e0a05f041.dir
+  size: 1090649311
+  nfiles: 15
+  hash: md5
+  path: bge_sample

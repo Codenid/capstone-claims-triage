@@ -71,7 +71,7 @@ conjunto completo de reclamos.
 - [x] **M3 — Crear referencias simples:** comparar contra frecuencias globales y
   reglas basadas en producto.
 - [x] **M4 — Entrenar TF-IDF:** evaluar modelos lineales para T1–T4.
-- [ ] **M5 — Evaluar BGE:** generar una muestra en la A100 y compararla con
+- [x] **M5 — Evaluar BGE:** generar una muestra en la A100 y compararla con
   TF-IDF sobre las mismas filas.
 - [ ] **M6 — Buscar patrones semánticos:** crear vecinos FAISS, grupos y una
   medida de novedad.
@@ -230,6 +230,48 @@ Los modelos convergieron y se guardaron con DVC:
 Los resultados completos están en `reports/modeling/tfidf_results.json` y el
 detalle de T1 por motivo en `reports/modeling/tfidf_t1_per_class.csv`.
 
+## Resultados de BGE M5
+
+**BGE** convierte cada narrativa en un embedding: una lista de números que
+representa su significado. M5 comparó BGE y TF-IDF sobre exactamente la misma
+muestra temporal:
+
+- 120,000 filas de ajuste;
+- 40,000 filas de calibración;
+- 80,000 filas de validación.
+
+En la validación sin texto compartido:
+
+| Objetivo | TF-IDF + producto | BGE + producto | Decisión |
+| --- | ---: | ---: | --- |
+| T1 — Macro-F1 | 0.1968 | **0.2367** | Conservar BGE como candidato |
+| T2 — precisión promedio | 0.5662 | 0.5666 | Conservar TF-IDF por simplicidad |
+| T3 — precisión promedio | **0.2640** | 0.2576 | Conservar TF-IDF |
+| T4 — precisión promedio | **0.0791** | 0.0624 | Conservar regla por producto de M3 |
+
+BGE aporta una mejora clara para sugerir el motivo T1. Para T2 la diferencia es
+menor a 0.001 y no justifica usar una representación más costosa. BGE tampoco
+mejora T3 ni T4. Por tanto, el prototipo no usará el mismo modelo para todos los
+objetivos.
+
+BGE seguirá siendo necesario en M6 para buscar reclamos con significado parecido
+y crear grupos semánticos. Ese uso es distinto de predecir T1–T4: una
+representación puede aportar buenos vecinos aunque no mejore una clasificación.
+
+Los clasificadores convergieron. BGE-T3 necesitó 38 iteraciones y BGE-T4, 63. El
+artefacto quedó registrado con DVC:
+
+- Ruta: `artifacts/models/bge_sample`.
+- Hash DVC: `009e3b35e25d9df095cf753e0a05f041.dir`.
+- Tamaño: 1,090,649,311 bytes.
+- Modelo: `BAAI/bge-large-en-v1.5`, revisión
+  `d4aa6901d3a41ba39fb536a557fa166f842b0e09`.
+
+La A100 generó los embeddings iniciales en 29 minutos 56 segundos. La repetición
+de los clasificadores reutilizó esos embeddings y terminó en CPU en 4 minutos
+19 segundos. Los ocho runs de comparación están publicados en MLflow y el
+reporte completo está en `reports/modeling/bge_sample_results.json`.
+
 ## Orden de comparación
 
 ```mermaid
@@ -314,6 +356,7 @@ Khipu usa SLURM. Los scripts reproducibles y sus instrucciones están en
 - [Propuesta detallada de modelos](docs/modelos.md).
 - [Notebook de preparación](notebooks/02_revision_preparacion.ipynb).
 - [Notebook de modelos base](notebooks/03_modelos_base.ipynb).
+- [Notebook de comparación BGE](notebooks/04_bge.ipynb).
 
 ## Criterio para cerrar esta rama
 

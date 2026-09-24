@@ -119,21 +119,25 @@ usen exactamente las mismas palabras.
 
 Modelo candidato: `BAAI/bge-large-en-v1.5`.
 
-La A100 disponible puede utilizarse para generar embeddings e índices de
-similitud. Antes de procesar todo el corpus, BGE deberá compararse contra
-TF-IDF sobre las mismas filas y periodos.
+La A100 disponible se utilizó para generar embeddings sobre una muestra
+temporal. M5 comparó BGE y TF-IDF sobre las mismas filas y periodos.
+
+En la validación sin texto compartido, BGE mejoró Macro-F1 de 0.1968 a 0.2367
+para T1. En T2 prácticamente empató con TF-IDF y en T3–T4 quedó por debajo. La
+decisión es usar BGE como candidato para T1 y para similitud semántica, no como
+reemplazo general de TF-IDF.
 
 Las narrativas largas requieren decidir si se recortan o se dividen en
 fragmentos. E5 encontró que 8.43% supera 400 palabras.
 
 ## Modelos por componente
 
-| Componente | Comparación inicial | Modelo candidato | Razón |
+| Componente | Referencia | Decisión actual | Razón |
 |---|---|---|---|
-| T1 — motivo | TF-IDF + regresión logística | BGE + clasificador lineal o red pequeña | Comparar palabras exactas contra significado semántico |
-| T2 — alguna solución | TF-IDF + regresión logística | BGE + clasificador calibrado | Señal auxiliar con desbalance moderado |
-| T3 — compensación monetaria | TF-IDF + regresión logística | BGE + clasificador calibrado | Solo 2.568% de positivos en todo el corpus |
-| T4 — no oportuna CFPB | TF-IDF + regresión logística | BGE + clasificador calibrado | Solo 1.111% de positivos y cambio temporal |
+| T1 — motivo | TF-IDF + producto | BGE + producto | BGE mejoró Macro-F1 en M5 |
+| T2 — alguna solución | Regla por producto | TF-IDF + producto | BGE empató, pero cuesta más |
+| T3 — compensación monetaria | Regla por producto | TF-IDF + producto | TF-IDF superó a BGE |
+| T4 — no oportuna CFPB | Frecuencia global | Regla por producto | Los modelos de texto fueron menos estables |
 | Vecinos similares | No aplica | FAISS | Búsqueda rápida entre millones de embeddings |
 | Grupos semánticos | k-means sobre embeddings | HDBSCAN por muestra o segmento | Descubrir patrones sin etiquetas confirmadas |
 | Descripción del grupo | Palabras frecuentes | c-TF-IDF | Explicar cada grupo con términos representativos |
@@ -144,6 +148,23 @@ fragmentos. E5 encontró que 8.43% supera 400 palabras.
 Un modelo **calibrado** produce probabilidades interpretables. Por ejemplo, de
 100 casos con probabilidad cercana a 20%, aproximadamente 20 deberían resultar
 positivos.
+
+### Decisión después de M5
+
+| Objetivo | Modelo conservado | Razón |
+|---|---|---|
+| T1 | BGE + producto | Mejoró Macro-F1 en 0.0399 sobre la misma muestra |
+| T2 | TF-IDF + producto | BGE mejoró menos de 0.001 y cuesta más |
+| T3 | TF-IDF + producto | Superó a BGE en precisión promedio |
+| T4 | Regla por producto | Tanto TF-IDF como BGE quedaron por debajo de M3 |
+
+La decisión se toma por objetivo. No se fuerza un único modelo para todo el
+triaje. BGE continúa hacia M6 porque los embeddings también permiten recuperar
+vecinos y formar grupos; esa utilidad no depende de ganar T2–T4.
+
+El experimento usó 120,000 filas de ajuste, 40,000 de calibración y 80,000 de
+validación. Los clasificadores convergieron y el artefacto está en DVC con hash
+`009e3b35e25d9df095cf753e0a05f041.dir`.
 
 ## Descubrimiento de patrones
 
