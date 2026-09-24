@@ -110,6 +110,7 @@ semantic_space:
     n_neighbors: 15
     min_dist: 0.1
     metric: euclidean
+    init: random
     plot_rows_per_split: 10000
   faiss:
     index_type: flat_inner_product

@@ -144,6 +144,7 @@ def fit_umap(
         n_neighbors=settings["n_neighbors"],
         min_dist=settings["min_dist"],
         metric=settings["metric"],
+        init=settings["init"],
         random_state=seed,
         transform_seed=seed,
         low_memory=True,
