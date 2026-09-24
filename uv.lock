@@ -435,6 +435,7 @@ gpu = [
 ]
 semantic = [
     { name = "faiss-cpu" },
+    { name = "pyclustering" },
     { name = "umap-learn" },
 ]
 
@@ -460,6 +461,7 @@ dev = [
 gpu = [{ name = "sentence-transformers", specifier = ">=5.1,<6" }]
 semantic = [
     { name = "faiss-cpu", specifier = ">=1.12,<2" },
+    { name = "pyclustering", specifier = "==0.10.1.2" },
     { name = "umap-learn", specifier = ">=0.5.9,<1" },
 ]
 
@@ -3673,6 +3675,18 @@ sdist = { url = "https://files.pythonhosted.org/packages/e9/e6/78ebbb10a8c8e4b61
 wheels = [
     { url = "https://files.pythonhosted.org/packages/47/8d/d529b5d697919ba8c11ad626e835d4039be708a35b0d22de83a269a6682c/pyasn1_modules-0.4.2-py3-none-any.whl", hash = "sha256:29253a9207ce32b64c3ac6600edc75368f98473906e8fd1043bd6b5b1de2c14a", size = 181259, upload-time = "2025-03-28T02:41:19.028Z" },
 ]
+
+[[package]]
+name = "pyclustering"
+version = "0.10.1.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "matplotlib" },
+    { name = "numpy" },
+    { name = "pillow" },
+    { name = "scipy" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/4b/cf/6c1183d0c1e76df398d0808f78cabaedd87a1ca7548b9b03d51620ff55eb/pyclustering-0.10.1.2.tar.gz", hash = "sha256:8a98fd299fcc1e21b7b7c963275162dd7194aa3d921aa66d313775597cf833d1", size = 2575620, upload-time = "2020-11-25T22:41:20.453Z" }
 
 [[package]]
 name = "pycparser"

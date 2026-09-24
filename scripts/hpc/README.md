@@ -191,6 +191,28 @@ uv run --no-sync python src/evaluation/publish_run.py \
   reports/modeling/runs/m6/semantic_space/run.json
 ```
 
+M7 compara clustering sobre una muestra común del periodo de ajuste:
+
+```bash
+uv sync --group semantic
+uv run --no-sync dvc pull artifacts/models/bge_sample.dvc
+uv run --no-sync dvc pull artifacts/models/semantic_space.dvc
+uv run --no-sync python -m unittest tests.test_cluster_comparison -v
+sbatch scripts/hpc/m7_cluster_comparison.slurm
+```
+
+Al terminar, guardar el artefacto y publicar el run agregado:
+
+```bash
+uv run --no-sync dvc add artifacts/models/clustering_comparison
+uv run --no-sync dvc push artifacts/models/clustering_comparison.dvc
+set -a
+source .env
+set +a
+uv run --no-sync python src/evaluation/publish_run.py \
+  reports/modeling/runs/m7/cluster_comparison/run.json
+```
+
 Verificar acceso a la A100:
 
 ```bash

@@ -19,6 +19,13 @@ paths:
   semantic_pca_plot: reports/modeling/semantic_pca_variance.png
   semantic_umap_plot: reports/modeling/semantic_umap_2d.png
   semantic_artifacts: artifacts/models/semantic_space
+  semantic_artifacts_dvc: artifacts/models/semantic_space.dvc
+  clustering_report: reports/modeling/clustering_results.json
+  clustering_candidates: reports/modeling/clustering_candidates.csv
+  clustering_silhouette_plot: reports/modeling/clustering_silhouette.png
+  clustering_umap_plot: reports/modeling/clustering_umap_2d.png
+  clustering_sizes_plot: reports/modeling/clustering_sizes.png
+  clustering_artifacts: artifacts/models/clustering_comparison
   offline_runs: reports/modeling/runs
 
 evaluation:
@@ -119,6 +126,63 @@ semantic_space:
     query_rows_per_split: 1000
     exact_check_rows_per_split: 8
     threads: 16
+
+clustering:
+  source_dvc_hash: 08662a82971a71666b06c9ccf8120d7f.dir
+  comparison_rows: 20000
+  silhouette_rows: 5000
+  semantic_neighbors: 10
+  stability_fraction: 0.8
+  stability_seeds:
+    - 42
+    - 43
+    - 44
+  umap:
+    n_components: 15
+    n_neighbors: 15
+    min_dist: 0.1
+    metric: euclidean
+    init: random
+  kmeans:
+    clusters:
+      - 20
+      - 40
+      - 80
+    batch_size: 4096
+    n_init: 5
+    max_iter: 100
+  hdbscan:
+    min_cluster_size:
+      - 100
+      - 250
+      - 500
+    min_samples:
+      - 10
+      - 30
+  cure:
+    candidates:
+      - clusters: 20
+        representatives: 5
+        compression: 0.5
+      - clusters: 40
+        representatives: 5
+        compression: 0.5
+      - clusters: 80
+        representatives: 5
+        compression: 0.5
+  acceptance:
+    minimum_clusters: 5
+    maximum_clusters: 100
+    maximum_largest_cluster_fraction: 0.5
+    maximum_small_cluster_fraction: 0.1
+    small_cluster_rows: 50
+    maximum_noise_fraction: 0.4
+    minimum_silhouette: 0.0
+    maximum_negative_silhouette_fraction: 0.35
+    minimum_neighbor_lift: 0.1
+    minimum_stability_ari: 0.6
+    minimum_future_coverage: 0.7
+    maximum_template_dominated_fraction: 0.25
 
 features:
   initial:

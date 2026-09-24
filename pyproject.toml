@@ -33,5 +33,6 @@ dev = [
 ]
 semantic = [
     "faiss-cpu>=1.12,<2",
+    "pyclustering==0.10.1.2",
     "umap-learn>=0.5.9,<1",
 ]
