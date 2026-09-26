@@ -1,4 +1,4 @@
-"""Generate predictions for the weekly Negative Binomial model."""
+"""Prediction summaries shared by weekly count models."""
 
 from __future__ import annotations
 
@@ -6,14 +6,6 @@ import numpy as np
 import pandas as pd
 
 from src.models.weekly_counts.contracts import PREDICTIVE_QUANTILES
-from src.models.weekly_counts.negative_binomial import (
-    expected_counts as negative_binomial_expected_counts,
-    negative_binomial_draws,
-)
-from src.models.weekly_counts.poisson import (
-    expected_counts as poisson_expected_counts,
-    predictive_draws as poisson_predictive_draws,
-)
 
 
 def _quantile_label(value: float) -> str:
@@ -37,40 +29,14 @@ def summarize_draws(draws: np.ndarray, prefix: str) -> pd.DataFrame:
     return pd.DataFrame(result)
 
 
-def generate_predictions(
+def build_predictions(
     frame: pd.DataFrame,
-    log_rate_draws: np.ndarray,
-    trend_draws: np.ndarray,
-    alpha_draws: np.ndarray,
-    baseline_rates: np.ndarray,
-    seed: int,
+    expected_draws: np.ndarray,
+    predictive_draws: np.ndarray,
+    reference_draws: np.ndarray,
 ) -> pd.DataFrame:
-    cluster_index = frame["cluster_id"].to_numpy(dtype=np.int64)
-    weekly_total = frame["weekly_total"].to_numpy(dtype=float)
-    time_years = frame["time_years"].to_numpy(dtype=float)
     observed = frame["complaint_count"].to_numpy(dtype=np.int64)
-
-    mu = negative_binomial_expected_counts(
-        log_rate_draws,
-        trend_draws,
-        cluster_index,
-        weekly_total,
-        time_years,
-    )
-    alpha = alpha_draws[:, cluster_index]
-    predictive = negative_binomial_draws(mu, alpha, seed)
-
-    baseline_mu = poisson_expected_counts(
-        cluster_index,
-        weekly_total,
-        baseline_rates,
-    )
-    baseline_predictive = poisson_predictive_draws(
-        baseline_mu,
-        draws=mu.shape[0],
-        seed=seed + 1,
-    )
-
+    weekly_total = frame["weekly_total"].to_numpy(dtype=float)
     columns = [
         "split",
         "week",
@@ -83,22 +49,22 @@ def generate_predictions(
     result = pd.concat(
         [
             result,
-            summarize_draws(mu, "expected"),
-            summarize_draws(predictive, "model"),
-            summarize_draws(baseline_predictive, "baseline"),
+            summarize_draws(expected_draws, "expected"),
+            summarize_draws(predictive_draws, "model"),
+            summarize_draws(reference_draws, "baseline"),
         ],
         axis=1,
     )
     result["model_upper_tail_probability"] = (
-        predictive >= observed[None, :]
+        predictive_draws >= observed[None, :]
     ).mean(axis=0)
     result["baseline_upper_tail_probability"] = (
-        baseline_predictive >= observed[None, :]
+        reference_draws >= observed[None, :]
     ).mean(axis=0)
     result["model_impossible_probability"] = (
-        predictive > weekly_total[None, :]
+        predictive_draws > weekly_total[None, :]
     ).mean(axis=0)
     result["baseline_impossible_probability"] = (
-        baseline_predictive > weekly_total[None, :]
+        reference_draws > weekly_total[None, :]
     ).mean(axis=0)
     return result

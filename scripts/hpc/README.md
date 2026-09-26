@@ -292,27 +292,34 @@ de `fit`. Calibración y validación se predicen sin actualizar el posterior:
 
 ```bash
 uv sync --group probabilistic
-uv run --no-sync python -m unittest tests.test_negative_binomial -v
+uv run --no-sync python -m unittest \
+  tests.test_negative_binomial \
+  tests.test_weekly_count_models -v
 sbatch scripts/hpc/m9_negative_binomial.slurm
 ```
 
 El job ejecuta el entry point modular
-`python -m src.models.weekly_counts.run`. Usa PyMC con cuatro cadenas NUTS de
-NumPyro/JAX en CPU. Además desactiva el compilador C de PyTensor para crear los
-puntos iniciales, ya que los nodos
-SLURM no tienen los encabezados de desarrollo del sistema. Escribe primero en
-`artifacts/models/.negative_binomial.inprogress`. Si se interrumpe, conservar ese
-directorio para revisar el posterior parcial antes de decidir si se repite. Al
-terminar:
+`python -m src.models.weekly_counts.run` con la configuración
+`configs/weekly_counts/nb_softmax_linear_v2.yaml`. Usa PyMC con cuatro cadenas
+NUTS de NumPyro/JAX en CPU. Además desactiva el compilador C de PyTensor para
+crear los puntos iniciales, ya que los nodos SLURM no tienen los encabezados de
+desarrollo del sistema.
+
+Cada ejecución recibe un `run_key` único y escribe primero en directorios
+`.inprogress` dentro de `reports/modeling/weekly_counts/<model_id>/` y
+`artifacts/models/weekly_counts/<model_id>/`. Si se interrumpe, conservar esos
+directorios para revisar el posterior parcial antes de decidir si se repite. El
+log de SLURM muestra el `run_key` y las rutas finales cuando el job termina.
+Después, versionar la colección de artefactos y publicar el registro específico:
 
 ```bash
-uv run --no-sync dvc add artifacts/models/negative_binomial
-uv run --no-sync dvc push artifacts/models/negative_binomial.dvc
+uv run --no-sync dvc add artifacts/models/weekly_counts
+uv run --no-sync dvc push artifacts/models/weekly_counts.dvc
 set -a
 source .env
 set +a
 uv run --no-sync python src/evaluation/publish_run.py \
-  reports/modeling/runs/m9/normalized_softmax_v2/run.json
+  reports/modeling/weekly_counts/nb_softmax_linear_v2/RUN_KEY/run.json
 ```
 
 MLflow recibirá la fórmula, los priors, la configuración del muestreo,

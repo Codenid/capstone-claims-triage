@@ -689,7 +689,6 @@ def main() -> None:
     staging_dir = PROJECT_ROOT / config["paths"]["bge_full_staging"]
     report_path = PROJECT_ROOT / config["paths"]["bge_full_report"]
     if (output_dir / "_SUCCESS").exists():
-        migrate_completed_output(output_dir, report_path, config)
         print(f"M8A is already complete: {output_dir.relative_to(PROJECT_ROOT)}")
         return
     if output_dir.exists():

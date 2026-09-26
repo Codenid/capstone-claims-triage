@@ -1,11 +1,14 @@
-from datetime import date
 import unittest
 
 import numpy as np
 import pandas as pd
 
-from src.models import negative_binomial as legacy_negative_binomial
 from src.models.weekly_counts.data import prepare_model_frame, validate_weekly_counts
+from src.models.weekly_counts.fixed_poisson_reference import (
+    expected_counts as reference_expected_counts,
+    fit_baseline_rates,
+    predictive_draws as reference_predictive_draws,
+)
 from src.models.weekly_counts.metrics import (
     calibration_acceptance,
     predictive_metrics,
@@ -16,13 +19,10 @@ from src.models.weekly_counts.negative_binomial import (
     negative_binomial_draws,
     zero_sum_basis,
 )
-from src.models.weekly_counts.poisson import (
-    fit_baseline_rates,
-    predictive_draws as poisson_predictive_draws,
-)
-from src.models.weekly_counts.prediction import generate_predictions
-from src.models.weekly_counts.reporting import config_fingerprint
-from src.models.weekly_counts.sampling import simulate_prior_predictive
+from src.models.weekly_counts.models import nb_softmax_linear_v2
+from src.models.weekly_counts.prediction import build_predictions
+from src.models.weekly_counts.reporting import source_manifest_sha256
+from src.models.weekly_counts.sampling import sample_prior_predictive
 
 
 class NegativeBinomialTests(unittest.TestCase):
@@ -58,12 +58,6 @@ class NegativeBinomialTests(unittest.TestCase):
             time_scale_days=365.25,
         )[0]
 
-    def test_legacy_module_reexports_weekly_count_helpers(self):
-        self.assertIs(legacy_negative_binomial.expected_counts, expected_counts)
-        self.assertIs(
-            legacy_negative_binomial.validate_weekly_counts,
-            validate_weekly_counts,
-        )
 
     def test_excludes_partial_weeks_and_checks_frozen_counts(self):
         complete = validate_weekly_counts(
@@ -151,8 +145,8 @@ class NegativeBinomialTests(unittest.TestCase):
     def test_poisson_draws_are_seeded_and_non_negative(self):
         mu = np.array([10.0, 20.0, 30.0])
 
-        first = poisson_predictive_draws(mu, draws=4, seed=42)
-        second = poisson_predictive_draws(mu, draws=4, seed=42)
+        first = reference_predictive_draws(mu, draws=4, seed=42)
+        second = reference_predictive_draws(mu, draws=4, seed=42)
 
         self.assertEqual(first.shape, (4, 3))
         self.assertTrue((first >= 0).all())
@@ -182,8 +176,9 @@ class NegativeBinomialTests(unittest.TestCase):
             "sampling": {"prior_draws": 5},
         }
 
-        first = simulate_prior_predictive(prepared, settings, seed=42)
-        second = simulate_prior_predictive(prepared, settings, seed=42)
+        model = nb_softmax_linear_v2.build_model(prepared, settings)
+        first = sample_prior_predictive(model, 5, "observed", seed=42)
+        second = sample_prior_predictive(model, 5, "observed", seed=42)
 
         self.assertEqual(first.shape, (5, len(prepared)))
         self.assertTrue((first >= 0).all())
@@ -204,18 +199,11 @@ class NegativeBinomialTests(unittest.TestCase):
     def test_generates_all_predictive_quantiles(self):
         prepared = self.prepared()
         draws = 20
-        log_rate = np.log(np.tile(np.array([[0.75, 0.25]]), (draws, 1)))
-        trend = np.zeros((draws, 2))
-        alpha = np.full((draws, 2), 10.0)
-
-        predictions = generate_predictions(
-            prepared,
-            log_rate,
-            trend,
-            alpha,
-            np.array([0.75, 0.25]),
-            seed=42,
-        )
+        observed = prepared["complaint_count"].to_numpy(dtype=float)
+        expected = np.tile(observed, (draws, 1))
+        predictive = np.tile(observed, (draws, 1)).astype(np.int64)
+        reference = predictive.copy()
+        predictions = build_predictions(prepared, expected, predictive, reference)
 
         for column in (
             "model_p025",
@@ -284,19 +272,12 @@ class NegativeBinomialTests(unittest.TestCase):
         self.assertTrue(result["accepted"])
         self.assertTrue(all(result["checks"].values()))
 
-    def test_fingerprint_accepts_dates_loaded_from_yaml(self):
-        config = {
-            "negative_binomial": {"clusters": 40},
-            "evaluation": {
-                "splits": {
-                    "fit": {"start": date(2023, 1, 1), "end": date(2024, 10, 1)}
-                }
-            },
-        }
+    def test_source_manifest_hash_is_order_independent(self):
+        first = source_manifest_sha256({"b.py": "2", "a.py": "1"})
+        second = source_manifest_sha256({"a.py": "1", "b.py": "2"})
 
-        fingerprint = config_fingerprint(config)
-
-        self.assertEqual(len(fingerprint), 64)
+        self.assertEqual(first, second)
+        self.assertEqual(len(first), 64)
 
 
 if __name__ == "__main__":

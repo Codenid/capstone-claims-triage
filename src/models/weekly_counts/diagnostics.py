@@ -1,4 +1,4 @@
-"""Diagnostics for the weekly Negative Binomial model."""
+"""Diagnostics for weekly count models."""
 
 from __future__ import annotations
 
@@ -11,27 +11,20 @@ import pandas as pd
 
 def posterior_diagnostics(
     idata: Any,
+    diagnostic_variables: tuple[str, ...],
+    summary_variables: tuple[str, ...],
     max_treedepth: int | None = None,
 ) -> tuple[pd.DataFrame, dict[str, float | int]]:
     az = importlib.import_module("arviz")
-    free_variables = [
-        "log_rate_sigma",
-        "log_rate_contrast",
-        "annual_trend_sigma",
-        "annual_trend_contrast",
-        "log_alpha_global",
-        "log_alpha_sigma",
-        "log_alpha_contrast",
-    ]
     summary = az.summary(
         idata,
-        var_names=free_variables + ["log_rate", "annual_trend", "alpha"],
+        var_names=list(summary_variables),
         kind="all",
         round_to=None,
     )
     convergence = az.summary(
         idata,
-        var_names=free_variables,
+        var_names=list(diagnostic_variables),
         kind="diagnostics",
         round_to=None,
     )

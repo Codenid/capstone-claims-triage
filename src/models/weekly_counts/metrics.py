@@ -1,4 +1,4 @@
-"""Evaluate predictions from the weekly Negative Binomial model."""
+"""Evaluate predictions from weekly count models."""
 
 from __future__ import annotations
 

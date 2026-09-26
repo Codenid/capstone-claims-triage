@@ -1,4 +1,4 @@
-"""Reporting helpers for the M9 weekly count model."""
+"""Reporting helpers for weekly count models."""
 
 from __future__ import annotations
 
@@ -7,6 +7,7 @@ import importlib
 import json
 import math
 from pathlib import Path
+import shutil
 from typing import Any
 
 import matplotlib
@@ -28,13 +29,33 @@ def file_sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def config_fingerprint(config: dict[str, Any]) -> str:
-    relevant = {
-        "negative_binomial": config["negative_binomial"],
-        "splits": config["evaluation"]["splits"],
-    }
-    encoded = json.dumps(relevant, sort_keys=True, default=str).encode("utf-8")
+def source_manifest(paths: list[Path]) -> dict[str, str]:
+    root = PROJECT_ROOT.resolve()
+    manifest = {}
+    for path in paths:
+        source = path.resolve()
+        relative_path = source.relative_to(root).as_posix()
+        manifest[relative_path] = file_sha256(source)
+    return dict(sorted(manifest.items()))
+
+
+def source_manifest_sha256(manifest: dict[str, str]) -> str:
+    encoded = json.dumps(
+        manifest,
+        sort_keys=True,
+        separators=(",", ":"),
+        ensure_ascii=False,
+    ).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
+
+
+def save_source_snapshot(paths: list[Path], destination: Path) -> None:
+    root = PROJECT_ROOT.resolve()
+    for path in paths:
+        source = path.resolve()
+        target = destination / source.relative_to(root)
+        target.parent.mkdir(parents=True, exist_ok=True)
+        shutil.copy2(source, target)
 
 
 def save_plots(
@@ -45,6 +66,8 @@ def save_plots(
     idata: Any,
     paths: dict[str, Path],
     plot_clusters: int,
+    trace_variables: tuple[str, ...],
+    model_id: str,
 ) -> None:
     fit_totals = (
         predictions.loc[predictions["split"] == "fit"]
@@ -78,7 +101,7 @@ def save_plots(
     for axis in np.asarray(axes).ravel()[len(fit_totals) :]:
         axis.set_visible(False)
     axes.flat[0].legend(fontsize=8)
-    figure.suptitle("M9: conteo observado y distribución predictiva")
+    figure.suptitle(f"M9 {model_id}: conteo observado y distribución predictiva")
     figure.tight_layout()
     figure.savefig(paths["backtest"], dpi=160)
     plt.close(figure)
@@ -89,7 +112,11 @@ def save_plots(
     ]
     figure, axes = plt.subplots(1, 3, figsize=(13, 4), sharey=True)
     for axis, level in zip(axes, (50, 80, 95)):
-        pivot = global_metrics.pivot(index="split", columns="model", values=f"coverage_{level}")
+        pivot = global_metrics.pivot(
+            index="split",
+            columns="model",
+            values=f"coverage_{level}",
+        )
         pivot.plot.bar(ax=axis)
         axis.axhline(level / 100, color="black", linestyle="--")
         axis.set_title(f"Cobertura {level}%")
@@ -128,29 +155,30 @@ def save_plots(
     plt.close(figure)
 
     az = importlib.import_module("arviz")
-    az.plot_trace(
-        idata,
-        var_names=[
-            "log_rate_sigma",
-            "annual_trend_sigma",
-            "log_alpha_global",
-            "log_alpha_sigma",
-        ],
-        compact=True,
-    )
+    az.plot_trace(idata, var_names=trace_variables, compact=True)
     figure = plt.gcf()
     figure.tight_layout()
     figure.savefig(paths["trace"], dpi=140)
     plt.close(figure)
 
 
-def save_offline_record(config: dict[str, Any], report: dict[str, Any]) -> None:
-    settings = config["negative_binomial"]
-    backtest = report["backtest"]
+def save_offline_record(
+    config: dict[str, Any],
+    settings: dict[str, Any],
+    report: dict[str, Any],
+    artifact_paths: list[Path],
+    record_path: Path,
+) -> None:
+    model_spec = report["model_spec"]
+    model_id = model_spec["model_id"]
+    source_status = model_spec["source_status"]
+    family = model_spec["family"]
+    formula = model_spec["formula"]
     diagnostics = report["diagnostics"]
-    acceptance = report["calibration_acceptance"]
     prior_predictive = report["prior_predictive"]
-    mlflow_metrics = {
+    acceptance = report["calibration_acceptance"]
+
+    metrics = {
         "rhat_max": float(diagnostics["rhat_max"]),
         "ess_bulk_min": float(diagnostics["ess_bulk_min"]),
         "ess_tail_min": float(diagnostics["ess_tail_min"]),
@@ -160,89 +188,77 @@ def save_offline_record(config: dict[str, Any], report: dict[str, Any]) -> None:
         "tree_depth_limit_hits": float(
             diagnostics.get("tree_depth_limit_hits", 0)
         ),
-        "prior_median": prior_predictive["median"],
-        "prior_p99": prior_predictive["p99"],
-        "prior_maximum": prior_predictive["maximum"],
-        "prior_impossible_fraction": prior_predictive["impossible_fraction"],
-        "calibration_accepted": float(acceptance["accepted"]),
-        "elapsed_seconds": report["resources"]["elapsed_seconds"],
-        "maximum_rss_gib": report["resources"]["maximum_rss_gib"],
-        "mean_normalization_max_abs_error": report["mean_normalization"][
-            "maximum_abs_error"
-        ],
     }
+    metrics.update(
+        {
+            f"prior_{name}": float(value)
+            for name, value in prior_predictive.items()
+        }
+    )
+    metrics["calibration_accepted"] = float(acceptance["accepted"])
+    metrics["elapsed_seconds"] = float(report["resources"]["elapsed_seconds"])
+    metrics["maximum_rss_gib"] = float(report["resources"]["maximum_rss_gib"])
+    metrics["mean_normalization_max_abs_error"] = float(
+        report["mean_normalization"]["maximum_abs_error"]
+    )
     for check, passed in acceptance["checks"].items():
-        mlflow_metrics[f"acceptance_{check}"] = float(passed)
+        metrics[f"acceptance_{check}"] = float(passed)
     for split in SPLITS:
-        for model in ("model", "baseline"):
-            for metric, value in backtest[split][model].items():
-                mlflow_metrics[f"{split}_{model}_{metric}"] = float(value)
+        for candidate in ("model", "baseline"):
+            for name, value in report["backtest"][split][candidate].items():
+                metrics[f"{split}_{candidate}_{name}"] = float(value)
 
+    parameters = {
+        "model_id": model_id,
+        "source_status": source_status,
+        "family": family,
+        "formula": formula,
+        "config_sha256": report["config_sha256"],
+        "source_manifest_sha256": report["source_manifest_sha256"],
+        "weekly_counts_sha256": report["weekly_counts_sha256"],
+        "source_dvc_hash": report["source_dvc_hash"],
+        "priors": json.dumps(settings["priors"], sort_keys=True),
+        "sampling": json.dumps(settings["sampling"], sort_keys=True),
+        "model_spec": json.dumps(model_spec, sort_keys=True),
+        "versions": json.dumps(report["versions"], sort_keys=True),
+    }
+
+    artifact_names = [
+        path.resolve().relative_to(PROJECT_ROOT.resolve()).as_posix()
+        for path in artifact_paths
+    ]
     record = build_run_record(
         config=config,
-        run_name=f"m9-negative-binomial-{settings['model_version']}",
+        run_name=f"m9-{model_id}-{report['run_key']}",
         stage="M9",
         target="weekly_cluster_volume",
         split="fit_calibration_validation",
         view="complete_weeks",
         features=["cluster_id", "week", "weekly_total"],
-        parameters={
-            "model_version": settings["model_version"],
-            "formula": report["formula"],
-            "priors": json.dumps(settings["priors"], sort_keys=True),
-            "source_dvc_hash": settings["source_dvc_hash"],
-            "weekly_counts_sha256": report["weekly_counts_sha256"],
-            "clusters": settings["clusters"],
-            "sampling_backend": settings["sampling"]["backend"],
-            "chain_method": settings["sampling"]["chain_method"],
-            "chains": settings["sampling"]["chains"],
-            "draws": settings["sampling"]["draws"],
-            "tune": settings["sampling"]["tune"],
-            "target_accept": settings["sampling"]["target_accept"],
-            "max_treedepth": settings["sampling"]["max_treedepth"],
-            "prediction_draws": settings["sampling"]["prediction_draws"],
-            "pymc_version": report["versions"]["pymc"],
-            "arviz_version": report["versions"]["arviz"],
-            "jax_version": report["versions"]["jax"],
-            "jaxlib_version": report["versions"]["jaxlib"],
-            "numpyro_version": report["versions"]["numpyro"],
-            "mean_link": "softmax",
-            "mean_sum_constrained": True,
-            "predictive_draw_sum_constrained": False,
-            "validation_used_for_selection": False,
-        },
-        metrics=mlflow_metrics,
-        artifacts=[
-            config["paths"]["negative_binomial_report"],
-            config["paths"]["negative_binomial_predictions"],
-            config["paths"]["negative_binomial_metrics"],
-            config["paths"]["negative_binomial_summary"],
-            config["paths"]["negative_binomial_backtest_plot"],
-            config["paths"]["negative_binomial_coverage_plot"],
-            config["paths"]["negative_binomial_residual_plot"],
-            config["paths"]["negative_binomial_prior_plot"],
-            config["paths"]["negative_binomial_trace_plot"],
-            config["paths"]["negative_binomial_artifacts"],
-        ],
+        parameters=parameters,
+        metrics=metrics,
+        artifacts=artifact_names,
     )
-    record["tags"].update(
+    tags = {
+        "model_id": model_id,
+        "family": family,
+        "source_status": source_status,
+        "training_split": "fit",
+        "selection_split": "calibration",
+        "evaluation_split": "validation",
+        "fit_only_training": str(report["fit_only_training"]).lower(),
+        "validation_used_for_selection": str(
+            report["validation_used_for_selection"]
+        ).lower(),
+        "calibration_accepted": str(acceptance["accepted"]).lower(),
+        "candidate_status": "accepted" if acceptance["accepted"] else "rejected",
+    }
+    tags.update(
         {
-            "training_split": "fit",
-            "selection_split": "calibration",
-            "evaluation_split": "validation",
-            "validation_used_for_selection": "false",
-            "calibration_accepted": str(acceptance["accepted"]).lower(),
-            "candidate_status": "accepted" if acceptance["accepted"] else "rejected",
-            "model_version": settings["model_version"],
-            "mean_sum_constrained": "true",
-            "predictive_draw_sum_constrained": "false",
+            name: str(value).lower()
+            for name, value in model_spec.items()
+            if name.endswith("_sum_constrained")
         }
     )
-    path = (
-        PROJECT_ROOT
-        / config["paths"]["offline_runs"]
-        / "m9"
-        / settings["model_version"]
-        / "run.json"
-    )
-    save_run_record(record, path)
+    record["tags"].update(tags)
+    save_run_record(record, record_path)

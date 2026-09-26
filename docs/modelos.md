@@ -316,21 +316,29 @@ Su implementación común está en `src/models/weekly_counts/`:
 
 | Módulo | Responsabilidad |
 |---|---|
+| `models/*.py` | Definiciones PyMC versionadas e independientes del muestreo |
+| `registry.py` | Registro explícito de los modelos candidatos |
 | `contracts.py` | Columnas, splits, cuantiles e intervalos compartidos |
 | `data.py` | Validación y preparación del panel semana-cluster |
-| `poisson.py` | Tasas, medias y draws del baseline Poisson |
-| `negative_binomial.py` | Contrastes, medias y draws Negative Binomial |
-| `sampling.py` | Modelo PyMC, NumPyro y selección de draws posteriores |
+| `negative_binomial.py` | Base matemática para parámetros con suma cero |
+| `fixed_poisson_reference.py` | Referencia analítica histórica del backtest; no es un candidato |
+| `sampling.py` | Muestreo común con PyMC y NumPyro y predicciones posteriores |
 | `prediction.py` | Predicciones y cuantiles con un formato común |
 | `metrics.py` | WIS, WAPE, cobertura, sesgo y aceptación |
 | `diagnostics.py` | R-hat, ESS, divergencias, BFMI y profundidad |
 | `reporting.py` | Gráficos, reportes y descriptor MLflow |
 | `run.py` | Orquestación reproducible del experimento |
 
-`src/models/negative_binomial.py` se conserva temporalmente como wrapper de
-compatibilidad. El entry point canónico es
-`python -m src.models.weekly_counts.run`. Multinomial y Dirichlet-Multinomial se
-añadirán a este paquete después de comparar las variantes estáticas de M9.
+Cada candidato tiene un módulo PyMC y una configuración YAML con el mismo ID.
+`configs/weekly_counts/releases.json` congela sus hashes, procedencia y run
+histórico. Un cambio matemático o de configuración requiere un ID nuevo en vez
+de modificar una versión publicada. Cada ejecución usa una carpeta nueva y
+guarda un snapshot del código, la configuración y el lock de dependencias.
+
+El entry point canónico es `python -m src.models.weekly_counts.run`; cada modelo
+se elige con `--config configs/weekly_counts/<modelo>.yaml`. Multinomial y
+Dirichlet-Multinomial se añadirán a este paquete después de comparar las
+variantes estáticas de M9.
 
 ### Negative Binomial
 
@@ -362,9 +370,12 @@ total; M10 evaluará una distribución conjunta para la composición.
 
 ### Resultado de M9
 
-Se probaron dos versiones. La primera permitió que las medias de los clusters
-sumaran más que el total y también presentó convergencia insuficiente. La segunda
-corrigió la media con `softmax` y contrastes de suma cero.
+Se probaron dos versiones. V1 se reconstruyó desde la especificación conservada
+en MLflow porque el run histórico no guardó su código fuente exacto. La primera
+permitió que las medias de los clusters sumaran más que el total y también
+presentó convergencia insuficiente. V2 tiene una implementación verificada como
+equivalente a su run histórico y corrigió la media con `softmax` y contrastes de
+suma cero.
 
 V2 no tuvo divergencias, obtuvo R-hat máximo 1.01 y superó al baseline Poisson en
 calibración: WIS 89.06 frente a 138.89 y WAPE 31.34% frente a 34.48%. Sin

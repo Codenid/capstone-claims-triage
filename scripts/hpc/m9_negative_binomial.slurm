@@ -18,4 +18,5 @@ export PYTENSOR_FLAGS=cxx=
 export XLA_FLAGS=--xla_force_host_platform_device_count=4
 export JAX_ENABLE_X64=true
 
-uv run --no-sync python -m src.models.weekly_counts.run
+uv run --no-sync python -m src.models.weekly_counts.run \
+  --config configs/weekly_counts/nb_softmax_linear_v2.yaml
