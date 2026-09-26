@@ -1,3 +1,8 @@
+*.py text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+*.toml text eol=lf
+*.dvc text eol=lf
 configs/*.csv text eol=lf
 uv.lock text eol=lf
 *.slurm text eol=lf
