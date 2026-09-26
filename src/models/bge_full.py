@@ -33,6 +33,206 @@ SPLITS = ("fit", "calibration", "validation")
 STOP_REQUESTED = False
 
 
+class EmbeddingArray:
+    """Read one or more row-aligned NPY files as a single array."""
+
+    def __init__(self, paths: list[Path]) -> None:
+        if not paths:
+            raise ValueError("No embedding files were found.")
+        self._parts = [np.load(path, mmap_mode="r") for path in paths]
+        if self._parts[0].ndim != 2:
+            raise ValueError("Embedding files must contain two-dimensional arrays.")
+        dimensions = self._parts[0].shape[1]
+        dtype = self._parts[0].dtype
+        if any(
+            part.ndim != 2 or part.shape[1] != dimensions or part.dtype != dtype
+            for part in self._parts
+        ):
+            raise ValueError("Embedding files do not share dimensions and dtype.")
+        self.shape = (sum(len(part) for part in self._parts), dimensions)
+        self.dtype = dtype
+
+    def __len__(self) -> int:
+        return self.shape[0]
+
+    def close(self) -> None:
+        for part in getattr(self, "_parts", []):
+            memory_map = getattr(part, "_mmap", None)
+            if memory_map is not None:
+                memory_map.close()
+
+    def __del__(self) -> None:
+        self.close()
+
+    def __getitem__(self, key: slice) -> np.ndarray:
+        if not isinstance(key, slice):
+            raise TypeError("EmbeddingArray only supports slices.")
+        start, stop, step = key.indices(len(self))
+        if step != 1:
+            raise ValueError("EmbeddingArray slices must use a step of one.")
+        if start >= stop:
+            return np.empty((0, self.shape[1]), dtype=self.dtype)
+
+        chunks = []
+        offset = 0
+        for part in self._parts:
+            part_stop = offset + len(part)
+            if start < part_stop and stop > offset:
+                local_start = max(start - offset, 0)
+                local_stop = min(stop - offset, len(part))
+                chunks.append(np.asarray(part[local_start:local_stop]))
+            offset = part_stop
+            if offset >= stop:
+                break
+        return chunks[0] if len(chunks) == 1 else np.concatenate(chunks)
+
+
+def embedding_part_paths(directory: Path, split: str) -> list[Path]:
+    monolithic = directory / f"{split}_embeddings.npy"
+    shards = sorted(directory.glob(f"{split}_embeddings.part-*.npy"))
+    if monolithic.exists() and shards:
+        raise ValueError(f"M8A found mixed embedding storage for {split}.")
+    if monolithic.exists():
+        return [monolithic]
+    if shards:
+        return shards
+    raise FileNotFoundError(f"M8A embedding files are missing for {split}.")
+
+
+def load_embedding_array(directory: Path, split: str) -> EmbeddingArray:
+    return EmbeddingArray(embedding_part_paths(directory, split))
+
+
+def shard_embedding_file(
+    path: Path,
+    shard_rows: int,
+    copy_rows: int,
+    shard_threshold_rows: int | None = None,
+) -> list[Path]:
+    threshold = shard_rows if shard_threshold_rows is None else shard_threshold_rows
+    if shard_rows <= 0 or copy_rows <= 0 or threshold < shard_rows:
+        raise ValueError("M8A embedding shard sizes are invalid.")
+    existing_shards = sorted(path.parent.glob(f"{path.stem}.part-*.npy"))
+    if not path.exists():
+        values = EmbeddingArray(existing_shards)
+        values.close()
+        return existing_shards
+
+    values = np.load(path, mmap_mode="r")
+    if len(values) <= threshold:
+        if existing_shards:
+            raise ValueError(f"M8A found unexpected shards beside {path.name}.")
+        return [path]
+
+    expected_paths = [
+        path.with_name(f"{path.stem}.part-{part:05d}.npy")
+        for part, _ in enumerate(range(0, len(values), shard_rows))
+    ]
+    if set(existing_shards) - set(expected_paths):
+        raise ValueError(f"M8A found unexpected shards for {path.name}.")
+
+    for target, start in zip(expected_paths, range(0, len(values), shard_rows)):
+        stop = min(start + shard_rows, len(values))
+        expected_shape = (stop - start, values.shape[1])
+        if target.exists():
+            existing = np.load(target, mmap_mode="r")
+            if existing.shape != expected_shape or existing.dtype != values.dtype:
+                raise ValueError(f"M8A embedding shard is invalid: {target}")
+            continue
+
+        temporary = target.with_suffix(".tmp.npy")
+        if temporary.exists():
+            temporary.unlink()
+        output = np.lib.format.open_memmap(
+            temporary,
+            mode="w+",
+            dtype=values.dtype,
+            shape=expected_shape,
+        )
+        for copy_start in range(start, stop, copy_rows):
+            copy_stop = min(copy_start + copy_rows, stop)
+            output[copy_start - start : copy_stop - start] = values[
+                copy_start:copy_stop
+            ]
+        output.flush()
+        del output
+        os.replace(temporary, target)
+
+    del values
+    path.unlink()
+    sharded = EmbeddingArray(expected_paths)
+    sharded.close()
+    return expected_paths
+
+
+def shard_completed_embeddings(
+    directory: Path,
+    config: dict[str, Any],
+) -> dict[str, dict[str, Any]]:
+    settings = config["bge_full"]
+    storage = {}
+    for split in SPLITS:
+        files = shard_embedding_file(
+            directory / f"{split}_embeddings.npy",
+            settings["artifact_shard_rows"],
+            settings["arrow_batch_rows"],
+            settings["artifact_shard_threshold_rows"],
+        )
+        values = EmbeddingArray(files)
+        if values.shape != (
+            settings["expected_rows"][split],
+            settings["embedding_dimensions"],
+        ):
+            raise ValueError(f"M8A sharded array is invalid for {split}.")
+        values.close()
+        storage[split] = {
+            "files": [path.name for path in files],
+            "bytes": sum(path.stat().st_size for path in files),
+        }
+    return storage
+
+
+def add_storage_metadata(
+    report: dict[str, Any],
+    storage: dict[str, dict[str, Any]],
+    shard_rows: int,
+    shard_threshold_rows: int,
+) -> None:
+    report["storage"] = {
+        "format": "npy_shards",
+        "shard_rows": shard_rows,
+        "shard_threshold_rows": shard_threshold_rows,
+        "splits": storage,
+    }
+    for split in SPLITS:
+        report["validation"][split]["bytes"] = storage[split]["bytes"]
+        report["validation"][split]["files"] = storage[split]["files"]
+
+
+def migrate_completed_output(
+    output_dir: Path,
+    report_path: Path,
+    config: dict[str, Any],
+) -> None:
+    metadata_path = output_dir / "metadata.json"
+    report = json.loads(metadata_path.read_text(encoding="utf-8"))
+    storage = shard_completed_embeddings(output_dir, config)
+    add_storage_metadata(
+        report,
+        storage,
+        config["bge_full"]["artifact_shard_rows"],
+        config["bge_full"]["artifact_shard_threshold_rows"],
+    )
+    encoded = json.dumps(report, indent=2, ensure_ascii=False) + "\n"
+    metadata_path.write_text(encoded, encoding="utf-8")
+    report_path.write_text(encoded, encoding="utf-8")
+
+    state_path = output_dir / "checkpoint.json"
+    state = json.loads(state_path.read_text(encoding="utf-8"))
+    state["config_sha256"] = config_fingerprint(config)
+    save_state(state_path, state)
+
+
 def request_stop(_signal_number: int, _frame: Any) -> None:
     global STOP_REQUESTED
     STOP_REQUESTED = True
@@ -59,7 +259,7 @@ def config_fingerprint(config: dict[str, Any]) -> str:
         "bge_full": config["bge_full"],
         "splits": config["evaluation"]["splits"],
     }
-    encoded = json.dumps(relevant, sort_keys=True).encode("utf-8")
+    encoded = json.dumps(relevant, sort_keys=True, default=str).encode("utf-8")
     return hashlib.sha256(encoded).hexdigest()
 
 
@@ -489,6 +689,7 @@ def main() -> None:
     staging_dir = PROJECT_ROOT / config["paths"]["bge_full_staging"]
     report_path = PROJECT_ROOT / config["paths"]["bge_full_report"]
     if (output_dir / "_SUCCESS").exists():
+        migrate_completed_output(output_dir, report_path, config)
         print(f"M8A is already complete: {output_dir.relative_to(PROJECT_ROOT)}")
         return
     if output_dir.exists():
@@ -539,6 +740,7 @@ def main() -> None:
         sample_indices,
         sample_embeddings,
     )
+    storage = shard_completed_embeddings(staging_dir, config)
     elapsed_seconds = time.perf_counter() - started
     total_generated = sum(state["generated_rows"].values())
     report = {
@@ -566,6 +768,12 @@ def main() -> None:
             "maximum_memory_gib": float(torch.cuda.max_memory_allocated() / 1024**3),
         },
     }
+    add_storage_metadata(
+        report,
+        storage,
+        settings["artifact_shard_rows"],
+        settings["artifact_shard_threshold_rows"],
+    )
     (staging_dir / "metadata.json").write_text(
         json.dumps(report, indent=2, ensure_ascii=False) + "\n",
         encoding="utf-8",

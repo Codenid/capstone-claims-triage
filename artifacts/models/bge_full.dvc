@@ -1,0 +1,6 @@
+outs:
+- md5: 3ff36a299da1f2e19a00a4bce49f18ad.dir
+  size: 8286444032
+  nfiles: 12
+  hash: md5
+  path: bge_full

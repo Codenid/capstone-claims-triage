@@ -26,9 +26,30 @@ paths:
   clustering_umap_plot: reports/modeling/clustering_umap_2d.png
   clustering_sizes_plot: reports/modeling/clustering_sizes.png
   clustering_artifacts: artifacts/models/clustering_comparison
+  clustering_artifacts_dvc: artifacts/models/clustering_comparison.dvc
   bge_full_report: reports/modeling/bge_full_results.json
   bge_full_artifacts: artifacts/models/bge_full
+  bge_full_artifacts_dvc: artifacts/models/bge_full.dvc
   bge_full_staging: artifacts/models/.bge_full.inprogress
+  weekly_patterns_report: reports/modeling/weekly_patterns_results.json
+  weekly_counts: reports/modeling/weekly_counts.csv
+  cluster_summary: reports/modeling/cluster_summary.csv
+  weekly_cluster_size_plot: reports/modeling/weekly_cluster_sizes.png
+  weekly_patterns_plot: reports/modeling/weekly_patterns.png
+  weekly_patterns_artifacts: artifacts/models/weekly_patterns
+  weekly_patterns_artifacts_dvc: artifacts/models/weekly_patterns.dvc
+  weekly_patterns_staging: artifacts/models/.weekly_patterns.inprogress
+  negative_binomial_report: reports/modeling/negative_binomial_results.json
+  negative_binomial_predictions: reports/modeling/negative_binomial_predictions.csv
+  negative_binomial_metrics: reports/modeling/negative_binomial_metrics.csv
+  negative_binomial_summary: reports/modeling/negative_binomial_summary.csv
+  negative_binomial_backtest_plot: reports/modeling/negative_binomial_backtest.png
+  negative_binomial_coverage_plot: reports/modeling/negative_binomial_coverage.png
+  negative_binomial_residual_plot: reports/modeling/negative_binomial_residuals.png
+  negative_binomial_prior_plot: reports/modeling/negative_binomial_prior.png
+  negative_binomial_trace_plot: reports/modeling/negative_binomial_trace.png
+  negative_binomial_artifacts: artifacts/models/negative_binomial
+  negative_binomial_staging: artifacts/models/.negative_binomial.inprogress
   offline_runs: reports/modeling/runs
 
 evaluation:
@@ -137,6 +158,8 @@ bge_full:
   embedding_dimensions: 1024
   source_batch_rows: 131072
   arrow_batch_rows: 8192
+  artifact_shard_rows: 200000
+  artifact_shard_threshold_rows: 800000
   normalization_tolerance: 0.001
   expected_rows:
     fit: 1067194
@@ -203,6 +226,56 @@ clustering:
     minimum_stability_ari: 0.6
     minimum_future_coverage: 0.7
     maximum_template_dominated_fraction: 0.25
+
+weekly_patterns:
+  source_dvc_hash: 3ff36a299da1f2e19a00a4bce49f18ad.dir
+  semantic_dvc_hash: 08662a82971a71666b06c9ccf8120d7f.dir
+  clustering_dvc_hash: 425408aa84d0e2a44b8c5becd467e724.dir
+  clusters: 40
+  batch_rows: 8192
+  umap_dimensions: 15
+  n_init: 5
+  kmeans_batch_size: 4096
+  max_iter: 100
+  novelty_quantile: 0.99
+  term_rows_per_cluster: 1000
+  top_terms: 10
+  term_max_features: 50000
+
+negative_binomial:
+  model_version: normalized_softmax_v2
+  source_dvc_hash: 87be2a97daa3b169bbd65850a64c89a6.dir
+  clusters: 40
+  expected_complete_weeks:
+    fit: 91
+    calibration: 12
+    validation: 25
+  time_scale_days: 365.25
+  plot_clusters: 8
+  priors:
+    log_rate_sigma: 1.0
+    annual_trend_sigma: 0.2
+    log_alpha_global_mean: 2.302585093
+    log_alpha_global_sigma: 1.0
+    log_alpha_sigma: 0.75
+  sampling:
+    backend: numpyro
+    chain_method: parallel
+    chains: 4
+    cores: 4
+    draws: 2000
+    tune: 2000
+    target_accept: 0.9
+    max_treedepth: 12
+    prior_draws: 500
+    prediction_draws: 2000
+  acceptance:
+    maximum_rhat: 1.01
+    minimum_ess: 400
+    coverage_80_minimum: 0.70
+    coverage_80_maximum: 0.90
+    coverage_95_minimum: 0.88
+    coverage_95_maximum: 0.99
 
 features:
   initial:

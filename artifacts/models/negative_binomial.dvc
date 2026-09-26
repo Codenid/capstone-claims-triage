@@ -1,0 +1,6 @@
+outs:
+- md5: ada511fc7ac612613faf9f02133fc2a6.dir
+  size: 15169110
+  nfiles: 4
+  hash: md5
+  path: negative_binomial

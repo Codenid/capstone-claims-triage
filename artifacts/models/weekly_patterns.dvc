@@ -1,0 +1,6 @@
+outs:
+- md5: 87be2a97daa3b169bbd65850a64c89a6.dir
+  size: 255273918
+  nfiles: 17
+  hash: md5
+  path: weekly_patterns

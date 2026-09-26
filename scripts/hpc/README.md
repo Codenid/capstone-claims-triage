@@ -226,6 +226,8 @@ sbatch scripts/hpc/m8a_bge_full.slurm
 El job guarda checkpoints en `artifacts/models/.bge_full.inprogress`. Si SLURM lo
 interrumpe, se envía nuevamente el mismo script y continúa desde el último
 bloque confirmado. No borrar ese directorio durante una ejecución incompleta.
+Antes de finalizar, divide los arreglos que superen 800,000 filas en partes de
+hasta 200,000 filas para respetar los límites de tamaño y tiempo del remoto DVC.
 
 Al terminar:
 
@@ -239,14 +241,99 @@ uv run --no-sync python src/evaluation/publish_run.py \
   reports/modeling/runs/m8a/bge_full/run.json
 ```
 
+Antes de M8B, copiar el hash de `artifacts/models/bge_full.dvc` a
+`weekly_patterns.source_dvc_hash` en `configs/modeling.yaml`. M8B transforma el
+corpus completo, ajusta `k=40` solo con `fit` y genera conteos semanales:
+
+```bash
+uv sync --group semantic
+uv run --no-sync dvc pull artifacts/models/bge_full.dvc
+uv run --no-sync dvc pull artifacts/models/semantic_space.dvc
+uv run --no-sync dvc pull artifacts/models/clustering_comparison.dvc
+uv run --no-sync python -m unittest tests.test_weekly_patterns -v
+sbatch scripts/hpc/m8b_weekly_patterns.slurm
+```
+
+El job guarda cada bloque UMAP en
+`artifacts/models/.weekly_patterns.inprogress`. Si se interrumpe, enviar el mismo
+script otra vez sin borrar ese directorio. Al terminar:
+
+```bash
+uv run --no-sync dvc add artifacts/models/weekly_patterns
+uv run --no-sync dvc push artifacts/models/weekly_patterns.dvc
+set -a
+source .env
+set +a
+uv run --no-sync python src/evaluation/publish_run.py \
+  reports/modeling/runs/m8b/weekly_patterns/run.json
+```
+
+Si la subida conjunta de M8 supera la duración de la conexión SSH, puede dejarse
+ejecutando en el nodo de acceso:
+
+```bash
+nohup uv run --no-sync dvc push --jobs 1 \
+  artifacts/models/bge_full.dvc \
+  artifacts/models/weekly_patterns.dvc \
+  > reports/modeling/dvc-push-m8.log 2>&1 < /dev/null &
+```
+
+Después de que termine, comprobar que ambos artefactos existen en el remoto:
+
+```bash
+uv run --no-sync dvc status -c artifacts/models/bge_full.dvc
+uv run --no-sync dvc status -c artifacts/models/weekly_patterns.dvc
+```
+
+Ambos comandos deben indicar que los datos y la caché están actualizados.
+
+M9 ajusta el modelo jerárquico Negative Binomial solo con las semanas completas
+de `fit`. Calibración y validación se predicen sin actualizar el posterior:
+
+```bash
+uv sync --group probabilistic
+uv run --no-sync python -m unittest tests.test_negative_binomial -v
+sbatch scripts/hpc/m9_negative_binomial.slurm
+```
+
+El job ejecuta el entry point modular
+`python -m src.models.weekly_counts.run`. Usa PyMC con cuatro cadenas NUTS de
+NumPyro/JAX en CPU. Además desactiva el compilador C de PyTensor para crear los
+puntos iniciales, ya que los nodos
+SLURM no tienen los encabezados de desarrollo del sistema. Escribe primero en
+`artifacts/models/.negative_binomial.inprogress`. Si se interrumpe, conservar ese
+directorio para revisar el posterior parcial antes de decidir si se repite. Al
+terminar:
+
+```bash
+uv run --no-sync dvc add artifacts/models/negative_binomial
+uv run --no-sync dvc push artifacts/models/negative_binomial.dvc
+set -a
+source .env
+set +a
+uv run --no-sync python src/evaluation/publish_run.py \
+  reports/modeling/runs/m9/normalized_softmax_v2/run.json
+```
+
+MLflow recibirá la fórmula, los priors, la configuración del muestreo,
+diagnósticos de convergencia, métricas de backtest, predicciones y gráficos. El
+run conserva `candidate_status=rejected` cuando no pasa todos los criterios; un
+job terminado correctamente no implica que el modelo haya sido aceptado.
+
 Verificar acceso a la A100:
 
 ```bash
 sbatch scripts/hpc/gpu_smoke.slurm
 ```
 
-Consultar los trabajos:
+Consultar los trabajos activos:
 
 ```bash
 squeue -u piero.palacios
+```
+
+Cuando un trabajo ya no aparezca en `squeue`, revisar su resultado y consumo:
+
+```bash
+sacct -j JOB_ID --format=JobID,State,ExitCode,Elapsed,MaxRSS
 ```

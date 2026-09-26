@@ -271,15 +271,35 @@ grupo. Su estabilidad ARI fue 0.4307. Por eso también fue rechazado.
 
 La elección de k-means es operacional, no una afirmación de que existan 40
 categorías naturales. Su silhouette es moderado y 28.96% de los casos evaluados
-tiene silhouette negativo. M8 generará los embeddings faltantes y ajustará
-`k=40` con todos los reclamos elegibles del periodo de ajuste. También conservará
-una señal separada de novedad.
+tiene silhouette negativo. M8 generó los embeddings faltantes, ajustó `k=40`
+con todos los reclamos elegibles del periodo de ajuste y conservó una señal
+separada de novedad.
 
 El artefacto M7 está en DVC con hash
 `425408aa84d0e2a44b8c5becd467e724.dir`.
 
-c-TF-IDF ayudará a describir cada grupo mediante las palabras que lo distinguen
-de los demás. No determina fraude ni reemplaza la revisión humana.
+### Resultado de M8
+
+M8A completó 1,996,978 embeddings BGE: reutilizó 240,000 de M5 y generó
+1,756,978. El artefacto está en DVC con hash
+`3ff36a299da1f2e19a00a4bce49f18ad.dir`.
+
+M8B ajustó MiniBatchKMeans con `k=40` solo con las 1,067,194 filas de ajuste.
+Después asignó 234,600 filas de calibración y 695,184 de validación sin volver a
+aprender. La tasa de novedad fue 0.88% en ajuste, 1.08% en calibración y 0.77%
+en validación.
+
+Ningún grupo quedó vacío. El grupo mayor representa 16.56% del ajuste. Se
+crearon 5,360 filas semanales, de las cuales 5,120 pertenecen a semanas
+completas y 240 a seis semanas parciales. Las combinaciones sin reclamos se
+completaron con cero.
+
+El artefacto de patrones está en DVC con hash
+`87be2a97daa3b169bbd65850a64c89a6.dir`. Estos grupos son una partición
+operativa para medir cambios; no son categorías naturales confirmadas.
+
+c-TF-IDF describe cada grupo mediante las palabras que lo distinguen de los
+demás. No determina fraude ni reemplaza la revisión humana.
 
 E6 mostró que muchos textos son plantillas exactas o casi exactas. Antes de
 generar alertas, se comprobará si esas plantillas dominan un grupo. Se
@@ -291,6 +311,26 @@ diferentes.
 Los modelos temporales se aplican **después** de crear grupos semánticos. No
 procesan directamente millones de embeddings: reciben conteos por grupo y
 semana.
+
+Su implementación común está en `src/models/weekly_counts/`:
+
+| Módulo | Responsabilidad |
+|---|---|
+| `contracts.py` | Columnas, splits, cuantiles e intervalos compartidos |
+| `data.py` | Validación y preparación del panel semana-cluster |
+| `poisson.py` | Tasas, medias y draws del baseline Poisson |
+| `negative_binomial.py` | Contrastes, medias y draws Negative Binomial |
+| `sampling.py` | Modelo PyMC, NumPyro y selección de draws posteriores |
+| `prediction.py` | Predicciones y cuantiles con un formato común |
+| `metrics.py` | WIS, WAPE, cobertura, sesgo y aceptación |
+| `diagnostics.py` | R-hat, ESS, divergencias, BFMI y profundidad |
+| `reporting.py` | Gráficos, reportes y descriptor MLflow |
+| `run.py` | Orquestación reproducible del experimento |
+
+`src/models/negative_binomial.py` se conserva temporalmente como wrapper de
+compatibilidad. El entry point canónico es
+`python -m src.models.weekly_counts.run`. Multinomial y Dirichlet-Multinomial se
+añadirán a este paquete después de comparar las variantes estáticas de M9.
 
 ### Negative Binomial
 
@@ -305,6 +345,37 @@ Pregunta principal:
 
 PyMC puede estimar el valor esperado, diferencias entre grupos y la
 incertidumbre de la estimación.
+
+M9 usó una media normalizada:
+
+```text
+eta[c,t] = log_rate[c] + annual_trend[c] * time_years[t]
+share[c,t] = softmax(eta[:,t])[c]
+mu[c,t] = weekly_total[t] * share[c,t]
+count[c,t] ~ NegativeBinomial(mu[c,t], alpha[c])
+```
+
+`softmax` transforma los valores de los 40 clusters en participaciones que suman
+uno. Por ello, sus medias esperadas suman exactamente el total semanal. Los draws
+Negative Binomial continúan siendo independientes y no están obligados a sumar el
+total; M10 evaluará una distribución conjunta para la composición.
+
+### Resultado de M9
+
+Se probaron dos versiones. La primera permitió que las medias de los clusters
+sumaran más que el total y también presentó convergencia insuficiente. La segunda
+corrigió la media con `softmax` y contrastes de suma cero.
+
+V2 no tuvo divergencias, obtuvo R-hat máximo 1.01 y superó al baseline Poisson en
+calibración: WIS 89.06 frente a 138.89 y WAPE 31.34% frente a 34.48%. Sin
+embargo, su ESS bulk mínimo fue 263, menor al requisito de 400, y su cobertura
+95% fue 87.71%, menor al requisito de 88%.
+
+La validación no se utilizó para seleccionar el modelo. En ese periodo V2 mejoró
+1.99% el WIS, pero empeoró el WAPE de 53.08% a 65.14%. Por tanto, M9 está
+completado como evaluación, pero el modelo no se acepta y el baseline sigue
+siendo la referencia. Ambos intentos permanecen en MLflow; el posterior V2 está
+en DVC con hash `ada511fc7ac612613faf9f02133fc2a6.dir`.
 
 ### Dirichlet-Multinomial
 

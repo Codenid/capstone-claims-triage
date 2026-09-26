@@ -1,0 +1,99 @@
+{
+  "stage": "M8A",
+  "contract_version": "bge_full_v1",
+  "input_dvc_hash": "d189a3ae6ea7a8f9041fc8210968eda6",
+  "source_sample_dvc_hash": "009e3b35e25d9df095cf753e0a05f041.dir",
+  "model": "BAAI/bge-large-en-v1.5",
+  "revision": "d4aa6901d3a41ba39fb536a557fa166f842b0e09",
+  "rows": {
+    "fit": 1067194,
+    "calibration": 234600,
+    "validation": 695184
+  },
+  "reused_rows": {
+    "fit": 120000,
+    "calibration": 40000,
+    "validation": 80000
+  },
+  "generated_rows": {
+    "fit": 947194,
+    "calibration": 194600,
+    "validation": 615184
+  },
+  "validation": {
+    "fit": {
+      "rows": 1067194,
+      "dimensions": 1024,
+      "dtype": "float32",
+      "maximum_norm_error": 1.1920928955078125e-07,
+      "bytes": 4371227392,
+      "files": [
+        "fit_embeddings.part-00000.npy",
+        "fit_embeddings.part-00001.npy",
+        "fit_embeddings.part-00002.npy",
+        "fit_embeddings.part-00003.npy",
+        "fit_embeddings.part-00004.npy",
+        "fit_embeddings.part-00005.npy"
+      ]
+    },
+    "calibration": {
+      "rows": 234600,
+      "dimensions": 1024,
+      "dtype": "float32",
+      "maximum_norm_error": 1.1920928955078125e-07,
+      "bytes": 960921728,
+      "files": [
+        "calibration_embeddings.npy"
+      ]
+    },
+    "validation": {
+      "rows": 695184,
+      "dimensions": 1024,
+      "dtype": "float32",
+      "maximum_norm_error": 1.1920928955078125e-07,
+      "bytes": 2847473792,
+      "files": [
+        "validation_embeddings.npy"
+      ]
+    }
+  },
+  "manifest_rows": 1996978,
+  "resume_count": 0,
+  "encoding_seconds": 10802.292102963082,
+  "elapsed_seconds": 11124.843010904035,
+  "generated_rows_per_second": 162.64862894404223,
+  "gpu": {
+    "name": "NVIDIA A100-PCIE-40GB MIG 3g.20gb",
+    "maximum_memory_gib": 2.7745323181152344
+  },
+  "storage": {
+    "format": "npy_shards",
+    "shard_rows": 200000,
+    "shard_threshold_rows": 800000,
+    "splits": {
+      "fit": {
+        "files": [
+          "fit_embeddings.part-00000.npy",
+          "fit_embeddings.part-00001.npy",
+          "fit_embeddings.part-00002.npy",
+          "fit_embeddings.part-00003.npy",
+          "fit_embeddings.part-00004.npy",
+          "fit_embeddings.part-00005.npy"
+        ],
+        "bytes": 4371227392
+      },
+      "calibration": {
+        "files": [
+          "calibration_embeddings.npy"
+        ],
+        "bytes": 960921728
+      },
+      "validation": {
+        "files": [
+          "validation_embeddings.npy"
+        ],
+        "bytes": 2847473792
+      }
+    }
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "stage": "M8B",
+  "seed": 42,
+  "source_dvc_hash": "3ff36a299da1f2e19a00a4bce49f18ad.dir",
+  "semantic_dvc_hash": "08662a82971a71666b06c9ccf8120d7f.dir",
+  "clustering_dvc_hash": "425408aa84d0e2a44b8c5becd467e724.dir",
+  "clusters": 40,
+  "fit_only_training": true,
+  "novelty_quantile": 0.99,
+  "assignment": {
+    "fit": {
+      "rows": 1067194,
+      "novel_rows": 9374,
+      "novel_fraction": 0.008783782517517902
+    },
+    "calibration": {
+      "rows": 234600,
+      "novel_rows": 2534,
+      "novel_fraction": 0.010801364023870419
+    },
+    "validation": {
+      "rows": 695184,
+      "novel_rows": 5329,
+      "novel_fraction": 0.007665596446408433
+    }
+  },
+  "fit_clusters": {
+    "minimum_rows": 1947,
+    "median_rows": 9254.0,
+    "maximum_rows": 176716,
+    "largest_cluster_fraction": 0.165589386746927
+  },
+  "weekly_rows": 5360,
+  "complete_weekly_rows": 5120,
+  "partial_weeks": 6,
+  "resources": {
+    "elapsed_seconds": 1606.9324950039154,
+    "maximum_rss_gib": 5.688209533691406,
+    "resume_count": 0
+  }
+}

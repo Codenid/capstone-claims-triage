@@ -1,0 +1,205 @@
+{
+  "stage": "M9",
+  "model_version": "normalized_softmax_v2",
+  "source_dvc_hash": "87be2a97daa3b169bbd65850a64c89a6.dir",
+  "weekly_counts_sha256": "35c5503b0b9b2a4b9e47984294683d27987b3c7824ae41de642c0a47cefd1ce1",
+  "config_sha256": "f2ce519e110be745f1e1156ccfb3bb506e570375a639de6799d1e9902ddb3231",
+  "formula": "complaint_count[c,t] ~ NegativeBinomial(mu[c,t], alpha[c]); eta[c,t] = log_rate[c] + annual_trend[c] * time_years[t]; share[c,t] = softmax_c(eta[:,t]); mu[c,t] = weekly_total[t] * share[c,t]",
+  "fit_only_training": true,
+  "validation_used_for_selection": false,
+  "complete_weeks": {
+    "fit": 91,
+    "calibration": 12,
+    "validation": 25
+  },
+  "rows": {
+    "fit": 3640,
+    "calibration": 480,
+    "validation": 1000
+  },
+  "time_center": "2023-11-13T00:00:00",
+  "priors": {
+    "log_rate_sigma": 1.0,
+    "annual_trend_sigma": 0.2,
+    "log_alpha_global_mean": 2.302585093,
+    "log_alpha_global_sigma": 1.0,
+    "log_alpha_sigma": 0.75
+  },
+  "sampling": {
+    "backend": "numpyro",
+    "chain_method": "parallel",
+    "chains": 4,
+    "cores": 4,
+    "draws": 2000,
+    "tune": 2000,
+    "target_accept": 0.9,
+    "max_treedepth": 12,
+    "prior_draws": 500,
+    "prediction_draws": 2000
+  },
+  "versions": {
+    "python": "3.12.13",
+    "pymc": "5.28.5",
+    "arviz": "0.23.4",
+    "numpy": "2.5.2",
+    "pandas": "3.0.5",
+    "jax": "0.11.2",
+    "jaxlib": "0.11.2",
+    "numpyro": "0.22.0",
+    "sampling_backend": "numpyro"
+  },
+  "diagnostics": {
+    "rhat_max": 1.01,
+    "ess_bulk_min": 263.0,
+    "ess_tail_min": 408.0,
+    "divergences": 0,
+    "bfmi_min": 0.6321790131078194,
+    "tree_depth_max": 9,
+    "tree_depth_limit_hits": 0
+  },
+  "prior_predictive": {
+    "median": 208.0,
+    "p99": 1816.0,
+    "maximum": 56604.0,
+    "impossible_fraction": 7.527472527472527e-05
+  },
+  "mean_normalization": {
+    "maximum_abs_error": 8.881784197001252e-16,
+    "by_split": {
+      "fit": {
+        "maximum_abs_error": 8.881784197001252e-16,
+        "mean_abs_error": 4.477492857554203e-16
+      },
+      "calibration": {
+        "maximum_abs_error": 7.771561172376096e-16,
+        "mean_abs_error": 4.3483735131151963e-16
+      },
+      "validation": {
+        "maximum_abs_error": 8.881784197001252e-16,
+        "mean_abs_error": 4.1300296516055825e-16
+      }
+    }
+  },
+  "backtest": {
+    "fit": {
+      "model": {
+        "wis": 27.010853414442696,
+        "mae": 49.19450549450549,
+        "rmse": 80.41350123778146,
+        "wape": 0.168286869962709,
+        "relative_bias": -0.03113346565620113,
+        "coverage_50": 0.5288461538461539,
+        "coverage_80": 0.8192307692307692,
+        "coverage_95": 0.9626373626373627,
+        "width_50": 88.90226648351648,
+        "width_80": 171.23857142857148,
+        "width_95": 268.5010439560438,
+        "upper_95_excess_fraction": 0.022252747252747253,
+        "impossible_probability": 0.0,
+        "wis_skill": 0.5239113617308223,
+        "wape_skill": 0.27862063408935267
+      },
+      "baseline": {
+        "wis": 56.734925480769235,
+        "mae": 68.19505494505495,
+        "rmse": 111.32147845736718,
+        "wape": 0.2332848400096235,
+        "relative_bias": -0.0005187657885239985,
+        "coverage_50": 0.0815934065934066,
+        "coverage_80": 0.17142857142857143,
+        "coverage_95": 0.2675824175824176,
+        "width_50": 18.924175824175823,
+        "width_80": 35.97035714285715,
+        "width_95": 54.915281593406576,
+        "upper_95_excess_fraction": 0.28846153846153844,
+        "impossible_probability": 0.0
+      }
+    },
+    "calibration": {
+      "model": {
+        "wis": 89.0627265625,
+        "mae": 140.14791666666667,
+        "rmse": 289.52574007619194,
+        "wape": 0.3134321404110387,
+        "relative_bias": -0.050422360653599035,
+        "coverage_50": 0.43125,
+        "coverage_80": 0.7,
+        "coverage_95": 0.8770833333333333,
+        "width_50": 170.08020833333333,
+        "width_80": 330.0108333333335,
+        "width_95": 525.411302083333,
+        "upper_95_excess_fraction": 0.058333333333333334,
+        "impossible_probability": 0.0,
+        "wis_skill": 0.35875880266033955,
+        "wape_skill": 0.09091400501361524
+      },
+      "baseline": {
+        "wis": 138.8911488095238,
+        "mae": 154.16354166666667,
+        "rmse": 275.6122342092842,
+        "wape": 0.3447772181505589,
+        "relative_bias": -0.00037506930628485697,
+        "coverage_50": 0.0375,
+        "coverage_80": 0.09166666666666666,
+        "coverage_95": 0.16458333333333333,
+        "width_50": 23.618229166666666,
+        "width_80": 44.78375000000001,
+        "width_95": 68.51229166666666,
+        "upper_95_excess_fraction": 0.3104166666666667,
+        "impossible_probability": 0.0
+      }
+    },
+    "validation": {
+      "model": {
+        "wis": 334.89553160714286,
+        "mae": 442.206,
+        "rmse": 1451.3150295507864,
+        "wape": 0.6514468051254703,
+        "relative_bias": -0.06551356352183098,
+        "coverage_50": 0.223,
+        "coverage_80": 0.395,
+        "coverage_95": 0.644,
+        "width_50": 291.218,
+        "width_80": 569.9589000000001,
+        "width_95": 918.8648249999995,
+        "upper_95_excess_fraction": 0.12,
+        "impossible_probability": 0.0,
+        "wis_skill": 0.019860275597316734,
+        "wape_skill": -0.22732382091640035
+      },
+      "baseline": {
+        "wis": 341.68141875000003,
+        "mae": 360.301,
+        "rmse": 1287.6003393910705,
+        "wape": 0.5307864102556548,
+        "relative_bias": -0.00022539576845225293,
+        "coverage_50": 0.039,
+        "coverage_80": 0.072,
+        "coverage_95": 0.113,
+        "width_50": 28.76875,
+        "width_80": 54.77350000000001,
+        "width_95": 83.58212499999998,
+        "upper_95_excess_fraction": 0.198,
+        "impossible_probability": 0.0
+      }
+    }
+  },
+  "calibration_acceptance": {
+    "accepted": false,
+    "checks": {
+      "rhat": true,
+      "ess_bulk": false,
+      "ess_tail": true,
+      "divergences": true,
+      "wis": true,
+      "wape": true,
+      "coverage_80": true,
+      "coverage_95": false
+    }
+  },
+  "resources": {
+    "elapsed_seconds": 1431.794217729941,
+    "maximum_rss_gib": 1.3942909240722656,
+    "cpu_count": 64
+  }
+}

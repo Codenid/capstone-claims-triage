@@ -36,3 +36,9 @@ semantic = [
     "pyclustering==0.10.1.2",
     "umap-learn>=0.5.9,<1",
 ]
+probabilistic = [
+    "arviz>=0.22,<1",
+    "jax[cpu]>=0.7,<1",
+    "numpyro>=0.19,<1",
+    "pymc>=5.25,<6",
+]

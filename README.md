@@ -79,11 +79,11 @@ conjunto completo de reclamos.
 - [x] **M7 — Comparar métodos de clustering:** evaluar MiniBatchKMeans con
   inicialización k-means++, HDBSCAN y CURE sobre la misma muestra. Comparar
   silhouette, estabilidad, coherencia, ruido, costo y asignación futura.
-- [ ] **M8 — Congelar patrones y crear series:** elegir el método, fijar sus
+- [x] **M8 — Congelar patrones y crear series:** elegir el método, fijar sus
   grupos, generar solo los embeddings faltantes, asignar el corpus elegible y
   construir conteos semanales completos.
-- [ ] **M9 — Modelar volumen con PyMC:** usar Negative Binomial para estimar el
-  conteo esperado y su incertidumbre.
+- [x] **M9 — Modelar volumen con PyMC:** se evaluaron dos modelos Negative
+  Binomial; ninguno pasó todos los criterios, por lo que se conserva el baseline.
 - [ ] **M10 — Modelar composición con PyMC:** usar Dirichlet-Multinomial para
   comprobar cambios relativos entre patrones.
 - [ ] **M11 — Detectar cambios persistentes:** calibrar CUSUM sobre las
@@ -110,6 +110,8 @@ solo contra PCA más UMAP de varias dimensiones; no se usará el gráfico 2D com
 
 M7 comparará los métodos sobre las mismas filas, representación y semilla:
 
+<!-- markdownlint-disable MD013 -->
+
 | Evidencia | Qué revisa |
 | --- | --- |
 | Silhouette y su gráfico | Separación de cada grupo; cerca de 1 es mejor, 0 indica solapamiento y valores negativos sugieren asignaciones dudosas |
@@ -119,6 +121,8 @@ M7 comparará los métodos sobre las mismas filas, representación y semilla:
 | Plantillas | Si un grupo existe por significado o por narrativas repetidas |
 | Costo | Tiempo, memoria y posibilidad de usar CPU o A100 |
 | Asignación futura | Cómo recibirá un grupo un reclamo que llegue después |
+
+<!-- markdownlint-enable MD013 -->
 
 El silhouette se calculará sobre una muestra fija porque hacerlo sobre millones
 de filas es costoso. No será el único criterio: favorece grupos compactos y
@@ -149,14 +153,13 @@ por grupo, tiempo y memoria. Para HDBSCAN, el silhouette se calculará sobre los
 casos asignados y el ruido se reportará por separado. Los parámetros se elegirán
 con ajuste y calibración; validación no se usará para modificarlos.
 
-M8 congelará el método elegido antes de usar periodos posteriores. Recién en
-esa etapa se generarán por bloques los embeddings que falten para asignar todos
-los reclamos elegibles. La tabla semanal incluirá `week`, `cluster_id`,
-`complaint_count`,
-`unique_text_count`, `weekly_total` y `proportion`. También completará con cero
-las semanas sin casos para no confundir ausencia con datos faltantes. Los
-conteos se construirán con todos los reclamos elegibles, no con la muestra de
-M5.
+M8 congeló el método elegido antes de usar periodos posteriores. En esa etapa
+se generaron por bloques los embeddings faltantes para asignar todos los
+reclamos elegibles. La tabla semanal incluye `week`, `cluster_id`,
+`complaint_count`, `unique_text_count`, `weekly_total` y `proportion`. También
+completa con cero las semanas sin casos para no confundir ausencia con datos
+faltantes. Los conteos se construyeron con todos los reclamos elegibles, no con
+la muestra de M5.
 
 ## Contrato de ejecución M1
 
@@ -316,12 +319,16 @@ muestra temporal:
 
 En la validación sin texto compartido:
 
+<!-- markdownlint-disable MD013 -->
+
 | Objetivo | TF-IDF + producto | BGE + producto | Decisión |
 | --- | ---: | ---: | --- |
 | T1 — Macro-F1 | 0.1968 | **0.2367** | Conservar BGE como candidato |
 | T2 — precisión promedio | 0.5662 | 0.5666 | Conservar TF-IDF por simplicidad |
 | T3 — precisión promedio | **0.2640** | 0.2576 | Conservar TF-IDF |
 | T4 — precisión promedio | **0.0791** | 0.0624 | Conservar regla por producto de M3 |
+
+<!-- markdownlint-enable MD013 -->
 
 BGE aporta una mejora clara para sugerir el motivo T1. Para T2 la diferencia es
 menor a 0.001 y no justifica usar una representación más costosa. BGE tampoco
@@ -434,7 +441,7 @@ La evidencia es útil pero moderada: silhouette es 0.1376, 28.96% de la muestra
 tiene silhouette negativo y la estabilidad ARI es 0.6260. Por eso hablaremos de
 una **partición de trabajo**, no de 40 categorías naturales confirmadas.
 
-M8 generará los embeddings faltantes y volverá a ajustar `k=40` con todos los
+M8 generó los embeddings faltantes y volvió a ajustar `k=40` con todos los
 reclamos elegibles del periodo de ajuste. Las 120,000 filas fueron la muestra
 disponible para escoger el método, no el límite del entrenamiento final.
 
@@ -448,6 +455,103 @@ El artefacto quedó registrado con DVC:
 El run `m7-cluster-comparison` está publicado en MLflow. Los resultados están en
 `reports/modeling/clustering_results.json` y
 `reports/modeling/clustering_candidates.csv`.
+
+## Resultados de patrones semánticos M8
+
+M8A completó los embeddings BGE de 1,996,978 reclamos elegibles. Reutilizó las
+240,000 filas de M5 y generó las 1,756,978 restantes. El artefacto completo
+quedó registrado en DVC:
+
+- Ruta: `artifacts/models/bge_full`.
+- Hash DVC: `3ff36a299da1f2e19a00a4bce49f18ad.dir`.
+- Tamaño: 8,286,444,032 bytes.
+
+El arreglo de ajuste se guarda en dos partes para respetar el límite por archivo
+del remoto DVC; al leerlo se comporta como un único arreglo.
+
+M8B ajustó MiniBatchKMeans con `k=40` únicamente con las 1,067,194 filas de
+ajuste. Calibración y validación solo recibieron asignaciones. La señal de
+novedad usa el percentil 99 de las distancias observadas en ajuste:
+
+| Periodo | Filas | Casos nuevos | Tasa de novedad |
+| --- | ---: | ---: | ---: |
+| Ajuste | 1,067,194 | 9,374 | 0.88% |
+| Calibración | 234,600 | 2,534 | 1.08% |
+| Validación | 695,184 | 5,329 | 0.77% |
+
+Ningún grupo quedó vacío. El menor contiene 1,947 reclamos, la mediana es 9,254
+y el mayor contiene 176,716, equivalente a 16.56% del ajuste. Estos 40 grupos
+son una partición operativa para contar patrones; no representan categorías
+naturales confirmadas.
+
+La salida contiene 5,360 filas semanales: 5,120 corresponden a semanas
+completas y 240 a seis semanas parciales. Las combinaciones sin reclamos se
+completaron con cero. El artefacto quedó registrado en DVC:
+
+- Ruta: `artifacts/models/weekly_patterns`.
+- Hash DVC: `87be2a97daa3b169bbd65850a64c89a6.dir`.
+- Tamaño: 255,273,918 bytes.
+
+Los reportes principales están en
+`reports/modeling/weekly_patterns_results.json`,
+`reports/modeling/weekly_counts.csv` y
+`reports/modeling/cluster_summary.csv`.
+
+## Resultados de volumen semanal M9
+
+M9 ajustó PyMC únicamente con 91 semanas completas de `fit`, equivalentes a
+3,640 combinaciones semana-cluster. Las 12 semanas de calibración y 25 de
+validación se predijeron sin actualizar el posterior. El total semanal observado
+se usa como exposición, por lo que el resultado es un pronóstico condicionado al
+volumen general.
+
+Se publicaron dos intentos en MLflow:
+
+<!-- markdownlint-disable MD013 -->
+
+| Intento | R-hat máximo | ESS bulk mínimo | Divergencias | Cobertura 80% | Cobertura 95% | WIS calibración | WAPE calibración | Decisión |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- |
+| Tasas independientes V1 | 1.03 | 140 | 0 | 69.79% | 87.08% | 86.01 | 30.77% | Rechazado |
+| `normalized_softmax_v2` | 1.01 | 263 | 0 | 70.00% | 87.71% | 89.06 | 31.34% | Rechazado |
+
+<!-- markdownlint-enable MD013 -->
+
+**R-hat** comprueba si las cadenas produjeron distribuciones parecidas; se exigió
+como máximo 1.01. **ESS** es el número efectivo de muestras independientes; se
+exigió al menos 400. V2 pasó R-hat, ESS de cola, divergencias, cobertura 80%, WIS
+y WAPE, pero falló ESS bulk y la cobertura 95% mínima de 88%.
+
+V1 mejoraba el baseline, pero sus medias podían sumar entre 106.99% y 113.07% del
+total semanal durante calibración. V2 corrigió este problema con `softmax`: sus
+40 medias suman el total semanal con un error máximo de `8.9e-16`, atribuible al
+redondeo numérico. También redujo la fracción predictiva previa de conteos
+imposibles de 0.93% a 0.0075%.
+
+En calibración, V2 mejoró 35.88% el WIS y 9.09% el WAPE frente al baseline
+Poisson. No obstante, no se cambió el umbral para aceptar un resultado cercano.
+Las alternativas no lineales exploradas mejoraron algunos clusters, pero
+empeoraron la calibración global y no justificaron un tercer modelo más complejo.
+
+La validación no se usó para escoger ni ajustar el modelo. Allí V2 mejoró 1.99%
+el WIS, pero su WAPE fue 65.14% frente a 53.08% del baseline. Por tanto, M9 queda
+completado como experimento, pero Negative Binomial no se promueve para uso
+posterior y se conserva el baseline como referencia.
+
+El posterior V2 quedó registrado con DVC:
+
+- Ruta: `artifacts/models/negative_binomial`.
+- Hash DVC: `ada511fc7ac612613faf9f02133fc2a6.dir`.
+- Tamaño: 15,169,110 bytes.
+- Ejecución SLURM: 23 minutos 58 segundos y aproximadamente 1.14 GiB.
+
+Runs de MLflow:
+
+- V1 rechazado: `3aff4cea426f435ab50b41788de998ff`.
+- V2 rechazado: `fb71dac0a0ae40b4be9ff2628637bcfa`.
+
+Los resultados están en `reports/modeling/negative_binomial_results.json`, las
+predicciones en `reports/modeling/negative_binomial_predictions.csv` y el detalle
+de métricas en `reports/modeling/negative_binomial_metrics.csv`.
 
 ## Orden de comparación
 
