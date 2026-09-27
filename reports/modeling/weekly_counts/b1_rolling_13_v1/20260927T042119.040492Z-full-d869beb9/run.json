@@ -1,0 +1,56 @@
+{
+  "run_name": "m9-b1_rolling_13_v1-20260927T042119.040492Z-full-d869beb9",
+  "experiment_name": "claims-triage-modeling",
+  "created_at_utc": "2026-09-27T04:21:19.111419+00:00",
+  "tags": {
+    "run_contract_version": "modeling_run_v1",
+    "evaluation_split_version": "temporal_v1",
+    "git_commit": "ec778b8926fdc77371db0cb916fd8058d6325947",
+    "dvc_data_hash": "d189a3ae6ea7a8f9041fc8210968eda6",
+    "stage": "M9",
+    "target": "weekly_cluster_volume",
+    "split": "calibration",
+    "view": "complete_weeks",
+    "execution_host": "khipu",
+    "execution_mode": "interactive",
+    "model_id": "b1_rolling_13_v1",
+    "family": "deterministic_baseline",
+    "model_family": "deterministic_baseline",
+    "run_mode": "full",
+    "candidate_role": "deterministic_baseline",
+    "source_status": "native_versioned_source",
+    "selection_split": "calibration",
+    "evaluation_split": "validation",
+    "validation_used_for_selection": "false"
+  },
+  "parameters": {
+    "seed": 42,
+    "input_data": "data/processed/prepared.parquet",
+    "features": "[\"cluster_id\", \"week\", \"weekly_total\"]",
+    "model_id": "b1_rolling_13_v1",
+    "definition": "one-step-ahead shares of the previous 13 complete weeks, (count + 1) / (total + clusters), Poisson(weekly_total * share)",
+    "config_sha256": "b487e2fbc8d050051c83406ac384750c064ecd21531caff6b38d5a9cd597d0ae",
+    "source_manifest_sha256": "d869beb996355fa41b5c7157883e38d4e85db0f7fd7742dade911009127f96db",
+    "weekly_counts_sha256": "35c5503b0b9b2a4b9e47984294683d27987b3c7824ae41de642c0a47cefd1ce1",
+    "source_dvc_hash": "87be2a97daa3b169bbd65850a64c89a6.dir"
+  },
+  "metrics": {
+    "calibration_model_wis": 64.84306138392859,
+    "calibration_model_mae": 78.51770833333333,
+    "calibration_model_rmse": 145.37060934900148,
+    "calibration_model_wape": 0.17559999440890475,
+    "calibration_model_relative_bias": -0.00039836553648888535,
+    "calibration_model_coverage_50": 0.12916666666666668,
+    "calibration_model_coverage_80": 0.21041666666666667,
+    "calibration_model_coverage_95": 0.32083333333333336,
+    "calibration_model_width_50": 23.841145833333332,
+    "calibration_model_width_80": 45.30125,
+    "calibration_model_width_95": 69.1663020833333,
+    "calibration_model_upper_95_excess_fraction": 0.22291666666666668,
+    "calibration_model_impossible_probability": 0.0
+  },
+  "artifacts": [
+    "reports/modeling/weekly_counts/b1_rolling_13_v1/20260927T042119.040492Z-full-d869beb9/predictions.csv",
+    "reports/modeling/weekly_counts/b1_rolling_13_v1/20260927T042119.040492Z-full-d869beb9/results.json"
+  ]
+}
