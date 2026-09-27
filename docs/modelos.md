@@ -396,6 +396,21 @@ completado como evaluación, pero el modelo no se acepta y el baseline sigue
 siendo la referencia. Ambos intentos permanecen en MLflow; el posterior V2 está
 en DVC con hash `ada511fc7ac612613faf9f02133fc2a6.dir`.
 
+### Continuación de M9: B1 PyMC y NB-V3
+
+B1 PyMC (`poisson_static_pymc_v1`) se ejecutó en Khipu solo como control del
+pipeline. Reprodujo el baseline analítico: WIS de calibración 138.75 frente a
+138.89 y WAPE 34.48% en ambos. Su cobertura 95% fue 16%, por lo que Poisson
+queda como referencia y no como modelo. El run está en MLflow con ID
+`0ddb96b9f9c645bdb8e8a687cedf09cc`; ver
+`reports/modeling/weekly_counts/poisson_static_pymc_v1/decision.md`.
+
+NB-V3 (`nb_static_global_v3`) conserva las participaciones estáticas de B1 y
+cambia solo la verosimilitud: Negative Binomial con una dispersión global. El
+prior de participaciones es uniforme; se eligió solo con `fit` y prior
+predictive, antes de abrir calibración. La decisión y sus gates están en
+`reports/modeling/weekly_counts/nb_static_global_v3/decision.md`.
+
 ### Dirichlet-Multinomial
 
 La **Dirichlet-Multinomial** modela cómo se reparte el total semanal entre los

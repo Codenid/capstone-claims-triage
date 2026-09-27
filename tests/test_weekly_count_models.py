@@ -53,6 +53,7 @@ class WeeklyCountModelTests(unittest.TestCase):
             {
                 "nb_independent_linear_v1",
                 "nb_softmax_linear_v2",
+                "nb_static_global_v3",
                 "poisson_static_pymc_v1",
             },
         )

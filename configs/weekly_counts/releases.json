@@ -11,6 +11,13 @@
     "source_status": "verified_equivalent_to_run",
     "historical_run_id": "fb71dac0a0ae40b4be9ff2628637bcfa"
   },
+  "nb_static_global_v3": {
+    "model_source_sha256": "02fdac07dff77cc5f11bffa4eac443b11a79ceec77bc64eec7166f75f269e7c5",
+    "config_sha256": "45c908d1324d119d2bfa47db32a00d72551e7f075292a25a1d762a788d42bfde",
+    "source_status": "native_versioned_source",
+    "historical_run_id": null,
+    "candidate_role": "candidate"
+  },
   "poisson_static_pymc_v1": {
     "model_source_sha256": "377172ff4fbd49d369499a12db21648910eda47a25bc792a47729ac70545d813",
     "config_sha256": "b487e2fbc8d050051c83406ac384750c064ecd21531caff6b38d5a9cd597d0ae",
