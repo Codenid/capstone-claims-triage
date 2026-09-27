@@ -1,6 +1,6 @@
 outs:
-- md5: f590c4b1a8e70db5e243c22e56837f80.dir
-  size: 238339202
-  nfiles: 52
+- md5: 7136b408b674cca7038f0bf21413725d.dir
+  size: 477143616
+  nfiles: 104
   hash: md5
   path: weekly_counts
