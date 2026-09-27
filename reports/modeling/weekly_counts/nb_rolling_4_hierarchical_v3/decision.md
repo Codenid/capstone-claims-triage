@@ -31,4 +31,14 @@ antes de ejecutar. Los pilotos no se publican en MLflow.
 
 ## Ejecuciones
 
-Pendiente.
+Commit `544d45e`, clon limpio de Khipu.
+
+| Nivel | Run key | Resultado |
+|---|---|---|
+| Prior | `20260927T161027.833236Z-prior-a3ecfab3-9105ce1f` | Conteos imposibles 2.4e-5, ninguno negativo |
+| Piloto | `20260927T161101.453104Z-pilot-a3ecfab3-9105ce1f` | SLURM 53282, 1 min 30 s, MaxRSS 0.73 GiB; 0 divergencias, R-hat 1.020, ESS bulk 467, ESS tail 224; `log_alpha_sigma` con ESS 686; normalización 5.7e-15 |
+
+La parametrización centrada resolvió la mezcla de v1 y se ejecutó sin fallos con
+cadenas en paralelo en Khipu. Todos los gates del piloto se cumplen. No se
+revisaron métricas de calibración del piloto, y el piloto no se publica en
+MLflow.
