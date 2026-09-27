@@ -10,6 +10,9 @@ import pandas as pd
 
 from src.models.weekly_counts.contracts import INTERVALS, SPLITS
 
+CONVERGENCE_CHECKS = {"rhat", "ess_bulk", "ess_tail", "divergences"}
+COVERAGE_CHECKS = {"coverage_80", "coverage_95"}
+
 
 def weighted_interval_score(
     observed: np.ndarray,
@@ -133,3 +136,29 @@ def calibration_acceptance(
         ),
     }
     return {"accepted": all(checks.values()), "checks": checks}
+
+
+def failed_checks(acceptance: dict[str, Any]) -> list[str]:
+    return [name for name, passed in acceptance["checks"].items() if not passed]
+
+
+def candidate_status(run_mode: str, acceptance: dict[str, Any]) -> str:
+    """Map automatic gates to the states allowed by models_plan.md."""
+    if run_mode == "pilot":
+        return "pilot_only"
+    failed = set(failed_checks(acceptance))
+    if failed & CONVERGENCE_CHECKS:
+        return "rejected_convergence"
+    if failed & COVERAGE_CHECKS:
+        return "rejected_predictive"
+    if failed:
+        # Only the WIS/WAPE comparisons with the fixed Poisson reference remain.
+        return "rejected_no_practical_gain"
+    return "accepted"
+
+
+def rejection_reason(run_mode: str, acceptance: dict[str, Any]) -> str:
+    failed = failed_checks(acceptance)
+    if run_mode == "pilot" or not failed:
+        return "none"
+    return ",".join(failed)

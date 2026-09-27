@@ -16,16 +16,28 @@ import numpy as np
 import pandas as pd
 import yaml
 
-from src.evaluation.experiment import PROJECT_ROOT, load_experiment_config, set_seed
+from src.evaluation.experiment import (
+    PROJECT_ROOT,
+    execution_context,
+    git_commit,
+    load_experiment_config,
+    set_seed,
+)
 from src.models.semantic_space import load_dvc_hash, maximum_rss_gib
 from src.models.weekly_counts import fixed_poisson_reference, registry
 from src.models.weekly_counts.contracts import SPLITS
-from src.models.weekly_counts.data import prepare_model_frame
+from src.models.weekly_counts.data import fit_rows, prepare_model_frame
 from src.models.weekly_counts.diagnostics import (
     posterior_diagnostics,
+    prior_check_summary,
     prior_predictive_summary,
 )
-from src.models.weekly_counts.metrics import calibration_acceptance, evaluate_predictions
+from src.models.weekly_counts.metrics import (
+    calibration_acceptance,
+    candidate_status,
+    evaluate_predictions,
+    rejection_reason,
+)
 from src.models.weekly_counts.prediction import build_predictions
 from src.models.weekly_counts.reporting import (
     file_sha256,
@@ -39,11 +51,15 @@ from src.models.weekly_counts.sampling import (
     sample_posterior,
     sample_predictions,
     sample_prior_predictive,
+    sample_prior_variables,
     subsample_posterior,
 )
 
 DEFAULT_MODEL_CONFIG = Path("configs/weekly_counts/nb_softmax_linear_v2.yaml")
 MODELING_CONFIG_PATH = PROJECT_ROOT / "configs/modeling.yaml"
+RUN_MODES = ("prior", "pilot", "full")
+# Technical smoke level from models_plan.md; a pilot never promotes a model.
+PILOT_SAMPLING = {"chains": 2, "tune": 250, "draws": 250, "prediction_draws": 500}
 
 
 def parse_args() -> argparse.Namespace:
@@ -54,7 +70,20 @@ def parse_args() -> argparse.Namespace:
         default=DEFAULT_MODEL_CONFIG,
         help="Project-relative or absolute weekly-count model config path.",
     )
+    parser.add_argument(
+        "--run-mode",
+        choices=RUN_MODES,
+        default="full",
+        help="prior: prior predictive check; pilot: short technical run; "
+        "full: sampling from the frozen config.",
+    )
     return parser.parse_args()
+
+
+def resolve_config_path(path: Path) -> Path:
+    if not path.is_absolute():
+        path = PROJECT_ROOT / path
+    return path.resolve()
 
 
 def model_source_paths(model_module: Any, config_path: Path) -> list[Path]:
@@ -94,25 +123,141 @@ def write_json(path: Path, value: Any) -> None:
     )
 
 
+def sampling_for_run_mode(
+    sampling: dict[str, Any],
+    run_mode: str,
+) -> dict[str, Any]:
+    if run_mode == "pilot":
+        return {**sampling, **PILOT_SAMPLING}
+    return dict(sampling)
+
+
+def load_candidate_role(config_path: Path, model_id: str) -> str:
+    releases = json.loads(
+        (config_path.parent / "releases.json").read_text(encoding="utf-8")
+    )
+    return releases[model_id].get("candidate_role", "candidate")
+
+
+def load_frozen_frame(
+    config: dict[str, Any],
+    settings: dict[str, Any],
+) -> tuple[pd.DataFrame, pd.Timestamp, str, str]:
+    """Load the weekly panel only if its frozen hashes match."""
+    input_bytes = (PROJECT_ROOT / config["paths"]["weekly_counts"]).read_bytes()
+    input_sha256 = hashlib.sha256(input_bytes).hexdigest()
+    if input_sha256 != settings["weekly_counts_sha256"]:
+        raise ValueError("M9 weekly counts SHA-256 is not frozen.")
+    source_dvc_hash = load_dvc_hash(
+        PROJECT_ROOT / config["paths"]["weekly_patterns_artifacts_dvc"]
+    )
+    if source_dvc_hash != settings["source_dvc_hash"]:
+        raise ValueError("M9 weekly patterns DVC hash is not frozen.")
+
+    frame, time_center = prepare_model_frame(
+        pd.read_csv(io.BytesIO(input_bytes)),
+        settings["clusters"],
+        settings["expected_complete_weeks"],
+        settings["time_scale_days"],
+    )
+    return frame, time_center, input_sha256, source_dvc_hash
+
+
+def save_prior_check(
+    model_module: Any,
+    fit: pd.DataFrame,
+    settings: dict[str, Any],
+    seed: int,
+    metadata: dict[str, Any],
+) -> Path:
+    model = model_module.build_model(fit, settings)
+    names = [model_module.EXPECTED_VARIABLE, model_module.OBSERVED_VARIABLE]
+    if model_module.MODEL_SPEC["family"] == "negative_binomial":
+        names.append("alpha")
+    draws = sample_prior_variables(
+        model,
+        settings["sampling"]["prior_draws"],
+        names,
+        seed,
+    )
+    summary = prior_check_summary(
+        draws[model_module.OBSERVED_VARIABLE],
+        draws[model_module.EXPECTED_VARIABLE],
+        draws.get("alpha"),
+        fit,
+    )
+    path = (
+        PROJECT_ROOT
+        / "reports/modeling/weekly_counts"
+        / metadata["model_id"]
+        / "prior_checks"
+        / f"{metadata['run_key']}.json"
+    )
+    path.parent.mkdir(parents=True, exist_ok=True)
+    write_json(path, {**metadata, "prior_check": summary})
+    return path
+
+
 def main() -> None:
     started = time.perf_counter()
     args = parse_args()
-    config_path = args.config
-    if not config_path.is_absolute():
-        config_path = PROJECT_ROOT / config_path
-    config_path = config_path.resolve()
+    config_path = resolve_config_path(args.config)
 
     config = load_experiment_config(MODELING_CONFIG_PATH)
     settings = yaml.safe_load(config_path.read_text(encoding="utf-8"))
+    settings["sampling"] = sampling_for_run_mode(settings["sampling"], args.run_mode)
     model_module = registry.get_model(settings["model_id"])
     model_id = model_module.MODEL_ID
+    candidate_role = load_candidate_role(config_path, model_id)
 
     config_sha256 = file_sha256(config_path)
     source_paths = model_source_paths(model_module, config_path)
     manifest = source_manifest(source_paths)
     manifest_sha256 = source_manifest_sha256(manifest)
     timestamp = datetime.now(UTC).strftime("%Y%m%dT%H%M%S.%fZ")
-    run_key = f"{timestamp}-{config_sha256[:8]}-{manifest_sha256[:8]}"
+    run_key = (
+        f"{timestamp}-{args.run_mode}-{config_sha256[:8]}-{manifest_sha256[:8]}"
+    )
+
+    seed = config["experiment"]["seed"]
+    set_seed(seed)
+    frame, time_center, input_sha256, source_dvc_hash = load_frozen_frame(
+        config,
+        settings,
+    )
+    fit = fit_rows(frame)
+
+    if args.run_mode == "prior":
+        execution_host, _ = execution_context()
+        prior_path = save_prior_check(
+            model_module,
+            fit,
+            settings,
+            seed,
+            {
+                "stage": "M9",
+                "run_key": run_key,
+                "run_mode": args.run_mode,
+                "model_id": model_id,
+                "candidate_role": candidate_role,
+                "git_commit": git_commit(),
+                "execution_host": execution_host,
+                "config_sha256": config_sha256,
+                "source_manifest_sha256": manifest_sha256,
+                "weekly_counts_sha256": input_sha256,
+                "source_dvc_hash": source_dvc_hash,
+                "seed": seed,
+                "priors": settings["priors"],
+                "prior_draws": settings["sampling"]["prior_draws"],
+                "fit_weeks": int(fit["week"].nunique()),
+                "fit_only": True,
+                "validation_used_for_selection": False,
+            },
+        )
+        print(f"Run key: {run_key}")
+        print(f"Model: {model_id}")
+        print(f"Prior check: {prior_path.relative_to(PROJECT_ROOT)}")
+        return
 
     report_dir = PROJECT_ROOT / "reports/modeling/weekly_counts" / model_id / run_key
     artifact_dir = PROJECT_ROOT / "artifacts/models/weekly_counts" / model_id / run_key
@@ -142,28 +287,6 @@ def main() -> None:
     if snapshot_manifest != manifest:
         raise RuntimeError("M9 source changed while creating the snapshot.")
     write_json(artifact_staging / "source_manifest.json", manifest)
-
-    seed = config["experiment"]["seed"]
-    set_seed(seed)
-    input_path = PROJECT_ROOT / config["paths"]["weekly_counts"]
-    input_bytes = input_path.read_bytes()
-    input_sha256 = hashlib.sha256(input_bytes).hexdigest()
-    if input_sha256 != settings["weekly_counts_sha256"]:
-        raise ValueError("M9 weekly counts SHA-256 is not frozen.")
-    source_dvc_hash = load_dvc_hash(
-        PROJECT_ROOT / config["paths"]["weekly_patterns_artifacts_dvc"]
-    )
-    if source_dvc_hash != settings["source_dvc_hash"]:
-        raise ValueError("M9 weekly patterns DVC hash is not frozen.")
-
-    raw = pd.read_csv(io.BytesIO(input_bytes))
-    frame, time_center = prepare_model_frame(
-        raw,
-        settings["clusters"],
-        settings["expected_complete_weeks"],
-        settings["time_scale_days"],
-    )
-    fit = frame.loc[frame["split"] == "fit"].reset_index(drop=True)
 
     model = model_module.build_model(fit, settings)
     idata, versions = sample_posterior(model, settings["sampling"], seed)
@@ -248,6 +371,7 @@ def main() -> None:
         backtest["calibration"],
         settings,
     )
+    status = candidate_status(args.run_mode, acceptance)
 
     save_plots(
         predictions,
@@ -275,7 +399,11 @@ def main() -> None:
     report = {
         "stage": "M9",
         "run_key": run_key,
+        "run_mode": args.run_mode,
         "model_id": model_id,
+        "candidate_role": candidate_role,
+        "candidate_status": status,
+        "rejection_reason": rejection_reason(args.run_mode, acceptance),
         "source_status": model_spec["source_status"],
         "model_spec": model_spec,
         "config_sha256": config_sha256,
@@ -329,8 +457,9 @@ def main() -> None:
 
     print(f"Run key: {run_key}")
     print(f"Model: {model_id}")
+    print(f"Run mode: {args.run_mode}")
     print(f"Diagnostics: {json.dumps(diagnostics, sort_keys=True)}")
-    print(f"Status: {'accepted' if acceptance['accepted'] else 'rejected'}")
+    print(f"Status: {status}")
     print(f"Report: {report_dir.relative_to(PROJECT_ROOT)}")
     print(f"Artifacts: {artifact_dir.relative_to(PROJECT_ROOT)}")
 

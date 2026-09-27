@@ -324,8 +324,33 @@ uv run --no-sync python src/evaluation/publish_run.py \
 
 MLflow recibirá la fórmula, los priors, la configuración del muestreo,
 diagnósticos de convergencia, métricas de backtest, predicciones y gráficos. El
-run conserva `candidate_status=rejected` cuando no pasa todos los criterios; un
-job terminado correctamente no implica que el modelo haya sido aceptado.
+run conserva un `candidate_status` de rechazo cuando no pasa todos los
+criterios; un job terminado correctamente no implica que el modelo haya sido
+aceptado.
+
+Los modelos semanales nuevos usan un único script genérico. Recibe la
+configuración en `MODEL_CONFIG` y el nivel de ejecución en `RUN_MODE`
+(`prior`, `pilot` o `full`; por defecto `full`):
+
+```bash
+sbatch --export=ALL,MODEL_CONFIG=configs/weekly_counts/poisson_static_pymc_v1.yaml,RUN_MODE=full \
+  scripts/hpc/m9_weekly_count.slurm
+```
+
+- `prior` solo genera el prior predictive con las semanas de `fit` y escribe
+  `reports/modeling/weekly_counts/<model_id>/prior_checks/<run_key>.json`. Tarda
+  segundos, por lo que también puede ejecutarse en el nodo de acceso con
+  `PYTENSOR_FLAGS=cxx= uv run --no-sync python -m src.models.weekly_counts.run
+  --config CONFIG --run-mode prior`.
+- `pilot` usa 2 cadenas, 250 de tune y 250 draws sin modificar la configuración
+  congelada. Su estado es siempre `candidate_status=pilot_only`; sirve para
+  detectar problemas técnicos, no para elegir modelos.
+- `full` usa exactamente el muestreo de la configuración.
+
+El nivel queda en el `run_key`, en `results.json` y en el tag `run_mode` de
+MLflow. `candidate_role` se lee de `configs/weekly_counts/releases.json`; B1
+PyMC figura como `pipeline_baseline`: es una referencia del pipeline, no un
+candidato a promoción.
 
 Verificar acceso a la A100:
 

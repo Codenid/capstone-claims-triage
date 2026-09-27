@@ -340,6 +340,14 @@ se elige con `--config configs/weekly_counts/<modelo>.yaml`. Multinomial y
 Dirichlet-Multinomial se añadirán a este paquete después de comparar las
 variantes estáticas de M9.
 
+`--run-mode` indica el nivel de ejecución: `prior` solo revisa el prior
+predictive con `fit`, `pilot` hace un muestreo corto y puramente técnico, y
+`full` usa la configuración congelada. MLflow registra `run_mode`,
+`candidate_role` y `candidate_status`: `pilot_only`, `accepted`,
+`rejected_convergence`, `rejected_predictive` o
+`rejected_no_practical_gain`, junto con los criterios fallidos en
+`rejection_reason`.
+
 ### Negative Binomial
 
 La distribución **Negative Binomial** modela cuántos reclamos esperamos para un

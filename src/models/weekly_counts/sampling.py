@@ -72,6 +72,29 @@ def sample_prior_predictive(
     return values.reshape((-1,) + values.shape[2:])
 
 
+def sample_prior_variables(
+    model: Any,
+    draws: int,
+    var_names: list[str],
+    seed: int,
+) -> dict[str, np.ndarray]:
+    pm = importlib.import_module("pymc")
+
+    with model:
+        idata: Any = pm.sample_prior_predictive(
+            draws=draws,
+            var_names=var_names,
+            random_seed=seed,
+        )
+
+    values = {}
+    for group in ("prior", "prior_predictive"):
+        if group in idata.groups():
+            for name, array in idata[group].items():
+                values[name] = array.to_numpy().reshape((-1,) + array.shape[2:])
+    return values
+
+
 def subsample_posterior(
     idata: Any,
     draws: int,

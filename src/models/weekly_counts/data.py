@@ -88,3 +88,8 @@ def prepare_model_frame(
     )
     return complete, center
 
+
+def fit_rows(frame: pd.DataFrame) -> pd.DataFrame:
+    """Return the only rows that may inform a posterior."""
+    return frame.loc[frame["split"] == "fit"].reset_index(drop=True)
+

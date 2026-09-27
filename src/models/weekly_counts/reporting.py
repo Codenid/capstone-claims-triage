@@ -217,7 +217,9 @@ def save_offline_record(
         "source_manifest_sha256": report["source_manifest_sha256"],
         "weekly_counts_sha256": report["weekly_counts_sha256"],
         "source_dvc_hash": report["source_dvc_hash"],
+        "weeks": json.dumps(report["weeks"], sort_keys=True),
         "priors": json.dumps(settings["priors"], sort_keys=True),
+        "prior_strategy": model_spec.get("prior_strategy", "not_recorded"),
         "sampling": json.dumps(settings["sampling"], sort_keys=True),
         "model_spec": json.dumps(model_spec, sort_keys=True),
         "versions": json.dumps(report["versions"], sort_keys=True),
@@ -242,7 +244,12 @@ def save_offline_record(
     tags = {
         "model_id": model_id,
         "family": family,
+        "model_family": family,
         "source_status": source_status,
+        "run_mode": report["run_mode"],
+        "candidate_role": report["candidate_role"],
+        "candidate_status": report["candidate_status"],
+        "rejection_reason": report["rejection_reason"],
         "training_split": "fit",
         "selection_split": "calibration",
         "evaluation_split": "validation",
@@ -251,7 +258,6 @@ def save_offline_record(
             report["validation_used_for_selection"]
         ).lower(),
         "calibration_accepted": str(acceptance["accepted"]).lower(),
-        "candidate_status": "accepted" if acceptance["accepted"] else "rejected",
     }
     tags.update(
         {

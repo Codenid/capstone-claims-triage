@@ -15,6 +15,7 @@
     "model_source_sha256": "377172ff4fbd49d369499a12db21648910eda47a25bc792a47729ac70545d813",
     "config_sha256": "b487e2fbc8d050051c83406ac384750c064ecd21531caff6b38d5a9cd597d0ae",
     "source_status": "native_versioned_source",
-    "historical_run_id": null
+    "historical_run_id": null,
+    "candidate_role": "pipeline_baseline"
   }
 }
