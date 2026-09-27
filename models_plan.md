@@ -199,7 +199,8 @@ composición cambia de una semana a otra:
 1. NB-R4 con `alpha` global.
 2. NB-R4 con `alpha` por cluster, solo si la cobertura vuelve a variar
    sistemáticamente con el volumen del cluster.
-3. T1 con BGE entrenado con todo `fit` (§21).
+3. T1–T4 con TF-IDF y BGE, con y sin producto, entrenados con todo `fit`
+   (§21).
 4. M10: B2 y B2-R4 como baselines, DM-R4 como candidato y DM-V1 como
    referencia.
 
@@ -665,7 +666,8 @@ Reglas:
 - [ ] Añadir `run_mode: prior`, `pilot` o `full` a la configuración o al registro.
 - [ ] No usar métricas de un piloto para promover un modelo.
 - [ ] No reemplazar configuraciones completas con parámetros de smoke.
-- [ ] Registrar pilotos en un experimento o tag separado de MLflow.
+- [x] No publicar pilotos en MLflow (decisión del 2026-09-27, §14.5); quedan
+      en Git con `run_mode=pilot`.
 - [ ] Medir tiempo y memoria de cada piloto antes de solicitar recursos SLURM
       completos.
 
@@ -960,6 +962,22 @@ rejected_no_practical_gain
 
 Un job SLURM exitoso no significa que el modelo fue aceptado.
 
+### 14.5 Qué se publica
+
+Decisión del 2026-09-27 con aprobación del usuario. La cuenta gratuita de
+DagsHub admite unos 100 runs, así que cada run debe registrar una decisión:
+
+- Publicar solo runs `full` de candidatos y baselines. Los pilotos y prior
+  checks quedan solo en Git.
+- Un run por `run_name`: `publish_run.py` rechaza nombres existentes y runs con
+  `run_mode` distinto de `full`.
+- Los comparadores de una misma decisión se registran como métricas dentro de
+  un solo run, no como runs separados.
+- La confirmación final en validación es un solo run.
+- Se borraron del experimento 3 duplicados (`49d02958`, `2778d413`,
+  `5d266bb5`) y 3 pilotos (`d5219aa9`, `7e5d90f0`, `d38027d0`); quedaron 36
+  runs activos. El borrado de MLflow es recuperable desde la papelera.
+
 ## 15. DVC y estructura de salidas
 
 M9 actual:
@@ -1225,9 +1243,9 @@ supere B2 y exista evidencia de deriva temporal.
 
 Actualización del 2026-09-27: los pasos 1 a 10 se completaron; NB-V4 y DM-V2
 quedaron descartados (§5). La siguiente acción es implementar NB-R4 (§7.9) con
-prior predictive, piloto y full con gates; después, T1 (§21) y M10.
+prior predictive, piloto y full con gates; después, T1–T4 (§21) y M10.
 
-## 21. Clasificador T1 con BGE entrenado con todo `fit`
+## 21. Clasificadores T1–T4 con todo `fit`
 
 Decisiones del 2026-09-27 con aprobación del usuario:
 
@@ -1243,3 +1261,22 @@ Decisiones del 2026-09-27 con aprobación del usuario:
   muestra de M5, evaluados sobre esas mismas filas.
 - Después de validar se decidirá si los modelos elegidos se reentrenan con
   `fit` + calibración para producción.
+
+Ampliación del 2026-09-27 con aprobación del usuario: la comparación se hace
+para T1, T2, T3 y T4 con todo `fit`. Hoy todos los modelos con texto incluyen el
+producto, y BGE solo se entrenó con la muestra de M5.
+
+| Representación | Estado |
+|---|---|
+| Frecuencia global y regla por producto (M3) | Existen, con todo `fit` |
+| TF-IDF + producto (M4) | Existe, con todo `fit` |
+| TF-IDF solo texto | Falta |
+| BGE solo texto | Falta |
+| BGE + producto | Falta con todo `fit`; hoy solo con 120,000 filas |
+
+- Todas se evalúan en las mismas filas de calibración sin texto compartido;
+  la validación sigue cerrada.
+- Métrica principal: Macro-F1 para T1 y precisión promedio para T2–T4.
+- Un run de MLflow por objetivo, con las representaciones como métricas.
+- La regla para elegir entre representaciones con resultados cercanos debe
+  aprobarse antes de entrenar.

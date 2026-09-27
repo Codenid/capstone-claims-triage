@@ -29,7 +29,7 @@ Clon limpio: `/home/piero.palacios/capstone-claims-triage-runs`.
 | Nivel | Run key | SLURM | MLflow | Tiempo del job | MaxRSS SLURM | Pico del proceso |
 |---|---|---|---|---|---|---|
 | `prior` | `20260927T003014.154155Z-prior-b487e2fb-1f4fefe6` | Nodo de acceso | No aplica | Segundos | No aplica | No medido |
-| `pilot` | `20260927T003054.260416Z-pilot-b487e2fb-1f4fefe6` | 53177 | `d5219aa9f6eb4c848cbb0551a533afd2` | 37 s | 1.19 GiB | 0.98 GiB |
+| `pilot` | `20260927T003054.260416Z-pilot-b487e2fb-1f4fefe6` | 53177 | `d5219aa9f6eb4c848cbb0551a533afd2`, borrado de MLflow el 2026-09-27; sus salidas siguen en Git | 37 s | 1.19 GiB | 0.98 GiB |
 | `full` | `20260927T003211.742368Z-full-b487e2fb-1f4fefe6` | 53178 | `0ddb96b9f9c645bdb8e8a687cedf09cc` | 47 s | 1.15 GiB | 1.41 GiB |
 
 Los posteriores están en `artifacts/models/weekly_counts.dvc`

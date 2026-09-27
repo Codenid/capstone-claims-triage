@@ -344,8 +344,12 @@ sbatch --export=ALL,MODEL_CONFIG=configs/weekly_counts/poisson_static_pymc_v1.ya
   --config CONFIG --run-mode prior`.
 - `pilot` usa 2 cadenas, 250 de tune y 250 draws sin modificar la configuración
   congelada. Su estado es siempre `candidate_status=pilot_only`; sirve para
-  detectar problemas técnicos, no para elegir modelos.
+  detectar problemas técnicos, no para elegir modelos. Queda solo en Git: no
+  se publica en MLflow.
 - `full` usa exactamente el muestreo de la configuración.
+
+`publish_run.py` solo acepta runs `full` y rechaza un `run_name` que ya exista
+en MLflow. Así cada run registra una sola decisión, sin duplicados.
 
 El nivel queda en el `run_key`, en `results.json` y en el tag `run_mode` de
 MLflow. `candidate_role` se lee de `configs/weekly_counts/releases.json`; B1

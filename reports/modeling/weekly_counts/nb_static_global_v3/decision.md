@@ -123,7 +123,7 @@ máximo semanal en [0.070, 0.242] y `alpha` en [1.8, 65]. Cumple el criterio.
 | Run key | `20260927T010530.820879Z-pilot-45c908d1-e06833de` |
 | Commit | `a099a30f175c515a71356ae3c49068f74c2f2144` |
 | SLURM | 53181, `COMPLETED`, 1 min 43 s, MaxRSS 0.74 GiB; pico del proceso 1.00 GiB |
-| MLflow | `7e5d90f0748f4e0f87a9af3f7c87f23a`, `run_mode=pilot`, `candidate_status=pilot_only` |
+| MLflow | `7e5d90f0748f4e0f87a9af3f7c87f23a`, borrado el 2026-09-27 por la política de §14.5 del plan; sus salidas siguen en Git |
 | Muestreo | 2 cadenas, 250 de tune y 250 draws |
 | Diagnósticos | R-hat máximo 1.03, ESS bulk mínimo 512, ESS tail mínimo 214, 0 divergencias, BFMI mínimo 0.85, profundidad máxima 5 sin topes |
 | Normalización de medias | Error máximo 4.4e-16 |

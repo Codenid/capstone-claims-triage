@@ -34,6 +34,27 @@ def load_run_record(path: Path) -> dict[str, Any]:
     return record
 
 
+def check_publishable(record: dict[str, Any], existing_run_names: set[str]) -> None:
+    """Keep MLflow to one run per decision: full runs only, never duplicates."""
+    # Records from stages before run modes existed are complete runs.
+    run_mode = record["tags"].get("run_mode", "full")
+    if run_mode != "full":
+        raise ValueError(
+            f"Only full runs are published; {record['run_name']} is {run_mode}."
+        )
+    if record["run_name"] in existing_run_names:
+        raise ValueError(f"MLflow already has a run named {record['run_name']}.")
+
+
+def existing_run_names(experiment_id: str, run_name: str) -> set[str]:
+    runs = mlflow.search_runs(
+        [experiment_id],
+        filter_string=f"attributes.run_name = '{run_name}'",
+        output_format="list",
+    )
+    return {run.info.run_name for run in runs}
+
+
 def publish(record_path: Path) -> str:
     tracking_uri = os.environ.get("MLFLOW_TRACKING_URI")
     if not tracking_uri:
@@ -45,7 +66,11 @@ def publish(record_path: Path) -> str:
         record["experiment_name"],
     )
     mlflow.set_tracking_uri(tracking_uri)
-    mlflow.set_experiment(experiment_name)
+    experiment = mlflow.set_experiment(experiment_name)
+    check_publishable(
+        record,
+        existing_run_names(experiment.experiment_id, record["run_name"]),
+    )
 
     with mlflow.start_run(run_name=record["run_name"]) as run:
         mlflow.set_tags(record["tags"])

@@ -16,7 +16,11 @@ from src.evaluation.freeze_evaluation import (
     parse_splits,
     true_count as array_true_count,
 )
-from src.evaluation.publish_run import find_records, load_run_record
+from src.evaluation.publish_run import (
+    check_publishable,
+    find_records,
+    load_run_record,
+)
 from src.evaluation.verify_modeling_input import (
     file_md5,
     prepared_data_hash,
@@ -162,6 +166,18 @@ stages:
 
             with self.assertRaisesRegex(ValueError, "Run record is missing"):
                 load_run_record(record_path)
+
+    def test_publishes_only_new_full_runs(self):
+        full = {"run_name": "m9-model-full", "tags": {"run_mode": "full"}}
+        pilot = {"run_name": "m9-model-pilot", "tags": {"run_mode": "pilot"}}
+        older_stage = {"run_name": "m4-t1-tfidf-product", "tags": {}}
+
+        check_publishable(full, set())
+        check_publishable(older_stage, set())
+        with self.assertRaisesRegex(ValueError, "Only full runs"):
+            check_publishable(pilot, set())
+        with self.assertRaisesRegex(ValueError, "already has a run"):
+            check_publishable(full, {"m9-model-full"})
 
 
 if __name__ == "__main__":
