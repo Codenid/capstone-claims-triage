@@ -429,6 +429,14 @@ clusters cambia de una semana a otra. Desde el 2026-09-27, un candidato nuevo
 debe reducir al menos 5% el WIS del mejor baseline, hoy B1-R4, con un
 bootstrap semanal que lo confirme.
 
+NB-R4 (`nb_rolling_4_global_v1`) usa esas mismas participaciones de las 4
+semanas anteriores y estima con PyMC una sola dispersión. Convergió y tuvo
+cobertura dentro de rango (89.2% y 95.6%), pero su WIS de calibración fue 47.72
+frente a 43.06 de B1-R4, por lo que no se acepta. Supera a B1-R4 en clusters
+pequeños y medianos; en los grandes, la dispersión global produce intervalos
+demasiado anchos. El detalle está en
+`reports/modeling/weekly_counts/nb_rolling_4_global_v1/decision.md`.
+
 ### Dirichlet-Multinomial
 
 La **Dirichlet-Multinomial** modela cómo se reparte el total semanal entre los

@@ -60,3 +60,42 @@ commit `e807869`.
 
 Todos los gates del piloto se cumplen. No se revisaron métricas de calibración
 ni de validación del piloto, y el piloto no se publica en MLflow.
+
+### Full
+
+| Campo | Valor |
+|---|---|
+| Run key | `20260927T153922.164206Z-full-34f4684f-e1410d83` |
+| Commit | `8304231` |
+| SLURM | 53271, `COMPLETED`, 3 min 3 s, MaxRSS 1.3 GB |
+| MLflow | `5ecad8c8482d4bfa8ecac5d6afd7cc11` |
+| DVC | `artifacts/models/weekly_counts.dvc`, `632c07e66b63a73ee6f28c68f02896dd.dir` |
+| Diagnósticos | R-hat 1.002, ESS bulk 2855, ESS tail 2754, 0 divergencias |
+
+Calibración, con B1-R4 como mejor baseline:
+
+| Métrica | NB-R4 | B1-R4 | Diferencia, IC bootstrap 95% |
+|---|---:|---:|---|
+| WIS | 47.72 | 43.06 | +4.66, [-0.09, 9.45] |
+| WAPE | 13.68% | 12.46% | +1.22 puntos, [0.52, 1.90] |
+| MAE | 61.17 | 55.72 | +5.45, [2.32, 8.51] |
+| Cobertura 80% y 95% | 89.2% y 95.6% | — | Dentro de rango |
+
+Por tercil de volumen en calibración:
+
+| Tercil | Cobertura 95% NB-R4 | WIS NB-R4 | WIS B1-R4 |
+|---|---:|---:|---:|
+| Pequeños | 91.7% | 13.88 | 18.91 |
+| Medianos | 95.5% | 27.62 | 35.58 |
+| Grandes | 100% | 104.26 | 76.53 |
+
+## Decisión
+
+- Estado automático: `rejected_no_practical_gain`; criterios fallidos
+  `wis_gain,wis_bootstrap,wape,mae`. NB-R4 no se acepta.
+- Con una sola `alpha` (5.8), los clusters grandes reciben una dispersión
+  relativa cercana a 41%, pero su error real ronda 10%. Sus intervalos son
+  demasiado anchos y su mediana queda baja. En los clusters pequeños y
+  medianos NB-R4 ya supera a B1-R4.
+- La cobertura cambia sistemáticamente con el volumen: se cumple el gate de
+  §5 para NB-R4 con `alpha` por cluster.

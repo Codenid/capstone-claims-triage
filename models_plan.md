@@ -144,7 +144,7 @@ Antes de cualquier piloto o entrenamiento completo:
 | M9 | NB-V2 | Negative Binomial normalizada con `softmax` | Lineal | Jerárquica por cluster | No; solo las medias | Ejecutado y rechazado |
 | M9 | NB-V3 | Negative Binomial estática | No | Global | No; solo las medias | Ejecutado y rechazado por WAPE |
 | M9 | NB-V4 | Negative Binomial estática | No | Jerárquica por cluster | No; solo las medias | Descartado el 2026-09-27: con media estática no puede superar a B1-R4 |
-| M9 | NB-R4 | Negative Binomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Global | No; solo las medias | Próximo experimento |
+| M9 | NB-R4 | Negative Binomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Global | No; solo las medias | Ejecutado y rechazado; gate de `alpha` por cluster cumplido |
 | M10 | B2 | Multinomial estática | No | Sin dispersión adicional | Sí | Planificado como baseline |
 | M10 | B2-R4 | Multinomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Sin dispersión adicional | Sí | Planificado como baseline |
 | M10 | DM-V1 | Dirichlet-Multinomial estática | No | Global $\kappa$ | Sí | Planificado como referencia |
@@ -162,7 +162,7 @@ Antes de cualquier piloto o entrenamiento completo:
 | NB-V3 | `nb_static_global_v3` | Ejecutado y rechazado; MLflow `c5dae8eeb3cf435292b351846f7a1653` |
 | NB-V4 | `nb_static_hierarchical_v4` | Descartado; no se implementa |
 | B1-R4 / B1-R13 | `b1_rolling_4_v1` y `b1_rolling_13_v1` | Ejecutados; MLflow `4968041b55804aea855362251fb5b7a7` y `5a8fd036aa4044978716f207e0e14066` |
-| NB-R4 | Propuesto: `nb_rolling_4_global_v1` | Pendiente |
+| NB-R4 | `nb_rolling_4_global_v1` | Ejecutado y rechazado; MLflow `5ecad8c8482d4bfa8ecac5d6afd7cc11` |
 | B2 | Propuesto: `multinomial_static_v1` | Pendiente |
 | B2-R4 | Propuesto: `multinomial_rolling_4_v1` | Pendiente |
 | DM-V1 | Propuesto: `dirichlet_multinomial_static_v1` | Pendiente |
