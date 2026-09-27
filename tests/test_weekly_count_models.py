@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 import unittest
 
+import arviz as az
 import numpy as np
 import pandas as pd
 import pymc as pm
@@ -9,7 +10,10 @@ import xarray as xr
 import yaml
 
 from src.models.weekly_counts.data import fit_rows
-from src.models.weekly_counts.diagnostics import prior_check_summary
+from src.models.weekly_counts.diagnostics import (
+    posterior_diagnostics,
+    prior_check_summary,
+)
 from src.models.weekly_counts.metrics import candidate_status, rejection_reason
 from src.models.weekly_counts.registry import DEFAULT_MODEL_ID, MODELS, get_model
 from src.models.weekly_counts.reporting import file_sha256
@@ -271,6 +275,23 @@ class WeeklyCountRunTests(unittest.TestCase):
             set(summary["prior"]["share_by_fit_volume"]),
             {"small", "medium", "large"},
         )
+
+    def test_posterior_diagnostics_are_not_rounded(self):
+        rng = np.random.default_rng(42)
+        idata = az.from_dict(
+            posterior={"x": 0.1234567 + 0.001 * rng.standard_normal((4, 200))},
+            sample_stats={
+                "diverging": np.zeros((4, 200), dtype=bool),
+                "energy": rng.standard_normal((4, 200)),
+            },
+        )
+
+        summary, diagnostics = posterior_diagnostics(idata, ("x",), ("x",))
+
+        # Default ArviZ rounding would give two decimals for R-hat.
+        self.assertNotEqual(diagnostics["rhat_max"], round(diagnostics["rhat_max"], 2))
+        self.assertNotEqual(summary.loc["x", "mean"], round(summary.loc["x", "mean"], 3))
+        self.assertAlmostEqual(summary.loc["x", "mean"], 0.1234567, places=4)
 
     def test_prior_variables_are_seeded(self):
         model_module = MODELS["poisson_static_pymc_v1"]

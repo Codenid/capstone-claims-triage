@@ -20,17 +20,18 @@ def posterior_diagnostics(
     max_treedepth: int | None = None,
 ) -> tuple[pd.DataFrame, dict[str, float | int]]:
     az = importlib.import_module("arviz")
+    # ArviZ rounds R-hat to two decimals unless round_to is the string "none".
     summary = az.summary(
         idata,
         var_names=list(summary_variables),
         kind="all",
-        round_to=None,
+        round_to="none",
     )
     convergence = az.summary(
         idata,
         var_names=list(diagnostic_variables),
         kind="diagnostics",
-        round_to=None,
+        round_to="none",
     )
     if not isinstance(summary, pd.DataFrame) or not isinstance(
         convergence, pd.DataFrame
