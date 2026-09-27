@@ -25,9 +25,9 @@ Los modelos actuales usan el total semanal observado, `weekly_total = N_t`, como
 exposición. Por tanto, no pronostican por sí solos el volumen total futuro.
 Pronostican la distribución del total entre 40 clusters:
 
-\[
+$$
 \mu_{c,t} = N_t p_{c,t}.
-\]
+$$
 
 Antes de usar estos modelos en producción se debe responder y documentar:
 
@@ -137,7 +137,7 @@ Antes de cualquier piloto o entrenamiento completo:
 
 ## 4. Plan autorizado de candidatos
 
-| Etapa | ID | Modelo | Tendencia | Dispersión | ¿Los draws suman \(N_t\)? | Estado |
+| Etapa | ID | Modelo | Tendencia | Dispersión | ¿Los draws suman $N_t$? | Estado |
 |---|---|---|---|---|---|---|
 | M9 | B1 | Poisson con participaciones fijas | No | Poisson | No | Analítico como referencia; PyMC ejecutado como baseline del pipeline |
 | M9 | NB-V1 | Negative Binomial independiente | Lineal | Jerárquica por cluster | No | Ejecutado y rechazado |
@@ -145,7 +145,7 @@ Antes de cualquier piloto o entrenamiento completo:
 | M9 | NB-V3 | Negative Binomial estática | No | Global | No; solo las medias | Ejecutado y rechazado por WAPE |
 | M9 | NB-V4 | Negative Binomial estática | No | Jerárquica por cluster | No; solo las medias | Condición documentada por NB-V3; requiere aprobación |
 | M10 | B2 | Multinomial estática | No | Sin dispersión adicional | Sí | Planificado |
-| M10 | DM-V1 | Dirichlet-Multinomial estática | No | Global \(\kappa\) | Sí | Planificado |
+| M10 | DM-V1 | Dirichlet-Multinomial estática | No | Global $\kappa$ | Sí | Planificado |
 | M10 | DM-V2 | Dirichlet-Multinomial normalizada | Lineal | Global inicialmente | Sí | Solo si DM-V1 funciona |
 
 ### Correspondencia con implementaciones existentes
@@ -235,22 +235,22 @@ Decisiones congeladas el 2026-09-27 con aprobación del usuario:
 
 Implementación existente: `poisson_static_pymc_v1`.
 
-\[
+$$
 \mathbf p \sim \operatorname{Dirichlet}(\mathbf 1)
-\]
+$$
 
-\[
+$$
 \mu_{c,t} = N_t p_c
-\]
+$$
 
-\[
+$$
 y_{c,t} \sim \operatorname{Poisson}(\mu_{c,t})
-\]
+$$
 
 Propiedades:
 
-- Las medias suman \(N_t\).
-- Los draws independientes no suman necesariamente \(N_t\).
+- Las medias suman $N_t$.
+- Los draws independientes no suman necesariamente $N_t$.
 - No hay tendencia temporal.
 - Sirve como control del pipeline PyMC.
 
@@ -258,59 +258,59 @@ Propiedades:
 
 Implementación: `nb_independent_linear_v1`.
 
-\[
+$$
 \mu_{c,t} = N_t\exp(\beta_{0,c}+\beta_{1,c}t)
-\]
+$$
 
-\[
+$$
 y_{c,t}\sim\operatorname{NegativeBinomial}(\mu_{c,t},\alpha_c)
-\]
+$$
 
-Las medias no están normalizadas y pueden sumar más o menos que \(N_t\). No
+Las medias no están normalizadas y pueden sumar más o menos que $N_t$. No
 modificar ni promover este modelo.
 
 ### 7.3 NB-V2 — archivado y rechazado
 
 Implementación: `nb_softmax_linear_v2`.
 
-\[
+$$
 \eta_{c,t}=\beta_{0,c}+\beta_{1,c}t
-\]
+$$
 
-\[
+$$
 p_{c,t}=\operatorname{softmax}_c(\boldsymbol\eta_t)
-\]
+$$
 
-\[
+$$
 \mu_{c,t}=N_t p_{c,t}
-\]
+$$
 
-\[
+$$
 y_{c,t}\sim\operatorname{NegativeBinomial}(\mu_{c,t},\alpha_c)
-\]
+$$
 
-Las medias suman \(N_t\), pero los draws independientes no. No modificar ni
+Las medias suman $N_t$, pero los draws independientes no. No modificar ni
 promover este modelo.
 
 ### 7.4 NB-V3 — siguiente implementación
 
 ID técnico propuesto: `nb_static_global_v3`.
 
-\[
+$$
 \mathbf p \sim \operatorname{Dirichlet}(\tau\mathbf p_0)
-\]
+$$
 
-\[
+$$
 \log\alpha \sim \operatorname{Normal}(m_\alpha,s_\alpha)
-\]
+$$
 
-\[
+$$
 \mu_{c,t}=N_t p_c
-\]
+$$
 
-\[
+$$
 y_{c,t}\sim\operatorname{NegativeBinomial}(\mu_{c,t},\alpha)
-\]
+$$
 
 Decisiones de implementación:
 
@@ -318,8 +318,8 @@ Decisiones de implementación:
 - Participaciones estáticas.
 - Usar la parametrización PyMC cuya varianza es
   `mu + mu**2 / alpha`.
-- Las medias deben sumar \(N_t\) con error numérico menor que `1e-10`.
-- Los draws no tienen que sumar \(N_t\).
+- Las medias deben sumar $N_t$ con error numérico menor que `1e-10`.
+- Los draws no tienen que sumar $N_t$.
 - Usar inicialmente el mismo prior de `log_alpha_global` de NB-V2 para mantener
   comparabilidad.
 - La elección de `tau` y `p0` debe pasar prior predictive antes del piloto.
@@ -327,9 +327,9 @@ Decisiones de implementación:
 
 Prior simple de respaldo si no se aprueba empirical Bayes:
 
-\[
+$$
 \mathbf p\sim\operatorname{Dirichlet}(1,\ldots,1).
-\]
+$$
 
 No cambiar entre estas dos opciones después de mirar calibración. La decisión se
 toma con `fit` y prior predictive.
@@ -340,15 +340,15 @@ ID técnico propuesto: `nb_static_hierarchical_v4`.
 
 Mantener la misma media estática de NB-V3:
 
-\[
+$$
 \mu_{c,t}=N_t p_c.
-\]
+$$
 
 Usar dispersión jerárquica:
 
-\[
+$$
 \log\alpha_c = m_\alpha + s_\alpha z_c.
-\]
+$$
 
 Preferir contrastes de suma cero para separar claramente el nivel global de las
 diferencias entre clusters:
@@ -369,18 +369,18 @@ diferencias entre clusters:
 
 ID técnico propuesto: `multinomial_static_v1`.
 
-\[
+$$
 \mathbf p\sim\operatorname{Dirichlet}(\tau\mathbf p_0)
-\]
+$$
 
-\[
+$$
 \mathbf y_t\sim\operatorname{Multinomial}(N_t,\mathbf p)
-\]
+$$
 
 Propiedades obligatorias:
 
 - Cada observación es un vector de 40 conteos.
-- Cada draw debe sumar exactamente \(N_t\).
+- Cada draw debe sumar exactamente $N_t$.
 - No hay dispersión adicional más allá de Multinomial.
 - Usar la misma estrategia de prior sobre `p` que NB-V3 para una comparación
   justa.
@@ -389,22 +389,22 @@ Propiedades obligatorias:
 
 ID técnico propuesto: `dirichlet_multinomial_static_v1`.
 
-\[
+$$
 \mathbf p\sim\operatorname{Dirichlet}(\tau\mathbf p_0)
-\]
+$$
 
-\[
+$$
 \boldsymbol a=\kappa\mathbf p
-\]
+$$
 
-\[
+$$
 \mathbf y_t\sim
 \operatorname{DirichletMultinomial}(N_t,\boldsymbol a)
-\]
+$$
 
 Propiedades:
 
-- Cada draw suma exactamente \(N_t\).
+- Cada draw suma exactamente $N_t$.
 - `kappa` controla la dispersión conjunta.
 - Comenzar con un `kappa` global, no uno por cluster.
 - Definir y reportar también
@@ -413,9 +413,9 @@ Propiedades:
   información de `fit`.
 - Prior inicial para evaluar, no para congelar sin revisión:
 
-  \[
+  $$
   \log\kappa\sim\operatorname{Normal}(\log 100,1).
-  \]
+  $$
 
 - Ajustar ese prior antes del entrenamiento completo si produce composiciones
   claramente imposibles. Cualquier cambio posterior exige una nueva versión de
@@ -425,18 +425,18 @@ Propiedades:
 
 ID técnico propuesto: `dirichlet_multinomial_softmax_linear_v2`.
 
-\[
+$$
 \eta_{c,t}=\beta_{0,c}+\beta_{1,c}t
-\]
+$$
 
-\[
+$$
 \mathbf p_t=\operatorname{softmax}(\boldsymbol\eta_t)
-\]
+$$
 
-\[
+$$
 \mathbf y_t\sim
 \operatorname{DirichletMultinomial}(N_t,\kappa\mathbf p_t)
-\]
+$$
 
 Reglas:
 
@@ -738,30 +738,30 @@ No estimar el log score contando coincidencias de draws predictivos. Calcular la
 probabilidad del vector observado para cada draw de parámetros y usar
 `logsumexp`:
 
-\[
+$$
 \log p(\mathbf y_t\mid D)
 \approx
 \operatorname{logsumexp}_s
 \left(\log p(\mathbf y_t\mid\theta_s)\right)-\log S.
-\]
+$$
 
 Usar `scipy.special.gammaln` y `logsumexp` con pruebas numéricas.
 
 Para Multinomial:
 
-\[
+$$
 \log p(\mathbf y)=
 \log N!-\sum_c\log y_c!+\sum_c y_c\log p_c.
-\]
+$$
 
 Para Dirichlet-Multinomial:
 
-\[
+$$
 \log p(\mathbf y)=
 \log N!-\sum_c\log y_c!
 +\log\Gamma(A)-\log\Gamma(N+A)
 +\sum_c\left[\log\Gamma(y_c+a_c)-\log\Gamma(a_c)\right].
-\]
+$$
 
 ### 12.4 Mejora práctica
 
