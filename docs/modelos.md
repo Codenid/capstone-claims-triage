@@ -420,6 +420,15 @@ demasiado estrechos. Esa es la evidencia que el plan exige antes de considerar
 una dispersión por cluster (NB-V4). La validación no se abrió. El detalle está
 en `reports/modeling/weekly_counts/nb_static_global_v3/decision.md`.
 
+Los baselines móviles B1-R4 y B1-R13 usan las participaciones de las 4 o 13
+semanas anteriores ya observadas. En calibración, B1-R4 obtuvo WIS 43.11 y WAPE
+12.47%, muy por debajo de los modelos con participaciones estáticas (NB-V3:
+92.57 y 34.69%). Sus intervalos Poisson son demasiado estrechos (cobertura 95%
+de 42.1%), pero su predicción puntual muestra que la composición entre
+clusters cambia de una semana a otra. Desde el 2026-09-27, un candidato nuevo
+debe reducir al menos 5% el WIS del mejor baseline, hoy B1-R4, con un
+bootstrap semanal que lo confirme.
+
 ### Dirichlet-Multinomial
 
 La **Dirichlet-Multinomial** modela cómo se reparte el total semanal entre los

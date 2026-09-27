@@ -211,13 +211,13 @@ comparación exigente:
 
 Reglas:
 
-- [ ] Para predecir una semana, usar solamente semanas anteriores.
-- [ ] No calcular una media móvil centrada.
-- [ ] Usar expansión recursiva en calibración y validación sin actualizar
+- [x] Para predecir una semana, usar solamente semanas anteriores.
+- [x] No calcular una media móvil centrada.
+- [x] Usar expansión recursiva en calibración y validación sin actualizar
       parámetros con observaciones futuras.
-- [ ] Suavizar participaciones cero con una regla congelada y documentada.
-- [ ] Registrar los baselines en MLflow aunque no usen MCMC.
-- [ ] Etiquetar `model_family=deterministic_baseline`.
+- [x] Suavizar participaciones cero con una regla congelada y documentada.
+- [x] Registrar los baselines en MLflow aunque no usen MCMC.
+- [x] Etiquetar `model_family=deterministic_baseline`.
 
 Decisiones congeladas el 2026-09-27 con aprobación del usuario:
 
@@ -228,6 +228,16 @@ Decisiones congeladas el 2026-09-27 con aprobación del usuario:
   la media posterior del prior Dirichlet(1) de B1.
 - Distribución predictiva: `Poisson(N_t * share)`, igual que B1.
 - IDs: `b1_rolling_4_v1` y `b1_rolling_13_v1`.
+
+Resultado del 2026-09-27 en calibración:
+
+| Baseline | WIS | WAPE | Cobertura 80% | Cobertura 95% | MLflow |
+|---|---:|---:|---:|---:|---|
+| B1-R4 | 43.11 | 12.47% | 29.2% | 42.1% | `4968041b55804aea855362251fb5b7a7` |
+| B1-R13 | 64.84 | 17.56% | 21.0% | 32.1% | `5a8fd036aa4044978716f207e0e14066` |
+
+B1-R4 es hoy el mejor baseline: un candidato nuevo necesita un WIS de
+calibración de 40.95 o menos.
 
 ## 7. Especificaciones matemáticas
 
