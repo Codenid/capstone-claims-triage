@@ -143,10 +143,13 @@ Antes de cualquier piloto o entrenamiento completo:
 | M9 | NB-V1 | Negative Binomial independiente | Lineal | Jerárquica por cluster | No | Ejecutado y rechazado |
 | M9 | NB-V2 | Negative Binomial normalizada con `softmax` | Lineal | Jerárquica por cluster | No; solo las medias | Ejecutado y rechazado |
 | M9 | NB-V3 | Negative Binomial estática | No | Global | No; solo las medias | Ejecutado y rechazado por WAPE |
-| M9 | NB-V4 | Negative Binomial estática | No | Jerárquica por cluster | No; solo las medias | Condición documentada por NB-V3; requiere aprobación |
-| M10 | B2 | Multinomial estática | No | Sin dispersión adicional | Sí | Planificado |
-| M10 | DM-V1 | Dirichlet-Multinomial estática | No | Global $\kappa$ | Sí | Planificado |
-| M10 | DM-V2 | Dirichlet-Multinomial normalizada | Lineal | Global inicialmente | Sí | Solo si DM-V1 funciona |
+| M9 | NB-V4 | Negative Binomial estática | No | Jerárquica por cluster | No; solo las medias | Descartado el 2026-09-27: con media estática no puede superar a B1-R4 |
+| M9 | NB-R4 | Negative Binomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Global | No; solo las medias | Próximo experimento |
+| M10 | B2 | Multinomial estática | No | Sin dispersión adicional | Sí | Planificado como baseline |
+| M10 | B2-R4 | Multinomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Sin dispersión adicional | Sí | Planificado como baseline |
+| M10 | DM-V1 | Dirichlet-Multinomial estática | No | Global $\kappa$ | Sí | Planificado como referencia |
+| M10 | DM-R4 | Dirichlet-Multinomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Global $\kappa$ | Sí | Candidato principal de M10 |
+| M10 | DM-V2 | Dirichlet-Multinomial normalizada | Lineal | Global inicialmente | Sí | Descartado el 2026-09-27: la tendencia lineal no capta la deriva semanal |
 
 ### Correspondencia con implementaciones existentes
 
@@ -157,10 +160,14 @@ Antes de cualquier piloto o entrenamiento completo:
 | NB-V1 | `nb_independent_linear_v1` | Reconstruido desde la especificación de MLflow |
 | NB-V2 | `nb_softmax_linear_v2` | Verificado como equivalente al run histórico |
 | NB-V3 | `nb_static_global_v3` | Ejecutado y rechazado; MLflow `c5dae8eeb3cf435292b351846f7a1653` |
-| NB-V4 | Propuesto: `nb_static_hierarchical_v4` | Pendiente |
+| NB-V4 | `nb_static_hierarchical_v4` | Descartado; no se implementa |
+| B1-R4 / B1-R13 | `b1_rolling_4_v1` y `b1_rolling_13_v1` | Ejecutados; MLflow `4968041b55804aea855362251fb5b7a7` y `5a8fd036aa4044978716f207e0e14066` |
+| NB-R4 | Propuesto: `nb_rolling_4_global_v1` | Pendiente |
 | B2 | Propuesto: `multinomial_static_v1` | Pendiente |
+| B2-R4 | Propuesto: `multinomial_rolling_4_v1` | Pendiente |
 | DM-V1 | Propuesto: `dirichlet_multinomial_static_v1` | Pendiente |
-| DM-V2 | Propuesto: `dirichlet_multinomial_softmax_linear_v2` | Pendiente |
+| DM-R4 | Propuesto: `dirichlet_multinomial_rolling_4_v1` | Pendiente |
+| DM-V2 | `dirichlet_multinomial_softmax_linear_v2` | Descartado; no se implementa |
 
 ### Nota sobre B1
 
@@ -185,16 +192,31 @@ No ejecutar automáticamente todos los modelos. Usar este orden:
 6. DM-V1.
 7. DM-V2 únicamente si DM-V1 supera B2 y existe deriva temporal clara.
 
+Orden actualizado el 2026-09-27 con aprobación del usuario. Los pasos 1, 2 y 4
+ya se ejecutaron. NB-V4 y DM-V2 se descartan porque B1-R4 mostró que la
+composición cambia de una semana a otra:
+
+1. NB-R4 con `alpha` global.
+2. NB-R4 con `alpha` por cluster, solo si la cobertura vuelve a variar
+   sistemáticamente con el volumen del cluster.
+3. T1 con BGE entrenado con todo `fit` (§21).
+4. M10: B2 y B2-R4 como baselines, DM-R4 como candidato y DM-V1 como
+   referencia.
+
 ### Gates o condiciones obligatorias
 
 | Modelo | Ejecutar si | Detener o rechazar si |
 |---|---|---|
 | B1 PyMC | Siempre, una vez | El pipeline no reproduce resultados razonables del baseline analítico |
 | NB-V3 | Siempre, como siguiente candidato M9 | No converge o no mejora de forma estable frente a los baselines |
-| NB-V4 | NB-V3 converge, pero la cobertura/residuales cambian sistemáticamente por cluster | La dispersión global ya es suficiente o el modelo no es identificable |
+| NB-V4 | Descartado el 2026-09-27 | No aplica |
+| NB-R4 | Siempre, como siguiente candidato M9 | No converge o no cumple la regla de §12.4 |
+| NB-R4 con `alpha` por cluster | NB-R4 converge, pero su cobertura cambia sistemáticamente por tercil de volumen | La dispersión global ya es suficiente |
 | B2 | Siempre, como baseline conjunto | Falla la coherencia exacta de draws |
+| B2-R4 | Siempre, como baseline conjunto | Falla la coherencia exacta de draws |
+| DM-R4 | Siempre, como candidato de M10 | No converge o no cumple la regla de M10 (§12.3) |
 | DM-V1 | B2 presenta sobredispersión o intervalos demasiado estrechos | No converge o no mejora el log score conjunto |
-| DM-V2 | DM-V1 funciona y las participaciones muestran deriva temporal estable | La tendencia no mejora backtests o introduce mala convergencia |
+| DM-V2 | Descartado el 2026-09-27 | No aplica |
 
 NB-V1 y NB-V2 no deben reentrenarse salvo una auditoría explícita de
 reproducibilidad.
@@ -459,6 +481,45 @@ Reglas:
 - Si una concentración global no es suficiente, considerar un modelo
   Multinomial logístico-normal en una versión posterior, no añadir complejidad
   silenciosamente a DM-V2.
+
+### 7.9 Modelos con participaciones de las 4 semanas anteriores
+
+Aprobados el 2026-09-27. Todos usan la participación de B1-R4, calculada solo
+con semanas anteriores ya observadas:
+
+$$
+r_{c,t} = \frac{\sum_{k=1}^{4} y_{c,t-k} + 1}{\sum_{k=1}^{4} N_{t-k} + 40}.
+$$
+
+NB-R4 (`nb_rolling_4_global_v1`):
+
+$$
+\mu_{c,t} = N_t r_{c,t}, \qquad
+y_{c,t} \sim \operatorname{NegativeBinomial}(\mu_{c,t}, \alpha), \qquad
+\log\alpha \sim \operatorname{Normal}(2.302585093, 1).
+$$
+
+B2-R4 (`multinomial_rolling_4_v1`) y DM-R4
+(`dirichlet_multinomial_rolling_4_v1`):
+
+$$
+\mathbf y_t \sim \operatorname{Multinomial}(N_t, \mathbf r_t), \qquad
+\mathbf y_t \sim \operatorname{DirichletMultinomial}(N_t, \kappa \mathbf r_t).
+$$
+
+Reglas:
+
+- `r` es un dato de entrada, no un parámetro: PyMC estima solo `alpha` o
+  `kappa`.
+- El ajuste usa las semanas 5 a 91 de `fit`, porque las cuatro primeras no
+  tienen ventana completa.
+- En calibración y validación, `r` usa las semanas anteriores ya observadas;
+  `alpha` y `kappa` no se actualizan después de `fit`.
+- El prior de `log_alpha` es el de NB-V2 y NB-V3; el de `log_kappa` se revisa
+  con prior predictive sobre `fit` antes del piloto, partiendo de
+  $\log\kappa \sim \operatorname{Normal}(\log 100, 1)$.
+- NB-R4 con `alpha` por cluster reutiliza los contrastes de suma cero de §7.5
+  y solo se implementa si se cumple su gate de §5.
 
 ## 8. Arquitectura de implementación
 
@@ -741,6 +802,17 @@ No usar WAPE como única métrica para clusters pequeños.
 | Conteos marginales | WIS y MAE por cluster |
 | Calibración | Cobertura marginal 80% y 95% |
 | Coherencia | `sum(draw) == weekly_total`, obligatorio |
+
+Regla de promoción de M10, congelada el 2026-09-27 con aprobación del usuario:
+
+- Mejor baseline conjunto: el de mayor log score conjunto medio por semana en
+  calibración entre B2 y B2-R4. DM-V1 es una referencia, no un baseline.
+- El candidato debe mejorar ese log score medio por semana, y el intervalo
+  bootstrap semanal pareado 95% de la diferencia `candidato - baseline` debe
+  quedar entero por encima de 0.
+- La cobertura marginal 80% y 95% debe estar en los rangos de §12.1.
+- Convergencia como en §12.1; coherencia exacta de draws obligatoria.
+- El WIS marginal se reporta para comparar con M9, pero no es un gate.
 
 #### Log score conjunto
 
@@ -1150,3 +1222,24 @@ El siguiente agente debe comenzar aquí:
 La implementación de NB-V4 queda bloqueada hasta que NB-V3 demuestre que una
 sola dispersión global es insuficiente. DM-V2 queda bloqueada hasta que DM-V1
 supere B2 y exista evidencia de deriva temporal.
+
+Actualización del 2026-09-27: los pasos 1 a 10 se completaron; NB-V4 y DM-V2
+quedaron descartados (§5). La siguiente acción es implementar NB-R4 (§7.9) con
+prior predictive, piloto y full con gates; después, T1 (§21) y M10.
+
+## 21. Clasificador T1 con BGE entrenado con todo `fit`
+
+Decisiones del 2026-09-27 con aprobación del usuario:
+
+- M5 entrenó el T1 elegido, BGE + producto, con una muestra de 120,000 filas de
+  `fit`. M8A ya generó los embeddings de las 1,067,194 filas de `fit`, pero no
+  reentrenó el clasificador. T2 y T3 (TF-IDF, M4) y T4 (regla por producto, M3)
+  ya usan todas las filas elegibles de `fit`.
+- Reentrenar BGE + producto con las 1,067,194 filas de `fit`, con la misma
+  configuración del clasificador de M5.
+- Evaluar solo en las 167,973 filas de calibración sin texto compartido. La
+  validación queda para la confirmación final única.
+- Se conserva si su Macro-F1 supera tanto al T1 TF-IDF de M4 como al BGE de la
+  muestra de M5, evaluados sobre esas mismas filas.
+- Después de validar se decidirá si los modelos elegidos se reentrenan con
+  `fit` + calibración para producción.
