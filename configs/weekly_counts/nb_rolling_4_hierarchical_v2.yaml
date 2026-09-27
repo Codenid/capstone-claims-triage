@@ -1,0 +1,34 @@
+model_id: nb_rolling_4_hierarchical_v2
+
+source_dvc_hash: 87be2a97daa3b169bbd65850a64c89a6.dir
+weekly_counts_sha256: 35c5503b0b9b2a4b9e47984294683d27987b3c7824ae41de642c0a47cefd1ce1
+clusters: 40
+expected_complete_weeks:
+  fit: 91
+  calibration: 12
+  validation: 25
+time_scale_days: 365.25
+plot_clusters: 8
+priors:
+  log_alpha_global_mean: 2.302585093
+  log_alpha_global_sigma: 1.0
+  log_alpha_sigma: 0.75
+sampling:
+  backend: numpyro
+  chain_method: parallel
+  chains: 4
+  draws: 2000
+  tune: 2000
+  target_accept: 0.9
+  max_treedepth: 12
+  prior_draws: 500
+  prediction_draws: 2000
+acceptance:
+  rule: best_baseline_bootstrap_v1
+  minimum_wis_gain: 0.05
+  maximum_rhat: 1.01
+  minimum_ess: 400
+  coverage_80_minimum: 0.70
+  coverage_80_maximum: 0.90
+  coverage_95_minimum: 0.88
+  coverage_95_maximum: 0.99

@@ -11,6 +11,7 @@ from src.models.weekly_counts.data import fit_rows, prepare_model_frame
 from src.models.weekly_counts.models import (
     nb_rolling_4_global_v1,
     nb_rolling_4_hierarchical_v1,
+    nb_rolling_4_hierarchical_v2,
     nb_static_global_v3,
 )
 from src.models.weekly_counts.registry import get_model
@@ -187,66 +188,85 @@ class RollingNegativeBinomialTests(unittest.TestCase):
             self.assertNotIn(b"\r", path.read_bytes(), path)
 
 
-class RollingHierarchicalNegativeBinomialTests(unittest.TestCase):
-    model_id = "nb_rolling_4_hierarchical_v1"
+HIERARCHICAL_MODULES = (nb_rolling_4_hierarchical_v1, nb_rolling_4_hierarchical_v2)
 
-    def setUp(self):
-        path = CONFIG_DIR / f"{self.model_id}.yaml"
-        self.settings = yaml.safe_load(path.read_text(encoding="utf-8"))
-        self.settings["clusters"] = 3
-        self.panel = weekly_panel()
-        self.frame = nb_rolling_4_hierarchical_v1.prepare_frame(self.panel, self.settings)
-        self.fit = fit_rows(self.frame)
-        self.model = nb_rolling_4_hierarchical_v1.build_model(self.fit, self.settings)
+
+def hierarchical_setup(module):
+    settings = yaml.safe_load(
+        (CONFIG_DIR / f"{module.MODEL_ID}.yaml").read_text(encoding="utf-8")
+    )
+    settings["clusters"] = 3
+    panel = weekly_panel()
+    frame = module.prepare_frame(panel, settings)
+    fit = fit_rows(frame)
+    return settings, panel, frame, fit, module.build_model(fit, settings)
+
+
+class RollingHierarchicalNegativeBinomialTests(unittest.TestCase):
+    """Both NB-R4-H versions: v1 non-centered, v2 centered."""
 
     def test_registry_and_one_positive_alpha_per_cluster(self):
-        self.assertIs(get_model(self.model_id), nb_rolling_4_hierarchical_v1)
+        for module in HIERARCHICAL_MODULES:
+            with self.subTest(module.MODEL_ID):
+                *_, model = hierarchical_setup(module)
+                alpha = pm.draw(model["alpha"], draws=100, random_seed=42)
 
-        alpha = pm.draw(self.model["alpha"], draws=100, random_seed=42)
-
-        self.assertEqual(alpha.shape, (100, 3))
-        self.assertTrue((alpha > 0).all())
+                self.assertIs(get_model(module.MODEL_ID), module)
+                self.assertEqual(alpha.shape, (100, 3))
+                self.assertTrue((alpha > 0).all())
 
     def test_cluster_deviations_sum_to_zero(self):
-        global_draws, alpha = pm.draw(
-            [self.model["log_alpha_global"], self.model["alpha"]],
-            draws=50,
-            random_seed=42,
-        )
+        for module in HIERARCHICAL_MODULES:
+            with self.subTest(module.MODEL_ID):
+                *_, model = hierarchical_setup(module)
+                global_draws, alpha = pm.draw(
+                    [model["log_alpha_global"], model["alpha"]],
+                    draws=50,
+                    random_seed=42,
+                )
 
-        deviations = np.log(alpha) - global_draws[:, None]
-        np.testing.assert_allclose(deviations.sum(axis=1), 0.0, atol=1e-10)
+                deviations = np.log(alpha) - global_draws[:, None]
+                np.testing.assert_allclose(deviations.sum(axis=1), 0.0, atol=1e-10)
 
     def test_zero_sigma_reduces_to_one_global_alpha(self):
-        fixed = pm.do(self.model, {"log_alpha_sigma": 0.0})
+        for module in HIERARCHICAL_MODULES:
+            with self.subTest(module.MODEL_ID):
+                *_, model = hierarchical_setup(module)
+                fixed = pm.do(model, {"log_alpha_sigma": 0.0})
 
-        alpha = pm.draw(fixed["alpha"], draws=20, random_seed=42)
+                alpha = pm.draw(fixed["alpha"], draws=20, random_seed=42)
 
-        np.testing.assert_allclose(alpha, alpha[:, :1] * np.ones((1, 3)))
+                np.testing.assert_allclose(alpha, alpha[:, :1] * np.ones((1, 3)))
 
     def test_mean_is_the_same_as_nb_r4(self):
-        global_frame = nb_rolling_4_global_v1.prepare_frame(self.panel, self.settings)
-        mu = pm.draw(self.model["mu"], random_seed=42)
+        for module in HIERARCHICAL_MODULES:
+            with self.subTest(module.MODEL_ID):
+                settings, panel, frame, fit, model = hierarchical_setup(module)
+                mu = pm.draw(model["mu"], random_seed=42)
 
-        pd.testing.assert_frame_equal(self.frame, global_frame)
-        np.testing.assert_allclose(
-            mu, self.fit["weekly_total"] * self.fit["recent_share"], rtol=0, atol=1e-12
-        )
+                pd.testing.assert_frame_equal(
+                    frame, nb_rolling_4_global_v1.prepare_frame(panel, settings)
+                )
+                np.testing.assert_allclose(
+                    mu, fit["weekly_total"] * fit["recent_share"], rtol=0, atol=1e-12
+                )
 
     def test_release_freezes_lf_source_and_config(self):
         releases = json.loads(
             (CONFIG_DIR / "releases.json").read_text(encoding="utf-8")
         )
-        release = releases[self.model_id]
-        source = Path(nb_rolling_4_hierarchical_v1.__file__)
-        config = CONFIG_DIR / f"{self.model_id}.yaml"
+        for module in HIERARCHICAL_MODULES:
+            with self.subTest(module.MODEL_ID):
+                release = releases[module.MODEL_ID]
+                source = Path(module.__file__)
+                config = CONFIG_DIR / f"{module.MODEL_ID}.yaml"
 
-        self.assertEqual(release["model_source_sha256"], file_sha256(source))
-        self.assertEqual(release["config_sha256"], file_sha256(config))
-        self.assertEqual(release["candidate_role"], "candidate")
-        self.assertIsNone(release["historical_run_id"])
-        for path in (source, config):
-            self.assertNotIn(b"\r", path.read_bytes(), path)
+                self.assertEqual(release["model_source_sha256"], file_sha256(source))
+                self.assertEqual(release["config_sha256"], file_sha256(config))
+                self.assertEqual(release["candidate_role"], "candidate")
+                self.assertIsNone(release["historical_run_id"])
+                for path in (source, config):
+                    self.assertNotIn(b"\r", path.read_bytes(), path)
 
 
 class ModelFrameTests(unittest.TestCase):
