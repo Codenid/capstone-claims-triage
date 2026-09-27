@@ -6,3 +6,4 @@
 configs/*.csv text eol=lf
 uv.lock text eol=lf
 *.slurm text eol=lf
+reports/modeling/weekly_counts.csv text eol=lf
