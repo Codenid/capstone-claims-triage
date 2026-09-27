@@ -42,3 +42,43 @@ La parametrización centrada resolvió la mezcla de v1 y se ejecutó sin fallos 
 cadenas en paralelo en Khipu. Todos los gates del piloto se cumplen. No se
 revisaron métricas de calibración del piloto, y el piloto no se publica en
 MLflow.
+
+### Full
+
+| Campo | Valor |
+|---|---|
+| Run key | `20260927T161316.494762Z-full-a3ecfab3-9105ce1f` |
+| Commit | `2298783` |
+| SLURM | 53283, `COMPLETED`, 5 min, MaxRSS 1.37 GiB |
+| MLflow | `ed9fa77b50c1458ea5261916da97c5c0` |
+| DVC | `artifacts/models/weekly_counts.dvc`, `5da37969ff08350871a1ab6b65d0d009.dir` |
+| Diagnósticos | R-hat 1.002, ESS bulk 8317, ESS tail 5343, 0 divergencias |
+| `alpha` por cluster | De 0.83 a 178, mediana 6.7 |
+
+Calibración frente al mejor baseline, B1-R4:
+
+| Métrica | NB-R4-H v3 | B1-R4 | Diferencia, IC bootstrap 95% |
+|---|---:|---:|---|
+| WIS | 32.42 | 43.06 | -10.64, [-13.65, -7.62]; mejora de 24.7% |
+| WAPE | 12.66% | 12.46% | +0.20 puntos, [-0.21, 0.60] |
+| MAE | 56.61 | 55.72 | +0.89, [-0.92, 2.75] |
+| Cobertura 80% y 95% | 85.4% y 95.6% | 29.2% y 42.1% | Dentro de rango |
+
+Por tercil de volumen en calibración:
+
+| Tercil | Cobertura 80% | Cobertura 95% | WIS NB-R4-H v3 | WIS B1-R4 |
+|---|---:|---:|---:|---:|
+| Pequeños | 88.7% | 96.4% | 14.45 | 18.91 |
+| Medianos | 87.2% | 94.2% | 30.11 | 35.58 |
+| Grandes | 80.1% | 96.2% | 54.07 | 76.53 |
+
+## Decisión
+
+- Estado automático: `accepted`. Cumple todos los criterios de la regla del
+  2026-09-27: el WIS mejora 24.7% con un intervalo bootstrap enteramente
+  negativo; WAPE y MAE no empeoran de forma significativa; coberturas y
+  convergencia están en rango.
+- **NB-R4-H v3 es el candidato elegido de M9.** Mejora a B1-R4 en los tres
+  terciles de volumen.
+- La validación no se abrió. Queda para la confirmación final única, después
+  de congelar T1–T4 y M10.

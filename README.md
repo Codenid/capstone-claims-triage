@@ -82,8 +82,10 @@ conjunto completo de reclamos.
 - [x] **M8 — Congelar patrones y crear series:** elegir el método, fijar sus
   grupos, generar solo los embeddings faltantes, asignar el corpus elegible y
   construir conteos semanales completos.
-- [x] **M9 — Modelar volumen con PyMC:** se evaluaron dos modelos Negative
-  Binomial; ninguno pasó todos los criterios, por lo que se conserva el baseline.
+- [x] **M9 — Modelar volumen con PyMC:** NB-R4-H v3, una Negative Binomial
+  con las participaciones de las 4 semanas anteriores y una dispersión por
+  cluster, superó al mejor baseline. La validación queda para la confirmación
+  final.
 - [ ] **M10 — Modelar composición con PyMC:** usar Dirichlet-Multinomial para
   comprobar cambios relativos entre patrones.
 - [ ] **M11 — Detectar cambios persistentes:** calibrar CUSUM sobre las
@@ -552,6 +554,34 @@ Runs de MLflow:
 Los resultados están en `reports/modeling/negative_binomial_results.json`, las
 predicciones en `reports/modeling/negative_binomial_predictions.csv` y el detalle
 de métricas en `reports/modeling/negative_binomial_metrics.csv`.
+
+### Continuación de M9
+
+Después de V1 y V2 se compararon, en calibración, modelos con participaciones
+fijas y con las participaciones de semanas anteriores. B1-R4 y B1-R13 son
+baselines deterministas que usan las 4 o 13 semanas previas:
+
+<!-- markdownlint-disable MD013 -->
+
+| Modelo | WIS | WAPE | Cobertura 95% | Decisión |
+| --- | ---: | ---: | ---: | --- |
+| B1 fijo (Poisson) | 138.89 | 34.48% | 16.5% | Baseline |
+| B1 PyMC | 138.75 | 34.48% | 16.3% | Baseline del pipeline |
+| NB-V3 (estática, `alpha` global) | 92.57 | 34.69% | 94.0% | Rechazado |
+| B1-R4 | 43.11 | 12.47% | 42.1% | Mejor baseline |
+| B1-R13 | 64.84 | 17.56% | 32.1% | Baseline |
+| NB-R4 (`alpha` global) | 47.72 | 13.68% | 95.6% | Rechazado |
+| **NB-R4-H v3 (`alpha` por cluster)** | **32.42** | 12.66% | 95.6% | **Aceptado** |
+
+<!-- markdownlint-enable MD013 -->
+
+La composición cambia de una semana a otra, por lo que las participaciones
+recientes predicen mucho mejor que las fijas. NB-R4-H v3 conserva el punto de
+B1-R4 y añade intervalos calibrados: reduce el WIS 24.7%, con un bootstrap
+semanal que confirma la mejora, y no empeora de forma significativa el WAPE.
+La regla de promoción y cada decisión están en `models_plan.md` y en
+`reports/modeling/weekly_counts/<modelo>/decision.md`. La validación no se abrió
+para estos modelos; se usará una sola vez en la confirmación final.
 
 ## Orden de comparación
 

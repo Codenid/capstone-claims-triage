@@ -437,6 +437,15 @@ pequeños y medianos; en los grandes, la dispersión global produce intervalos
 demasiado anchos. El detalle está en
 `reports/modeling/weekly_counts/nb_rolling_4_global_v1/decision.md`.
 
+NB-R4-H v3 (`nb_rolling_4_hierarchical_v3`) mantiene esa media y estima una
+dispersión por cluster, centrada y con suma cero. Es el candidato elegido de
+M9: en calibración obtuvo WIS 32.42 frente a 43.06 de B1-R4 (24.7% mejor, con
+un intervalo bootstrap entero por debajo de 0), sin empeorar de forma
+significativa el WAPE (12.66% frente a 12.46%), con coberturas de 85.4% y
+95.6% y mejoras en los tres terciles de volumen. La validación sigue cerrada
+hasta la confirmación final. El detalle está en
+`reports/modeling/weekly_counts/nb_rolling_4_hierarchical_v3/decision.md`.
+
 ### Dirichlet-Multinomial
 
 La **Dirichlet-Multinomial** modela cómo se reparte el total semanal entre los

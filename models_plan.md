@@ -145,7 +145,7 @@ Antes de cualquier piloto o entrenamiento completo:
 | M9 | NB-V3 | Negative Binomial estática | No | Global | No; solo las medias | Ejecutado y rechazado por WAPE |
 | M9 | NB-V4 | Negative Binomial estática | No | Jerárquica por cluster | No; solo las medias | Descartado el 2026-09-27: con media estática no puede superar a B1-R4 |
 | M9 | NB-R4 | Negative Binomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Global | No; solo las medias | Ejecutado y rechazado; gate de `alpha` por cluster cumplido |
-| M9 | NB-R4-H | NB-R4 con `alpha` por cluster | Local, ventana móvil | Jerárquica por cluster | No; solo las medias | v1: falló el gate de ESS. v2: JAX se cae. v3 centrada: próximo experimento |
+| M9 | NB-R4-H | NB-R4 con `alpha` por cluster | Local, ventana móvil | Jerárquica por cluster | No; solo las medias | v3 aceptado: candidato elegido de M9 (v1: falló el gate de ESS; v2: JAX se cae) |
 | M10 | B2 | Multinomial estática | No | Sin dispersión adicional | Sí | Planificado como baseline |
 | M10 | B2-R4 | Multinomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Sin dispersión adicional | Sí | Planificado como baseline |
 | M10 | DM-V1 | Dirichlet-Multinomial estática | No | Global $\kappa$ | Sí | Planificado como referencia |
@@ -166,7 +166,7 @@ Antes de cualquier piloto o entrenamiento completo:
 | NB-R4 | `nb_rolling_4_global_v1` | Ejecutado y rechazado; MLflow `5ecad8c8482d4bfa8ecac5d6afd7cc11` |
 | NB-R4-H v1 | `nb_rolling_4_hierarchical_v1` | Piloto: ESS bulk 58 en `log_alpha_sigma`; no se ejecutó el full |
 | NB-R4-H v2 | `nb_rolling_4_hierarchical_v2` | Centrada con `pm.ZeroSumNormal`; JAX se cae con cadenas en paralelo; no se ejecuta |
-| NB-R4-H v3 | `nb_rolling_4_hierarchical_v3` | Centrada con los contrastes de v1; pendiente de ejecutar |
+| NB-R4-H v3 | `nb_rolling_4_hierarchical_v3` | Aceptado; candidato de M9; MLflow `ed9fa77b50c1458ea5261916da97c5c0` |
 | B2 | Propuesto: `multinomial_static_v1` | Pendiente |
 | B2-R4 | Propuesto: `multinomial_rolling_4_v1` | Pendiente |
 | DM-V1 | Propuesto: `dirichlet_multinomial_static_v1` | Pendiente |
@@ -1253,6 +1253,12 @@ supere B2 y exista evidencia de deriva temporal.
 Actualización del 2026-09-27: los pasos 1 a 10 se completaron; NB-V4 y DM-V2
 quedaron descartados (§5). La siguiente acción es implementar NB-R4 (§7.9) con
 prior predictive, piloto y full con gates; después, T1–T4 (§21) y M10.
+
+Actualización posterior del 2026-09-27: M9 eligió NB-R4-H v3
+(`nb_rolling_4_hierarchical_v3`), aceptado por la regla de §12.4. La siguiente
+acción es T1–T4 (§21); primero hay que aprobar la regla para elegir entre
+representaciones con resultados cercanos. La validación sigue cerrada hasta la
+confirmación final única.
 
 ## 21. Clasificadores T1–T4 con todo `fit`
 
