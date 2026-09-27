@@ -145,7 +145,7 @@ Antes de cualquier piloto o entrenamiento completo:
 | M9 | NB-V3 | Negative Binomial estática | No | Global | No; solo las medias | Ejecutado y rechazado por WAPE |
 | M9 | NB-V4 | Negative Binomial estática | No | Jerárquica por cluster | No; solo las medias | Descartado el 2026-09-27: con media estática no puede superar a B1-R4 |
 | M9 | NB-R4 | Negative Binomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Global | No; solo las medias | Ejecutado y rechazado; gate de `alpha` por cluster cumplido |
-| M9 | NB-R4-H | NB-R4 con `alpha` por cluster | Local, ventana móvil | Jerárquica por cluster | No; solo las medias | v1 no centrada: el piloto falló el gate de ESS. v2 centrada: próximo experimento |
+| M9 | NB-R4-H | NB-R4 con `alpha` por cluster | Local, ventana móvil | Jerárquica por cluster | No; solo las medias | v1: falló el gate de ESS. v2: JAX se cae. v3 centrada: próximo experimento |
 | M10 | B2 | Multinomial estática | No | Sin dispersión adicional | Sí | Planificado como baseline |
 | M10 | B2-R4 | Multinomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Sin dispersión adicional | Sí | Planificado como baseline |
 | M10 | DM-V1 | Dirichlet-Multinomial estática | No | Global $\kappa$ | Sí | Planificado como referencia |
@@ -165,7 +165,8 @@ Antes de cualquier piloto o entrenamiento completo:
 | B1-R4 / B1-R13 | `b1_rolling_4_v1` y `b1_rolling_13_v1` | Ejecutados; MLflow `4968041b55804aea855362251fb5b7a7` y `5a8fd036aa4044978716f207e0e14066` |
 | NB-R4 | `nb_rolling_4_global_v1` | Ejecutado y rechazado; MLflow `5ecad8c8482d4bfa8ecac5d6afd7cc11` |
 | NB-R4-H v1 | `nb_rolling_4_hierarchical_v1` | Piloto: ESS bulk 58 en `log_alpha_sigma`; no se ejecutó el full |
-| NB-R4-H v2 | `nb_rolling_4_hierarchical_v2` | Parametrización centrada (`pm.ZeroSumNormal`), aprobada el 2026-09-27; pendiente de ejecutar |
+| NB-R4-H v2 | `nb_rolling_4_hierarchical_v2` | Centrada con `pm.ZeroSumNormal`; JAX se cae con cadenas en paralelo; no se ejecuta |
+| NB-R4-H v3 | `nb_rolling_4_hierarchical_v3` | Centrada con los contrastes de v1; pendiente de ejecutar |
 | B2 | Propuesto: `multinomial_static_v1` | Pendiente |
 | B2-R4 | Propuesto: `multinomial_rolling_4_v1` | Pendiente |
 | DM-V1 | Propuesto: `dirichlet_multinomial_static_v1` | Pendiente |
@@ -526,7 +527,9 @@ Reglas:
   y solo se implementa si se cumple su gate de §5.
 - Actualización del 2026-09-27: el gate se cumplió. La v1 no centrada falló el
   gate de ESS del piloto; la v2 usa desviaciones centradas con
-  `pm.ZeroSumNormal`, con aprobación del usuario.
+  `pm.ZeroSumNormal`, con aprobación del usuario, pero JAX se cae con cadenas
+  en paralelo. La v3 mantiene la parametrización centrada con los contrastes
+  de la v1.
 
 ## 8. Arquitectura de implementación
 

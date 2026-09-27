@@ -32,4 +32,22 @@ MLflow.
 
 ## Ejecuciones
 
-Pendiente.
+Commit `b04b068`. El prior predictive pasó
+(`20260927T160149.911429Z-prior-82c5ccd9-ccba3b59`: conteos imposibles 2.7e-5).
+Los dos pilotos (SLURM 53278 y 53280) terminaron con `Segmentation fault` (código
+139) a los 14 s, al compilar el modelo en JAX. Sus carpetas `.inprogress` quedan
+en Khipu y DVC las ignora.
+
+Reproducción con los datos reales, en Khipu y en Windows:
+
+| Modelo | Cadenas en paralelo | Cadenas secuenciales |
+|---|---|---|
+| v2 (`pm.ZeroSumNormal`) | Segmentation fault | OK |
+| v1 (contrastes con matriz) | OK | No probado |
+
+## Decisión
+
+v2 no se puede ejecutar con cadenas en paralelo por un fallo de JAX/XLA con
+`pm.ZeroSumNormal`. No es un problema del modelo ni de los datos. Se reemplaza
+por v3, que mantiene la parametrización centrada aprobada, usa las mismas
+operaciones de v1 y define el mismo modelo que v1.

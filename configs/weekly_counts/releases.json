@@ -26,6 +26,13 @@
     "historical_run_id": null,
     "candidate_role": "candidate"
   },
+  "nb_rolling_4_hierarchical_v3": {
+    "model_source_sha256": "42336ac707367af5d6151228250ffedf8539cbab8f5eaff16f126d5c2a4994a7",
+    "config_sha256": "a3ecfab31ab3317899ea2c6f514cd82c4850a9fd2fff8b15bf3b9ac819498968",
+    "source_status": "native_versioned_source",
+    "historical_run_id": null,
+    "candidate_role": "candidate"
+  },
   "nb_softmax_linear_v2": {
     "model_source_sha256": "896b9cee5ac333a104c2ea8894eff393c1f1c86d9028e504832dcf3fe5ad6969",
     "config_sha256": "81e88ad0da81b4c6ed0e3c67b7e71d02312771a83e9642653ccd7e2f5d836822",

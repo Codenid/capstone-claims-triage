@@ -12,6 +12,7 @@ from src.models.weekly_counts.models import (
     nb_rolling_4_global_v1,
     nb_rolling_4_hierarchical_v1,
     nb_rolling_4_hierarchical_v2,
+    nb_rolling_4_hierarchical_v3,
     nb_static_global_v3,
 )
 from src.models.weekly_counts.registry import get_model
@@ -188,7 +189,11 @@ class RollingNegativeBinomialTests(unittest.TestCase):
             self.assertNotIn(b"\r", path.read_bytes(), path)
 
 
-HIERARCHICAL_MODULES = (nb_rolling_4_hierarchical_v1, nb_rolling_4_hierarchical_v2)
+HIERARCHICAL_MODULES = (
+    nb_rolling_4_hierarchical_v1,
+    nb_rolling_4_hierarchical_v2,
+    nb_rolling_4_hierarchical_v3,
+)
 
 
 def hierarchical_setup(module):
