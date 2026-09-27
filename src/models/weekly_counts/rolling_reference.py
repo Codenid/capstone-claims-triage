@@ -30,11 +30,16 @@ def rolling_shares(frame: pd.DataFrame, clusters: int, window: int) -> pd.DataFr
     return pd.DataFrame(shares, index=counts.index, columns=counts.columns)
 
 
-def expected_counts(frame: pd.DataFrame, clusters: int, window: int) -> np.ndarray:
+def row_shares(frame: pd.DataFrame, clusters: int, window: int) -> np.ndarray:
+    """Rolling share of each row's cluster; NaN before a full window."""
     shares = rolling_shares(frame, clusters, window)
     week_position = shares.index.get_indexer(frame["week"])
-    share = shares.to_numpy()[week_position, frame["cluster_id"].to_numpy()]
-    return frame["weekly_total"].to_numpy(dtype=float) * share
+    return shares.to_numpy()[week_position, frame["cluster_id"].to_numpy()]
+
+
+def expected_counts(frame: pd.DataFrame, clusters: int, window: int) -> np.ndarray:
+    shares = row_shares(frame, clusters, window)
+    return frame["weekly_total"].to_numpy(dtype=float) * shares
 
 
 def rolling_columns(

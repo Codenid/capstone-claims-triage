@@ -5,6 +5,13 @@
     "source_status": "reconstructed_from_mlflow_spec",
     "historical_run_id": "3aff4cea426f435ab50b41788de998ff"
   },
+  "nb_rolling_4_global_v1": {
+    "model_source_sha256": "51941621e734bf173de946fc20b9f96345fc86d2135969f47d51e79509d2ca87",
+    "config_sha256": "34f4684ffec6d7fb111538724791d0517b55f8086baf46d8ec4e5b69dfe2c4b9",
+    "source_status": "native_versioned_source",
+    "historical_run_id": null,
+    "candidate_role": "candidate"
+  },
   "nb_softmax_linear_v2": {
     "model_source_sha256": "896b9cee5ac333a104c2ea8894eff393c1f1c86d9028e504832dcf3fe5ad6969",
     "config_sha256": "81e88ad0da81b4c6ed0e3c67b7e71d02312771a83e9642653ccd7e2f5d836822",

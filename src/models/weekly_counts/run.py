@@ -173,6 +173,17 @@ def load_frozen_frame(
     return frame, time_center, input_sha256, source_dvc_hash
 
 
+def model_frame(
+    model_module: Any,
+    panel: pd.DataFrame,
+    settings: dict[str, Any],
+) -> pd.DataFrame:
+    """Rows a model uses; only models that need earlier weeks change them."""
+    if hasattr(model_module, "prepare_frame"):
+        return model_module.prepare_frame(panel, settings)
+    return panel
+
+
 def save_prior_check(
     model_module: Any,
     fit: pd.DataFrame,
@@ -231,10 +242,11 @@ def main() -> None:
 
     seed = config["experiment"]["seed"]
     set_seed(seed)
-    frame, time_center, input_sha256, source_dvc_hash = load_frozen_frame(
+    panel, time_center, input_sha256, source_dvc_hash = load_frozen_frame(
         config,
         settings,
     )
+    frame = model_frame(model_module, panel, settings)
     fit = fit_rows(frame)
 
     if args.run_mode == "prior":
@@ -335,8 +347,9 @@ def main() -> None:
         seed,
     )
 
+    # B1 uses every fit week, even when the model drops some of them.
     reference_rates = fixed_poisson_reference.fit_baseline_rates(
-        frame,
+        panel,
         settings["clusters"],
     )
     reference_expected = fixed_poisson_reference.expected_counts(

@@ -41,6 +41,8 @@ class WeeklyCountModelTests(unittest.TestCase):
                 "complaint_count": [7, 3, 8, 2],
                 "weekly_total": [10, 10, 10, 10],
                 "time_years": [-0.01, -0.01, 0.01, 0.01],
+                # Input of NB-R4; the other models ignore it.
+                "recent_share": [0.7, 0.3, 0.75, 0.25],
             }
         )
 
@@ -56,6 +58,7 @@ class WeeklyCountModelTests(unittest.TestCase):
             set(MODELS),
             {
                 "nb_independent_linear_v1",
+                "nb_rolling_4_global_v1",
                 "nb_softmax_linear_v2",
                 "nb_static_global_v3",
                 "poisson_static_pymc_v1",
