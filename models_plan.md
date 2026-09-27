@@ -31,10 +31,12 @@ Pronostican la distribución del total entre 40 clusters:
 
 Antes de usar estos modelos en producción se debe responder y documentar:
 
-- [ ] ¿`N_t` estará disponible al momento de predecir?
-- [ ] Si no estará disponible, crear un hito separado para pronosticar `N_t` y
-      combinar sus draws con los draws de composición.
-- [ ] No describir M9/M10 como pronóstico autónomo de volumen mientras usen el
+- [x] ¿`N_t` estará disponible al momento de predecir? Sí. Decisión del
+      2026-09-27: los modelos se usarán para alertas al cierre de cada semana,
+      cuando `N_t` ya se conoce.
+- [x] No se crea por ahora un hito para pronosticar `N_t`. Se reabre si se
+      necesita pronosticar la semana siguiente antes de conocer su total.
+- [x] No describir M9/M10 como pronóstico autónomo de volumen mientras usen el
       `weekly_total` observado.
 
 Esta decisión no bloquea los experimentos condicionales descritos abajo.
@@ -216,6 +218,16 @@ Reglas:
 - [ ] Suavizar participaciones cero con una regla congelada y documentada.
 - [ ] Registrar los baselines en MLflow aunque no usen MCMC.
 - [ ] Etiquetar `model_family=deterministic_baseline`.
+
+Decisiones congeladas el 2026-09-27 con aprobación del usuario:
+
+- Protocolo un paso adelante: para la semana `t` se usan las `W` semanas
+  completas anteriores ya observadas (`W=4` o `W=13`), incluidas las de
+  calibración que ya transcurrieron. Las semanas parciales no cuentan.
+- Suavizado: `share = (conteo de la ventana + 1) / (total de la ventana + 40)`,
+  la media posterior del prior Dirichlet(1) de B1.
+- Distribución predictiva: `Poisson(N_t * share)`, igual que B1.
+- IDs: `b1_rolling_4_v1` y `b1_rolling_13_v1`.
 
 ## 7. Especificaciones matemáticas
 
@@ -753,15 +765,21 @@ Para Dirichlet-Multinomial:
 
 ### 12.4 Mejora práctica
 
-Antes de ver nuevos resultados, acordar una mejora mínima para promoción.
-Propuesta inicial para discusión:
+Regla congelada el 2026-09-27 con aprobación del usuario, antes de ver los
+resultados de B1-R4, B1-R13 y NB-V4. Se aplica solo a candidatos evaluados
+después de esa fecha; B1 PyMC, NB-V1, NB-V2 y NB-V3 conservan sus decisiones.
 
-- reducción de WIS o pérdida conjunta de al menos 3% a 5%;
-- sin degradación importante de WAPE/MAE;
-- cobertura dentro del rango congelado;
-- mejora estable entre semanas y grupos de clusters.
-
-No congelar el porcentaje sin aprobación del usuario.
+- Mejor baseline: el de menor WIS de calibración entre B1 (Poisson fijo),
+  B1-R4 y B1-R13.
+- WIS: el candidato debe reducir al menos 5% el WIS de calibración del mejor
+  baseline, y el intervalo bootstrap 95% de la diferencia
+  `candidato - baseline` debe quedar entero por debajo de 0.
+- WAPE y MAE: se comparan con el mismo mejor baseline. Solo cuentan como
+  degradación, y rechazan al candidato, si el intervalo bootstrap 95% de la
+  diferencia queda entero por encima de 0.
+- Convergencia y cobertura: sin cambios respecto de §12.1.
+- Las métricas por terciles de volumen se siguen reportando, pero no son un
+  gate.
 
 ### 12.5 Incertidumbre de la comparación
 
@@ -773,6 +791,14 @@ La calibración tiene solo 12 semanas. Implementar bootstrap pareado por semana:
 4. Reportar mediana e intervalo de la diferencia.
 
 No promover un modelo por una mejora pequeña dominada por una sola semana.
+
+Detalles técnicos: 2,000 remuestreos, semilla 42 del experimento e intervalo
+percentil 95%. Las semanas se remuestrean pareadas: las mismas semanas para el
+candidato y el baseline.
+
+Desde el 2026-09-27, los runs no publican métricas ni gráficos de validación.
+Sus predicciones se conservan en `predictions.csv` para la confirmación final
+única.
 
 ## 13. Backtesting sin consumir calibración
 
