@@ -106,4 +106,34 @@ el bootstrap semanal y la comparación con B1-R4, B1-R13 y B2 siguen pendientes.
 
 ## Ejecuciones
 
-Pendiente.
+Clon limpio en Khipu: `/home/piero.palacios/capstone-claims-triage-runs`.
+
+### Prior predictive oficial
+
+Run key `20260927T010447.709571Z-prior-45c908d1-e06833de`, commit
+`a099a30f175c515a71356ae3c49068f74c2f2144`, nodo de acceso de Khipu. Los
+resultados coinciden exactamente con los de Windows: conteos imposibles
+4.9e-6, ninguno negativo, ceros por cluster con 95% en [0.21%, 0.85%], share
+máximo semanal en [0.070, 0.242] y `alpha` en [1.8, 65]. Cumple el criterio.
+
+### Piloto
+
+| Campo | Valor |
+|---|---|
+| Run key | `20260927T010530.820879Z-pilot-45c908d1-e06833de` |
+| Commit | `a099a30f175c515a71356ae3c49068f74c2f2144` |
+| SLURM | 53181, `COMPLETED`, 1 min 43 s, MaxRSS 0.74 GiB; pico del proceso 1.00 GiB |
+| Muestreo | 2 cadenas, 250 de tune y 250 draws |
+| Diagnósticos | R-hat máximo 1.03, ESS bulk mínimo 512, ESS tail mínimo 214, 0 divergencias, BFMI mínimo 0.85, profundidad máxima 5 sin topes |
+| Normalización de medias | Error máximo 4.4e-16 |
+| Posterior de `alpha`, solo `fit` | 2.47, HDI 94% [2.36, 2.58] |
+
+Todos los gates del piloto se cumplen. El tiempo extrapolado al full es menor
+que 15 min (103 s x 8) y la memoria se mantiene cerca de 1 a 2 GiB. No se
+revisaron métricas de calibración ni de validación del piloto.
+
+El piloto reveló que `az.summary(..., round_to=None)` redondeaba R-hat a dos
+decimales y ESS a enteros. Antes del full se cambió a `round_to="none"` para
+que el gate `R-hat <= 1.01` use el valor exacto. Esto no cambia ninguna
+decisión del piloto: su R-hat real está entre 1.025 y 1.035, por debajo de
+1.05.
