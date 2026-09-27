@@ -352,6 +352,25 @@ MLflow. `candidate_role` se lee de `configs/weekly_counts/releases.json`; B1
 PyMC figura como `pipeline_baseline`: es una referencia del pipeline, no un
 candidato a promoción.
 
+Cada run también calcula los baselines móviles B1-R4 y B1-R13 y compara el
+modelo con el mejor baseline mediante un bootstrap semanal pareado; el
+resultado queda en `bootstrap.json`. Las configuraciones que declaran
+`acceptance.rule: best_baseline_bootstrap_v1` usan la regla de promoción de
+`models_plan.md` (§12.4); las congeladas antes conservan su regla. Los runs no
+evalúan ni grafican validación: sus predicciones quedan en `predictions.csv`
+para la confirmación final única.
+
+Los baselines B1-R4 y B1-R13 se registran como runs propios. No usan MCMC y
+tardan segundos, así que se ejecutan en el nodo de acceso:
+
+```bash
+CLAIMS_EXECUTION_HOST=khipu uv run --no-sync python -m src.models.weekly_counts.baselines
+```
+
+El comando escribe `reports/modeling/weekly_counts/b1_rolling_4_v1/<run_key>/` y
+`reports/modeling/weekly_counts/b1_rolling_13_v1/<run_key>/`, con métricas solo
+de calibración. Cada `run.json` se publica con `publish_run.py`.
+
 Verificar acceso a la A100:
 
 ```bash

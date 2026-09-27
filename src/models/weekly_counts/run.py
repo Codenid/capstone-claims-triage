@@ -25,6 +25,7 @@ from src.evaluation.experiment import (
 )
 from src.models.semantic_space import load_dvc_hash, maximum_rss_gib
 from src.models.weekly_counts import fixed_poisson_reference, registry
+from src.models.weekly_counts.comparison import compare_with_baselines
 from src.models.weekly_counts.contracts import SPLITS
 from src.models.weekly_counts.data import fit_rows, prepare_model_frame
 from src.models.weekly_counts.diagnostics import (
@@ -33,10 +34,10 @@ from src.models.weekly_counts.diagnostics import (
     prior_predictive_summary,
 )
 from src.models.weekly_counts.metrics import (
-    calibration_acceptance,
     candidate_status,
     evaluate_predictions,
     rejection_reason,
+    run_acceptance,
 )
 from src.models.weekly_counts.prediction import build_predictions
 from src.models.weekly_counts.reporting import (
@@ -46,6 +47,11 @@ from src.models.weekly_counts.reporting import (
     save_source_snapshot,
     source_manifest,
     source_manifest_sha256,
+)
+from src.models.weekly_counts.rolling_reference import (
+    ROLLING_SEED_OFFSET,
+    ROLLING_WINDOWS,
+    rolling_columns,
 )
 from src.models.weekly_counts.sampling import (
     sample_posterior,
@@ -60,6 +66,8 @@ MODELING_CONFIG_PATH = PROJECT_ROOT / "configs/modeling.yaml"
 RUN_MODES = ("prior", "pilot", "full")
 # Technical smoke level from models_plan.md; a pilot never promotes a model.
 PILOT_SAMPLING = {"chains": 2, "tune": 250, "draws": 250, "prediction_draws": 500}
+# Validation predictions stay in predictions.csv for the single final check.
+EVALUATED_SPLITS = ("fit", "calibration")
 
 
 def parse_args() -> argparse.Namespace:
@@ -100,6 +108,8 @@ def model_source_paths(model_module: Any, config_path: Path) -> list[Path]:
         "contracts.py",
         "negative_binomial.py",
         "fixed_poisson_reference.py",
+        "rolling_reference.py",
+        "comparison.py",
     )
     return [
         Path(model_module.__file__).resolve(),
@@ -267,6 +277,7 @@ def main() -> None:
         "results": "results.json",
         "predictions": "predictions.csv",
         "metrics": "metrics.csv",
+        "bootstrap": "bootstrap.json",
         "summary": "posterior_summary.csv",
         "backtest": "backtest.png",
         "coverage": "coverage.png",
@@ -344,9 +355,27 @@ def main() -> None:
         predictive_draws,
         reference_draws,
     )
+    predictions = pd.concat(
+        [
+            predictions,
+            rolling_columns(
+                frame,
+                settings["clusters"],
+                len(expected_draws),
+                seed + ROLLING_SEED_OFFSET,
+            ),
+        ],
+        axis=1,
+    )
     predictions.to_csv(report_paths["predictions"], index=False)
-    metrics, backtest = evaluate_predictions(predictions)
+    metrics, backtest = evaluate_predictions(predictions, EVALUATED_SPLITS)
     metrics.to_csv(report_paths["metrics"], index=False)
+    comparison = compare_with_baselines(
+        predictions,
+        ("baseline", *ROLLING_WINDOWS),
+        seed,
+    )
+    write_json(report_paths["bootstrap"], comparison)
 
     normalization_by_split = {}
     for split in SPLITS:
@@ -366,15 +395,16 @@ def main() -> None:
         ),
         "by_split": normalization_by_split,
     }
-    acceptance = calibration_acceptance(
+    acceptance = run_acceptance(
         diagnostics,
         backtest["calibration"],
+        comparison,
         settings,
     )
     status = candidate_status(args.run_mode, acceptance)
 
     save_plots(
-        predictions,
+        predictions.loc[predictions["split"] != "validation"],
         metrics,
         prior_draws,
         fit,
@@ -428,7 +458,9 @@ def main() -> None:
         "diagnostics": diagnostics,
         "prior_predictive": prior_summary,
         "mean_normalization": mean_normalization,
+        "evaluated_splits": list(EVALUATED_SPLITS),
         "backtest": backtest,
+        "comparison": comparison,
         "calibration_acceptance": acceptance,
         "resources": {
             "elapsed_seconds": time.perf_counter() - started,

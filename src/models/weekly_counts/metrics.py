@@ -12,6 +12,8 @@ from src.models.weekly_counts.contracts import INTERVALS, SPLITS
 
 CONVERGENCE_CHECKS = {"rhat", "ess_bulk", "ess_tail", "divergences"}
 COVERAGE_CHECKS = {"coverage_80", "coverage_95"}
+# Promotion rule frozen on 2026-09-27 (models_plan.md §12.4).
+BOOTSTRAP_RULE = "best_baseline_bootstrap_v1"
 
 
 def weighted_interval_score(
@@ -28,10 +30,11 @@ def weighted_interval_score(
     return score / (len(intervals) + 0.5)
 
 
-def predictive_metrics(frame: pd.DataFrame, prefix: str) -> dict[str, float]:
-    observed = frame["complaint_count"].to_numpy(dtype=float)
-    median = frame[f"{prefix}_p50"].to_numpy(dtype=float)
-    intervals = [
+def interval_bounds(
+    frame: pd.DataFrame,
+    prefix: str,
+) -> list[tuple[float, np.ndarray, np.ndarray]]:
+    return [
         (
             alpha,
             frame[f"{prefix}_{lower}"].to_numpy(dtype=float),
@@ -39,6 +42,12 @@ def predictive_metrics(frame: pd.DataFrame, prefix: str) -> dict[str, float]:
         )
         for alpha, lower, upper in INTERVALS
     ]
+
+
+def predictive_metrics(frame: pd.DataFrame, prefix: str) -> dict[str, float]:
+    observed = frame["complaint_count"].to_numpy(dtype=float)
+    median = frame[f"{prefix}_p50"].to_numpy(dtype=float)
+    intervals = interval_bounds(frame, prefix)
     wis = weighted_interval_score(observed, median, intervals)
     errors = median - observed
     denominator = float(observed.sum())
@@ -72,10 +81,11 @@ def predictive_metrics(frame: pd.DataFrame, prefix: str) -> dict[str, float]:
 
 def evaluate_predictions(
     predictions: pd.DataFrame,
+    splits: tuple[str, ...] = SPLITS,
 ) -> tuple[pd.DataFrame, dict[str, dict[str, dict[str, float]]]]:
     rows = []
     report: dict[str, dict[str, dict[str, float]]] = {}
-    for split in SPLITS:
+    for split in splits:
         split_frame = predictions.loc[predictions["split"] == split]
         report[split] = {}
         for model in ("model", "baseline"):
@@ -109,21 +119,23 @@ def evaluate_predictions(
     return pd.DataFrame(rows), report
 
 
-def calibration_acceptance(
+def convergence_checks(
     diagnostics: dict[str, float | int],
-    calibration: dict[str, dict[str, float]],
-    settings: dict[str, Any],
-) -> dict[str, Any]:
-    acceptance = settings["acceptance"]
-    model = calibration["model"]
-    baseline = calibration["baseline"]
-    checks = {
+    acceptance: dict[str, Any],
+) -> dict[str, bool]:
+    return {
         "rhat": diagnostics["rhat_max"] <= acceptance["maximum_rhat"],
         "ess_bulk": diagnostics["ess_bulk_min"] >= acceptance["minimum_ess"],
         "ess_tail": diagnostics["ess_tail_min"] >= acceptance["minimum_ess"],
         "divergences": diagnostics["divergences"] == 0,
-        "wis": model["wis"] < baseline["wis"],
-        "wape": model["wape"] <= baseline["wape"],
+    }
+
+
+def coverage_checks(
+    model: dict[str, float],
+    acceptance: dict[str, Any],
+) -> dict[str, bool]:
+    return {
         "coverage_80": (
             acceptance["coverage_80_minimum"]
             <= model["coverage_80"]
@@ -135,7 +147,57 @@ def calibration_acceptance(
             <= acceptance["coverage_95_maximum"]
         ),
     }
+
+
+def calibration_acceptance(
+    diagnostics: dict[str, float | int],
+    calibration: dict[str, dict[str, float]],
+    settings: dict[str, Any],
+) -> dict[str, Any]:
+    """Rule frozen with B1, NB-V1, NB-V2 and NB-V3: beat the fixed Poisson."""
+    acceptance = settings["acceptance"]
+    model = calibration["model"]
+    baseline = calibration["baseline"]
+    checks = {
+        **convergence_checks(diagnostics, acceptance),
+        "wis": model["wis"] < baseline["wis"],
+        "wape": model["wape"] <= baseline["wape"],
+        **coverage_checks(model, acceptance),
+    }
     return {"accepted": all(checks.values()), "checks": checks}
+
+
+def bootstrap_acceptance(
+    diagnostics: dict[str, float | int],
+    calibration: dict[str, dict[str, float]],
+    comparison: dict[str, Any],
+    settings: dict[str, Any],
+) -> dict[str, Any]:
+    """Beat the best baseline by the frozen WIS gain without a clear loss."""
+    acceptance = settings["acceptance"]
+    difference = comparison["difference"]
+    checks = {
+        **convergence_checks(diagnostics, acceptance),
+        "wis_gain": comparison["wis_gain"] >= acceptance["minimum_wis_gain"],
+        "wis_bootstrap": difference["wis"]["p975"] < 0,
+        # WAPE and MAE fail only when the whole interval shows a degradation.
+        "wape": difference["wape"]["p025"] <= 0,
+        "mae": difference["mae"]["p025"] <= 0,
+        **coverage_checks(calibration["model"], acceptance),
+    }
+    return {"accepted": all(checks.values()), "checks": checks}
+
+
+def run_acceptance(
+    diagnostics: dict[str, float | int],
+    calibration: dict[str, dict[str, float]],
+    comparison: dict[str, Any],
+    settings: dict[str, Any],
+) -> dict[str, Any]:
+    """Configs without acceptance.rule keep the rule they were frozen with."""
+    if settings["acceptance"].get("rule") == BOOTSTRAP_RULE:
+        return bootstrap_acceptance(diagnostics, calibration, comparison, settings)
+    return calibration_acceptance(diagnostics, calibration, settings)
 
 
 def failed_checks(acceptance: dict[str, Any]) -> list[str]:
@@ -152,7 +214,7 @@ def candidate_status(run_mode: str, acceptance: dict[str, Any]) -> str:
     if failed & COVERAGE_CHECKS:
         return "rejected_predictive"
     if failed:
-        # Only the WIS/WAPE comparisons with the fixed Poisson reference remain.
+        # The remaining checks compare accuracy with the baselines.
         return "rejected_no_practical_gain"
     return "accepted"
 

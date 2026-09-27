@@ -18,7 +18,6 @@ import numpy as np
 import pandas as pd
 
 from src.evaluation.experiment import PROJECT_ROOT, build_run_record, save_run_record
-from src.models.weekly_counts.contracts import SPLITS
 
 
 def file_sha256(path: Path) -> str:
@@ -108,7 +107,7 @@ def save_plots(
 
     global_metrics = metrics.loc[
         (metrics["cluster_id"] == -1)
-        & (metrics["split"].isin(["calibration", "validation"]))
+        & (metrics["split"] == "calibration")
     ]
     figure, axes = plt.subplots(1, 3, figsize=(13, 4), sharey=True)
     for axis, level in zip(axes, (50, 80, 95)):
@@ -162,6 +161,39 @@ def save_plots(
     plt.close(figure)
 
 
+def backtest_metrics(backtest: dict[str, Any]) -> dict[str, float]:
+    """Flatten only the splits that were evaluated."""
+    return {
+        f"{split}_{candidate}_{name}": float(value)
+        for split, candidates in backtest.items()
+        for candidate, values in candidates.items()
+        for name, value in values.items()
+    }
+
+
+def comparison_metrics(
+    comparison: dict[str, Any],
+    backtest: dict[str, Any],
+) -> dict[str, float]:
+    split = comparison["split"]
+    # The candidate and the fixed Poisson reference are already in the backtest.
+    metrics = {
+        f"{split}_{name}_{metric}": float(value)
+        for name, values in comparison["metrics"].items()
+        if name not in backtest[split]
+        for metric, value in values.items()
+    }
+    best = comparison["metrics"][comparison["best_baseline"]]
+    metrics.update(
+        {f"{split}_best_baseline_{metric}": float(value) for metric, value in best.items()}
+    )
+    metrics[f"{split}_wis_gain_vs_best_baseline"] = float(comparison["wis_gain"])
+    for metric, values in comparison["difference"].items():
+        for label, value in values.items():
+            metrics[f"{split}_bootstrap_{metric}_difference_{label}"] = float(value)
+    return metrics
+
+
 def save_offline_record(
     config: dict[str, Any],
     settings: dict[str, Any],
@@ -203,10 +235,8 @@ def save_offline_record(
     )
     for check, passed in acceptance["checks"].items():
         metrics[f"acceptance_{check}"] = float(passed)
-    for split in SPLITS:
-        for candidate in ("model", "baseline"):
-            for name, value in report["backtest"][split][candidate].items():
-                metrics[f"{split}_{candidate}_{name}"] = float(value)
+    metrics.update(backtest_metrics(report["backtest"]))
+    metrics.update(comparison_metrics(report["comparison"], report["backtest"]))
 
     parameters = {
         "model_id": model_id,
@@ -234,7 +264,7 @@ def save_offline_record(
         run_name=f"m9-{model_id}-{report['run_key']}",
         stage="M9",
         target="weekly_cluster_volume",
-        split="fit_calibration_validation",
+        split="fit_calibration",
         view="complete_weeks",
         features=["cluster_id", "week", "weekly_total"],
         parameters=parameters,
@@ -258,6 +288,7 @@ def save_offline_record(
             report["validation_used_for_selection"]
         ).lower(),
         "calibration_accepted": str(acceptance["accepted"]).lower(),
+        "best_baseline": report["comparison"]["best_baseline"],
     }
     tags.update(
         {
