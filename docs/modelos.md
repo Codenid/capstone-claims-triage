@@ -408,8 +408,17 @@ queda como referencia y no como modelo. El run está en MLflow con ID
 NB-V3 (`nb_static_global_v3`) conserva las participaciones estáticas de B1 y
 cambia solo la verosimilitud: Negative Binomial con una dispersión global. El
 prior de participaciones es uniforme; se eligió solo con `fit` y prior
-predictive, antes de abrir calibración. La decisión y sus gates están en
-`reports/modeling/weekly_counts/nb_static_global_v3/decision.md`.
+predictive, antes de abrir calibración.
+
+NB-V3 convergió sin divergencias (R-hat máximo 1.003 y ESS mínimo 4,666) y fue
+el primer candidato de M9 con coberturas dentro del rango: 77.3% y 94.0% en
+calibración. Además redujo el WIS de 138.89 a 92.57. Sin embargo, su WAPE fue
+34.69% frente a 34.48% del baseline, por lo que no se acepta
+(`rejected_no_practical_gain`). La cobertura cambia con el tamaño del cluster:
+los clusters grandes tienen intervalos demasiado anchos y los pequeños,
+demasiado estrechos. Esa es la evidencia que el plan exige antes de considerar
+una dispersión por cluster (NB-V4). La validación no se abrió. El detalle está
+en `reports/modeling/weekly_counts/nb_static_global_v3/decision.md`.
 
 ### Dirichlet-Multinomial
 

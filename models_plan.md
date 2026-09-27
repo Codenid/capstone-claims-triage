@@ -137,11 +137,11 @@ Antes de cualquier piloto o entrenamiento completo:
 
 | Etapa | ID | Modelo | Tendencia | Dispersión | ¿Los draws suman \(N_t\)? | Estado |
 |---|---|---|---|---|---|---|
-| M9 | B1 | Poisson con participaciones fijas | No | Poisson | No | Ejecutado como baseline analítico |
+| M9 | B1 | Poisson con participaciones fijas | No | Poisson | No | Analítico como referencia; PyMC ejecutado como baseline del pipeline |
 | M9 | NB-V1 | Negative Binomial independiente | Lineal | Jerárquica por cluster | No | Ejecutado y rechazado |
 | M9 | NB-V2 | Negative Binomial normalizada con `softmax` | Lineal | Jerárquica por cluster | No; solo las medias | Ejecutado y rechazado |
-| M9 | NB-V3 | Negative Binomial estática | No | Global | No; solo las medias | Próximo experimento |
-| M9 | NB-V4 | Negative Binomial estática | No | Jerárquica por cluster | No; solo las medias | Próximo experimento condicionado |
+| M9 | NB-V3 | Negative Binomial estática | No | Global | No; solo las medias | Ejecutado y rechazado por WAPE |
+| M9 | NB-V4 | Negative Binomial estática | No | Jerárquica por cluster | No; solo las medias | Condición documentada por NB-V3; requiere aprobación |
 | M10 | B2 | Multinomial estática | No | Sin dispersión adicional | Sí | Planificado |
 | M10 | DM-V1 | Dirichlet-Multinomial estática | No | Global \(\kappa\) | Sí | Planificado |
 | M10 | DM-V2 | Dirichlet-Multinomial normalizada | Lineal | Global inicialmente | Sí | Solo si DM-V1 funciona |
@@ -151,10 +151,10 @@ Antes de cualquier piloto o entrenamiento completo:
 | ID | ID técnico / archivo | Estado técnico |
 |---|---|---|
 | B1 analítico | `src/models/weekly_counts/fixed_poisson_reference.py` | Implementado y usado en backtests |
-| B1 PyMC | `poisson_static_pymc_v1` | Implementado; no tiene `historical_run_id` |
+| B1 PyMC | `poisson_static_pymc_v1` | Ejecutado como baseline del pipeline; MLflow `0ddb96b9f9c645bdb8e8a687cedf09cc` |
 | NB-V1 | `nb_independent_linear_v1` | Reconstruido desde la especificación de MLflow |
 | NB-V2 | `nb_softmax_linear_v2` | Verificado como equivalente al run histórico |
-| NB-V3 | Propuesto: `nb_static_global_v3` | Pendiente |
+| NB-V3 | `nb_static_global_v3` | Ejecutado y rechazado; MLflow `c5dae8eeb3cf435292b351846f7a1653` |
 | NB-V4 | Propuesto: `nb_static_hierarchical_v4` | Pendiente |
 | B2 | Propuesto: `multinomial_static_v1` | Pendiente |
 | DM-V1 | Propuesto: `dirichlet_multinomial_static_v1` | Pendiente |
@@ -167,9 +167,9 @@ Antes de cualquier piloto o entrenamiento completo:
 cumplir estrictamente el requisito de que todos los candidatos tengan una
 ejecución PyMC y MLflow:
 
-- [ ] Ejecutar B1 PyMC como run independiente antes de cerrar M9.
-- [ ] No reemplazar el baseline analítico; conservar ambos roles claramente.
-- [ ] Etiquetar el run PyMC como `candidate_role=pipeline_baseline`.
+- [x] Ejecutar B1 PyMC como run independiente antes de cerrar M9.
+- [x] No reemplazar el baseline analítico; conservar ambos roles claramente.
+- [x] Etiquetar el run PyMC como `candidate_role=pipeline_baseline`.
 
 ## 5. Orden recomendado y reglas de parada
 

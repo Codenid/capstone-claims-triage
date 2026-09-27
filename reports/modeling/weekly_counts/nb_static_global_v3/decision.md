@@ -123,6 +123,7 @@ máximo semanal en [0.070, 0.242] y `alpha` en [1.8, 65]. Cumple el criterio.
 | Run key | `20260927T010530.820879Z-pilot-45c908d1-e06833de` |
 | Commit | `a099a30f175c515a71356ae3c49068f74c2f2144` |
 | SLURM | 53181, `COMPLETED`, 1 min 43 s, MaxRSS 0.74 GiB; pico del proceso 1.00 GiB |
+| MLflow | `7e5d90f0748f4e0f87a9af3f7c87f23a`, `run_mode=pilot`, `candidate_status=pilot_only` |
 | Muestreo | 2 cadenas, 250 de tune y 250 draws |
 | Diagnósticos | R-hat máximo 1.03, ESS bulk mínimo 512, ESS tail mínimo 214, 0 divergencias, BFMI mínimo 0.85, profundidad máxima 5 sin topes |
 | Normalización de medias | Error máximo 4.4e-16 |
@@ -137,3 +138,68 @@ decimales y ESS a enteros. Antes del full se cambió a `round_to="none"` para
 que el gate `R-hat <= 1.01` use el valor exacto. Esto no cambia ninguna
 decisión del piloto: su R-hat real está entre 1.025 y 1.035, por debajo de
 1.05.
+
+### Full
+
+| Campo | Valor |
+|---|---|
+| Run key | `20260927T011144.681956Z-full-45c908d1-f3a4936c` |
+| Commit | `81be140a13a14a6ad6f4d220481b3c7fb9652f6c` |
+| Comando | `sbatch --export=ALL,MODEL_CONFIG=configs/weekly_counts/nb_static_global_v3.yaml,RUN_MODE=full scripts/hpc/m9_weekly_count.slurm` |
+| SLURM | 53184, `COMPLETED`, 5 min 41 s, MaxRSS 1.18 GiB; pico del proceso 1.44 GiB |
+| MLflow | `c5dae8eeb3cf435292b351846f7a1653` |
+| DVC | `artifacts/models/weekly_counts.dvc`, `7136b408b674cca7038f0bf21413725d.dir`, subido a DagsHub |
+| Muestreo | 4 cadenas, 2000 de tune y 2000 draws, en CPU con NumPyro |
+| Diagnósticos | R-hat máximo 1.003, ESS bulk mínimo 8613, ESS tail mínimo 4666, 0 divergencias, BFMI mínimo 0.94, profundidad máxima 5 sin topes |
+| Normalización de medias | Error máximo 8.9e-16 |
+| Posterior de `alpha` | 2.47, HDI 94% [2.35, 2.58] |
+
+Métricas frente al baseline Poisson fijo. WAPE, MAE y sesgo usan la mediana
+predictiva:
+
+| Split | Modelo | WIS | WAPE | MAE | Sesgo de la mediana | Cobertura 80% | Cobertura 95% |
+|---|---|---:|---:|---:|---:|---:|---:|
+| `fit` | NB-V3 | 51.54 | 25.12% | 73.44 | -13.4% | 81.3% | 93.5% |
+| `fit` | Poisson fijo | 56.73 | 23.33% | 68.20 | -0.05% | 17.1% | 26.8% |
+| Calibración | NB-V3 | 92.57 | 34.69% | 155.13 | -13.5% | 77.3% | 94.0% |
+| Calibración | Poisson fijo | 138.89 | 34.48% | 154.16 | -0.04% | 9.2% | 16.5% |
+
+La media posterior no tiene sesgo agregado porque las medias suman el total
+semanal. El sesgo proviene de la mediana: con una sola `alpha` cercana a 2.5 la
+distribución es asimétrica y su mediana queda por debajo de la media.
+
+Terciles de clusters definidos por su volumen en `fit`:
+
+| Tercil | Clusters | Cobertura 80%, `fit` y calibración | Cobertura 95%, `fit` y calibración | WAPE de calibración, NB-V3 y Poisson |
+|---|---:|---:|---:|---:|
+| Pequeños | 14 | 71.6%; 67.3% | 90.7%; 89.3% | 72.8%; 76.9% |
+| Medianos | 13 | 75.6%; 73.1% | 90.4%; 92.9% | 44.7%; 39.9% |
+| Grandes | 13 | 97.4%; 92.3% | 99.6%; 100% | 30.1%; 30.4% |
+
+Los clusters grandes concentran cerca de 80% de los conteos. Para ellos la
+dispersión global es excesiva: sus intervalos son demasiado anchos y su mediana
+queda baja. En los pequeños la cobertura 80% queda cerca o por debajo de 70%.
+
+El runner calcula métricas de validación, pero no se abrieron.
+
+## Decisión
+
+- Estado automático: `rejected_no_practical_gain`; criterio fallido `wape`.
+  Pasan todos los criterios de convergencia y cobertura, y el WIS de
+  calibración mejora 33.3%, pero el WAPE es 34.69% frente a 34.48% del Poisson
+  fijo. Los criterios no se modificaron después de ver los resultados.
+- **NB-V3 no se acepta.** El baseline Poisson fijo sigue siendo la referencia
+  de M9.
+- La cobertura cambia sistemáticamente con el volumen del cluster, con
+  intervalos demasiado anchos en los grandes y estrechos en los pequeños. Es la
+  evidencia de dispersión heterogénea que el plan exige para considerar NB-V4.
+- Como referencia histórica, NB-V2 obtuvo en calibración WIS 89.06 y WAPE
+  31.34%, pero fue rechazado por ESS y cobertura.
+
+## Siguiente acción permitida
+
+- NB-V4, `nb_static_hierarchical_v4`, queda justificado por la evidencia
+  anterior, pero su implementación requiere aprobación explícita y no se hizo
+  en esta sesión.
+- Siguen pendientes B1-R4, B1-R13, B2, el bootstrap semanal y el umbral de
+  mejora práctica mínima.
