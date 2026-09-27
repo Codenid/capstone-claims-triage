@@ -50,4 +50,13 @@ Se aplica la regla congelada el 2026-09-27:
 
 ## Ejecuciones
 
-Pendiente.
+Clon limpio en Khipu: `/home/piero.palacios/capstone-claims-triage-runs`,
+commit `e807869`.
+
+| Nivel | Run key | Resultado |
+|---|---|---|
+| Prior | `20260927T153630.891988Z-prior-34f4684f-e1410d83` | Conteos imposibles 5.2e-6, ninguno negativo; share máximo semanal 95% en [0.107, 0.339] frente a [0.141, 0.195] en `fit` |
+| Piloto | `20260927T153714.395019Z-pilot-34f4684f-e1410d83` | SLURM 53270, 1 min 15 s, MaxRSS 0.70 GiB; R-hat 1.006, ESS bulk 293, ESS tail 170, 0 divergencias, profundidad máxima 3; normalización 5.7e-15; `alpha` 5.83, HDI 94% [5.55, 6.11] |
+
+Todos los gates del piloto se cumplen. No se revisaron métricas de calibración
+ni de validación del piloto, y el piloto no se publica en MLflow.
