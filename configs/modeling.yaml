@@ -39,6 +39,9 @@ paths:
   weekly_patterns_artifacts: artifacts/models/weekly_patterns
   weekly_patterns_artifacts_dvc: artifacts/models/weekly_patterns.dvc
   weekly_patterns_staging: artifacts/models/.weekly_patterns.inprogress
+  representation_report: reports/modeling/representation_results.json
+  representation_artifacts: artifacts/models/representation_comparison
+  representation_staging: artifacts/models/.representation_comparison.inprogress
 
   offline_runs: reports/modeling/runs
 
@@ -159,6 +162,13 @@ bge_full:
     fit: 120000
     calibration: 40000
     validation: 80000
+
+# M5B: T1-T4 representations with every fit row and the tie rule approved on
+# 2026-09-30 (models_plan.md §21).
+representations:
+  source_dvc_hash: 3ff36a299da1f2e19a00a4bce49f18ad.dir
+  minimum_relative_gain: 0.05
+  bootstrap_draws: 2000
 
 clustering:
   source_dvc_hash: 08662a82971a71666b06c9ccf8120d7f.dir

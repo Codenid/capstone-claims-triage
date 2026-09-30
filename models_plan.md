@@ -1260,6 +1260,9 @@ acción es T1–T4 (§21); primero hay que aprobar la regla para elegir entre
 representaciones con resultados cercanos. La validación sigue cerrada hasta la
 confirmación final única.
 
+Actualización del 2026-09-30: la regla de §21 quedó aprobada. La siguiente
+acción es ejecutar M5B: una prueba rápida y después el run completo.
+
 ## 21. Clasificadores T1–T4 con todo `fit`
 
 Decisiones del 2026-09-27 con aprobación del usuario:
@@ -1293,5 +1296,21 @@ producto, y BGE solo se entrenó con la muestra de M5.
   la validación sigue cerrada.
 - Métrica principal: Macro-F1 para T1 y precisión promedio para T2–T4.
 - Un run de MLflow por objetivo, con las representaciones como métricas.
-- La regla para elegir entre representaciones con resultados cercanos debe
-  aprobarse antes de entrenar.
+
+Regla para resultados cercanos, aprobada por el usuario el 2026-09-30 antes de
+entrenar:
+
+- Orden de más simple a más compleja: regla por producto (M3), TF-IDF solo
+  texto, TF-IDF + producto (M4), BGE solo texto y BGE + producto.
+- Se parte de la regla por producto. Cada representación más compleja reemplaza
+  a la elegida hasta ese momento solo si mejora la métrica principal al menos
+  5% relativo y el IC bootstrap 95% de la diferencia queda entero sobre 0.
+- Bootstrap pareado por semanas, como en M9: las 14 semanas de calibración (12
+  completas y 2 parciales), 2000 remuestreos y semilla 42.
+- En T1, BGE + producto con todo `fit` se conserva si su Macro-F1 puntual
+  supera al BGE de la muestra de M5. Si no, esa posición usa el modelo de M5.
+- M3 y M4 deben reproducir sus métricas de calibración publicadas; si no, el
+  run se detiene antes de entrenar.
+- La comparación se llama M5B y está en
+  `src/models/representation_comparison.py`. Usa los embeddings de M8A, que
+  cubren todas las filas elegibles de T1–T4 en `fit` y calibración.

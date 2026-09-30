@@ -287,6 +287,29 @@ uv run --no-sync dvc status -c artifacts/models/weekly_patterns.dvc
 
 Ambos comandos deben indicar que los datos y la caché están actualizados.
 
+M5B compara las representaciones de T1–T4 entrenadas con todo `fit`
+(`models_plan.md` §21). Usa los embeddings de M8A y los modelos de M3, M4 y M5,
+así que corre en CPU. Primero se lanza una prueba rápida con una muestra, que no
+guarda nada, y después el run completo:
+
+```bash
+uv run --no-sync python -m unittest tests.test_representation_comparison -v
+sbatch scripts/hpc/m5b_representations.slurm --smoke
+sbatch scripts/hpc/m5b_representations.slurm
+```
+
+El run completo se detiene antes de entrenar si M3 o M4 no reproducen sus
+métricas publicadas, y nunca sobrescribe resultados anteriores. Al terminar:
+
+```bash
+uv run --no-sync dvc add artifacts/models/representation_comparison
+uv run --no-sync dvc push artifacts/models/representation_comparison.dvc
+set -a
+source .env
+set +a
+uv run --no-sync python src/evaluation/publish_run.py reports/modeling/runs/m5b
+```
+
 M9 ajusta el modelo jerárquico Negative Binomial solo con las semanas completas
 de `fit`. Calibración y validación se predicen sin actualizar el posterior:
 
