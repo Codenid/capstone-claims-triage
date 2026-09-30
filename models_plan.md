@@ -1263,6 +1263,10 @@ confirmación final única.
 Actualización del 2026-09-30: la regla de §21 quedó aprobada. La siguiente
 acción es ejecutar M5B: una prueba rápida y después el run completo.
 
+Actualización posterior del 2026-09-30: M5B terminó y fijó T1–T4 (§21). La
+siguiente acción es M10. La validación sigue cerrada hasta la confirmación final
+única, después de congelar M10.
+
 ## 21. Clasificadores T1–T4 con todo `fit`
 
 Decisiones del 2026-09-27 con aprobación del usuario:
@@ -1288,9 +1292,9 @@ producto, y BGE solo se entrenó con la muestra de M5.
 |---|---|
 | Frecuencia global y regla por producto (M3) | Existen, con todo `fit` |
 | TF-IDF + producto (M4) | Existe, con todo `fit` |
-| TF-IDF solo texto | Falta |
-| BGE solo texto | Falta |
-| BGE + producto | Falta con todo `fit`; hoy solo con 120,000 filas |
+| TF-IDF solo texto | Entrenado en M5B con todo `fit` |
+| BGE solo texto | Entrenado en M5B con todo `fit` |
+| BGE + producto | Entrenado en M5B con todo `fit`; M5 usó 120,000 filas |
 
 - Todas se evalúan en las mismas filas de calibración sin texto compartido;
   la validación sigue cerrada.
@@ -1314,3 +1318,22 @@ entrenar:
 - La comparación se llama M5B y está en
   `src/models/representation_comparison.py`. Usa los embeddings de M8A, que
   cubren todas las filas elegibles de T1–T4 en `fit` y calibración.
+
+Resultado del 2026-09-30 (SLURM 53903; detalle en
+`reports/modeling/representation_decision.md`). M3 y M4 reprodujeron sus
+métricas publicadas:
+
+| Objetivo | Elegida | Métrica principal | Paso decisivo |
+|---|---|---:|---|
+| T1 | BGE + producto, todo `fit` | Macro-F1 0.2397 | +11.9% sobre TF-IDF + producto, IC [+0.023, +0.029] |
+| T2 | TF-IDF solo texto | AP 0.6094 | El producto suma solo 0.4% |
+| T3 | TF-IDF solo texto | AP 0.3640 | El producto suma solo 1.6% |
+| T4 | TF-IDF + producto (M4) | AP 0.0551 | +16.8% sobre TF-IDF texto, IC [+0.003, +0.015] |
+
+- T1 pasa el control frente a M5 por estimación puntual (0.2397 frente a
+  0.2396): más filas casi no cambiaron el resultado.
+- T4, decisión del usuario del 2026-09-30: se mantiene la elección de la regla,
+  pero su validación no es independiente, porque M4 ya evaluó este modelo en
+  2025-H1 (AP 0.0781 frente a 0.1208 de la regla por producto). En la
+  confirmación final se reporta junto a la regla por producto y ahí se decide su
+  uso en el triaje. En MLflow tiene `validation_independent=false`.

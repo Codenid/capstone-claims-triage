@@ -73,6 +73,8 @@ conjunto completo de reclamos.
 - [x] **M4 — Entrenar TF-IDF:** evaluar modelos lineales para T1–T4.
 - [x] **M5 — Evaluar BGE:** generar una muestra en la A100 y compararla con
   TF-IDF sobre las mismas filas.
+- [x] **M5B — Comparar con todo el ajuste:** entrenar TF-IDF y BGE, con y sin
+  producto, con todas las filas de ajuste y elegir por objetivo en calibración.
 - [x] **M6 — Preparar el espacio semántico:** reutilizar los embeddings de M5,
   ajustar PCA con la muestra del periodo de ajuste, crear una visualización UMAP
   y validar vecinos con FAISS.
@@ -354,6 +356,38 @@ La A100 generó los embeddings iniciales en 29 minutos 56 segundos. La repetici�
 de los clasificadores reutilizó esos embeddings y terminó en CPU en 4 minutos
 19 segundos. Los ocho runs de comparación están publicados en MLflow y el
 reporte completo está en `reports/modeling/bge_sample_results.json`.
+
+## Resultados de M5B con todo el ajuste
+
+Las decisiones de M4 y M5 miraron la validación. M5B las reemplaza usando solo
+calibración. Entrenó cada representación con las 1,067,194 filas de ajuste; BGE
+usa los embeddings de M8. Después aplicó una regla aprobada antes de entrenar:
+una representación más compleja se elige solo si mejora al menos 5% y el
+intervalo bootstrap por semanas queda entero sobre 0.
+
+En la calibración sin texto compartido:
+
+<!-- markdownlint-disable MD013 -->
+
+| Objetivo | Regla por producto | TF-IDF texto | TF-IDF + producto | BGE texto | BGE + producto | Elegido |
+| --- | ---: | ---: | ---: | ---: | ---: | --- |
+| T1 — Macro-F1 | 0.0762 | 0.1406 | 0.2142 | 0.1582 | **0.2397** | BGE + producto |
+| T2 — precisión promedio | 0.4536 | **0.6094** | 0.6119 | 0.6056 | 0.6104 | TF-IDF texto |
+| T3 — precisión promedio | 0.1739 | **0.3640** | 0.3699 | 0.3347 | 0.3512 | TF-IDF texto |
+| T4 — precisión promedio | 0.0313 | 0.0471 | **0.0551** | 0.0305 | 0.0417 | TF-IDF + producto |
+
+<!-- markdownlint-enable MD013 -->
+
+- BGE solo mejora T1. En T2 y T3 el producto suma menos de 5%, así que basta
+  con el texto.
+- En T4, TF-IDF + producto ganó en calibración, pero M4 ya lo había visto por
+  debajo de la regla por producto en 2025-H1. Se mantiene la elección de la
+  regla y se marca que su validación no es una prueba independiente.
+- La validación se usará una sola vez, en la confirmación final.
+
+El detalle está en `reports/modeling/representation_decision.md`. Los modelos
+están en DVC (`artifacts/models/representation_comparison`) y hay un run de
+MLflow por objetivo.
 
 ## Resultados del espacio semántico M6
 

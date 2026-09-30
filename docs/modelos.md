@@ -134,10 +134,10 @@ fragmentos. E5 encontró que 8.43% supera 400 palabras.
 
 | Componente | Referencia | Decisión actual | Razón |
 |---|---|---|---|
-| T1 — motivo | TF-IDF + producto | BGE + producto | BGE mejoró Macro-F1 en M5 |
-| T2 — alguna solución | Regla por producto | TF-IDF + producto | BGE empató, pero cuesta más |
-| T3 — compensación monetaria | Regla por producto | TF-IDF + producto | TF-IDF superó a BGE |
-| T4 — no oportuna CFPB | Frecuencia global | Regla por producto | Los modelos de texto fueron menos estables |
+| T1 — motivo | TF-IDF + producto | BGE + producto, todo `fit` | Superó a TF-IDF + producto en 11.9% (M5B) |
+| T2 — alguna solución | Regla por producto | TF-IDF solo texto | Ni el producto ni BGE mejoraron 5% (M5B) |
+| T3 — compensación monetaria | Regla por producto | TF-IDF solo texto | El producto sumó 1.6% y BGE fue peor (M5B) |
+| T4 — no oportuna CFPB | Regla por producto | TF-IDF + producto | Ganó en calibración; su validación no es independiente (M5B) |
 | Reducción y visualización | Embedding BGE | PCA y UMAP 2D | Reducir ruido y revisar visualmente el espacio semántico |
 | Vecinos similares | No aplica | FAISS | Búsqueda rápida entre millones de embeddings |
 | Grupos semánticos | HDBSCAN y CURE | MiniBatchKMeans con `k=40` | Único método que pasó separación, estabilidad, tamaño y asignación futura |
@@ -166,6 +166,27 @@ vecinos y formar grupos; esa utilidad no depende de ganar T2–T4.
 El experimento usó 120,000 filas de ajuste, 40,000 de calibración y 80,000 de
 validación. Los clasificadores convergieron y el artefacto está en DVC con hash
 `009e3b35e25d9df095cf753e0a05f041.dir`.
+
+### Decisión después de M5B
+
+La decisión anterior miró la validación. M5B la reemplaza usando solo
+calibración: entrenó cada representación con las 1,067,194 filas de `fit` y
+aplicó la regla de `models_plan.md` §21, aprobada antes de entrenar. Una
+representación más compleja se elige solo si mejora la métrica al menos 5% y el
+intervalo bootstrap por semanas queda entero sobre 0.
+
+| Objetivo | Modelo elegido | Métrica en calibración | Razón |
+|---|---|---:|---|
+| T1 | BGE + producto | Macro-F1 0.2397 | 11.9% sobre TF-IDF + producto |
+| T2 | TF-IDF solo texto | AP 0.6094 | El producto sumó 0.4% y BGE no mejoró |
+| T3 | TF-IDF solo texto | AP 0.3640 | El producto sumó 1.6% y BGE fue peor |
+| T4 | TF-IDF + producto | AP 0.0551 | 16.8% sobre TF-IDF solo texto |
+
+En T4, M4 ya había evaluado ese modelo en validación, donde quedó por debajo de
+la regla por producto. Por decisión del usuario, se mantiene la elección de la
+regla, pero su validación no cuenta como prueba independiente; en la
+confirmación final se reporta junto a la regla por producto. El detalle está en
+`reports/modeling/representation_decision.md`.
 
 ## Descubrimiento de patrones
 
