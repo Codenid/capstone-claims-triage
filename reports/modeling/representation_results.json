@@ -1,0 +1,454 @@
+{
+  "stage": "M5B",
+  "dvc_data_hash": "d189a3ae6ea7a8f9041fc8210968eda6",
+  "embeddings_dvc_hash": "3ff36a299da1f2e19a00a4bce49f18ad.dir",
+  "tfidf_dvc_hash": "94536b940d1546580c62b80078e2bbfc.dir",
+  "bge_sample_dvc_hash": "009e3b35e25d9df095cf753e0a05f041.dir",
+  "split_version": "temporal_v1",
+  "sklearn_version": "1.9.1",
+  "view": "no_shared_text",
+  "rule": {
+    "order": [
+      "product_rule",
+      "tfidf_text",
+      "tfidf_product",
+      "bge_text",
+      "bge_product"
+    ],
+    "minimum_relative_gain": 0.05,
+    "bootstrap_unit": "week",
+    "bootstrap_draws": 2000,
+    "seed": 42
+  },
+  "results": {
+    "T1": {
+      "primary_metric": "macro_f1",
+      "calibration_rows": 167973,
+      "weeks": 14,
+      "metrics": {
+        "product_rule": {
+          "eligible": 167973,
+          "macro_f1": 0.07616119416020176,
+          "top_3_accuracy": 0.9013948670322016
+        },
+        "tfidf_product": {
+          "eligible": 167973,
+          "macro_f1": 0.21424215055912837,
+          "top_3_accuracy": 0.9536294523524614
+        },
+        "bge_product_m5_sample": {
+          "eligible": 167973,
+          "macro_f1": 0.23961024917863305,
+          "top_3_accuracy": 0.9529864918766706
+        },
+        "tfidf_text": {
+          "eligible": 167973,
+          "macro_f1": 0.1406224005738513,
+          "top_3_accuracy": 0.8695742768182981
+        },
+        "bge_text": {
+          "eligible": 167973,
+          "macro_f1": 0.1581835532135808,
+          "top_3_accuracy": 0.8714198115173272
+        },
+        "bge_product": {
+          "eligible": 167973,
+          "macro_f1": 0.2397446436210775,
+          "top_3_accuracy": 0.9539866526167896
+        }
+      },
+      "selection": {
+        "selected": "bge_product",
+        "steps": [
+          {
+            "current": "product_rule",
+            "challenger": "tfidf_text",
+            "relative_gain": 0.8463786200365795,
+            "difference": {
+              "estimate": 0.06446120641364955,
+              "p025": 0.06106943479612301,
+              "p50": 0.06494533112019601,
+              "p975": 0.06901049656704154
+            },
+            "replaces": true
+          },
+          {
+            "current": "tfidf_text",
+            "challenger": "tfidf_product",
+            "relative_gain": 0.5235278994303176,
+            "difference": {
+              "estimate": 0.07361974998527707,
+              "p025": 0.07073849721780288,
+              "p50": 0.07411308704963586,
+              "p975": 0.07788849755794316
+            },
+            "replaces": true
+          },
+          {
+            "current": "tfidf_product",
+            "challenger": "bge_text",
+            "relative_gain": -0.2616599824042377,
+            "difference": {
+              "estimate": -0.05605859734554758,
+              "p025": -0.06107096118940639,
+              "p50": -0.05647952713882014,
+              "p975": -0.05265036507471471
+            },
+            "replaces": false
+          },
+          {
+            "current": "tfidf_product",
+            "challenger": "bge_product",
+            "relative_gain": 0.11903583396354467,
+            "difference": {
+              "estimate": 0.025502493061949127,
+              "p025": 0.022897760485157254,
+              "p50": 0.025572776147123957,
+              "p975": 0.028577010499884835
+            },
+            "replaces": true
+          }
+        ]
+      },
+      "fit_rows": 1067194,
+      "m5_sample_check": {
+        "bge_product": 0.2397446436210775,
+        "m5_sample": 0.23961024917863305,
+        "passed": true
+      }
+    },
+    "T2": {
+      "primary_metric": "average_precision",
+      "calibration_rows": 167738,
+      "weeks": 14,
+      "metrics": {
+        "product_rule": {
+          "threshold": 0.3807894933959202,
+          "eligible": 167738,
+          "positive": 65624,
+          "average_precision": 0.45357122553268986,
+          "precision": 0.4493877613028682,
+          "recall": 0.9015146897476533,
+          "f1": 0.5997911513037836,
+          "brier_score": 0.22572254115623092
+        },
+        "tfidf_product": {
+          "threshold": 0.3141058810976897,
+          "eligible": 167738,
+          "positive": 65624,
+          "average_precision": 0.6119403060817248,
+          "precision": 0.5105440253612777,
+          "recall": 0.8392965988053152,
+          "f1": 0.634886602691565,
+          "brier_score": 0.2021422169662912
+        },
+        "tfidf_text": {
+          "threshold": 0.3003271199199449,
+          "eligible": 167738,
+          "positive": 65624,
+          "average_precision": 0.6093799322547108,
+          "precision": 0.5080086439561866,
+          "recall": 0.8346641472631964,
+          "f1": 0.6316007956412696,
+          "brier_score": 0.20346635746080882
+        },
+        "bge_text": {
+          "threshold": 0.32699826301500956,
+          "eligible": 167738,
+          "positive": 65624,
+          "average_precision": 0.6056072442247529,
+          "precision": 0.5124235235360219,
+          "recall": 0.8129952456418383,
+          "f1": 0.6286283219728881,
+          "brier_score": 0.20496804766797
+        },
+        "bge_product": {
+          "threshold": 0.3384671485447119,
+          "eligible": 167738,
+          "positive": 65624,
+          "average_precision": 0.6103605385432413,
+          "precision": 0.5176954891204797,
+          "recall": 0.8182829452639279,
+          "f1": 0.634173993658142,
+          "brier_score": 0.203049859308898
+        }
+      },
+      "selection": {
+        "selected": "tfidf_text",
+        "steps": [
+          {
+            "current": "product_rule",
+            "challenger": "tfidf_text",
+            "relative_gain": 0.3435154126874642,
+            "difference": {
+              "estimate": 0.1558087067220209,
+              "p025": 0.14778204940081993,
+              "p50": 0.156238290509033,
+              "p975": 0.16362910431030975
+            },
+            "replaces": true
+          },
+          {
+            "current": "tfidf_text",
+            "challenger": "tfidf_product",
+            "relative_gain": 0.004201605093132388,
+            "difference": {
+              "estimate": 0.0025603738270140175,
+              "p025": 0.0016736066326600353,
+              "p50": 0.0025533467626511763,
+              "p975": 0.0033685629618922185
+            },
+            "replaces": false
+          },
+          {
+            "current": "tfidf_text",
+            "challenger": "bge_text",
+            "relative_gain": -0.0061910276828429645,
+            "difference": {
+              "estimate": -0.0037726880299578935,
+              "p025": -0.00795744352762216,
+              "p50": -0.003968287964087325,
+              "p975": 0.0011150529877236883
+            },
+            "replaces": false
+          },
+          {
+            "current": "tfidf_text",
+            "challenger": "bge_product",
+            "relative_gain": 0.001609187038539961,
+            "difference": {
+              "estimate": 0.0009806062885305833,
+              "p025": -0.003061754774714864,
+              "p50": 0.0007589306427523979,
+              "p975": 0.00586116359023865
+            },
+            "replaces": false
+          }
+        ]
+      },
+      "fit_rows": 1066288
+    },
+    "T3": {
+      "primary_metric": "average_precision",
+      "calibration_rows": 167738,
+      "weeks": 14,
+      "metrics": {
+        "product_rule": {
+          "threshold": 0.1482474855227065,
+          "eligible": 167738,
+          "positive": 3682,
+          "average_precision": 0.17388902137729625,
+          "precision": 0.17632822404056703,
+          "recall": 0.8310700706137969,
+          "f1": 0.29092983456930976,
+          "brier_score": 0.01871185266654866
+        },
+        "tfidf_product": {
+          "threshold": 0.19603226811898045,
+          "eligible": 167738,
+          "positive": 3682,
+          "average_precision": 0.36987826998800455,
+          "precision": 0.3457170668397145,
+          "recall": 0.5787615426398697,
+          "f1": 0.4328661385334146,
+          "brier_score": 0.016327985808733337
+        },
+        "tfidf_text": {
+          "threshold": 0.18147360873370025,
+          "eligible": 167738,
+          "positive": 3682,
+          "average_precision": 0.3639509169548399,
+          "precision": 0.33704469540321297,
+          "recall": 0.5755024443237371,
+          "f1": 0.4251178653826863,
+          "brier_score": 0.016537340309376626
+        },
+        "bge_text": {
+          "threshold": 0.18720177412719483,
+          "eligible": 167738,
+          "positive": 3682,
+          "average_precision": 0.334716637147972,
+          "precision": 0.31833098921706515,
+          "recall": 0.5532319391634981,
+          "f1": 0.404126574744569,
+          "brier_score": 0.016909402458656443
+        },
+        "bge_product": {
+          "threshold": 0.20679701074777707,
+          "eligible": 167738,
+          "positive": 3682,
+          "average_precision": 0.3511566867036057,
+          "precision": 0.33574125759317025,
+          "recall": 0.5554046713742531,
+          "f1": 0.41849994883863706,
+          "brier_score": 0.016584746211259445
+        }
+      },
+      "selection": {
+        "selected": "tfidf_text",
+        "steps": [
+          {
+            "current": "product_rule",
+            "challenger": "tfidf_text",
+            "relative_gain": 1.0930068734193186,
+            "difference": {
+              "estimate": 0.19006189557754363,
+              "p025": 0.1770986272340446,
+              "p50": 0.1904011399500862,
+              "p975": 0.20302663893402795
+            },
+            "replaces": true
+          },
+          {
+            "current": "tfidf_text",
+            "challenger": "tfidf_product",
+            "relative_gain": 0.01628613298397097,
+            "difference": {
+              "estimate": 0.005927353033164662,
+              "p025": 0.0014643677070169808,
+              "p50": 0.005953216368005471,
+              "p975": 0.012056641421847767
+            },
+            "replaces": false
+          },
+          {
+            "current": "tfidf_text",
+            "challenger": "bge_text",
+            "relative_gain": -0.08032478679122368,
+            "difference": {
+              "estimate": -0.02923427980686788,
+              "p025": -0.039367843582626516,
+              "p50": -0.028836799659575363,
+              "p975": -0.017021211471290595
+            },
+            "replaces": false
+          },
+          {
+            "current": "tfidf_text",
+            "challenger": "bge_product",
+            "relative_gain": -0.035153724459009106,
+            "difference": {
+              "estimate": -0.012794230251234162,
+              "p025": -0.025263362333335176,
+              "p50": -0.012258460840414931,
+              "p975": 0.002341449670582154
+            },
+            "replaces": false
+          }
+        ]
+      },
+      "fit_rows": 1066288
+    },
+    "T4": {
+      "primary_metric": "average_precision",
+      "calibration_rows": 167973,
+      "weeks": 14,
+      "metrics": {
+        "product_rule": {
+          "threshold": 0.04053724053724054,
+          "eligible": 167973,
+          "positive": 935,
+          "average_precision": 0.031280146199871496,
+          "precision": 0.058412176059234884,
+          "recall": 0.3037433155080214,
+          "f1": 0.0979817146800069,
+          "brier_score": 0.005464689383526475
+        },
+        "tfidf_product": {
+          "threshold": 0.06093102335898961,
+          "eligible": 167973,
+          "positive": 935,
+          "average_precision": 0.05505940143045083,
+          "precision": 0.0913978494623656,
+          "recall": 0.2,
+          "f1": 0.12546125461254612,
+          "brier_score": 0.005411582609438733
+        },
+        "tfidf_text": {
+          "threshold": 0.04520456849916151,
+          "eligible": 167973,
+          "positive": 935,
+          "average_precision": 0.04713458449708473,
+          "precision": 0.07564241766196164,
+          "recall": 0.2235294117647059,
+          "f1": 0.11303407247160627,
+          "brier_score": 0.005455942110907147
+        },
+        "bge_text": {
+          "threshold": 0.02715495285851279,
+          "eligible": 167973,
+          "positive": 935,
+          "average_precision": 0.030535065417677736,
+          "precision": 0.036959260814783707,
+          "recall": 0.2823529411764706,
+          "f1": 0.06536271354295618,
+          "brier_score": 0.005469200226688904
+        },
+        "bge_product": {
+          "threshold": 0.05453280528563829,
+          "eligible": 167973,
+          "positive": 935,
+          "average_precision": 0.041693412633806215,
+          "precision": 0.0595187842971718,
+          "recall": 0.15080213903743314,
+          "f1": 0.08535108958837773,
+          "brier_score": 0.005424686265642586
+        }
+      },
+      "selection": {
+        "selected": "tfidf_product",
+        "steps": [
+          {
+            "current": "product_rule",
+            "challenger": "tfidf_text",
+            "relative_gain": 0.5068530752991929,
+            "difference": {
+              "estimate": 0.01585443829721323,
+              "p025": 0.004062438551699689,
+              "p50": 0.016177299700612893,
+              "p975": 0.025085676887985995
+            },
+            "replaces": true
+          },
+          {
+            "current": "tfidf_text",
+            "challenger": "tfidf_product",
+            "relative_gain": 0.16813168118319255,
+            "difference": {
+              "estimate": 0.007924816933366101,
+              "p025": 0.0026229961442055497,
+              "p50": 0.007737868212185521,
+              "p975": 0.015142146566502106
+            },
+            "replaces": true
+          },
+          {
+            "current": "tfidf_product",
+            "challenger": "bge_text",
+            "relative_gain": -0.4454159575953873,
+            "difference": {
+              "estimate": -0.024524336012773092,
+              "p025": -0.031159947966499645,
+              "p50": -0.02432416983345808,
+              "p975": -0.01947903143791608
+            },
+            "replaces": false
+          },
+          {
+            "current": "tfidf_product",
+            "challenger": "bge_product",
+            "relative_gain": -0.24275579554797877,
+            "difference": {
+              "estimate": -0.013365988796644614,
+              "p025": -0.0190097320067573,
+              "p50": -0.013021923042151693,
+              "p975": -0.008134790851023099
+            },
+            "replaces": false
+          }
+        ]
+      },
+      "fit_rows": 1067194
+    }
+  }
+}
