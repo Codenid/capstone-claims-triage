@@ -92,8 +92,10 @@ conjunto completo de reclamos.
   con las participaciones de las 4 semanas anteriores y una concentración
   global, superó al mejor baseline. La validación queda para la confirmación
   final.
-- [ ] **M11 — Detectar cambios persistentes:** calibrar CUSUM sobre las
-  diferencias entre lo observado y lo esperado.
+- [x] **M11 — Detectar cambios persistentes:** un CUSUM por patrón sobre el
+  exceso de cada semana frente a NB-R4-H v3 detectó más crecimientos
+  artificiales que la regla por exceso semanal, con el mismo presupuesto de
+  falsas alertas.
 - [ ] **M12 — Integrar el triaje:** combinar predicciones, vecinos y alertas para
   revisión humana.
 
@@ -674,6 +676,35 @@ Después, T4 salió del triaje: responder a tiempo depende del proceso del banco
 no del texto del reclamo. M12 mostrará en su lugar los días hábiles que faltan
 para el plazo de respuesta, 15 desde el registro o 45 con extensión, sin contar
 feriados nacionales (`models_plan.md` §23).
+
+## Cambios persistentes M11
+
+M11 avisa cuando un patrón recibe más reclamos de lo esperado durante varias
+semanas. Cada semana mide cuántas desviaciones se aleja lo observado de lo
+esperado por NB-R4-H v3, y un CUSUM por patrón va sumando esos excesos. Se
+comparó con la regla por exceso semanal, que mira una semana a la vez, con el
+mismo presupuesto: 1 falsa alerta al mes en total si M9 estuviera bien
+calibrado (`models_plan.md` §24).
+
+En `fit` + calibración se agregaron aumentos artificiales a las series reales.
+Dentro de 8 semanas:
+
+<!-- markdownlint-disable MD013 -->
+
+| Aumento | CUSUM | Regla semanal |
+| --- | ---: | ---: |
+| Crecimiento de 10% por semana | 50.8% | 36.1% |
+| Crecimiento de 20% por semana | 79.7% | 58.4% |
+| Salto de 100% | 61.3% | 56.7% |
+
+<!-- markdownlint-enable MD013 -->
+
+M12 usará CUSUM. En los datos reales avisa más que el presupuesto, unas 2 a 4
+veces al mes en `fit` y calibración, porque hay más semanas extremas y rachas
+que las que supone M9; por decisión del usuario se mantuvieron los umbrales del
+plan. En 2025-H1 dio 42 alertas en 25 semanas, el 60% en un episodio de febrero
+de 2025 en patrones de reportes de crédito. El detalle está en
+`reports/modeling/persistent_change/decision.md`.
 
 ## Orden de comparación
 

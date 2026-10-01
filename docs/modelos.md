@@ -144,7 +144,7 @@ fragmentos. E5 encontró que 8.43% supera 400 palabras.
 | Descripción del grupo | Palabras frecuentes | c-TF-IDF | Explicar cada grupo con términos representativos |
 | Volumen temporal | Media histórica | Negative Binomial con PyMC | Estimar el conteo esperado y su incertidumbre |
 | Composición temporal | Proporción histórica | Dirichlet-Multinomial con PyMC | Detectar cambios relativos entre todos los grupos |
-| Cambio persistente | Regla por exceso semanal | CUSUM o BOCPD | Detectar aumentos pequeños que continúan varias semanas |
+| Cambio persistente | Regla por exceso semanal | CUSUM sobre los excesos de M9 | Detectó 14.6 y 21.3 puntos más de crecimientos artificiales (M11) |
 
 Un modelo **calibrado** produce probabilidades interpretables. Por ejemplo, de
 100 casos con probabilidad cercana a 20%, aproximadamente 20 deberían resultar
@@ -540,6 +540,24 @@ un aumento persistente que no parece extremo en una sola semana.
 Otra opción es **Bayesian Online Change-Point Detection (BOCPD)**, que estima la
 probabilidad de que haya comenzado un comportamiento nuevo. Se comparará solo
 después de construir una referencia temporal sencilla.
+
+### Resultado de M11
+
+M11 aplicó un CUSUM por patrón al exceso de cada semana frente a NB-R4-H v3, y
+lo comparó con la regla por exceso semanal con el mismo presupuesto: 1 falsa
+alerta al mes en total si M9 estuviera bien calibrado (`models_plan.md` §24).
+Con aumentos artificiales en `fit` + calibración, CUSUM detectó dentro de 8
+semanas el 50.8% de los crecimientos de 10% semanal y el 79.7% de los de 20%,
+frente a 36.1% y 58.4% de la regla semanal. M12 usará CUSUM.
+
+Como lo esperado sale de las 4 semanas anteriores, un salto pequeño que luego se
+estabiliza se vuelve lo normal en unas 4 semanas; M11 busca sobre todo
+crecimientos que continúan. En los datos reales avisa más que el presupuesto,
+unas 2 a 4 veces al mes, porque hay más semanas extremas y rachas que las que
+supone M9. En 2025-H1 dio 42 alertas en 25 semanas, el 60% en un episodio de
+febrero de 2025 en patrones de reportes de crédito. BOCPD no se probó, porque
+CUSUM ya superó a la referencia. El detalle está en
+`reports/modeling/persistent_change/decision.md`.
 
 ## Cómo una alerta cambia el triaje
 

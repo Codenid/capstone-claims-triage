@@ -1402,6 +1402,10 @@ de calcular nada.
 Actualización del 2026-10-01: en `fit` + calibración, M11 eligió CUSUM con los
 umbrales del plan (§24). La siguiente acción es su reporte único de validación.
 
+Actualización del 2026-10-01: el reporte único de validación de M11 dio 42
+alertas en 25 semanas, concentradas en un episodio de febrero de 2025 (§24). La
+siguiente acción es M12.
+
 ## 21. Clasificadores T1–T4 con todo `fit`
 
 Decisiones del 2026-09-27 con aprobación del usuario:
@@ -1659,4 +1663,12 @@ $z^* = 2.53$.
   detección de los crecimientos a 27% y 53%. Por decisión del usuario del
   2026-10-01 se mantienen los umbrales del plan: el equipo debe esperar unas 2
   a 4 alertas al mes.
-- La siguiente acción es el reporte único de validación.
+
+Reporte único de validación del 2026-10-01 (SLURM 53944, MLflow
+`92db9743b24f479fae12dc96bc2c040c`), con todo congelado. Las alertas de `fit` +
+calibración coincidieron con las del diseño. En las 25 semanas de 2025-H1,
+CUSUM dio 42 alertas (7.3 al mes) y la regla semanal 36. El 60% de las de
+CUSUM cae en las 4 semanas del 2025-01-27 al 2025-02-17, y 39 de las 42 son de
+patrones de reportes de crédito: esos patrones ganaron participación de golpe.
+Fuera de ese episodio quedan unas 3.5 al mes, como en `fit`. Nada se ajustó
+después. La siguiente acción es M12.

@@ -82,7 +82,37 @@ bajaba la detección de los crecimientos a 27% y 53%.
 Por decisión del usuario del 2026-10-01 se mantienen los umbrales del plan. El
 equipo debe esperar unas 2 a 4 alertas al mes, y algunas serán cambios reales.
 
+## Reporte de validación (2025-H1)
+
+Se corrió una sola vez, después de registrar la decisión, con los umbrales y la
+regla congelados. El CUSUM siguió desde su estado al cierre de calibración.
+
+| Campo | Valor |
+|---|---|
+| Run | SLURM 53944: 29 s, 1.4 GB |
+| Reporte | `reports/modeling/persistent_change/validation_results.json` y `validation_alerts.csv` |
+| MLflow | `92db9743b24f479fae12dc96bc2c040c` |
+| Comprobaciones | Las alertas de `fit` + calibración coinciden con las del diseño; M9 se reproduce en las 4960 filas (cola con diferencia máxima 0.037) |
+
+| Periodo | Semanas | CUSUM | Regla semanal |
+|---|---:|---:|---:|
+| Validación | 25 | 42 (7.3 al mes) | 36 (6.3 al mes) |
+
+Las alertas se concentran en un episodio:
+
+- 25 de las 42 alertas de CUSUM (60%) caen en las 4 semanas del 2025-01-27 al
+  2025-02-17; solo la semana del 2025-02-03 tiene 10.
+- 39 de las 42 son de patrones cuyo producto principal es reportes de crédito.
+- Fuera de esas 4 semanas quedan 17 alertas en 21 semanas, unas 3.5 al mes,
+  parecido a `fit`.
+
+Como lo esperado de M9 parte del total semanal, estas alertas indican que los
+patrones de reportes de crédito ganaron participación en esas semanas. Es
+coherente con la confirmación final, donde B2-R4 falló en semanas con cambios
+grandes de composición. Nada se ajustó después de ver este reporte.
+
 ## Siguiente paso
 
-Correr una sola vez el reporte de validación (2025-H1) con todo congelado:
-`sbatch scripts/hpc/m11_persistent_change.slurm --validation`.
+M12 usa CUSUM con estos umbrales para las alertas de patrones emergentes. Las
+alertas de un mismo episodio conviene mostrarlas juntas para que el equipo las
+revise de una vez.
