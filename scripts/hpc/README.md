@@ -420,6 +420,20 @@ uv run --no-sync dvc add artifacts/models/weekly_composition
 uv run --no-sync dvc push artifacts/models/weekly_composition.dvc
 ```
 
+La confirmación final en validación (`models_plan.md` §22) se ejecuta una sola
+vez. Antes se ensaya sobre calibración, donde debe reproducir los resultados ya
+publicados sin guardar nada:
+
+```bash
+sbatch scripts/hpc/final_confirmation.slurm --rehearsal
+sbatch scripts/hpc/final_confirmation.slurm
+```
+
+El segundo comando abre validación, escribe
+`reports/modeling/final_confirmation.json` y el registro
+`reports/modeling/runs/final_confirmation/run.json`. Se niega a correr si el
+reporte ya existe.
+
 Verificar acceso a la A100:
 
 ```bash

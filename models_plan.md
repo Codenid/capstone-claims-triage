@@ -1488,3 +1488,10 @@ Reglas aprobadas por el usuario el 2026-09-30, antes de abrir validación:
   reportan, pero no deciden.
 - Después de la confirmación se decide si los modelos se reentrenan con `fit` +
   calibración para producción, y se continúa con M11.
+
+Implementación: `src/evaluation/final_confirmation.py`, con
+`scripts/hpc/final_confirmation.slurm`. Primero se ejecuta con `--rehearsal`:
+corre el mismo código sobre calibración, debe reproducir los resultados
+publicados de M5B, M9 y M10, y no guarda nada. Solo después, y con aprobación
+del usuario, se ejecuta sin esa opción; el script se niega a correr si el
+reporte de validación ya existe.
