@@ -1569,6 +1569,15 @@ Decisión del usuario del 2026-10-01, con información del stakeholder:
   del patrón y la esperada por DM-R4, con su intervalo predictivo de 95%. Para
   un patrón, DM-R4 espera lo mismo que M9 ($N_t r_{c,t}$) y solo cambia la
   varianza; su aporte es la vista conjunta de la composición.
+- **Indicador de nivel, sin alertas** (decisión del usuario del 2026-10-01):
+  para que se vean los saltos que se quedan, que M11 absorbe en unas 4 semanas,
+  M12 muestra para cada patrón
+  $\Delta_{c,t} = \bar s_{c,[t-3,t]} / \bar s_{c,[t-16,t-13]} - 1$, la
+  participación de las últimas 4 semanas frente a la de las mismas 4 semanas 13
+  semanas antes, junto con su percentil en la historia del patrón en `fit`. Se
+  muestra como gráfico: $\Delta$ en el tiempo, la banda p5–p95 de `fit` y el
+  valor actual. El porcentaje solo no basta: en `fit`, el patrón mediano se
+  mueve entre −55% y +198% en 3 meses.
 
 ## 24. M11 — Cambios persistentes
 
