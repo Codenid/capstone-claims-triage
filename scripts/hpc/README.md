@@ -449,6 +449,19 @@ Los resultados quedan en `reports/modeling/persistent_change/` y los registros
 en `reports/modeling/runs/persistent_change_<split>/run.json`. Ninguno de los
 dos comandos sobrescribe resultados existentes.
 
+La demo de M12 (`models_plan.md` §25) necesita los artefactos de M6 (índice
+FAISS) y de M8 (patrones). Desde el nodo de acceso, que tiene internet:
+
+```bash
+uv run --no-sync dvc pull artifacts/models/semantic_space.dvc \
+  artifacts/models/weekly_patterns.dvc
+sbatch scripts/hpc/m12_triage_demo.slurm
+```
+
+Escribe el panel, las fichas y su índice en `reports/modeling/triage_demo/`, y
+el registro en `reports/modeling/runs/triage_demo/run.json`. Se niega a correr
+si la demo ya existe.
+
 Verificar acceso a la A100:
 
 ```bash
