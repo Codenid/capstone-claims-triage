@@ -1406,6 +1406,9 @@ Actualización del 2026-10-01: el reporte único de validación de M11 dio 42
 alertas en 25 semanas, concentradas en un episodio de febrero de 2025 (§24). La
 siguiente acción es M12.
 
+Actualización del 2026-10-01: el diseño de M12 queda en §25, aprobado antes de
+programar.
+
 ## 21. Clasificadores T1–T4 con todo `fit`
 
 Decisiones del 2026-09-27 con aprobación del usuario:
@@ -1686,3 +1689,50 @@ CUSUM cae en las 4 semanas del 2025-01-27 al 2025-02-17, y 39 de las 42 son de
 patrones de reportes de crédito: esos patrones ganaron participación de golpe.
 Fuera de ese episodio quedan unas 3.5 al mes, como en `fit`. Nada se ajustó
 después. La siguiente acción es M12.
+
+## 25. M12 — Triaje integrado (demo)
+
+Decisiones del usuario del 2026-10-01, antes de programar:
+
+- **Objetivo:** mostrar cómo trabajan juntos los modelos congelados, como base
+  de la app web futura para quienes deciden sobre el aumento de reclamos. Nada
+  se reentrena ni se elige; 2025-H1 solo da los datos de la demo.
+- **Dos flujos, separados de la presentación:** `ficha(reclamo)` es lo que ve
+  el agente para un reclamo; `panel(semana)` es lo que ve quien decide, para
+  los 40 patrones al cierre de una semana. Ambas devuelven datos simples
+  (JSON). Por ahora se muestran en HTML estático; después las usará la app web
+  desde una API.
+- **Ficha:**
+  - T1: los 3 motivos con mayor puntaje de BGE + producto (M5B).
+  - T2 y T3: la probabilidad de TF-IDF solo texto (M5B) y si supera el umbral
+    elegido en calibración.
+  - Patrón: el grupo de M8B y sus palabras representativas. Es **novedoso** si
+    su distancia al centroide supera el percentil 99 de `fit` de su grupo.
+  - Parecidos: los 5 vecinos más cercanos por producto interno en el índice
+    FAISS de M6 (120,000 reclamos de `fit`), con su motivo, producto y
+    respuesta de la empresa.
+  - Estado del patrón: el del último cierre semanal antes de la semana del
+    reclamo.
+  - Plazo, simulado como si el reclamo se registrara el 2026-10-01: el día de
+    registro no cuenta, y la fecha límite es el 15.º día hábil siguiente, o el
+    45.º con extensión, con `configs/peru_holidays.yaml`. Si cae en un año sin
+    lista, no se calcula.
+- **Panel, por patrón y al cierre de la semana:** el CUSUM de M11 y si alarmó
+  en alguna de las 4 últimas semanas cerradas (**alerta activa**); $\Delta$ con
+  su percentil en `fit` y su gráfico; y la participación observada frente a la
+  esperada por DM-R4, con el intervalo de 95% de las predicciones guardadas de
+  M10.
+- **Acción sugerida,** según la tabla de `docs/modelos.md` y en este orden:
+  1. Reclamo novedoso: revisión manual, sin elevarlo automáticamente.
+  2. Alerta activa en un grupo dominado por una plantilla (más del 50% de sus
+     textos de `fit` son una misma plantilla): no alertar automáticamente hasta
+     validar su importancia.
+  3. Alerta activa: agrupar los casos y alertar al equipo especializado.
+  4. En otro caso: triaje normal.
+
+  "Patrón nuevo que sigue creciendo" queda para después, porque necesita
+  contar por semana los reclamos novedosos.
+- **Demo:** el panel al cierre de la semana del 2025-02-03, la del episodio de
+  reportes de crédito, y una ficha por situación entre los reclamos de la
+  semana siguiente, que usan ese cierre. En cada situación se toma el reclamo
+  con menor `Complaint ID`.
