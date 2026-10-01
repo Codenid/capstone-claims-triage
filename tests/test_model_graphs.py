@@ -1,44 +1,22 @@
 import unittest
 
-import networkx as nx
+import pymc as pm
 
-from src.models.model_graphs import layered_positions, node_label
+from src.models.model_graphs import model_graph
 
 
 class ModelGraphTests(unittest.TestCase):
-    def test_inputs_sit_above_what_they_feed_and_summaries_below_their_source(self):
-        graph = nx.DiGraph()
-        graph.add_nodes_from(["log_kappa", "observed"], shape="ellipse")
-        boxes = ["kappa", "rho", "concentration", "share", "total"]
-        graph.add_nodes_from(boxes, shape="box")
-        graph.add_edges_from(
-            [
-                ("log_kappa", "kappa"),
-                ("kappa", "rho"),
-                ("kappa", "concentration"),
-                ("share", "concentration"),
-                ("concentration", "observed"),
-                ("total", "observed"),
-            ]
-        )
+    def test_graph_has_the_title_and_every_variable(self):
+        with pm.Model(coords={"cluster": range(3)}) as model:
+            log_kappa = pm.Normal("log_kappa", 0, 1)
+            kappa = pm.Deterministic("kappa", pm.math.exp(log_kappa))
+            pm.Normal("observed", kappa, 1, observed=[1.0, 2.0, 3.0], dims="cluster")
 
-        rows = {node: row for node, (_, row) in layered_positions(graph).items()}
+        source = model_graph(model, "Demo model").source
 
-        self.assertEqual(rows["total"], rows["observed"] + 1)
-        self.assertEqual(rows["share"], rows["concentration"] + 1)
-        self.assertEqual(rows["rho"], rows["kappa"] - 1)
-        self.assertGreater(rows["log_kappa"], rows["kappa"])
-
-    def test_label_shows_name_distribution_and_dimensions(self):
-        attributes = {
-            "label": "observed\n~\nDirichlet_multinomial",
-            "cluster": "clusterweek (87) x cluster (40)",
-        }
-
-        self.assertEqual(
-            node_label("observed", attributes),
-            "observed\n~ Dirichlet_multinomial\nweek (87) x cluster (40)",
-        )
+        self.assertIn('label="Demo model"', source)
+        for name in ("log_kappa", "kappa", "observed", "cluster (3)"):
+            self.assertIn(name, source)
 
 
 if __name__ == "__main__":

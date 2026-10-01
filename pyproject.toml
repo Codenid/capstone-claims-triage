@@ -38,6 +38,7 @@ semantic = [
 ]
 probabilistic = [
     "arviz>=0.22,<1",
+    "graphviz>=0.20,<1",
     "jax[cpu]>=0.7,<1",
     "numpyro>=0.19,<1",
     "pymc>=5.25,<6",

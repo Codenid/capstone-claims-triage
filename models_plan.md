@@ -306,12 +306,22 @@ calibración de 40.95 o menos.
 ## 7. Especificaciones matemáticas
 
 Cada modelo PyMC tiene un diagrama de su estructura, generado a partir del
-modelo real con `python -m src.models.model_graphs` (usa `pm.model_to_networkx`,
-porque `pm.model_to_graphviz` necesita Graphviz y no está instalado). Las
-flechas van de cada variable a las que dependen de ella. En gris están los
-datos; en blanco redondeado, los parámetros que PyMC estima; en blanco
-cuadrado, los cálculos deterministas; y en azul, el dato observado. Entre
-paréntesis aparece el tamaño, por ejemplo `week (87) x cluster (40)`.
+modelo real con `pm.model_to_graphviz`:
+
+```bash
+uv run --no-sync python -m src.models.model_graphs
+```
+
+Necesita el grupo `probabilistic` y el programa Graphviz (en Windows,
+`winget install Graphviz.Graphviz`). Las flechas van de cada variable a las que
+dependen de ella:
+
+- Óvalo blanco: parámetro que PyMC estima.
+- Rectángulo blanco: cálculo determinista.
+- Rectángulo gris redondeado: dato de entrada.
+- Óvalo gris: dato observado, el que el modelo explica.
+- Caja exterior: variables con las mismas dimensiones; abajo aparece su tamaño,
+  por ejemplo `week (87) x cluster (40)`.
 
 ### 7.1 B1 PyMC — Poisson estática
 
