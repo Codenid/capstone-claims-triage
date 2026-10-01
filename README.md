@@ -595,7 +595,9 @@ de métricas en `reports/modeling/negative_binomial_metrics.csv`.
 
 Después de V1 y V2 se compararon, en calibración, modelos con participaciones
 fijas y con las participaciones de semanas anteriores. B1-R4 y B1-R13 son
-baselines deterministas que usan las 4 o 13 semanas previas:
+baselines deterministas que usan las 4 o 13 semanas previas. En los nombres,
+R4 indica esa ventana de 4 semanas y H, una dispersión por grupo; la tabla de
+nombres está en `models_plan.md` §4:
 
 <!-- markdownlint-disable MD013 -->
 

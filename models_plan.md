@@ -137,6 +137,31 @@ Antes de cualquier piloto o entrenamiento completo:
 
 ## 4. Plan autorizado de candidatos
 
+### Cómo leer los nombres
+
+Cada nombre corto junta piezas:
+
+| Pieza | Qué significa | Ejemplo |
+|---|---|---|
+| B1, B2 | Baselines: referencias simples, sin variación adicional. B1 predice cada grupo por separado (M9); B2 reparte la semana entre los 40 grupos a la vez (M10) | B1-R4, B2 |
+| NB | Negative Binomial: conteo de cada grupo con más variación que una Poisson (M9) | NB-R4 |
+| DM | Dirichlet-Multinomial: reparte el total de la semana entre los 40 grupos, con variación adicional (M10) | DM-R4 |
+| V1, V2, V3 | Versión del diseño, con participaciones fijas o con tendencia lineal | NB-V3, DM-V1 |
+| R4, R13 | *Rolling*, ventana móvil: el centro de la predicción es la participación del grupo en las 4 (o 13) semanas completas anteriores | DM-R4, B1-R13 |
+| H | Jerárquico: una dispersión por grupo, con un prior común | NB-R4-H |
+| v1, v2, v3 al final | Versión de la implementación del mismo modelo | NB-R4-H v3 |
+
+Ejemplo de R4: si en las 4 semanas completas anteriores llegaron 400 reclamos y
+130 fueron del grupo B, la participación reciente de B es 130 / 400 = 32.5%. Si
+la semana nueva cierra con 120 reclamos, el centro de la predicción de B es
+120 × 32.5% = 39. El modelo suma 1 reclamo a cada grupo para evitar
+participaciones de cero (§7.9); con miles de reclamos por semana, el cambio es
+mínimo. La ventana avanza cada semana: la semana 6 usa las semanas 2 a 5.
+
+Así, **DM-R4** es una Dirichlet-Multinomial con la ventana de 4 semanas, y
+**NB-R4-H v3** es la tercera implementación de una Negative Binomial con esa
+ventana y una dispersión por grupo.
+
 | Etapa | ID | Modelo | Tendencia | Dispersión | ¿Los draws suman $N_t$? | Estado |
 |---|---|---|---|---|---|---|
 | M9 | B1 | Poisson con participaciones fijas | No | Poisson | No | Analítico como referencia; PyMC ejecutado como baseline del pipeline |
@@ -146,10 +171,10 @@ Antes de cualquier piloto o entrenamiento completo:
 | M9 | NB-V4 | Negative Binomial estática | No | Jerárquica por cluster | No; solo las medias | Descartado el 2026-09-27: con media estática no puede superar a B1-R4 |
 | M9 | NB-R4 | Negative Binomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Global | No; solo las medias | Ejecutado y rechazado; gate de `alpha` por cluster cumplido |
 | M9 | NB-R4-H | NB-R4 con `alpha` por cluster | Local, ventana móvil | Jerárquica por cluster | No; solo las medias | v3 aceptado: candidato elegido de M9 (v1: falló el gate de ESS; v2: JAX se cae) |
-| M10 | B2 | Multinomial estática | No | Sin dispersión adicional | Sí | Planificado como baseline |
-| M10 | B2-R4 | Multinomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Sin dispersión adicional | Sí | Planificado como baseline |
-| M10 | DM-V1 | Dirichlet-Multinomial estática | No | Global $\kappa$ | Sí | Planificado como referencia |
-| M10 | DM-R4 | Dirichlet-Multinomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Global $\kappa$ | Sí | Candidato principal de M10 |
+| M10 | B2 | Multinomial estática | No | Sin dispersión adicional | Sí | Baseline, calculado dentro de cada run de DM |
+| M10 | B2-R4 | Multinomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Sin dispersión adicional | Sí | Mejor baseline de M10 |
+| M10 | DM-V1 | Dirichlet-Multinomial estática | No | Global $\kappa$ | Sí | Referencia; ejecutada y rechazada por cobertura |
+| M10 | DM-R4 | Dirichlet-Multinomial con participaciones de las 4 semanas anteriores | Local, ventana móvil | Global $\kappa$ | Sí | Aceptado: modelo elegido de M10 |
 | M10 | DM-V2 | Dirichlet-Multinomial normalizada | Lineal | Global inicialmente | Sí | Descartado el 2026-09-27: la tendencia lineal no capta la deriva semanal |
 
 ### Correspondencia con implementaciones existentes
@@ -167,10 +192,10 @@ Antes de cualquier piloto o entrenamiento completo:
 | NB-R4-H v1 | `nb_rolling_4_hierarchical_v1` | Piloto: ESS bulk 58 en `log_alpha_sigma`; no se ejecutó el full |
 | NB-R4-H v2 | `nb_rolling_4_hierarchical_v2` | Centrada con `pm.ZeroSumNormal`; JAX se cae con cadenas en paralelo; no se ejecuta |
 | NB-R4-H v3 | `nb_rolling_4_hierarchical_v3` | Aceptado; candidato de M9; MLflow `ed9fa77b50c1458ea5261916da97c5c0` |
-| B2 | Propuesto: `multinomial_static_v1` | Pendiente |
-| B2-R4 | Propuesto: `multinomial_rolling_4_v1` | Pendiente |
-| DM-V1 | Propuesto: `dirichlet_multinomial_static_v1` | Pendiente |
-| DM-R4 | Propuesto: `dirichlet_multinomial_rolling_4_v1` | Pendiente |
+| B2 | `b2_static` en `src/models/weekly_composition/baselines.py` | Calculado dentro de cada run de DM; sin run propio |
+| B2-R4 | `b2_rolling_4` en `src/models/weekly_composition/baselines.py` | Calculado dentro de cada run de DM; sin run propio |
+| DM-V1 | `dirichlet_multinomial_static_v1` | Rechazado por cobertura; MLflow `55832eccec284ffdb8fd7bfeca0dda43` |
+| DM-R4 | `dirichlet_multinomial_rolling_4_v1` | Aceptado; modelo de M10; MLflow `90ac1c09ab3c4276b68f5072f6ec32f9` |
 | DM-V2 | `dirichlet_multinomial_softmax_linear_v2` | Descartado; no se implementa |
 
 ### Nota sobre B1
@@ -280,6 +305,14 @@ calibración de 40.95 o menos.
 
 ## 7. Especificaciones matemáticas
 
+Cada modelo PyMC tiene un diagrama de su estructura, generado a partir del
+modelo real con `python -m src.models.model_graphs` (usa `pm.model_to_networkx`,
+porque `pm.model_to_graphviz` necesita Graphviz y no está instalado). Las
+flechas van de cada variable a las que dependen de ella. En gris están los
+datos; en blanco redondeado, los parámetros que PyMC estima; en blanco
+cuadrado, los cálculos deterministas; y en azul, el dato observado. Entre
+paréntesis aparece el tamaño, por ejemplo `week (87) x cluster (40)`.
+
 ### 7.1 B1 PyMC — Poisson estática
 
 Implementación existente: `poisson_static_pymc_v1`.
@@ -295,6 +328,8 @@ $$
 $$
 y_{c,t} \sim \operatorname{Poisson}(\mu_{c,t})
 $$
+
+![Estructura de B1 PyMC](reports/modeling/model_graphs/poisson_static_pymc_v1.png)
 
 Propiedades:
 
@@ -360,6 +395,8 @@ $$
 $$
 y_{c,t}\sim\operatorname{NegativeBinomial}(\mu_{c,t},\alpha)
 $$
+
+![Estructura de NB-V3](reports/modeling/model_graphs/nb_static_global_v3.png)
 
 Decisiones de implementación:
 
@@ -451,6 +488,8 @@ $$
 \operatorname{DirichletMultinomial}(N_t,\boldsymbol a)
 $$
 
+![Estructura de DM-V1](reports/modeling/model_graphs/dirichlet_multinomial_static_v1.png)
+
 Propiedades:
 
 - Cada draw suma exactamente $N_t$.
@@ -516,13 +555,37 @@ y_{c,t} \sim \operatorname{NegativeBinomial}(\mu_{c,t}, \alpha), \qquad
 \log\alpha \sim \operatorname{Normal}(2.302585093, 1).
 $$
 
-B2-R4 (`multinomial_rolling_4_v1`) y DM-R4
-(`dirichlet_multinomial_rolling_4_v1`):
+![Estructura de NB-R4](reports/modeling/model_graphs/nb_rolling_4_global_v1.png)
+
+NB-R4-H v3 (`nb_rolling_4_hierarchical_v3`), el modelo elegido de M9, usa la
+misma media con una dispersión por cluster. $\mathbf B$ es una base de 40 × 39
+cuyas columnas suman cero, así que las desviaciones de los clusters suman cero:
+
+$$
+\log\alpha_c = \log\alpha_{\text{global}} + (\mathbf B\boldsymbol\delta)_c,
+\qquad
+\boldsymbol\delta \sim \operatorname{Normal}(0, \sigma),
+\qquad
+\sigma \sim \operatorname{HalfNormal}(0.75),
+$$
+
+$$
+\log\alpha_{\text{global}} \sim \operatorname{Normal}(2.302585093, 1),
+\qquad
+y_{c,t} \sim \operatorname{NegativeBinomial}(N_t r_{c,t}, \alpha_c).
+$$
+
+![Estructura de NB-R4-H v3](reports/modeling/model_graphs/nb_rolling_4_hierarchical_v3.png)
+
+B2-R4 (`b2_rolling_4`, sin parámetros) y DM-R4
+(`dirichlet_multinomial_rolling_4_v1`), el modelo elegido de M10:
 
 $$
 \mathbf y_t \sim \operatorname{Multinomial}(N_t, \mathbf r_t), \qquad
 \mathbf y_t \sim \operatorname{DirichletMultinomial}(N_t, \kappa \mathbf r_t).
 $$
+
+![Estructura de DM-R4](reports/modeling/model_graphs/dirichlet_multinomial_rolling_4_v1.png)
 
 Reglas:
 
