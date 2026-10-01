@@ -1,0 +1,289 @@
+{
+  "acceptance": {
+    "accepted": false,
+    "checks": {
+      "coverage_80": false,
+      "coverage_95": false,
+      "divergences": true,
+      "ess_bulk": true,
+      "ess_tail": false,
+      "log_score_bootstrap": true,
+      "log_score_gain": true,
+      "rhat": false
+    }
+  },
+  "candidate_role": "reference",
+  "candidate_status": "pilot_only",
+  "comparison": {
+    "best_baseline": "b2_rolling_4",
+    "bootstrap_draws": 2000,
+    "candidate": "model",
+    "difference": {
+      "estimate": 214.78571024682458,
+      "p025": 166.50366985924126,
+      "p50": 214.70785129577706,
+      "p975": 263.0935331151237
+    },
+    "log_score": {
+      "b2_rolling_4": -460.93093969731916,
+      "b2_static": -1770.2351683705176,
+      "model": -246.14522945049455
+    },
+    "weeks": 12
+  },
+  "config_sha256": "f9a7315106ee27e860e4fa072a272cc217ff4a9bfde93ca7f6f2abb6782e9368",
+  "diagnostics": {
+    "bfmi_min": 0.8524996155673963,
+    "divergences": 0,
+    "ess_bulk_min": 481.79807323601773,
+    "ess_tail_min": 236.4760410115944,
+    "rhat_max": 1.032423507681964,
+    "tree_depth_limit_hits": 0,
+    "tree_depth_max": 5
+  },
+  "draw_sums_match_weekly_total": true,
+  "evaluated_splits": [
+    "fit",
+    "calibration"
+  ],
+  "fit_only_training": true,
+  "formula": "share ~ Dirichlet(share_concentration); counts[t] ~ DirichletMultinomial(weekly_total[t], kappa * share); log_kappa ~ Normal(log_kappa_mean, log_kappa_sigma); kappa = exp(log_kappa); rho = 1 / (kappa + 1)",
+  "metrics": {
+    "calibration": {
+      "b2_rolling_4": {
+        "coverage_50": 0.175,
+        "coverage_80": 0.28541666666666665,
+        "coverage_95": 0.41458333333333336,
+        "impossible_probability": 0.0,
+        "log_score": -460.93093969731916,
+        "mae": 55.73125,
+        "relative_bias": -0.0003820581753460655,
+        "rmse": 94.14758471853291,
+        "total_variation": 0.06293930053207535,
+        "upper_95_excess_fraction": 0.24166666666666667,
+        "wape": 0.12463949083759267,
+        "width_50": 22.5015625,
+        "width_80": 42.66875,
+        "width_95": 65.05515625,
+        "wis": 43.435937127976196
+      },
+      "b2_static": {
+        "coverage_50": 0.0375,
+        "coverage_80": 0.09375,
+        "coverage_95": 0.1625,
+        "impossible_probability": 0.0,
+        "log_score": -1770.2351683705176,
+        "mae": 154.16145833333334,
+        "relative_bias": -0.0004263210127337194,
+        "rmse": 275.74811970498246,
+        "total_variation": 0.17226115353106164,
+        "upper_95_excess_fraction": 0.30625,
+        "wape": 0.3447725589045181,
+        "width_50": 23.184375,
+        "width_80": 43.84208333333333,
+        "width_95": 67.01432291666667,
+        "wis": 139.22658742559526
+      },
+      "model": {
+        "coverage_50": 0.3875,
+        "coverage_80": 0.6666666666666666,
+        "coverage_95": 0.875,
+        "impossible_probability": 0.0,
+        "log_score": -246.14522945049455,
+        "mae": 168.50208333333333,
+        "relative_bias": -0.04255755333671905,
+        "rmse": 289.20718856326283,
+        "total_variation": 0.19129295060177798,
+        "upper_95_excess_fraction": 0.0875,
+        "wape": 0.37684447902640394,
+        "width_50": 171.67239583333333,
+        "width_80": 328.349375,
+        "width_95": 510.8784374999998,
+        "wis": 96.347484375
+      }
+    },
+    "fit": {
+      "b2_rolling_4": {
+        "coverage_50": 0.18362068965517242,
+        "coverage_80": 0.32155172413793104,
+        "coverage_95": 0.4732758620689655,
+        "impossible_probability": 0.0,
+        "log_score": -416.7574753349704,
+        "mae": 39.573132183908044,
+        "relative_bias": -0.0005152642785132363,
+        "rmse": 64.20964618959603,
+        "total_variation": 0.06778011562272729,
+        "upper_95_excess_fraction": 0.2649425287356322,
+        "wape": 0.1340120160213618,
+        "width_50": 17.95603448275862,
+        "width_80": 34.030287356321836,
+        "width_95": 51.7199856321839,
+        "wis": 29.941781917077176
+      },
+      "b2_static": {
+        "coverage_50": 0.08275862068965517,
+        "coverage_80": 0.17155172413793104,
+        "coverage_95": 0.2681034482758621,
+        "impossible_probability": 0.0,
+        "log_score": -810.3419114548399,
+        "mae": 67.44454022988506,
+        "relative_bias": -0.0005546754272947019,
+        "rmse": 108.51736446672761,
+        "total_variation": 0.11478825794115795,
+        "upper_95_excess_fraction": 0.2959770114942529,
+        "wape": 0.22839685177904845,
+        "width_50": 18.6125,
+        "width_80": 35.328304597701155,
+        "width_95": 53.777356321839065,
+        "wis": 56.20691954022989
+      },
+      "model": {
+        "coverage_50": 0.542816091954023,
+        "coverage_80": 0.8293103448275863,
+        "coverage_95": 0.9557471264367816,
+        "impossible_probability": 0.0,
+        "log_score": -213.4820823201398,
+        "mae": 68.7433908045977,
+        "relative_bias": -0.04263021248934439,
+        "rmse": 116.49364407209264,
+        "total_variation": 0.11327464951059169,
+        "upper_95_excess_fraction": 0.027298850574712645,
+        "wape": 0.23279533060601695,
+        "width_50": 113.43010057471264,
+        "width_80": 217.82988505747133,
+        "width_95": 337.5581106321838,
+        "wis": 37.781817990558295
+      }
+    }
+  },
+  "model_id": "dirichlet_multinomial_static_v1",
+  "model_spec": {
+    "cluster_interpretation": "operational partition, not natural categories",
+    "clusters": 40,
+    "concentration": "global",
+    "diagnostic_variables": [
+      "share",
+      "log_kappa"
+    ],
+    "expected_complete_weeks": {
+      "calibration": 12,
+      "fit": 91,
+      "validation": 25
+    },
+    "family": "dirichlet_multinomial",
+    "formula": "share ~ Dirichlet(share_concentration); counts[t] ~ DirichletMultinomial(weekly_total[t], kappa * share); log_kappa ~ Normal(log_kappa_mean, log_kappa_sigma); kappa = exp(log_kappa); rho = 1 / (kappa + 1)",
+    "historical_run_id": null,
+    "mean_link": "static_share",
+    "model_id": "dirichlet_multinomial_static_v1",
+    "predictive_draw_sum_constrained": true,
+    "prior_strategy": "uniform",
+    "priors": {
+      "log_kappa_mean": 4.605170186,
+      "log_kappa_sigma": 1.0,
+      "share_concentration": 1.0
+    },
+    "sampling": {
+      "backend": "numpyro",
+      "chain_method": "parallel",
+      "chains": 2,
+      "draws": 250,
+      "max_treedepth": 12,
+      "prediction_draws": 500,
+      "prior_draws": 500,
+      "target_accept": 0.9,
+      "tune": 250
+    },
+    "source_status": "native_versioned_source",
+    "summary_variables": [
+      "share",
+      "log_kappa",
+      "kappa",
+      "rho"
+    ],
+    "trace_variables": [
+      "log_kappa"
+    ],
+    "weekly_total_usage": "observed exposure; this is a conditional forecast"
+  },
+  "priors": {
+    "log_kappa_mean": 4.605170186,
+    "log_kappa_sigma": 1.0,
+    "share_concentration": 1.0
+  },
+  "rejection_reason": "none",
+  "resources": {
+    "cpu_count": 64,
+    "elapsed_seconds": 18.054166422924027,
+    "maximum_rss_gib": 0.9934616088867188
+  },
+  "run_key": "20261001T015245.009873Z-pilot-f9a73151-bc87c1f1",
+  "run_mode": "pilot",
+  "sampling": {
+    "backend": "numpyro",
+    "chain_method": "parallel",
+    "chains": 2,
+    "draws": 250,
+    "max_treedepth": 12,
+    "prediction_draws": 500,
+    "prior_draws": 500,
+    "target_accept": 0.9,
+    "tune": 250
+  },
+  "source_dvc_hash": "87be2a97daa3b169bbd65850a64c89a6.dir",
+  "source_manifest": {
+    "artifacts/models/weekly_patterns.dvc": "6345bc6b668b096eded331854d55cfc3da7d29f92741335a2cc806e3e89c670d",
+    "configs/modeling.yaml": "f8413eea0c04811d9b19daf8365f995c6cb26c506d64936db45c5759f54efb7a",
+    "configs/weekly_composition/dirichlet_multinomial_static_v1.yaml": "f9a7315106ee27e860e4fa072a272cc217ff4a9bfde93ca7f6f2abb6782e9368",
+    "configs/weekly_composition/releases.json": "c699e6d2178b7df4ec684401e66fe00e3ab7edcbd922dc87f8627ec9f7e0d8ed",
+    "pyproject.toml": "0aed04bf5949b4e7128d487d95eec5e234022fb5c23ac6a0280642646ca323fb",
+    "src/evaluation/experiment.py": "79dc06971a19f1af54f3841a6cbb66a037cfbcbd2e5a53f5d9dc6ed4b4b64821",
+    "src/models/semantic_space.py": "b21624cc95d5dd830a8d4d8948166723d4c8d53b01f21a6ee42719dc85ac22e6",
+    "src/models/weekly_composition/__init__.py": "39feb99258b002e07bf0637270777897c7eecbc486ce79e6cda429dcedf0ccd0",
+    "src/models/weekly_composition/baselines.py": "cb6921cd32af71e254e2c979af957afbad1f05a8424a5da6a703acc2a9c16a16",
+    "src/models/weekly_composition/data.py": "326d1662dbd418535172f825042ccdc81c7458b5e63e340f50c8909097e95167",
+    "src/models/weekly_composition/diagnostics.py": "69f26e40a4461d35caeb311ff97533b8fb5cd665729beaedb362de7195b59810",
+    "src/models/weekly_composition/evaluation.py": "30f56203684c519099398155b5279520bffc89072bdd1b05d995cca4971120f1",
+    "src/models/weekly_composition/models/__init__.py": "9661762f9ffa8a94cf3352e2603771d8c6aea0983d81814d252163bea60ea1c0",
+    "src/models/weekly_composition/models/dirichlet_multinomial_static_v1.py": "6064be37f0ec9dec2a80c4c179bdc4fa11d92092cc1b2a6ef692b1d8c08fc265",
+    "src/models/weekly_composition/registry.py": "ea53f0f869843fcc44033600733089676a707e09194d2ac5ca874273bfb9511f",
+    "src/models/weekly_composition/reporting.py": "f5ca072e84aebc8c5f5a7b740c57bbdfcbbbd5b062756fef77d9b71ef4edf395",
+    "src/models/weekly_composition/run.py": "672a583b95d8d912592b654aa2acc34b8d9ce630a7fc983e59738822ac014eec",
+    "src/models/weekly_composition/scores.py": "10b50a79d55c89e80be65caad36d8ebb1c3b042503bdb7f0cbb841266ee9bfc6",
+    "src/models/weekly_counts/comparison.py": "366a5a41a25a3dddd6c7688d7432f2e66b1aad55d7262d40c2f82a8b71739858",
+    "src/models/weekly_counts/contracts.py": "8c341b74e052d18e5db995ba0030d3cdb01a04525fa7cbd9c16af4166dbeb37b",
+    "src/models/weekly_counts/data.py": "aa8ba294810bcceedf4ca9b41abf719f2fc9527b05835b5a3a63bdb008f3e74e",
+    "src/models/weekly_counts/diagnostics.py": "b4d8fa03e3497c6f6dfdd507b6d65c8ac824dc6b03b4907e4c83edbfc39776ab",
+    "src/models/weekly_counts/fixed_poisson_reference.py": "37e942f6afc86a0d2eb9f1000c902dd40becb1092da4495d4f0638476911967f",
+    "src/models/weekly_counts/metrics.py": "296181938e82a085c0e748ba067399ef1ce11fcafb3aefcac7afd3d89fbb150e",
+    "src/models/weekly_counts/prediction.py": "b813b9c9dc928d020daf84a51dd46feaf02867dc07f5299a38f099cdb002b90f",
+    "src/models/weekly_counts/reporting.py": "90fd457abb8d3a59356fb04fe116ab9c82d0b1e43912f3e82c5d7c9b19db8976",
+    "src/models/weekly_counts/rolling_reference.py": "046b7b7c728ccdf29bf4e34b5e9699900cb23e473969ca325cd6abbe34b5d934",
+    "src/models/weekly_counts/run.py": "a4f5d9f8f0c7755fa3759ef75ff5de0b6bc226f5b46282ff7c65788e85d3012f",
+    "src/models/weekly_counts/sampling.py": "7a946ba428c871bfd4ea2912e18fb08e94753fb9e7ebdba5962106f47094145d",
+    "uv.lock": "5f1d477f995270c69ac7ae9054a829158c646f8ce4209bf4b757cfa19341f589"
+  },
+  "source_manifest_sha256": "bc87c1f1789ab42b9bf4caacdbf5be8ee94dda65105c0679128b5d9cbbe1ad62",
+  "source_status": "native_versioned_source",
+  "stage": "M10",
+  "validation_used_for_selection": false,
+  "versions": {
+    "arviz": "0.23.4",
+    "jax": "0.11.2",
+    "jax_device_count": "4",
+    "jax_devices": "cpu:0,cpu:1,cpu:2,cpu:3",
+    "jaxlib": "0.11.2",
+    "numpy": "2.5.2",
+    "numpyro": "0.22.0",
+    "pandas": "3.0.5",
+    "pymc": "5.28.5",
+    "python": "3.12.13",
+    "sampling_backend": "numpyro"
+  },
+  "weekly_counts_sha256": "35c5503b0b9b2a4b9e47984294683d27987b3c7824ae41de642c0a47cefd1ce1",
+  "weeks": {
+    "calibration": 12,
+    "fit": 87,
+    "fit_used_for_training": 91,
+    "validation": 25
+  }
+}
