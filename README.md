@@ -670,6 +670,11 @@ ventaja clara sobre la regla por producto. En M9, la cobertura de 95% quedó en
 88.7%, justo sobre el mínimo, así que conviene vigilarla en producción. El
 detalle está en `reports/modeling/final_confirmation.md`.
 
+Después, T4 salió del triaje: responder a tiempo depende del proceso del banco y
+no del texto del reclamo. M12 mostrará en su lugar los días hábiles que faltan
+para el plazo de respuesta, 15 desde el registro o 45 con extensión, sin contar
+feriados nacionales (`models_plan.md` §23).
+
 ## Orden de comparación
 
 ```mermaid

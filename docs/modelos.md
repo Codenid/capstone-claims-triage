@@ -137,7 +137,7 @@ fragmentos. E5 encontró que 8.43% supera 400 palabras.
 | T1 — motivo | TF-IDF + producto | BGE + producto, todo `fit` | Superó a TF-IDF + producto en 11.9% (M5B) |
 | T2 — alguna solución | Regla por producto | TF-IDF solo texto | Ni el producto ni BGE mejoraron 5% (M5B) |
 | T3 — compensación monetaria | Regla por producto | TF-IDF solo texto | El producto sumó 1.6% y BGE fue peor (M5B) |
-| T4 — no oportuna CFPB | Regla por producto | Regla por producto | TF-IDF + producto ganó en calibración, pero no se confirmó en validación |
+| T4 — no oportuna CFPB | Regla por producto | Sale del triaje | Sin señal estable; en M12 la reemplaza una alerta de 15 días hábiles |
 | Reducción y visualización | Embedding BGE | PCA y UMAP 2D | Reducir ruido y revisar visualmente el espacio semántico |
 | Vecinos similares | No aplica | FAISS | Búsqueda rápida entre millones de embeddings |
 | Grupos semánticos | HDBSCAN y CURE | MiniBatchKMeans con `k=40` | Único método que pasó separación, estabilidad, tamaño y asignación futura |
@@ -190,8 +190,13 @@ confirmación final se reporta junto a la regla por producto. El detalle está e
 
 La confirmación final en validación (2025-H1) confirmó T1, T2 y T3 frente a la
 regla por producto. T4 no se confirmó (precisión promedio 0.0781 frente a
-0.1208), así que en producción T4 usa la regla por producto. El detalle está en
-`reports/modeling/final_confirmation.md`.
+0.1208). El detalle está en `reports/modeling/final_confirmation.md`.
+
+Después, por decisión del usuario, T4 salió del triaje. Responder a tiempo
+depende del proceso del banco y no del texto del reclamo, y en el banco el
+plazo se conoce desde el registro: 15 días hábiles, o 45 con extensión, sin
+contar feriados nacionales. M12 mostrará los días hábiles que faltan en lugar
+de una predicción (`models_plan.md` §23).
 
 ## Descubrimiento de patrones
 

@@ -1518,3 +1518,21 @@ Resultado del 2026-10-01 (SLURM 53923, MLflow
 La cobertura de 95% de M9 quedó justo sobre el mínimo de 88%, así que conviene
 vigilarla en producción. La validación ya está usada: cualquier evaluación
 posterior necesita datos nuevos.
+
+## 23. Decisiones para el triaje (M12)
+
+Decisión del usuario del 2026-10-01, con información del stakeholder:
+
+- Contexto operativo: un call center registra los reclamos y los clasifica
+  según la capacitación del banco, por ejemplo fraude u otros tipos. Desde el
+  registro, el banco tiene 15 días hábiles para responder y puede pedir una
+  extensión de 30 días hábiles más.
+- **T4 sale del triaje como predicción.** No mostró una señal estable (§22) y
+  la etiqueta de CFPB no mide el plazo peruano. Sus resultados quedan
+  documentados como hallazgo.
+- **En su lugar, M12 tendrá un indicador de plazo sin modelo:** los días
+  hábiles que faltan desde el registro, sobre 15 días hábiles, o sobre 45 si se
+  pidió la extensión.
+- Día hábil: lunes a viernes que no sea feriado nacional del Perú. La lista de
+  feriados de cada año debe versionarse en el repositorio; falta definir de qué
+  fuente oficial se toma.
