@@ -1396,6 +1396,9 @@ calibración para producción; después, M11.
 Actualización del 2026-10-01: por decisión del usuario, los modelos no se
 reentrenan para producción (§22). La siguiente acción es M11.
 
+Actualización del 2026-10-01: las reglas de M11 quedan en §24, aprobadas antes
+de calcular nada.
+
 ## 21. Clasificadores T1–T4 con todo `fit`
 
 Decisiones del 2026-09-27 con aprobación del usuario:
@@ -1554,3 +1557,75 @@ Decisión del usuario del 2026-10-01, con información del stakeholder:
   regionales. Según gob.pe, los días no laborables solo se aplican al sector
   privado si hay acuerdo con el empleador. Conviene confirmarlo con el
   stakeholder.
+
+## 24. M11 — Cambios persistentes
+
+Reglas aprobadas por el usuario el 2026-10-01, antes de calcular nada:
+
+- **Objetivo:** avisar cuando un patrón de M8 recibe más reclamos de lo esperado
+  durante varias semanas. Basta con detectar crecimientos sostenidos y saltos
+  grandes. Un salto pequeño que luego se estabiliza se vuelve lo normal en unas
+  4 semanas, porque lo esperado sale de las 4 semanas anteriores.
+- **Lo esperado:** NB-R4-H v3 (M9) congelado, sin reentrenar, con su media
+  (total semanal × participación R4) y las mismas 2000 muestras del posterior
+  que usó su predicción (semilla 42). M10 no entra: tiene la misma media, y M9
+  tiene la dispersión propia de cada patrón que necesita un CUSUM por patrón.
+- **Exceso de cada semana:** para el patrón $c$ en la semana $t$ se calcula el
+  PIT medio $u$ del conteo observado bajo la predictiva de M9 y su puntaje
+  normal $z$:
+
+$$
+u_{c,t} = \frac{1}{S}\sum_{s=1}^{S}\left[F_s(y_{c,t}-1) + \tfrac{1}{2}f_s(y_{c,t})\right],
+\qquad z_{c,t} = \Phi^{-1}(u_{c,t}),
+$$
+
+donde $F_s$ y $f_s$ son la distribución acumulada y la probabilidad de la
+Negative Binomial de M9 con la muestra $s$ del posterior. $u$ se recorta a
+$[10^{-6}, 1 - 10^{-6}]$. Si M9 está bien calibrado, $z$ se comporta como una
+normal estándar independiente cada semana.
+
+- **CUSUM hacia arriba por patrón,** con $k = 0.5$, el valor estándar para
+  detectar un aumento de 1 desviación. Avisa cuando $S_{c,t} > h$ y vuelve a 0
+  después de avisar:
+
+$$
+S_{c,t} = \max\left(0,\; S_{c,t-1} + z_{c,t} - k\right).
+$$
+
+- **Referencia:** la regla por exceso semanal avisa cuando $z_{c,t} > z^*$.
+- **Presupuesto de falsas alertas:** 1 al mes en total para los 40 patrones,
+  es decir, $12 / (52.18 \times 40) \approx 0.00575$ por patrón y semana (una
+  cada 174 semanas). Entonces $z^* = \Phi^{-1}(1 - 0.00575) \approx 2.53$, y
+  $h$ se fija por simulación con $z$ normal estándar independiente: 2000 series
+  de 5000 semanas, semilla 42. Ninguno de los dos umbrales mira datos.
+- **Prueba de detección en `fit` + calibración:** a cada patrón se le agrega un
+  aumento artificial desde cada semana en que caben 8 semanas, y se mide si
+  cada regla avisa dentro de esas 8 semanas y cuánto tarda. El aumento
+  multiplica los conteos reales del patrón (redondeados) y se suma al total
+  semanal. Las participaciones R4 de las semanas siguientes se recalculan con
+  los conteos aumentados, como haría M9. El CUSUM empieza en 0 al comenzar el
+  aumento.
+
+| Escenario | Conteo en las semanas 1, 2, 3… del aumento |
+|---|---|
+| Crecimiento 10% | real × 1.10, × 1.21, × 1.33… |
+| Crecimiento 20% | real × 1.20, × 1.44, × 1.73… |
+| Salto 50% | real × 1.5 todas las semanas |
+| Salto 100% | real × 2 todas las semanas |
+| Sin aumento | real, para medir las alertas que habría igual |
+
+- **Regla de decisión:** M12 usa CUSUM si, en los dos escenarios de
+  crecimiento, avisa dentro de 8 semanas en al menos 5 puntos porcentuales más
+  de casos que la regla semanal. Si no, usa la regla semanal, que es más
+  simple. Los saltos, la mediana de semanas hasta avisar y el escenario sin
+  aumento se reportan, pero no deciden.
+- **Alertas reales:** se listan las de cada regla en `fit` + calibración, con
+  las palabras representativas de cada patrón, para revisión humana. El CUSUM
+  corre continuo desde la quinta semana de `fit`.
+- **Validación (2025-H1):** con todo lo anterior congelado y la decisión
+  registrada, se corre una sola vez para reportar las alertas de las dos
+  reglas. El CUSUM continúa desde su estado al cierre de calibración. Nada se
+  ajusta después.
+- **Comprobación previa:** M11 debe reproducir la probabilidad de cola
+  $P(Y \ge y)$ que M9 guardó en `predictions.csv`. La diferencia máxima debe
+  ser menor que 0.06, el error esperable con 2000 muestras.
