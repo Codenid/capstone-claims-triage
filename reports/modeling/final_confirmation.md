@@ -76,5 +76,5 @@ Según las reglas de §22:
 
 ## Siguiente paso
 
-Decidir si los modelos confirmados se reentrenan con `fit` + calibración para
-producción, y continuar con M11 (CUSUM).
+Por decisión del usuario del 2026-10-01, los modelos confirmados no se
+reentrenan para producción (`models_plan.md` §22). Lo siguiente es M11 (CUSUM).

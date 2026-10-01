@@ -1393,6 +1393,9 @@ M9 y M10. T4 no se confirmó, así que en producción usa la regla por producto.
 La siguiente acción es decidir si los modelos se reentrenan con `fit` +
 calibración para producción; después, M11.
 
+Actualización del 2026-10-01: por decisión del usuario, los modelos no se
+reentrenan para producción (§22). La siguiente acción es M11.
+
 ## 21. Clasificadores T1–T4 con todo `fit`
 
 Decisiones del 2026-09-27 con aprobación del usuario:
@@ -1518,6 +1521,13 @@ Resultado del 2026-10-01 (SLURM 53923, MLflow
 La cobertura de 95% de M9 quedó justo sobre el mínimo de 88%, así que conviene
 vigilarla en producción. La validación ya está usada: cualquier evaluación
 posterior necesita datos nuevos.
+
+Decisión del usuario del 2026-10-01: los modelos confirmados no se reentrenan
+para producción y se usan tal como se confirmaron. Todo lo reportado se midió
+con ellos, no quedan datos limpios para evaluar un modelo reentrenado y, en los
+clasificadores, los umbrales se fijaron en calibración. M9 y M10 se mantienen
+al día con R4 sin reentrenar. Se puede reconsiderar cuando haya datos nuevos.
+La siguiente acción es M11.
 
 ## 23. Decisiones para el triaje (M12)
 
