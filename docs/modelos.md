@@ -137,7 +137,7 @@ fragmentos. E5 encontró que 8.43% supera 400 palabras.
 | T1 — motivo | TF-IDF + producto | BGE + producto, todo `fit` | Superó a TF-IDF + producto en 11.9% (M5B) |
 | T2 — alguna solución | Regla por producto | TF-IDF solo texto | Ni el producto ni BGE mejoraron 5% (M5B) |
 | T3 — compensación monetaria | Regla por producto | TF-IDF solo texto | El producto sumó 1.6% y BGE fue peor (M5B) |
-| T4 — no oportuna CFPB | Regla por producto | TF-IDF + producto | Ganó en calibración; su validación no es independiente (M5B) |
+| T4 — no oportuna CFPB | Regla por producto | Regla por producto | TF-IDF + producto ganó en calibración, pero no se confirmó en validación |
 | Reducción y visualización | Embedding BGE | PCA y UMAP 2D | Reducir ruido y revisar visualmente el espacio semántico |
 | Vecinos similares | No aplica | FAISS | Búsqueda rápida entre millones de embeddings |
 | Grupos semánticos | HDBSCAN y CURE | MiniBatchKMeans con `k=40` | Único método que pasó separación, estabilidad, tamaño y asignación futura |
@@ -187,6 +187,11 @@ la regla por producto. Por decisión del usuario, se mantiene la elección de la
 regla, pero su validación no cuenta como prueba independiente; en la
 confirmación final se reporta junto a la regla por producto. El detalle está en
 `reports/modeling/representation_decision.md`.
+
+La confirmación final en validación (2025-H1) confirmó T1, T2 y T3 frente a la
+regla por producto. T4 no se confirmó (precisión promedio 0.0781 frente a
+0.1208), así que en producción T4 usa la regla por producto. El detalle está en
+`reports/modeling/final_confirmation.md`.
 
 ## Descubrimiento de patrones
 

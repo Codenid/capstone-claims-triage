@@ -1388,6 +1388,11 @@ acción es la confirmación final única en validación (§22), en un solo run; 
 T4 se reporta también la regla por producto. Después se decide el
 reentrenamiento para producción y se continúa con M11.
 
+Actualización del 2026-10-01: la confirmación final (§22) confirmó T1, T2, T3,
+M9 y M10. T4 no se confirmó, así que en producción usa la regla por producto.
+La siguiente acción es decidir si los modelos se reentrenan con `fit` +
+calibración para producción; después, M11.
+
 ## 21. Clasificadores T1–T4 con todo `fit`
 
 Decisiones del 2026-09-27 con aprobación del usuario:
@@ -1495,3 +1500,21 @@ corre el mismo código sobre calibración, debe reproducir los resultados
 publicados de M5B, M9 y M10, y no guarda nada. Solo después, y con aprobación
 del usuario, se ejecuta sin esa opción; el script se niega a correr si el
 reporte de validación ya existe.
+
+Resultado del 2026-10-01 (SLURM 53923, MLflow
+`8862d1ec8a9c429b8925ae48ec993616`; detalle en
+`reports/modeling/final_confirmation.md`). El ensayo en calibración (SLURM
+53921) reprodujo todos los resultados publicados antes de abrir validación:
+
+| Pieza | Diferencia frente a la referencia [IC 95%] | Resultado |
+|---|---|---|
+| T1 — Macro-F1 | +0.158 [+0.156, +0.163] | Confirmado |
+| T2 — precisión promedio | +0.120 [+0.104, +0.138] | Confirmado |
+| T3 — precisión promedio | +0.142 [+0.116, +0.176] | Confirmado |
+| T4 — precisión promedio | −0.043 [−0.073, −0.019] | No confirmado: en producción se usa la regla por producto |
+| M9 — WIS | −30.6 [−49.9, −17.1]; cobertura 76.7% y 88.7% | Confirmado |
+| M10 — log score conjunto | +3086 [+556, +7675]; cobertura 83.4% y 91.7% | Confirmado |
+
+La cobertura de 95% de M9 quedó justo sobre el mínimo de 88%, así que conviene
+vigilarla en producción. La validación ya está usada: cualquier evaluación
+posterior necesita datos nuevos.

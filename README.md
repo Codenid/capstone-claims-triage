@@ -645,6 +645,31 @@ cobertura es estable en grupos pequeños, medianos y grandes. Por eso no hizo
 falta la versión logística-normal con una volatilidad por grupo. Las decisiones
 están en `reports/modeling/weekly_composition/<modelo>/decision.md`.
 
+## Confirmación final en validación
+
+Con todos los modelos congelados, la validación (2025-H1) se usó una sola vez,
+con reglas fijadas antes de abrirla (`models_plan.md` §22): cada modelo debía
+seguir superando a su referencia con un intervalo bootstrap por semanas entero a
+su favor.
+
+<!-- markdownlint-disable MD013 -->
+
+| Pieza | Modelo | Referencia | Resultado |
+| --- | ---: | ---: | --- |
+| T1 — Macro-F1, BGE + producto | 0.2267 | 0.0684 | Confirmado |
+| T2 — precisión promedio, TF-IDF texto | 0.5704 | 0.4509 | Confirmado |
+| T3 — precisión promedio, TF-IDF texto | 0.2695 | 0.1272 | Confirmado |
+| T4 — precisión promedio, TF-IDF + producto | 0.0781 | 0.1208 | No confirmado: se usa la regla por producto |
+| M9 — WIS, NB-R4-H v3 frente a B1-R4 | 133.6 | 164.2 | Confirmado |
+| M10 — log score conjunto, DM-R4 frente a B2-R4 | −251.7 | −3337.9 | Confirmado |
+
+<!-- markdownlint-enable MD013 -->
+
+Los clasificadores bajan algo respecto de calibración, pero mantienen una
+ventaja clara sobre la regla por producto. En M9, la cobertura de 95% quedó en
+88.7%, justo sobre el mínimo, así que conviene vigilarla en producción. El
+detalle está en `reports/modeling/final_confirmation.md`.
+
 ## Orden de comparación
 
 ```mermaid
