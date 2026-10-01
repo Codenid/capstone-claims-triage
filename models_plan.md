@@ -1399,6 +1399,9 @@ reentrenan para producción (§22). La siguiente acción es M11.
 Actualización del 2026-10-01: las reglas de M11 quedan en §24, aprobadas antes
 de calcular nada.
 
+Actualización del 2026-10-01: en `fit` + calibración, M11 eligió CUSUM con los
+umbrales del plan (§24). La siguiente acción es su reporte único de validación.
+
 ## 21. Clasificadores T1–T4 con todo `fit`
 
 Decisiones del 2026-09-27 con aprobación del usuario:
@@ -1629,3 +1632,31 @@ $$
 - **Comprobación previa:** M11 debe reproducir la probabilidad de cola
   $P(Y \ge y)$ que M9 guardó en `predictions.csv`. La diferencia máxima debe
   ser menor que 0.06, el error esperable con 2000 muestras.
+
+Implementación: `src/models/persistent_change.py`, con
+`scripts/hpc/m11_persistent_change.slurm`. Sin argumentos trabaja solo con
+`fit` + calibración; `--validation` hace el reporte único de 2025-H1.
+
+Resultado del diseño del 2026-10-01 (SLURM 53943, MLflow
+`9fa81bf1241144d8af9500c8f8367b0c`; detalle en
+`reports/modeling/persistent_change/decision.md`). M11 reprodujo a M9 (cola
+con diferencia máxima 0.037). Los umbrales quedaron en $h = 3.37$ y
+$z^* = 2.53$.
+
+| Escenario | CUSUM | Regla semanal |
+|---|---:|---:|
+| Crecimiento 10% semanal | 50.8% | 36.1% |
+| Crecimiento 20% semanal | 79.7% | 58.4% |
+| Salto 50% | 41.1% | 36.7% |
+| Salto 100% | 61.3% | 56.7% |
+| Sin aumento | 11.5% | 10.3% |
+
+- **Decisión según la regla:** M12 usa CUSUM, que detecta 14.6 y 21.3 puntos
+  más en los dos crecimientos.
+- **Alertas reales por encima del presupuesto:** CUSUM dio 3.8 al mes en
+  `fit` y 2.2 en calibración. M9 tiene más semanas extremas y más rachas que
+  las que supone. Ajustar el umbral a cerca de 1 alerta real al mes bajaba la
+  detección de los crecimientos a 27% y 53%. Por decisión del usuario del
+  2026-10-01 se mantienen los umbrales del plan: el equipo debe esperar unas 2
+  a 4 alertas al mes.
+- La siguiente acción es el reporte único de validación.
