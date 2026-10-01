@@ -639,6 +639,10 @@ La aplicación puede mostrar:
 - explicación de la alerta;
 - decisión y comentario del agente humano.
 
+M12 ya muestra estas piezas como demo estática, con una ficha por reclamo y un
+panel semanal, en `reports/modeling/triage_demo/`. La app web usará las mismas
+funciones de `src/triage/`, que devuelven JSON (`models_plan.md` §25).
+
 Después del triaje, un agente construido con LangGraph podría redactar una
 respuesta sugerida usando información aprobada. Esa respuesta siempre deberá
 ser revisada por una persona antes de enviarse.

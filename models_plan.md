@@ -1409,6 +1409,9 @@ siguiente acción es M12.
 Actualización del 2026-10-01: el diseño de M12 queda en §25, aprobado antes de
 programar.
 
+Actualización del 2026-10-01: la demo de M12 está en
+`reports/modeling/triage_demo/` (§25). La siguiente etapa es la app web.
+
 ## 21. Clasificadores T1–T4 con todo `fit`
 
 Decisiones del 2026-09-27 con aprobación del usuario:
@@ -1736,3 +1739,24 @@ Decisiones del usuario del 2026-10-01, antes de programar:
   reportes de crédito, y una ficha por situación entre los reclamos de la
   semana siguiente, que usan ese cierre. En cada situación se toma el reclamo
   con menor `Complaint ID`.
+
+Implementación: `src/triage/` (`deadline`, `actions`, `patterns`,
+`complaints`, `render` y `demo`), con `scripts/hpc/m12_triage_demo.slurm`.
+
+Resultado del 2026-10-01 (SLURM 53958, MLflow
+`9a65eabc002549e1a613ad5dc449a1a2`). Las páginas están en
+`reports/modeling/triage_demo/`, y se empieza por `index.html`:
+
+- El panel al cierre de la semana del 2025-02-03 tiene 11 patrones con alerta
+  activa, todos de reportes de crédito.
+- Entre los reclamos de la semana siguiente hubo fichas para alerta, normal y
+  novedoso. La alerta en un grupo dominado por una plantilla no ocurrió:
+  ninguno de los 5 grupos dominados tenía una alerta activa.
+- En varios patrones con alerta, el nivel frente a hace 3 meses es negativo;
+  por ejemplo, el patrón 3 está en −30% con 2,487 reclamos frente a 1,129
+  esperados. En octubre de 2024 esos patrones estaban en su pico. CUSUM mide el
+  cambio frente a las últimas 4 semanas y el nivel lo mide frente a hace 3
+  meses, así que las dos señales se complementan.
+- La primera corrida (SLURM 53957) falló antes de escribir nada, porque el
+  cargador de reclamos descarta la fecha de recepción. Se corrigió tomando las
+  fechas del manifiesto de M8A.

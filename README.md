@@ -96,8 +96,8 @@ conjunto completo de reclamos.
   exceso de cada semana frente a NB-R4-H v3 detectó más crecimientos
   artificiales que la regla por exceso semanal, con el mismo presupuesto de
   falsas alertas.
-- [ ] **M12 — Integrar el triaje:** combinar predicciones, vecinos y alertas para
-  revisión humana.
+- [x] **M12 — Integrar el triaje:** una ficha por reclamo y un panel semanal de
+  los 40 patrones, con los modelos congelados, como base de la app web.
 
 ## Plan semántico M6–M8
 
@@ -709,6 +709,25 @@ de 2025 en patrones de reportes de crédito. El detalle está en
 DM-R4 (M10) no genera alertas: para cada patrón espera lo mismo que M9. En M12
 dará el contexto de cada alerta, con la participación observada frente a la
 esperada y su intervalo de 95% (`models_plan.md` §23).
+
+## Demo de triaje M12
+
+M12 junta los modelos congelados en dos vistas, como base de la app web
+(`models_plan.md` §25):
+
+- **Ficha de un reclamo, para el agente:** motivo probable (T1), probabilidad
+  de alguna solución (T2) y de compensación monetaria (T3), su patrón y si es
+  novedoso, los 5 reclamos parecidos según FAISS, el estado del patrón en la
+  última semana cerrada, el plazo en días hábiles y la acción sugerida.
+- **Panel semanal, para quien decide:** los 40 patrones con su CUSUM, su
+  alerta, su nivel frente a hace 3 meses y su participación esperada por DM-R4.
+
+La lógica devuelve JSON y el HTML solo lo muestra, para que la app web use las
+mismas funciones de `src/triage/`. La demo se abre desde
+`reports/modeling/triage_demo/index.html`. Muestra el panel al cierre de la
+semana del 2025-02-03, con 11 patrones con alerta, y fichas de reclamos de la
+semana siguiente. El plazo se simula como si el reclamo se registrara el
+2026-10-01.
 
 ## Orden de comparación
 
