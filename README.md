@@ -88,8 +88,10 @@ conjunto completo de reclamos.
   con las participaciones de las 4 semanas anteriores y una dispersión por
   cluster, superó al mejor baseline. La validación queda para la confirmación
   final.
-- [ ] **M10 — Modelar composición con PyMC:** usar Dirichlet-Multinomial para
-  comprobar cambios relativos entre patrones.
+- [x] **M10 — Modelar composición con PyMC:** DM-R4, una Dirichlet-Multinomial
+  con las participaciones de las 4 semanas anteriores y una concentración
+  global, superó al mejor baseline. La validación queda para la confirmación
+  final.
 - [ ] **M11 — Detectar cambios persistentes:** calibrar CUSUM sobre las
   diferencias entre lo observado y lo esperado.
 - [ ] **M12 — Integrar el triaje:** combinar predicciones, vecinos y alertas para
@@ -616,6 +618,30 @@ semanal que confirma la mejora, y no empeora de forma significativa el WAPE.
 La regla de promoción y cada decisión están en `models_plan.md` y en
 `reports/modeling/weekly_counts/<modelo>/decision.md`. La validación no se abrió
 para estos modelos; se usará una sola vez en la confirmación final.
+
+## Resultados de composición semanal M10
+
+M9 mira cada grupo por separado. M10 mira los 40 juntos: predice cómo se reparte
+cada semana entre los grupos, de modo que si uno sube, otros tienen que bajar.
+La métrica principal es el log score conjunto, que mide qué tan probable era la
+composición observada completa (mayor es mejor). En calibración:
+
+<!-- markdownlint-disable MD013 -->
+
+| Modelo | Log score por semana | Cobertura 80% y 95% | Decisión |
+| --- | ---: | ---: | --- |
+| B2, Multinomial con mezcla fija | −1770.2 | 9.4% y 16.7% | Baseline |
+| B2-R4, Multinomial con las 4 semanas anteriores | −460.9 | 28.5% y 41.3% | Mejor baseline |
+| DM-V1, Dirichlet-Multinomial con mezcla fija | −246.0 | 66.3% y 87.1% | Referencia, rechazada por cobertura |
+| **DM-R4, Dirichlet-Multinomial con las 4 semanas anteriores** | **−210.1** | **89.2% y 95.4%** | **Aceptado** |
+
+<!-- markdownlint-enable MD013 -->
+
+DM-R4 mejora a B2-R4 en 250.8 por semana, con un bootstrap semanal que
+confirma la mejora (IC 95% [205.1, 295.8]). Una sola concentración alcanza: la
+cobertura es estable en grupos pequeños, medianos y grandes. Por eso no hizo
+falta la versión logística-normal con una volatilidad por grupo. Las decisiones
+están en `reports/modeling/weekly_composition/<modelo>/decision.md`.
 
 ## Orden de comparación
 

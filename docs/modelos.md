@@ -480,6 +480,27 @@ Pregunta principal:
 No crea los grupos. Recibe grupos ya definidos mediante embeddings y analiza
 su composición conjunta.
 
+### Resultado de M10
+
+M10 comparó, en calibración, dos Multinomiales sin dispersión adicional (B2 con
+la mezcla fija y B2-R4 con las 4 semanas anteriores) y dos Dirichlet-Multinomial
+con una concentración `kappa`. La regla de `models_plan.md` §12.3 exige mejorar
+el log score conjunto del mejor baseline, con un bootstrap semanal entero sobre
+0, y una cobertura marginal en rango.
+
+| Modelo | Log score por semana | Cobertura 80% y 95% | Decisión |
+|---|---:|---:|---|
+| B2 | −1770.2 | 9.4% y 16.7% | Baseline |
+| B2-R4 | −460.9 | 28.5% y 41.3% | Mejor baseline |
+| DM-V1, mezcla fija | −246.0 | 66.3% y 87.1% | Rechazado por cobertura |
+| **DM-R4, 4 semanas anteriores** | **−210.1** | **89.2% y 95.4%** | **Aceptado** |
+
+DM-R4 mejora a B2-R4 en 250.8 por semana (IC bootstrap 95% [205.1, 295.8]),
+con `kappa` = 826. La cobertura es estable en los grupos pequeños, medianos y
+grandes, así que una sola concentración alcanza y no hizo falta la versión
+logística-normal. El detalle está en
+`reports/modeling/weekly_composition/<modelo>/decision.md`.
+
 ### Por qué se usan juntas
 
 | Modelo | Pregunta |

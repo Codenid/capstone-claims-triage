@@ -214,6 +214,11 @@ volatilidad por cluster (§7.8), porque M9 mostró que la dispersión cambia muc
 entre clusters. No se prueban otras variantes, como una ventana aprendida en
 lugar de las 4 semanas, sin una nueva aprobación.
 
+Resultado del 2026-09-30: DM-R4 cumplió la regla de §12.3 y es el modelo de
+M10, así que la Multinomial logística-normal no se implementa. DM-V1 falló la
+cobertura. El detalle está en
+`reports/modeling/weekly_composition/<model_id>/decision.md`.
+
 ### Gates o condiciones obligatorias
 
 | Modelo | Ejecutar si | Detener o rechazar si |
@@ -1301,6 +1306,14 @@ acción es ejecutar M5B: una prueba rápida y después el run completo.
 Actualización posterior del 2026-09-30: M5B terminó y fijó T1–T4 (§21). La
 siguiente acción es M10. La validación sigue cerrada hasta la confirmación final
 única, después de congelar M10.
+
+Actualización final del 2026-09-30: M10 eligió DM-R4
+(`dirichlet_multinomial_rolling_4_v1`): mejora el log score conjunto de B2-R4
+en 250.8 por semana (IC bootstrap 95% [205.1, 295.8]) con cobertura en rango.
+Quedan congelados T1–T4 (§21), NB-R4-H v3 (M9) y DM-R4 (M10). La siguiente
+acción es la confirmación final única en validación, en un solo run; en T4 se
+reporta también la regla por producto. Después se decide el reentrenamiento
+para producción y se continúa con M11.
 
 ## 21. Clasificadores T1–T4 con todo `fit`
 
