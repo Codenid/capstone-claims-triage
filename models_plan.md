@@ -1533,6 +1533,14 @@ Decisión del usuario del 2026-10-01, con información del stakeholder:
 - **En su lugar, M12 tendrá un indicador de plazo sin modelo:** los días
   hábiles que faltan desde el registro, sobre 15 días hábiles, o sobre 45 si se
   pidió la extensión.
-- Día hábil: lunes a viernes que no sea feriado nacional del Perú. La lista de
-  feriados de cada año debe versionarse en el repositorio; falta definir de qué
-  fuente oficial se toma.
+- Día hábil: lunes a viernes que no sea feriado nacional del Perú. Por
+  decisión del usuario, la fuente oficial es <https://www.gob.pe/feriados>. La
+  lista está en `configs/peru_holidays.yaml`, con la fecha de consulta. Hoy
+  cubre 2026: 16 feriados, 13 de ellos de lunes a viernes. Cada año se agrega
+  completo cuando gob.pe lo publique, y M12 no debe calcular plazos que entren
+  en un año sin lista.
+- Con esa regla, los días no laborables del sector público, como el 2 de enero
+  y el 27 de julio de 2026, cuentan como días hábiles, igual que los feriados
+  regionales. Según gob.pe, los días no laborables solo se aplican al sector
+  privado si hay acuerdo con el empleador. Conviene confirmarlo con el
+  stakeholder.

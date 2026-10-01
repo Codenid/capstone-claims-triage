@@ -1,0 +1,24 @@
+# Feriados nacionales del Perú. M12 no los cuenta como días hábiles al calcular
+# el plazo de respuesta (models_plan.md §23). No incluye días no laborables ni
+# feriados regionales. Cada año se agrega completo cuando gob.pe lo publique.
+source:
+  - https://www.gob.pe/feriados
+  - https://www.gob.pe/feriados/historicos
+retrieved: 2026-10-01
+holidays:
+  2026-01-01: Año Nuevo
+  2026-04-02: Semana Santa
+  2026-04-03: Semana Santa
+  2026-05-01: Día del Trabajo
+  2026-06-07: Batalla de Arica y Día de la Bandera
+  2026-06-29: Día de San Pedro y San Pablo
+  2026-07-23: Día de la Fuerza Aérea del Perú
+  2026-07-28: Fiestas Patrias
+  2026-07-29: Fiestas Patrias
+  2026-08-06: Batalla de Junín
+  2026-08-30: Santa Rosa de Lima
+  2026-10-08: Combate de Angamos
+  2026-11-01: Día de Todos los Santos
+  2026-12-08: Inmaculada Concepción
+  2026-12-09: Batalla de Ayacucho
+  2026-12-25: Navidad
