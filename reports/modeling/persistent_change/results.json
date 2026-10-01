@@ -1,0 +1,134 @@
+{
+  "stage": "M11",
+  "split": "fit_calibration",
+  "rule": "models_plan.md §24",
+  "m9_model": "nb_rolling_4_hierarchical_v3",
+  "m9_run_key": "20260927T161316.494762Z-full-a3ecfab3-9105ce1f",
+  "seed": 42,
+  "settings": {
+    "cusum_k": 0.5,
+    "false_alarms_per_month": 1,
+    "simulation_series": 2000,
+    "simulation_weeks": 5000,
+    "horizon_weeks": 8,
+    "pit_tolerance": 0.06,
+    "minimum_detection_gain": 0.05,
+    "deciding_scenarios": [
+      "growth_10",
+      "growth_20"
+    ],
+    "scenarios": {
+      "growth_10": {
+        "kind": "growth",
+        "size": 0.1
+      },
+      "growth_20": {
+        "kind": "growth",
+        "size": 0.2
+      },
+      "step_50": {
+        "kind": "step",
+        "size": 0.5
+      },
+      "step_100": {
+        "kind": "step",
+        "size": 1.0
+      },
+      "none": {
+        "kind": "none",
+        "size": 0.0
+      }
+    }
+  },
+  "false_alarm_rate": 0.005749486652977413,
+  "thresholds": {
+    "cusum": 3.3682710863649845,
+    "weekly": 2.527158075861908
+  },
+  "m9_check": {
+    "rows": 3960,
+    "expected_max_difference": 1.6052581486292183e-10,
+    "upper_tail_max_difference": 0.03732340534256706
+  },
+  "real_alarms": {
+    "fit": {
+      "weeks": 87,
+      "cusum": 77,
+      "cusum_per_month": 3.848419540229885,
+      "weekly": 63,
+      "weekly_per_month": 3.148706896551724
+    },
+    "calibration": {
+      "weeks": 12,
+      "cusum": 6,
+      "cusum_per_month": 2.174107142857143,
+      "weekly": 1,
+      "weekly_per_month": 0.36235119047619047
+    }
+  },
+  "detection": {
+    "growth_10": {
+      "runs": 3680,
+      "cusum": {
+        "detected": 0.5076086956521739,
+        "median_delay": 5.0
+      },
+      "weekly": {
+        "detected": 0.3611413043478261,
+        "median_delay": 4.0
+      }
+    },
+    "growth_20": {
+      "runs": 3680,
+      "cusum": {
+        "detected": 0.7970108695652174,
+        "median_delay": 4.0
+      },
+      "weekly": {
+        "detected": 0.5836956521739131,
+        "median_delay": 3.0
+      }
+    },
+    "step_50": {
+      "runs": 3680,
+      "cusum": {
+        "detected": 0.4111413043478261,
+        "median_delay": 2.0
+      },
+      "weekly": {
+        "detected": 0.3671195652173913,
+        "median_delay": 1.0
+      }
+    },
+    "step_100": {
+      "runs": 3680,
+      "cusum": {
+        "detected": 0.6130434782608696,
+        "median_delay": 2.0
+      },
+      "weekly": {
+        "detected": 0.5671195652173913,
+        "median_delay": 1.0
+      }
+    },
+    "none": {
+      "runs": 3680,
+      "cusum": {
+        "detected": 0.11467391304347826,
+        "median_delay": 5.0
+      },
+      "weekly": {
+        "detected": 0.10271739130434783,
+        "median_delay": 4.0
+      }
+    }
+  },
+  "decision": {
+    "rule": "cusum",
+    "gains": {
+      "growth_10": 0.14646739130434783,
+      "growth_20": 0.21331521739130432
+    },
+    "minimum": 0.05
+  }
+}
