@@ -615,6 +615,34 @@ Reutilizar utilidades estables de M9 cuando sea simple, especialmente:
 No crear una abstracción general compleja únicamente para compartir unas pocas
 líneas.
 
+Implementación del 2026-09-30, más pequeña que la lista anterior porque
+reutiliza los módulos de M9 (carga con hashes, participaciones de 4 semanas,
+muestreo, diagnósticos, cobertura y registro offline):
+
+```text
+src/models/weekly_composition/
+  data.py         matriz semana x cluster y participaciones recientes
+  scores.py       log PMF Multinomial y Dirichlet-Multinomial, log score conjunto
+  baselines.py    B2 y B2-R4
+  diagnostics.py  resumen del prior predictive
+  evaluation.py   métricas por split, bootstrap y regla de §12.3
+  reporting.py    gráficos y run.json offline
+  registry.py, run.py
+  models/dirichlet_multinomial_static_v1.py      DM-V1
+  models/dirichlet_multinomial_rolling_4_v1.py   DM-R4
+```
+
+- B2 y B2-R4 se calculan dentro de cada run de DM, sin MCMC. B2 es conjugada:
+  con el prior Dirichlet(1) de NB-V3, su posterior es Dirichlet(1 + conteos de
+  `fit`) y su predictiva es Dirichlet-Multinomial, así que su log score es
+  exacto. B2-R4 no tiene parámetros. Esto reemplaza el run PyMC propio de B2 de
+  §17 y sigue §14.5: los comparadores son métricas del run del candidato.
+- Todos los modelos se evalúan en las semanas con ventana completa: `fit` desde
+  la semana 5, calibración y validación. DM-V1 se ajusta con las 91 semanas de
+  `fit`; DM-R4, con las 87 que tienen ventana.
+- Las variables del tamaño de las semanas no se guardan en `posterior.nc`: se
+  recalculan al predecir.
+
 ### 8.3 Matriz conjunta para M10
 
 `weekly_composition/data.py` debe producir:

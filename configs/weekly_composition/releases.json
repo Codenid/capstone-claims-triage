@@ -1,0 +1,16 @@
+{
+  "dirichlet_multinomial_static_v1": {
+    "model_source_sha256": "6064be37f0ec9dec2a80c4c179bdc4fa11d92092cc1b2a6ef692b1d8c08fc265",
+    "config_sha256": "f9a7315106ee27e860e4fa072a272cc217ff4a9bfde93ca7f6f2abb6782e9368",
+    "source_status": "native_versioned_source",
+    "historical_run_id": null,
+    "candidate_role": "reference"
+  },
+  "dirichlet_multinomial_rolling_4_v1": {
+    "model_source_sha256": "95cc046a2347ff6b90b174b74d4f7309f086f75195cdf48d4773b0624eb22f0c",
+    "config_sha256": "cff27014e02903341272d18ca7555a8783c1a6f01a821238b2e451092876ae69",
+    "source_status": "native_versioned_source",
+    "historical_run_id": null,
+    "candidate_role": "candidate"
+  }
+}

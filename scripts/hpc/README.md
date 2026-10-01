@@ -398,6 +398,28 @@ El comando escribe `reports/modeling/weekly_counts/b1_rolling_4_v1/<run_key>/` y
 `reports/modeling/weekly_counts/b1_rolling_13_v1/<run_key>/`, con métricas solo
 de calibración. Cada `run.json` se publica con `publish_run.py`.
 
+M10 modela la composición semanal conjunta con un runner propio,
+`src.models.weekly_composition.run`, y un script SLURM equivalente. Los
+baselines B2 y B2-R4 se calculan dentro de cada run, sin MCMC. El prior check se
+ejecuta en el nodo de acceso; el piloto y el full, con SLURM:
+
+```bash
+CLAIMS_EXECUTION_HOST=khipu PYTENSOR_FLAGS=cxx= MPLBACKEND=Agg \
+  uv run --no-sync python -m src.models.weekly_composition.run \
+  --config configs/weekly_composition/dirichlet_multinomial_rolling_4_v1.yaml \
+  --run-mode prior
+sbatch --export=ALL,MODEL_CONFIG=configs/weekly_composition/dirichlet_multinomial_rolling_4_v1.yaml,RUN_MODE=pilot \
+  scripts/hpc/m10_weekly_composition.slurm
+```
+
+Los resultados quedan en `reports/modeling/weekly_composition/<model_id>/` y
+`artifacts/models/weekly_composition/<model_id>/`. Después de un full:
+
+```bash
+uv run --no-sync dvc add artifacts/models/weekly_composition
+uv run --no-sync dvc push artifacts/models/weekly_composition.dvc
+```
+
 Verificar acceso a la A100:
 
 ```bash
