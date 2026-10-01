@@ -208,6 +208,12 @@ composición cambia de una semana a otra:
 4. M10: B2 y B2-R4 como baselines, DM-R4 como candidato y DM-V1 como
    referencia.
 
+Decisión del 2026-09-30 con aprobación del usuario: si DM-R4 no cumple la regla
+de §12.3, la siguiente versión es una Multinomial logística-normal con una
+volatilidad por cluster (§7.8), porque M9 mostró que la dispersión cambia mucho
+entre clusters. No se prueban otras variantes, como una ventana aprendida en
+lugar de las 4 semanas, sin una nueva aprobación.
+
 ### Gates o condiciones obligatorias
 
 | Modelo | Ejecutar si | Detener o rechazar si |
@@ -222,6 +228,7 @@ composición cambia de una semana a otra:
 | DM-R4 | Siempre, como candidato de M10 | No converge o no cumple la regla de M10 (§12.3) |
 | DM-V1 | B2 presenta sobredispersión o intervalos demasiado estrechos | No converge o no mejora el log score conjunto |
 | DM-V2 | Descartado el 2026-09-27 | No aplica |
+| Multinomial logística-normal | DM-R4 no cumple la regla de §12.3 | No converge o no cumple la regla de §12.3 |
 
 NB-V1 y NB-V2 no deben reentrenarse salvo una auditoría explícita de
 reproducibilidad.
