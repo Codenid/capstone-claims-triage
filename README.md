@@ -706,6 +706,10 @@ plan. En 2025-H1 dio 42 alertas en 25 semanas, el 60% en un episodio de febrero
 de 2025 en patrones de reportes de crédito. El detalle está en
 `reports/modeling/persistent_change/decision.md`.
 
+DM-R4 (M10) no genera alertas: para cada patrón espera lo mismo que M9. En M12
+dará el contexto de cada alerta, con la participación observada frente a la
+esperada y su intervalo de 95% (`models_plan.md` §23).
+
 ## Orden de comparación
 
 ```mermaid
@@ -732,11 +736,11 @@ flowchart TD
     M --> N[Negative Binomial con PyMC]
     M --> O[Dirichlet-Multinomial con PyMC]
     N --> P[CUSUM]
-    O --> P
 
     C --> Q[Recomendación de triaje]
     E --> Q
     P --> Q
+    O -->|contexto| Q
     Q --> R[Persona revisa y decide]
 ```
 

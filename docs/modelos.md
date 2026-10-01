@@ -78,12 +78,12 @@ flowchart TD
 
     K --> L[Negative Binomial: volumen esperado]
     K --> M[Dirichlet-Multinomial: composición esperada]
-    L --> N[CUSUM o detección de cambio]
-    M --> N
+    L --> N[CUSUM por patrón]
 
-    N --> O{¿Cambio anormal?}
+    N --> O{¿Cambio persistente?}
     O -->|No| P[Triaje normal]
     O -->|Sí| Q[Alerta de patrón emergente]
+    M -->|contexto: participación esperada| Q
 
     D --> R[Recomendación de triaje]
     E --> R
@@ -558,6 +558,12 @@ supone M9. En 2025-H1 dio 42 alertas en 25 semanas, el 60% en un episodio de
 febrero de 2025 en patrones de reportes de crédito. BOCPD no se probó, porque
 CUSUM ya superó a la referencia. El detalle está en
 `reports/modeling/persistent_change/decision.md`.
+
+M10 no genera alertas. Para un patrón, DM-R4 espera lo mismo que M9
+($N_t r_{c,t}$) y solo cambia la varianza, así que un CUSUM con M10 sería casi
+el mismo. Su aporte es la vista conjunta: en M12, cada alerta mostrará la
+participación observada frente a la esperada por DM-R4, con su intervalo de 95%
+(`models_plan.md` §23).
 
 ## Cómo una alerta cambia el triaje
 

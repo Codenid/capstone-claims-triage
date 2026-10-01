@@ -1564,6 +1564,11 @@ Decisión del usuario del 2026-10-01, con información del stakeholder:
   regionales. Según gob.pe, los días no laborables solo se aplican al sector
   privado si hay acuerdo con el empleador. Conviene confirmarlo con el
   stakeholder.
+- **M10 (DM-R4) como contexto, sin alertas propias** (decisión del usuario del
+  2026-10-01): para cada alerta de M11, M12 muestra la participación observada
+  del patrón y la esperada por DM-R4, con su intervalo predictivo de 95%. Para
+  un patrón, DM-R4 espera lo mismo que M9 ($N_t r_{c,t}$) y solo cambia la
+  varianza; su aporte es la vista conjunta de la composición.
 
 ## 24. M11 — Cambios persistentes
 
