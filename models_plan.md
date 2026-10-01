@@ -1384,9 +1384,9 @@ Actualización final del 2026-09-30: M10 eligió DM-R4
 (`dirichlet_multinomial_rolling_4_v1`): mejora el log score conjunto de B2-R4
 en 250.8 por semana (IC bootstrap 95% [205.1, 295.8]) con cobertura en rango.
 Quedan congelados T1–T4 (§21), NB-R4-H v3 (M9) y DM-R4 (M10). La siguiente
-acción es la confirmación final única en validación, en un solo run; en T4 se
-reporta también la regla por producto. Después se decide el reentrenamiento
-para producción y se continúa con M11.
+acción es la confirmación final única en validación (§22), en un solo run; en
+T4 se reporta también la regla por producto. Después se decide el
+reentrenamiento para producción y se continúa con M11.
 
 ## 21. Clasificadores T1–T4 con todo `fit`
 
@@ -1458,3 +1458,33 @@ métricas publicadas:
   2025-H1 (AP 0.0781 frente a 0.1208 de la regla por producto). En la
   confirmación final se reporta junto a la regla por producto y ahí se decide su
   uso en el triaje. En MLflow tiene `validation_independent=false`.
+
+## 22. Confirmación final en validación
+
+Reglas aprobadas por el usuario el 2026-09-30, antes de abrir validación:
+
+- Se evalúa una sola vez, en un solo run de MLflow, con los modelos congelados.
+  Nada se reentrena ni se ajusta después de mirar los resultados.
+- Cada modelo se compara con su referencia mediante un bootstrap pareado por
+  semanas de validación, con 2000 remuestreos y semilla 42.
+
+| Pieza | Modelo congelado | Referencia | Métrica principal | Datos |
+|---|---|---|---|---|
+| T1 | BGE + producto (M5B) | Regla por producto (M3) | Macro-F1 | 564,813 reclamos sin texto compartido |
+| T2 | TF-IDF solo texto (M5B) | Regla por producto | Precisión promedio | 563,148 |
+| T3 | TF-IDF solo texto (M5B) | Regla por producto | Precisión promedio | 563,148 |
+| T4 | TF-IDF + producto (M4) | Regla por producto | Precisión promedio | 564,813; validación no independiente (§21) |
+| M9 | NB-R4-H v3 | B1-R4 | WIS | 25 semanas completas |
+| M10 | DM-R4 | B2-R4 | Log score conjunto | 25 semanas completas |
+
+- **Confirmado:** el IC bootstrap 95% de la diferencia queda entero a favor del
+  modelo. En M9 y M10, además, la cobertura marginal de 80% debe estar en
+  [0.70, 0.90] y la de 95% en [0.88, 0.99]. No se exige la ganancia mínima de
+  5% usada en calibración.
+- **Si un modelo no se confirma:** se documenta el fallo y en producción se usa
+  su referencia. No se vuelve a elegir un modelo mirando validación.
+- Los umbrales de T2–T4 son los elegidos en calibración. Las métricas
+  secundarias (top-3, precisión, cobertura, WAPE, MAE) y la vista completa se
+  reportan, pero no deciden.
+- Después de la confirmación se decide si los modelos se reentrenan con `fit` +
+  calibración para producción, y se continúa con M11.
