@@ -4,3 +4,7 @@
 
 # Interrupted runs stay on disk for review, but are not versioned.
 .*.inprogress
+
+# M10 source snapshots copy weekly_patterns.dvc; DVC would read that copy as a
+# second tracked output. Its hash stays in each run source_manifest.json.
+artifacts/models/weekly_composition/**/source/**/*.dvc

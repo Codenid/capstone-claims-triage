@@ -1,0 +1,6 @@
+outs:
+- md5: b73cc2d94925f1cbacbb81f84c79a5ef.dir
+  size: 7834528
+  nfiles: 136
+  hash: md5
+  path: weekly_composition
