@@ -434,6 +434,21 @@ El segundo comando abre validación, escribe
 `reports/modeling/runs/final_confirmation/run.json`. Se niega a correr si el
 reporte ya existe.
 
+M11 (`models_plan.md` §24) usa el posterior de NB-R4-H v3 que dejó M9 en
+`artifacts/models/weekly_counts`. El primer comando trabaja solo con `fit` +
+calibración: fija los umbrales, prueba los aumentos artificiales y elige la
+regla. El segundo reporta una sola vez las alertas de validación y solo se
+ejecuta después de registrar esa decisión:
+
+```bash
+sbatch scripts/hpc/m11_persistent_change.slurm
+sbatch scripts/hpc/m11_persistent_change.slurm --validation
+```
+
+Los resultados quedan en `reports/modeling/persistent_change/` y los registros
+en `reports/modeling/runs/persistent_change_<split>/run.json`. Ninguno de los
+dos comandos sobrescribe resultados existentes.
+
 Verificar acceso a la A100:
 
 ```bash

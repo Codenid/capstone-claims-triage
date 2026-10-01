@@ -42,6 +42,7 @@ paths:
   representation_report: reports/modeling/representation_results.json
   representation_artifacts: artifacts/models/representation_comparison
   representation_staging: artifacts/models/.representation_comparison.inprogress
+  persistent_change_reports: reports/modeling/persistent_change
 
   offline_runs: reports/modeling/runs
 
@@ -169,6 +170,24 @@ representations:
   source_dvc_hash: 3ff36a299da1f2e19a00a4bce49f18ad.dir
   minimum_relative_gain: 0.05
   bootstrap_draws: 2000
+
+# M11: CUSUM against the weekly excess rule, approved on 2026-10-01
+# (models_plan.md §24).
+persistent_change:
+  cusum_k: 0.5
+  false_alarms_per_month: 1
+  simulation_series: 2000
+  simulation_weeks: 5000
+  horizon_weeks: 8
+  pit_tolerance: 0.06
+  minimum_detection_gain: 0.05
+  deciding_scenarios: [growth_10, growth_20]
+  scenarios:
+    growth_10: {kind: growth, size: 0.10}
+    growth_20: {kind: growth, size: 0.20}
+    step_50: {kind: step, size: 0.50}
+    step_100: {kind: step, size: 1.00}
+    none: {kind: none, size: 0.0}
 
 clustering:
   source_dvc_hash: 08662a82971a71666b06c9ccf8120d7f.dir
