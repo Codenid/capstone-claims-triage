@@ -1,13 +1,20 @@
 from datetime import date
+import json
 import unittest
 
 import numpy as np
 import pandas as pd
 
+from src.data.normalize_text import NORMALIZED_COLUMN
 from src.models.semantic_space import ID_COLUMN
 from src.triage import render
 from src.triage.actions import ACTIONS, situation
-from src.triage.complaints import similar_complaints, top_issues
+from src.triage.complaints import (
+    complaint_card,
+    similar_complaints,
+    top_issues,
+    with_dates,
+)
 from src.triage.deadline import business_days_left, due_date, load_holidays
 from src.triage.patterns import (
     active_alerts,
@@ -26,12 +33,14 @@ class DeadlineTests(unittest.TestCase):
 
     def test_registration_day_does_not_count_and_holidays_are_skipped(self):
         # Thursday 2026-10-08 is a national holiday.
-        self.assertEqual(due_date(date(2026, 10, 1), 15, self.holidays), date(2026, 10, 23))
-        self.assertEqual(due_date(date(2026, 10, 1), 45, self.holidays), date(2026, 12, 4))
+        registered = date(2026, 10, 1)
+        self.assertEqual(due_date(registered, 15, self.holidays), date(2026, 10, 23))
+        self.assertEqual(due_date(registered, 45, self.holidays), date(2026, 12, 4))
 
     def test_weekend_or_holiday_registration_counts_from_next_business_day(self):
-        self.assertEqual(due_date(date(2026, 10, 3), 15, self.holidays), date(2026, 10, 26))
-        self.assertEqual(due_date(date(2026, 10, 8), 15, self.holidays), date(2026, 10, 29))
+        saturday, holiday = date(2026, 10, 3), date(2026, 10, 8)
+        self.assertEqual(due_date(saturday, 15, self.holidays), date(2026, 10, 26))
+        self.assertEqual(due_date(holiday, 15, self.holidays), date(2026, 10, 29))
 
     def test_year_without_holiday_list_is_not_computed(self):
         with self.assertRaises(ValueError):
@@ -140,6 +149,37 @@ class ComplaintTests(unittest.TestCase):
         self.assertEqual(first["received"], "2024-03-04")
         self.assertIsNone(first["relief"])
         self.assertEqual((second["issue"], second["relief"]), ("Fraud", True))
+
+
+class CardDataTests(unittest.TestCase):
+    def test_dates_follow_each_row_and_missing_ones_fail(self):
+        rows = pd.DataFrame({ID_COLUMN: ["2", "1"]})
+        received = pd.to_datetime(["2025-02-10", "2025-02-11"])
+        dates = pd.Series(received, index=["1", "2"])
+        dated = with_dates(rows, dates)
+        self.assertEqual(list(dated["Date received"].dt.day), [11, 10])
+        with self.assertRaises(ValueError):
+            with_dates(pd.DataFrame({ID_COLUMN: ["3"]}), dates)
+
+    def test_card_is_plain_json(self):
+        row = pd.Series(
+            {
+                ID_COLUMN: "123",
+                "Date received": pd.Timestamp("2025-02-10"),
+                "Product canonical": "Credit reporting",
+                NORMALIZED_COLUMN: "my credit report is wrong",
+                "cluster_id": np.int64(7),
+                "distance": np.float32(1.5),
+                "novelty_threshold": np.float32(3.0),
+                "is_novel": np.bool_(False),
+            }
+        )
+        card = complaint_card(
+            row, {"t1": []}, [], {"week": "2025-02-03"}, {}, {"situation": "normal"}, 10
+        )
+        self.assertEqual(card["text"], "my credit ")
+        self.assertEqual(card["pattern"]["cluster_id"], 7)
+        json.dumps(card)
 
 
 class RenderTests(unittest.TestCase):

@@ -36,7 +36,9 @@ from src.triage.complaints import (
     complaint_card,
     neighbor_index,
     pattern_assignments,
+    received_dates,
     similar_complaints,
+    with_dates,
 )
 from src.triage.deadline import due_date, load_holidays
 from src.triage.patterns import (
@@ -155,15 +157,16 @@ def main() -> None:
     assigned = pattern_assignments(received, config, "validation")
     received = received.join(assigned.drop(columns=ID_COLUMN))
     status = history.loc[history["week"] == week]
+    embeddings_dir = PROJECT_ROOT / config["paths"]["bge_full_artifacts"]
+    manifest = embeddings_dir / "manifest.parquet"
     chosen = demo_complaints(received, status).reset_index(drop=True)
+    chosen = with_dates(chosen, received_dates(manifest, "validation"))
 
     signals = classifier_signals(chosen, config)
-    embeddings_dir = PROJECT_ROOT / config["paths"]["bge_full_artifacts"]
     embeddings = load_embeddings(embeddings_dir, {"validation": chosen})["validation"]
     index, ids = neighbor_index(config)
-    similar = similar_complaints(
-        index, ids, embeddings, frames["fit"], settings["neighbors"]
-    )
+    fit = with_dates(frames["fit"], received_dates(manifest, "fit"))
+    similar = similar_complaints(index, ids, embeddings, fit, settings["neighbors"])
     deadline = deadline_info(settings)
     by_pattern = {item["cluster_id"]: item for item in records(status)}
     cards = [

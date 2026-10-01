@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import importlib
+from pathlib import Path
 from typing import Any
 
 import joblib
@@ -47,6 +48,26 @@ def pattern_assignments(
         cluster_id=merged["cluster_id"].astype("int64"),
         novelty_threshold=thresholds[merged["cluster_id"].to_numpy(dtype=np.int64)],
     )
+
+
+def received_dates(manifest_path: Path, split: str) -> pd.Series:
+    """Received date of each complaint of a split, from M8A's manifest."""
+    manifest = pd.read_parquet(
+        manifest_path,
+        columns=[ID_COLUMN, DATE_COLUMN],
+        filters=[("split", "=", split)],
+    )
+    return pd.Series(
+        manifest[DATE_COLUMN].to_numpy(), index=manifest[ID_COLUMN].astype(str)
+    )
+
+
+def with_dates(rows: pd.DataFrame, dates: pd.Series) -> pd.DataFrame:
+    """Rows with their received date, which the source loader drops."""
+    aligned = dates.reindex(rows[ID_COLUMN].astype(str))
+    if aligned.isna().to_numpy().any():
+        raise ValueError("M12 found complaints without a received date.")
+    return rows.assign(**{DATE_COLUMN: aligned.to_numpy()})
 
 
 def top_issues(scores: np.ndarray, classes: np.ndarray) -> list[list[dict[str, Any]]]:
