@@ -449,33 +449,6 @@ Los resultados quedan en `reports/modeling/persistent_change/` y los registros
 en `reports/modeling/runs/persistent_change_<split>/run.json`. Ninguno de los
 dos comandos sobrescribe resultados existentes.
 
-La demo de M12 (`models_plan.md` §25) necesita los artefactos de M6 (índice
-FAISS) y de M8 (patrones). Desde el nodo de acceso, que tiene internet:
-
-```bash
-uv run --no-sync dvc pull artifacts/models/semantic_space.dvc \
-  artifacts/models/weekly_patterns.dvc
-sbatch scripts/hpc/m12_triage_demo.slurm
-```
-
-Escribe el panel, las fichas y su índice en `reports/modeling/triage_demo/`, y
-el registro en `reports/modeling/runs/triage_demo/run.json`. Se niega a correr
-si la demo ya existe.
-
-Las cifras del documento de decisión (`models_plan.md` §26) usan los mismos
-artefactos y el posterior de M9:
-
-```bash
-sbatch scripts/hpc/m12_brief_facts.slurm
-```
-
-Exporta los reclamos sin narrativas y el historial de patrones a
-`~/m12_brief/` (o a `BRIEF_EXPORT_DIR`), fuera del repositorio, y reescribe
-`reports/modeling/decision_brief/data/facts.json`. El cálculo es determinista:
-si el archivo cambia, revisar el `git diff` antes de hacer commit. El documento
-se genera después con Quarto, como explica
-`reports/modeling/decision_brief/README.md`.
-
 Verificar acceso a la A100:
 
 ```bash

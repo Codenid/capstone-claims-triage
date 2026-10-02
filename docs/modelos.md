@@ -78,12 +78,12 @@ flowchart TD
 
     K --> L[Negative Binomial: volumen esperado]
     K --> M[Dirichlet-Multinomial: composición esperada]
-    L --> N[CUSUM por patrón]
+    L --> N[CUSUM o detección de cambio]
+    M --> N
 
-    N --> O{¿Cambio persistente?}
+    N --> O{¿Cambio anormal?}
     O -->|No| P[Triaje normal]
     O -->|Sí| Q[Alerta de patrón emergente]
-    M -->|contexto: participación esperada| Q
 
     D --> R[Recomendación de triaje]
     E --> R
@@ -557,15 +557,9 @@ unas 2 a 4 veces al mes, porque hay más semanas extremas y rachas que las que
 supone M9. En 2025-H1 dio 42 alertas en 25 semanas, el 60% en un episodio de
 febrero de 2025 en patrones de reportes de crédito. Buena parte de ese episodio
 es el eco de una ráfaga de reclamos de transferencias del 13 de enero, que
-distorsionó la referencia de 4 semanas (`models_plan.md` §26). BOCPD no se
+distorsionó la referencia de 4 semanas (`models_plan.md` §24). BOCPD no se
 probó, porque CUSUM ya superó a la referencia. El detalle está en
 `reports/modeling/persistent_change/decision.md`.
-
-M10 no genera alertas. Para un patrón, DM-R4 espera lo mismo que M9
-($N_t r_{c,t}$) y solo cambia la varianza, así que un CUSUM con M10 sería casi
-el mismo. Su aporte es la vista conjunta: en M12, cada alerta mostrará la
-participación observada frente a la esperada por DM-R4, con su intervalo de 95%
-(`models_plan.md` §23).
 
 ## Cómo una alerta cambia el triaje
 
@@ -640,10 +634,6 @@ La aplicación puede mostrar:
 - grupo semántico y evolución semanal;
 - explicación de la alerta;
 - decisión y comentario del agente humano.
-
-M12 ya muestra estas piezas como demo estática, con una ficha por reclamo y un
-panel semanal, en `reports/modeling/triage_demo/`. La app web usará las mismas
-funciones de `src/triage/`, que devuelven JSON (`models_plan.md` §25).
 
 Después del triaje, un agente construido con LangGraph podría redactar una
 respuesta sugerida usando información aprobada. Esa respuesta siempre deberá

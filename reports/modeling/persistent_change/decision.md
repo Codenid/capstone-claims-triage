@@ -108,7 +108,7 @@ Las alertas se concentran en un episodio:
 
 Nada se ajustó después de ver este reporte.
 
-**Corrección posterior (2026-10-01, `models_plan.md` §26).** Aquí se había
+**Corrección posterior (2026-10-01, `models_plan.md` §24).** Aquí se había
 leído que los patrones de reportes de crédito ganaron participación en esas
 semanas. En buena parte es un eco. La semana del 2025-01-13, el patrón de
 cuentas bancarias, tarjetas y transferencias (patrón 8) recibió 39,844

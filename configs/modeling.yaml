@@ -43,7 +43,6 @@ paths:
   representation_artifacts: artifacts/models/representation_comparison
   representation_staging: artifacts/models/.representation_comparison.inprogress
   persistent_change_reports: reports/modeling/persistent_change
-  triage_reports: reports/modeling/triage_demo
 
   offline_runs: reports/modeling/runs
 
@@ -189,17 +188,6 @@ persistent_change:
     step_50: {kind: step, size: 0.50}
     step_100: {kind: step, size: 1.00}
     none: {kind: none, size: 0.0}
-
-# M12: triage demo approved on 2026-10-01 (models_plan.md §25).
-triage:
-  demo_week: "2025-02-03"
-  simulated_registration: "2026-10-01"
-  response_days: 15
-  extended_days: 45
-  alert_weeks: 4
-  template_threshold: 0.5
-  neighbors: 5
-  text_characters: 600
 
 clustering:
   source_dvc_hash: 08662a82971a71666b06c9ccf8120d7f.dir

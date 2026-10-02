@@ -96,8 +96,8 @@ conjunto completo de reclamos.
   exceso de cada semana frente a NB-R4-H v3 detectó más crecimientos
   artificiales que la regla por exceso semanal, con el mismo presupuesto de
   falsas alertas.
-- [x] **M12 — Integrar el triaje:** una ficha por reclamo y un panel semanal de
-  los 40 patrones, con los modelos congelados, como base de la app web.
+- [ ] **M12 — Integrar el triaje:** combinar predicciones, vecinos y alertas para
+  revisión humana.
 
 ## Plan semántico M6–M8
 
@@ -703,40 +703,8 @@ M12 usará CUSUM. En los datos reales avisa más que el presupuesto, unas 2 a 4
 veces al mes en `fit` y calibración, porque hay más semanas extremas y rachas
 que las que supone M9; por decisión del usuario se mantuvieron los umbrales del
 plan. En 2025-H1 dio 42 alertas en 25 semanas, el 60% en un episodio de febrero
-de 2025 en patrones de reportes de crédito. Buena parte de ese episodio resultó
-ser el eco de una ráfaga de reclamos de transferencias del 13 de enero
-(`models_plan.md` §26). El detalle está en
+de 2025 en patrones de reportes de crédito. El detalle está en
 `reports/modeling/persistent_change/decision.md`.
-
-DM-R4 (M10) no genera alertas: para cada patrón espera lo mismo que M9. En M12
-dará el contexto de cada alerta, con la participación observada frente a la
-esperada y su intervalo de 95% (`models_plan.md` §23).
-
-## Demo de triaje M12
-
-M12 junta los modelos congelados en dos vistas, como base de la app web
-(`models_plan.md` §25):
-
-- **Ficha de un reclamo, para el agente:** motivo probable (T1), probabilidad
-  de alguna solución (T2) y de compensación monetaria (T3), su patrón y si es
-  novedoso, los 5 reclamos parecidos según FAISS, el estado del patrón en la
-  última semana cerrada, el plazo en días hábiles y la acción sugerida.
-- **Panel semanal, para quien decide:** los 40 patrones con su CUSUM, su
-  alerta, su nivel frente a hace 3 meses y su participación esperada por DM-R4.
-
-La lógica devuelve JSON y el HTML solo lo muestra, para que la app web use las
-mismas funciones de `src/triage/`. La demo se abre desde
-`reports/modeling/triage_demo/index.html`. Muestra el panel al cierre de la
-semana del 2025-02-03, con 11 patrones con alerta, y fichas de reclamos de la
-semana siguiente. El plazo se simula como si el reclamo se registrara el
-2026-10-01.
-
-Para leer esas salidas y decidir, el documento
-`reports/modeling/decision_brief/once_alertas.html` cuenta el caso completo con
-un solo ejemplo: qué entrega cada modelo, por qué solo 2 de las 11 alertas son
-aumentos reales (las demás son una ráfaga de enero o su eco), qué decidir y
-cuánto confiar. Se genera con Quarto desde `once_alertas.qmd`, en la misma
-carpeta.
 
 ## Orden de comparación
 
@@ -764,11 +732,11 @@ flowchart TD
     M --> N[Negative Binomial con PyMC]
     M --> O[Dirichlet-Multinomial con PyMC]
     N --> P[CUSUM]
+    O --> P
 
     C --> Q[Recomendación de triaje]
     E --> Q
     P --> Q
-    O -->|contexto| Q
     Q --> R[Persona revisa y decide]
 ```
 
