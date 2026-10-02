@@ -1412,6 +1412,9 @@ programar.
 Actualización del 2026-10-01: la demo de M12 está en
 `reports/modeling/triage_demo/` (§25). La siguiente etapa es la app web.
 
+Actualización del 2026-10-01: el documento de decisión encontró que buena parte
+de las alertas de febrero de 2025 son el eco de una ráfaga de enero (§26).
+
 ## 21. Clasificadores T1–T4 con todo `fit`
 
 Decisiones del 2026-09-27 con aprobación del usuario:
@@ -1689,9 +1692,11 @@ Reporte único de validación del 2026-10-01 (SLURM 53944, MLflow
 calibración coincidieron con las del diseño. En las 25 semanas de 2025-H1,
 CUSUM dio 42 alertas (7.3 al mes) y la regla semanal 36. El 60% de las de
 CUSUM cae en las 4 semanas del 2025-01-27 al 2025-02-17, y 39 de las 42 son de
-patrones de reportes de crédito: esos patrones ganaron participación de golpe.
-Fuera de ese episodio quedan unas 3.5 al mes, como en `fit`. Nada se ajustó
-después. La siguiente acción es M12.
+patrones de reportes de crédito. Fuera de ese episodio quedan unas 3.5 al mes,
+como en `fit`. Nada se ajustó después. La siguiente acción es M12.
+Corrección posterior (§26): el episodio no es una ganancia general de
+participación de esos patrones; en buena parte es el eco de una ráfaga de
+reclamos de transferencias del 2025-01-13.
 
 ## 25. M12 — Triaje integrado (demo)
 
@@ -1748,15 +1753,63 @@ Resultado del 2026-10-01 (SLURM 53958, MLflow
 `reports/modeling/triage_demo/`, y se empieza por `index.html`:
 
 - El panel al cierre de la semana del 2025-02-03 tiene 11 patrones con alerta
-  activa, todos de reportes de crédito.
+  activa: 9 de reportes de crédito, el de cobranza (patrón 12) y el de cuentas
+  bancarias (patrón 8). Aquí decía, por error, que las 11 eran de reportes de
+  crédito.
 - Entre los reclamos de la semana siguiente hubo fichas para alerta, normal y
   novedoso. La alerta en un grupo dominado por una plantilla no ocurrió:
   ninguno de los 5 grupos dominados tenía una alerta activa.
 - En varios patrones con alerta, el nivel frente a hace 3 meses es negativo;
   por ejemplo, el patrón 3 está en −30% con 2,487 reclamos frente a 1,129
-  esperados. En octubre de 2024 esos patrones estaban en su pico. CUSUM mide el
-  cambio frente a las últimas 4 semanas y el nivel lo mide frente a hace 3
-  meses, así que las dos señales se complementan.
+  esperados. Aquí se había atribuido a un pico en octubre de 2024, y es un
+  error: la ventana reciente incluye la ráfaga del patrón 8, que tuvo el 35.6%
+  de esa ventana frente al 8.2% en octubre, y eso achica la porción de los
+  demás. Sin el patrón 8, el nivel del patrón 3 queda en −0.8% (§26).
 - La primera corrida (SLURM 53957) falló antes de escribir nada, porque el
   cargador de reclamos descarta la fecha de recepción. Se corrigió tomando las
   fechas del manifiesto de M8A.
+
+## 26. Hallazgo: el eco de una ráfaga en la referencia de 4 semanas
+
+Hallazgo del 2026-10-01, al preparar el documento de decisión
+`reports/modeling/decision_brief/once_alertas.html`. Se revisó el 2026-10-02
+con una auditoría de cifras, una revisión estadística y una prueba de lectura:
+
+- La semana del 2025-01-13 llegaron 68,406 reclamos. El patrón 8 (cuentas
+  bancarias, tarjetas y transferencias) recibió 39,844, el 58%, sobre todo
+  contra Block, Inc. y Early Warning Services.
+- M9 espera para cada patrón el total de la semana por su porción en las 4
+  semanas anteriores. En las semanas siguientes esperó para el patrón 8 cerca
+  del 35% del total, cuando llegó el 27.9%, 16.0%, 12.5% y 11.3%. Como lo
+  esperado suma el total real, a los otros 39 patrones les esperó de menos: ese
+  es el **eco**. El 2025-02-03 sonaron 10 alarmas CUSUM; en `fit` el máximo
+  había sido 5. Ese día el patrón 8 explica 6,341 de los 6,760 reclamos que
+  faltaron frente a lo esperado (94%).
+- Diagnóstico exploratorio: el mismo cálculo de M9 y M11 rehecho sin el patrón
+  8, con las 2,000 muestras de la dispersión de M9 (semilla 42), $k = 0.5$ y
+  $h = 3.368$, desde el estado del CUSUM del 2025-01-06. Con todos los patrones
+  reproduce lo esperado por M9 (error 1.8e-12) y la rareza de M11 (error menor
+  que 1e-14). Sin el eco suenan 2 patrones entre el 2025-01-13 y el 2025-02-03:
+  el 14, el 2025-01-13, y el 3, el 2025-02-03. El 2025-02-03 habría sonado 1
+  alarma en lugar de 10, y del 2025-01-27 al 2025-02-17, 4 en lugar de 25.
+- Sensibilidad: corrido desde 2023 da lo mismo. Con la referencia congelada del
+  2024-12-09 al 2025-01-06, o quitando también el patrón 14, suena además el
+  patrón 12. Los otros 7 no suenan con ninguna variante.
+- Criterio del documento, definido después de ver el episodio: actuar si suena
+  sin el eco (14 y 3), vigilar si solo suena con alguna variante (12), no
+  escalar si no suena con ninguna (4, 11, 13, 17, 19, 25 y 36) e incidente para
+  el patrón de la ráfaga (8). Un primer borrador usaba cocientes con una guía de
+  1.1; se descartó porque el cociente no depende del tamaño del patrón.
+- Es una limitación de M9 y M11 tal como están congelados: una ráfaga en un
+  patrón distorsiona durante unas 4 semanas lo esperado de todos los demás. No
+  se cambió ningún modelo. Las correcciones propuestas en el documento (aviso de
+  posible eco, cartas modelo por semana, nivel frente a una base fija, caídas y
+  total semanal) deben registrarse antes, probarse con ráfagas simuladas sobre
+  `fit` + calibración y evaluarse solo con datos nuevos, porque la validación ya
+  se usó.
+- El documento corrige además dos lecturas anteriores: la de §24 (el episodio de
+  febrero no es una ganancia general de participación) y la de §25 (9 de las 11
+  alertas son de reportes de crédito, y el nivel negativo viene en buena parte
+  de la ráfaga). También anota que el nivel $\Delta$ de M12 desplaza 13 filas
+  del panel, así que compara con 14 semanas de calendario cuando falta la semana
+  partida del 2024-12-30.

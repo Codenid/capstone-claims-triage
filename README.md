@@ -703,7 +703,9 @@ M12 usará CUSUM. En los datos reales avisa más que el presupuesto, unas 2 a 4
 veces al mes en `fit` y calibración, porque hay más semanas extremas y rachas
 que las que supone M9; por decisión del usuario se mantuvieron los umbrales del
 plan. En 2025-H1 dio 42 alertas en 25 semanas, el 60% en un episodio de febrero
-de 2025 en patrones de reportes de crédito. El detalle está en
+de 2025 en patrones de reportes de crédito. Buena parte de ese episodio resultó
+ser el eco de una ráfaga de reclamos de transferencias del 13 de enero
+(`models_plan.md` §26). El detalle está en
 `reports/modeling/persistent_change/decision.md`.
 
 DM-R4 (M10) no genera alertas: para cada patrón espera lo mismo que M9. En M12
@@ -728,6 +730,13 @@ mismas funciones de `src/triage/`. La demo se abre desde
 semana del 2025-02-03, con 11 patrones con alerta, y fichas de reclamos de la
 semana siguiente. El plazo se simula como si el reclamo se registrara el
 2026-10-01.
+
+Para leer esas salidas y decidir, el documento
+`reports/modeling/decision_brief/once_alertas.html` cuenta el caso completo con
+un solo ejemplo: qué entrega cada modelo, por qué solo 2 de las 11 alertas son
+aumentos reales (las demás son una ráfaga de enero o su eco), qué decidir y
+cuánto confiar. Se genera con Quarto desde `once_alertas.qmd`, en la misma
+carpeta.
 
 ## Orden de comparación
 

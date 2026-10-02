@@ -106,10 +106,17 @@ Las alertas se concentran en un episodio:
 - Fuera de esas 4 semanas quedan 17 alertas en 21 semanas, unas 3.5 al mes,
   parecido a `fit`.
 
-Como lo esperado de M9 parte del total semanal, estas alertas indican que los
-patrones de reportes de crédito ganaron participación en esas semanas. Es
-coherente con la confirmación final, donde B2-R4 falló en semanas con cambios
-grandes de composición. Nada se ajustó después de ver este reporte.
+Nada se ajustó después de ver este reporte.
+
+**Corrección posterior (2026-10-01, `models_plan.md` §26).** Aquí se había
+leído que los patrones de reportes de crédito ganaron participación en esas
+semanas. En buena parte es un eco. La semana del 2025-01-13, el patrón de
+cuentas bancarias, tarjetas y transferencias (patrón 8) recibió 39,844
+reclamos, el 58% del total. Como lo esperado de M9 usa la porción de las 4
+semanas anteriores, durante 4 semanas siguió esperando cerca del 35% del total
+para ese patrón y esperó de menos para los otros 39. Un diagnóstico
+exploratorio, que rehace la misma cuenta sin el patrón 8, deja 2 aumentos
+reales: los patrones 14 y 3.
 
 ## Siguiente paso
 

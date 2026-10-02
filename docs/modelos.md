@@ -555,8 +555,10 @@ estabiliza se vuelve lo normal en unas 4 semanas; M11 busca sobre todo
 crecimientos que continúan. En los datos reales avisa más que el presupuesto,
 unas 2 a 4 veces al mes, porque hay más semanas extremas y rachas que las que
 supone M9. En 2025-H1 dio 42 alertas en 25 semanas, el 60% en un episodio de
-febrero de 2025 en patrones de reportes de crédito. BOCPD no se probó, porque
-CUSUM ya superó a la referencia. El detalle está en
+febrero de 2025 en patrones de reportes de crédito. Buena parte de ese episodio
+es el eco de una ráfaga de reclamos de transferencias del 13 de enero, que
+distorsionó la referencia de 4 semanas (`models_plan.md` §26). BOCPD no se
+probó, porque CUSUM ya superó a la referencia. El detalle está en
 `reports/modeling/persistent_change/decision.md`.
 
 M10 no genera alertas. Para un patrón, DM-R4 espera lo mismo que M9
