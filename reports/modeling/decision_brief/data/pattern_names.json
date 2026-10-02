@@ -1,0 +1,282 @@
+[
+ {
+  "cluster_id": 0,
+  "nombre": "Carta modelo: no logra enviar disputas",
+  "descripcion": "Texto copiado casi idéntico en el que el cliente dice que no consigue enviar sus disputas a las centrales de riesgo ni lograr que corrijan datos inexactos.",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: disputes, submitting disputes, getting inaccurate, send disputes, bureaus having, disputes getting. Motivo (T1): problema con la investigación de la empresa 49,4%; uso indebido del reporte 27,5%; cobro de deuda que no se debe 15,6%. Subtema: dificultad para presentar una disputa o informarse por teléfono 32,5%; la central usó el reporte indebidamente 25,5%; la deuda no es suya 15,5%. Empresas: Equifax 41,7%; Experian 32,9%; TransUnion 24,6%. Producto principal (Credit reporting or other personal consumer reports): 84,2%; texto idéntico más repetido: 58,5%; textos únicos: 2,1%; reclamos en fit: 1.947. Texto principal (58,5%): 'intenté enviar mis disputas a las centrales pero tengo dificultades'. Subtema 'dificultad para presentar disputa' 57,4 veces más frecuente que en todo el fit."
+ },
+ {
+  "cluster_id": 1,
+  "nombre": "Exigen reporte de crédito 100% exacto",
+  "descripcion": "Cartas que piden que el reporte sea '100% exacto' y que se invaliden las partidas 'inexactas o dudosas' tras la investigación, citando la ley de reportes de crédito de EE.UU. (FCRA; 1681e es su sección sobre exactitud).",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: 100, credit, 100 accurate, reporting 100, credit report, accurate. Motivo (T1): información incorrecta en el reporte 39,8%; problema con la investigación de la empresa 39,7%; notificación escrita sobre la deuda 7,0%. Subtema: la información es de otra persona 34,5%; la investigación tardó más de 30 días 21,9%; la investigación no corrigió el error 9,8%. Empresas: TransUnion 33,6%; Experian 32,1%; Equifax 32,1%. Producto principal (Credit reporting or other personal consumer reports): 85,8%; texto idéntico más repetido: 15,7%; textos únicos: 8,7%; reclamos en fit: 5.995. Términos extra: 'invalidated inaccurate', 'questionable items', '1681e'. 'La investigación tardó más de 30 días' 6,5 veces más frecuente que en todo el fit; cobranza de deudas 14,1%."
+ },
+ {
+  "cluster_id": 2,
+  "nombre": "Carta legal de privacidad y atrasos",
+  "descripcion": "Mezcla de la carta modelo que acusa a la central de violar la privacidad según la ley de reportes de crédito de EE.UU. (FCRA, 15 USC 1681) con reclamos por pagos atrasados y cartas sin respuesta tras 30 días.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: section, information, consumer, 15, reporting, items. Motivo (T1): información incorrecta en el reporte 38,5%; problema con la investigación de la empresa 33,0%; uso indebido del reporte 27,7%. Subtema: la central usó el reporte indebidamente 26,4%; estado de la cuenta incorrecto 22,0%; la información es de otra persona 14,1%. Empresas: TransUnion 40,4%; Equifax 30,4%; Experian 26,9%. Producto principal (Credit reporting or other personal consumer reports): 98,4%; texto idéntico más repetido: 22,2%; textos únicos: 8,6%; reclamos en fit: 8.520. La carta de privacidad es su texto más repetido (22,2%). 'Estado de la cuenta incorrecto' 4,3 veces más frecuente que en todo el fit. Su peso en el total pasó de 0,2% (2023-S1) a 1,7% (2025-S1). Copias idénticas de la carta de privacidad FCRA en este patrón (fit): 1.893."
+ },
+ {
+  "cluster_id": 3,
+  "nombre": "Disputas legales variadas citando la FCRA",
+  "descripcion": "Grupo amplio y variado de disputas que citan la ley de reportes de crédito de EE.UU. (FCRA) para pedir que se verifiquen o borren cuentas; 'redacted' solo indica texto anonimizado, no un tema.",
+  "confianza": "baja",
+  "evidencia": "Términos del modelo: redacted, redacted redacted, account, credit, information, consumer ('redacted' = texto anonimizado, no es un tema). Motivo (T1): información incorrecta en el reporte 35,9%; uso indebido del reporte 26,8%; problema con la investigación de la empresa 26,2%. Subtema: la central usó el reporte indebidamente 23,2%; la información es de otra persona 23,1%; la investigación no corrigió el error 18,4%. Empresas: TransUnion 29,1%; Experian 27,5%; Equifax 27,2%. Producto principal (Credit reporting or other personal consumer reports): 88,6%; texto idéntico más repetido: 1,6%; textos únicos: 53,0%; reclamos en fit: 35.532. Sin texto dominante (el más repetido 1,6%) y motivos repartidos; cobranza de deudas 9,3%. Su peso en el total pasó de 2,5% (2023-S1) a 8,2% (2025-S1). Copias idénticas de la carta de privacidad FCRA en este patrón (fit): 549."
+ },
+ {
+  "cluster_id": 4,
+  "nombre": "Exigen validar cuentas en plazo legal",
+  "descripcion": "Cartas que acusan a la central de riesgo de no validar ni probar, dentro del plazo que fija la ley (sección 611 de la FCRA, procedimiento de disputa), información que el cliente considera errónea.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: redacted redacted, redacted, validate, erroneous, credit, authorized fail ('redacted' = texto anonimizado, no es un tema). Motivo (T1): problema con la investigación de la empresa 48,6%; información incorrecta en el reporte 37,0%; uso indebido del reporte 12,5%. Subtema: la investigación no corrigió el error 44,5%; la información es de otra persona 17,9%; la central usó el reporte indebidamente 12,1%. Empresas: Equifax 36,4%; TransUnion 32,9%; Experian 28,5%. Producto principal (Credit reporting or other personal consumer reports): 97,9%; texto idéntico más repetido: 6,5%; textos únicos: 31,3%; reclamos en fit: 13.290. Términos extra: 'fail validate', 'proof period', 'period allowed law', '611 authorized', 'unverified information'. 'La investigación no corrigió el error' 3,6 veces más frecuente que en todo el fit. Copias idénticas de la carta de privacidad FCRA en este patrón (fit): 519."
+ },
+ {
+  "cluster_id": 5,
+  "nombre": "Carta legal de privacidad y consentimiento",
+  "descripcion": "Variante de la carta de privacidad FCRA acompañada de textos que dicen no haber dado consentimiento escrito (sección 1681b, usos permitidos del reporte) o que reclaman indemnización por incumplimiento (sección 1681n).",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: consumer, 15, section, states, reporting, report. Motivo (T1): problema con la investigación de la empresa 29,4%; uso indebido del reporte 28,7%; información incorrecta en el reporte 26,5%. Subtema: la central usó el reporte indebidamente 25,9%; la investigación tardó más de 30 días 15,4%; estado de la cuenta incorrecto 11,7%. Empresas: Experian 29,4%; Equifax 27,3%; TransUnion 25,9%. Producto principal (Credit reporting or other personal consumer reports): 85,0%; texto idéntico más repetido: 20,1%; textos únicos: 6,2%; reclamos en fit: 9.474. Tres textos más repetidos: carta de privacidad (20,1%), 'nunca di consentimiento escrito, 1681b' (9,7%) e 'incumplimiento, 1681n' (7,4%). Cobranza de deudas 11,6%. Copias idénticas de la carta de privacidad FCRA en este patrón (fit): 1.904."
+ },
+ {
+  "cluster_id": 6,
+  "nombre": "Saldos no reconocidos atribuidos a fraude",
+  "descripcion": "Listados de cuentas con saldos (montos anonimizados) que el cliente dice no reconocer y atribuye a fraude o extorsión.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: redacted redacted, redacted, redacted balance, 00 redacted, balance, 00 ('redacted' = texto anonimizado, no es un tema). Motivo (T1): información incorrecta en el reporte 71,8%; uso indebido del reporte 14,4%; problema con la investigación de la empresa 13,5%. Subtema: la información es de otra persona 66,4%; la central usó el reporte indebidamente 10,8%; la investigación tardó más de 30 días 6,3%. Empresas: TransUnion 35,8%; Equifax 34,0%; Experian 28,9%. Producto principal (Credit reporting or other personal consumer reports): 99,7%; texto idéntico más repetido: 9,2%; textos únicos: 40,7%; reclamos en fit: 13.745. Términos extra: 'alleged fraud', 'fraud extortion', 'coming wrongdoing', 'possession goods'. 'La información es de otra persona' 66,4%. Su peso en el total pasó de 1,9% (2023-S1) a 0,7% (2025-S1). Copias idénticas de la carta de privacidad FCRA en este patrón (fit): 583."
+ },
+ {
+  "cluster_id": 7,
+  "nombre": "Rechazan disputa por suponer un tercero",
+  "descripcion": "El cliente reclama que la central de riesgo no procesó su disputa porque supuso que la envió un tercero y no él mismo, aunque llamó para verificarlo.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: redacted redacted, redacted, report, credit, disputes, accounts ('redacted' = texto anonimizado, no es un tema). Motivo (T1): información incorrecta en el reporte 58,0%; problema con la investigación de la empresa 29,5%; uso indebido del reporte 9,1%. Subtema: la información es de otra persona 50,7%; la investigación no corrigió el error 17,4%; la investigación tardó más de 30 días 7,9%. Empresas: TransUnion 40,3%; Equifax 30,0%; Experian 28,3%. Producto principal (Credit reporting or other personal consumer reports): 93,3%; texto idéntico más repetido: 10,5%; textos únicos: 15,0%; reclamos en fit: 11.531. Texto principal (10,5%): 'la central asumió que mis disputas venían de un tercero (3rd party)'. Ese mismo texto también cae en los patrones 32 (1.278 copias), 35 (617) y 39 (216)."
+ },
+ {
+  "cluster_id": 8,
+  "nombre": "Cuentas bancarias, tarjetas y transferencias",
+  "descripcion": "El gran grupo de banca del día a día: manejo y cierre de cuentas, cargos y compras con tarjeta, depósitos, retiros y transferencias de dinero; casi todos los textos son únicos.",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: bank, card, account, redacted, 00, told ('redacted' = texto anonimizado, no es un tema). Motivo (T1): manejo de la cuenta 22,0%; compra en el estado de cuenta 10,1%; cierre de cuenta 6,0%. Subtema: (sin subtema) 14,7%; depósitos y retiros 7,8%; la tarjeta no resuelve la disputa de una compra 7,2%. Empresas: JPMorgan Chase 10,0%; Wells Fargo 9,5%; Bank of America 8,4%. Producto principal (Checking or savings account): 38,8%; texto idéntico más repetido: 1,3%; textos únicos: 95,2%; reclamos en fit: 119.770. Productos: cuenta corriente o de ahorros 38,8%, tarjeta de crédito 20,0%, transferencias y servicios de dinero 12,5%. Subtemas 'depósitos y retiros', 'tarjeta de débito o cajero' y 'transacción no autorizada' 8,7, 8,6 y 8,4 veces más frecuentes que en todo el fit."
+ },
+ {
+  "cluster_id": 9,
+  "nombre": "Declaración: 'no hay terceros involucrados'",
+  "descripcion": "Quejas que empiezan declarando que las presenta el propio cliente, sin terceros y no por error, y luego reclaman fechas inconsistentes o el uso no autorizado de su número de seguro social.",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: complaint, party, complaint error, party involved, involved, reported ('redacted' = texto anonimizado, no es un tema). Motivo (T1): uso indebido del reporte 36,9%; problema con la investigación de la empresa 34,2%; información incorrecta en el reporte 24,6%. Subtema: la central usó el reporte indebidamente 30,2%; la información es de otra persona 15,8%; la investigación no corrigió el error 14,3%. Empresas: Experian 46,7%; Equifax 27,3%; TransUnion 25,6%. Producto principal (Credit reporting or other personal consumer reports): 85,1%; texto idéntico más repetido: 17,2%; textos únicos: 5,0%; reclamos en fit: 2.670. Sus tres textos más repetidos (17,2%, 16,7%, 13,2%) son versiones de la misma declaración ('no third party involved', 'not made in error'). Experian 46,7%."
+ },
+ {
+  "cluster_id": 10,
+  "nombre": "Error persiste tras queja, sin consentimiento",
+  "descripcion": "Mezcla de cartas: el error sigue en el reporte un mes después de quejarse, el cliente nunca dio consentimiento escrito (sección 1681b) o la cuenta 'no es mía, es fraude'.",
+  "confianza": "baja",
+  "evidencia": "Términos del modelo: redacted redacted, redacted, report, credit, credit report, consent ('redacted' = texto anonimizado, no es un tema). Motivo (T1): información incorrecta en el reporte 57,0%; problema con la investigación de la empresa 27,9%; uso indebido del reporte 12,6%. Subtema: la información es de otra persona 27,1%; estado de la cuenta incorrecto 17,1%; la investigación no corrigió el error 12,7%. Empresas: Experian 39,6%; Equifax 31,7%; TransUnion 27,9%. Producto principal (Credit reporting or other personal consumer reports): 97,1%; texto idéntico más repetido: 10,5%; textos únicos: 18,7%; reclamos en fit: 9.158. Tres textos distintos (10,5%, 8,0%, 6,5%) sin uno que domine; términos 'consent', 'written consent', 'erroneous information', 'mandated time frame'."
+ },
+ {
+  "cluster_id": 11,
+  "nombre": "Consultas y cuentas que no reconoce",
+  "descripcion": "Listas de consultas al reporte (inquiries) y cuentas con fechas y saldos anonimizados que el cliente pide retirar por no reconocerlas o por robo de identidad; textos muy variados.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: redacted redacted, redacted, 00, 00 redacted, redacted balance, balance ('redacted' = texto anonimizado, no es un tema). Motivo (T1): información incorrecta en el reporte 49,8%; uso indebido del reporte 25,0%; problema con la investigación de la empresa 21,5%. Subtema: la información es de otra persona 43,5%; consultas al reporte que no reconoce 17,0%; la investigación no corrigió el error 15,2%. Empresas: Equifax 31,9%; TransUnion 31,6%; Experian 28,4%. Producto principal (Credit reporting or other personal consumer reports): 97,0%; texto idéntico más repetido: 0,3%; textos únicos: 67,0%; reclamos en fit: 97.126. Términos extra: 'date inquiry', 'balance owed', 'identity theft', 'belong'. 'Consultas que no reconoce' 3,3 veces más frecuente que en todo el fit. Su peso en el total pasó de 10,2% (2023-S1) a 5,7% (2025-S1)."
+ },
+ {
+  "cluster_id": 12,
+  "nombre": "Cobranza de deudas: exigen validar deuda",
+  "descripcion": "Reclamos contra empresas de cobranza por deudas que el cliente no reconoce, ya pagadas o con monto equivocado, pidiendo prueba (validación) de la deuda y del contrato original.",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: debt, collection, redacted, redacted redacted, account, company ('redacted' = texto anonimizado, no es un tema). Motivo (T1): cobro de deuda que no se debe 24,5%; información incorrecta en el reporte 19,6%; notificación escrita sobre la deuda 11,3%. Subtema: la deuda no es suya 13,6%; la información es de otra persona 8,8%; la central usó el reporte indebidamente 7,1%. Empresas: Experian 9,4%; TransUnion 8,8%; Equifax 8,6%. Producto principal (Debt collection): 55,2%; texto idéntico más repetido: 0,3%; textos únicos: 88,0%; reclamos en fit: 86.363. Producto: cobranza de deudas 55,2%. Subtemas 'no recibió aviso de su derecho a disputar', 'la deuda ya se pagó' y 'monto equivocado' 9,1, 8,7 y 8,4 veces más frecuentes que en todo el fit."
+ },
+ {
+  "cluster_id": 13,
+  "nombre": "Préstamos hipotecarios, vehiculares y estudiantiles",
+  "descripcion": "Problemas con pagos de préstamos (hipotecas, autos, estudios): pagos mal aplicados, atrasos y cómo se reportan en la central de riesgo.",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: loan, redacted, mortgage, payment, redacted redacted, told ('redacted' = texto anonimizado, no es un tema). Motivo (T1): información incorrecta en el reporte 21,3%; problema con la investigación de la empresa 11,9%; problema durante el pago 11,5%. Subtema: (sin subtema) 14,8%; estado de la cuenta incorrecto 8,8%; la investigación no corrigió el error 8,0%. Empresas: Experian 9,7%; Equifax 9,0%; TransUnion 8,7%. Producto principal (Credit reporting or other personal consumer reports): 37,3%; texto idéntico más repetido: 0,9%; textos únicos: 88,1%; reclamos en fit: 97.382. Términos extra: 'car', 'vehicle', 'student', 'home', 'property'. Productos: reporte de crédito 37,3%, hipoteca 21,3%, préstamo estudiantil 11,8%. 'Cómo se manejan los pagos' 10,7 veces más frecuente que en todo el fit."
+ },
+ {
+  "cluster_id": 14,
+  "nombre": "Disputas generales del reporte de crédito",
+  "descripcion": "El patrón más grande: disputas variadas sobre cuentas, consultas y datos del reporte de crédito sin un texto ni un motivo dominante; funciona como cajón general.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: redacted, redacted redacted, account, credit, report, information ('redacted' = texto anonimizado, no es un tema). Motivo (T1): información incorrecta en el reporte 41,8%; problema con la investigación de la empresa 26,2%; uso indebido del reporte 22,1%. Subtema: la información es de otra persona 21,1%; la investigación no corrigió el error 18,4%; la central usó el reporte indebidamente 15,3%. Empresas: Experian 30,0%; TransUnion 29,9%; Equifax 27,4%. Producto principal (Credit reporting or other personal consumer reports): 93,9%; texto idéntico más repetido: 0,2%; textos únicos: 80,5%; reclamos en fit: 176.716. Pesa 16,6% del fit y el texto más repetido apenas 0,2%. Su peso en el total subió a 28,9% en 2025-S1."
+ },
+ {
+  "cluster_id": 15,
+  "nombre": "Cartas enviadas sin respuesta (variante A)",
+  "descripcion": "Texto copiado: 'envié cartas a las centrales de riesgo y no responden; reportan información engañosa; no hay terceros'. Es el mismo reclamo que el patrón 34; aquí el nombre anonimizado suele tener tres partes.",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: letters, bureaus continuously, far gotten, happened mailed, continuously far, really sure. Motivo (T1): problema con la investigación de la empresa 53,9%; información incorrecta en el reporte 33,6%; uso indebido del reporte 10,0%. Subtema: la investigación no corrigió el error 52,5%; datos personales incorrectos 26,7%; la central usó el reporte indebidamente 9,9%. Empresas: Experian 36,8%; Equifax 34,4%; TransUnion 28,6%. Producto principal (Credit reporting or other personal consumer reports): 97,5%; texto idéntico más repetido: 61,3%; textos únicos: 0,5%; reclamos en fit: 7.597. Sus dos textos más repetidos (61,3% y 17,3%) son el mismo mensaje. 'Datos personales incorrectos' 12,2 veces más frecuente que en todo el fit. En validación pesa solo 0,1% del total. Copias idénticas de la carta de privacidad FCRA en este patrón (fit): 409."
+ },
+ {
+  "cluster_id": 16,
+  "nombre": "Carta legal: bloquear cuentas no autorizadas",
+  "descripcion": "Carta de privacidad FCRA junto con textos que piden bloquear y borrar cuentas que el cliente dice no haber autorizado, adjuntando documentos de identidad (sección 1681b, usos permitidos del reporte).",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: consumer, 15, section, reporting agency, 1681, reporting. Motivo (T1): información incorrecta en el reporte 38,4%; uso indebido del reporte 32,6%; problema con la investigación de la empresa 23,1%. Subtema: la central usó el reporte indebidamente 24,0%; la información es de otra persona 16,8%; estado de la cuenta incorrecto 15,1%. Empresas: Equifax 36,8%; TransUnion 32,9%; Experian 28,8%. Producto principal (Credit reporting or other personal consumer reports): 96,1%; texto idéntico más repetido: 27,3%; textos únicos: 3,3%; reclamos en fit: 9.342. Es el patrón con más copias de la carta de privacidad (27,3% del grupo). 'La investigación tardó más de 30 días' 4,0 veces más frecuente que en todo el fit. Copias idénticas de la carta de privacidad FCRA en este patrón (fit): 2.550."
+ },
+ {
+  "cluster_id": 17,
+  "nombre": "Uso indebido del reporte: carta legal",
+  "descripcion": "Cartas que listan cuentas y afirman que reportarlas viola su derecho a la privacidad según la ley de reportes de crédito de EE.UU. (FCRA, 15 USC 1681); fue grande en 2023 y viene cayendo.",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: redacted account, account, account redacted, section, redacted, redacted redacted ('redacted' = texto anonimizado, no es un tema). Motivo (T1): uso indebido del reporte 72,2%; información incorrecta en el reporte 17,3%; problema con la investigación de la empresa 6,6%. Subtema: la central usó el reporte indebidamente 69,3%; la información es de otra persona 11,2%; la investigación no corrigió el error 4,3%. Empresas: TransUnion 31,3%; Equifax 29,7%; Experian 29,1%. Producto principal (Credit reporting or other personal consumer reports): 93,7%; texto idéntico más repetido: 1,6%; textos únicos: 55,6%; reclamos en fit: 71.113. Motivo 'uso indebido del reporte' 72,2%, el mayor peso de ese motivo entre los 40 patrones. Términos extra: 'violated rights', 'right privacy', 'furnish account'. Su peso en el total pasó de 10,5% (2023-S1) a 1,9% (2025-S1)."
+ },
+ {
+  "cluster_id": 18,
+  "nombre": "Piden pruebas de actividad legítima (611)",
+  "descripcion": "Cartas que piden a la central de riesgo verificar, con documentos y en el plazo legal (sección 611 de la FCRA), que las partidas listadas corresponden a actividad legítima.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: redacted redacted, redacted, permitted, legitimate activity, report, legitimate ('redacted' = texto anonimizado, no es un tema). Motivo (T1): información incorrecta en el reporte 45,7%; problema con la investigación de la empresa 36,5%; uso indebido del reporte 11,7%. Subtema: la información es de otra persona 34,7%; la investigación no corrigió el error 23,6%; la central usó el reporte indebidamente 9,7%. Empresas: TransUnion 34,8%; Equifax 34,4%; Experian 29,7%. Producto principal (Credit reporting or other personal consumer reports): 88,4%; texto idéntico más repetido: 5,6%; textos únicos: 23,6%; reclamos en fit: 10.792. Términos extra: 'legally permitted', 'supporting documentation', '611 verify', 'issues needing investigation'. Sin texto dominante (el principal 5,6%). Copias idénticas de la carta de privacidad FCRA en este patrón (fit): 600."
+ },
+ {
+  "cluster_id": 19,
+  "nombre": "Robo de identidad: cuentas fraudulentas",
+  "descripcion": "Víctimas de robo de identidad que encuentran en su reporte cuentas, consultas o datos personales que no son suyos y piden retirarlos.",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: credit, credit report, report, redacted redacted, redacted, identity ('redacted' = texto anonimizado, no es un tema). Motivo (T1): información incorrecta en el reporte 53,8%; uso indebido del reporte 24,4%; problema con la investigación de la empresa 12,1%. Subtema: la información es de otra persona 35,4%; consultas al reporte que no reconoce 14,7%; la central usó el reporte indebidamente 9,5%. Empresas: TransUnion 29,3%; Equifax 28,3%; Experian 28,3%. Producto principal (Credit reporting or other personal consumer reports): 91,1%; texto idéntico más repetido: 1,5%; textos únicos: 36,9%; reclamos en fit: 63.214. Términos extra: 'fraudulent accounts', 'victim', 'unauthorized', 'address'. 'Datos personales incorrectos' 3,5 veces y 'consultas que no reconoce' 2,8 veces más frecuentes que en todo el fit."
+ },
+ {
+  "cluster_id": 20,
+  "nombre": "Carta modelo: nunca di consentimiento",
+  "descripcion": "Texto copiado: 'adjunto cartas e identificación; lo que figura en mi reporte está mal y nunca di consentimiento escrito' (sección 1681b de la FCRA, usos permitidos del reporte).",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: consumer reports, consent, reports, consumer, consent fraud, reports consent. Motivo (T1): información incorrecta en el reporte 54,4%; uso indebido del reporte 22,7%; problema con la investigación de la empresa 22,0%. Subtema: estado de la cuenta incorrecto 47,6%; la central usó el reporte indebidamente 22,2%; la investigación tardó más de 30 días 20,4%. Empresas: Equifax 38,5%; TransUnion 32,1%; Experian 29,0%. Producto principal (Credit reporting or other personal consumer reports): 99,0%; texto idéntico más repetido: 47,5%; textos únicos: 2,8%; reclamos en fit: 3.371. Texto principal 47,5%. 'Estado de la cuenta incorrecto' 9,3 veces más frecuente que en todo el fit. En validación pesa solo 0,1% del total. Copias idénticas de la carta de privacidad FCRA en este patrón (fit): 414."
+ },
+ {
+  "cluster_id": 21,
+  "nombre": "Carta modelo: atrasos que nunca tuvo",
+  "descripcion": "Texto copiado: 'vean los documentos; quiero que la central investigue estas cuentas: nunca me atrasé pero me reportan como atrasado'.",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: start investigation, bureau start, documents want, want bureau, start, investigation accounts. Motivo (T1): problema con la investigación de la empresa 59,3%; información incorrecta en el reporte 17,0%; uso indebido del reporte 15,8%. Subtema: no le informaron el estado o resultado de la investigación 52,7%; la central usó el reporte indebidamente 15,4%; datos de la cuenta incorrectos 7,8%. Empresas: TransUnion 36,1%; Equifax 33,0%; Experian 30,1%. Producto principal (Credit reporting or other personal consumer reports): 56,6%; texto idéntico más repetido: 56,2%; textos únicos: 1,8%; reclamos en fit: 4.109. Texto principal 56,2%. 'No le informaron el resultado de la investigación' 19,6 veces más frecuente que en todo el fit. Tarjetas: 'Credit card' 20,4% y 'Credit card or prepaid card' 15,0%. Copias idénticas de la carta de privacidad FCRA en este patrón (fit): 400."
+ },
+ {
+  "cluster_id": 22,
+  "nombre": "Amenaza legal por solicitudes escritas ignoradas",
+  "descripcion": "Cartas que acusan a la central de violar la ley federal por seguir reportando cuentas pese a solicitudes escritas y anuncian acciones legales; citan las secciones 609 y 611 de la FCRA.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: redacted redacted, redacted, law, written requests, violation federal, requests ('redacted' = texto anonimizado, no es un tema). Motivo (T1): problema con la investigación de la empresa 42,1%; información incorrecta en el reporte 29,3%; uso indebido del reporte 25,1%. Subtema: la investigación no corrigió el error 30,0%; la información es de otra persona 20,6%; la central usó el reporte indebidamente 17,4%. Empresas: Equifax 34,9%; TransUnion 34,8%; Experian 28,6%. Producto principal (Credit reporting or other personal consumer reports): 96,0%; texto idéntico más repetido: 16,3%; textos únicos: 20,8%; reclamos en fit: 12.879. Términos extra: 'follow law', 'legal action', 'sections 609', '609 611'. Es el segundo patrón con más copias de la carta de privacidad (2.101). Copias idénticas de la carta de privacidad FCRA en este patrón (fit): 2.101."
+ },
+ {
+  "cluster_id": 23,
+  "nombre": "Carta legal y consultas no autorizadas",
+  "descripcion": "Variante de la carta de privacidad FCRA junto con textos que piden retirar consultas al reporte no autorizadas y advierten un litigio si no corrigen.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: 15, consumer, agency, section, reporting, reporting agency. Motivo (T1): uso indebido del reporte 42,0%; información incorrecta en el reporte 41,4%; problema con la investigación de la empresa 16,0%. Subtema: la central usó el reporte indebidamente 29,0%; la información es de otra persona 28,9%; consultas al reporte que no reconoce 12,9%. Empresas: Equifax 42,4%; TransUnion 29,1%; Experian 26,8%. Producto principal (Credit reporting or other personal consumer reports): 95,8%; texto idéntico más repetido: 14,3%; textos únicos: 5,1%; reclamos en fit: 6.407. Tres textos más repetidos: carta de privacidad (14,3%), 'consulta no autorizada y posiblemente fraudulenta' (14,1%), 'mis reportes son inexactos, evitar litigio' (10,9%). Equifax 42,4%."
+ },
+ {
+  "cluster_id": 24,
+  "nombre": "Robo de identidad: relato del daño",
+  "descripcion": "Relatos de robo de identidad que enfatizan el estrés y el daño a la vida financiera y piden bloquear y retirar cuentas y consultas disputadas.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: redacted redacted, items, redacted, stress, accounts, unseen ('redacted' = texto anonimizado, no es un tema). Motivo (T1): información incorrecta en el reporte 42,8%; problema con la investigación de la empresa 26,4%; uso indebido del reporte 18,0%. Subtema: la información es de otra persona 36,0%; la deuda no es suya 11,2%; la central usó el reporte indebidamente 10,1%. Empresas: Experian 34,9%; Equifax 32,9%; TransUnion 29,9%. Producto principal (Credit reporting or other personal consumer reports): 84,4%; texto idéntico más repetido: 9,7%; textos únicos: 14,0%; reclamos en fit: 9.733. Términos extra: 'life', 'impacting', 'causing', 'unauthorized'. 'La deuda no es suya' 5,3 veces más frecuente que en todo el fit. Textos principales repartidos (9,7%, 8,2%, 5,3%)."
+ },
+ {
+  "cluster_id": 25,
+  "nombre": "Exigen pruebas citando secciones 609/611",
+  "descripcion": "Cartas que citan las secciones 609 (derecho a ver su expediente) y 611 (procedimiento de disputa) de la ley de reportes de crédito de EE.UU. (FCRA) y exigen que la central pruebe la información en el plazo legal.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: sections 609, sections, 609 611, 609, redacted, 611 ('redacted' = texto anonimizado, no es un tema). Motivo (T1): problema con la investigación de la empresa 49,3%; uso indebido del reporte 24,5%; información incorrecta en el reporte 22,0%. Subtema: la investigación no corrigió el error 40,9%; la central usó el reporte indebidamente 22,6%; la información es de otra persona 16,0%. Empresas: TransUnion 34,9%; Equifax 33,9%; Experian 29,8%. Producto principal (Credit reporting or other personal consumer reports): 97,4%; texto idéntico más repetido: 8,3%; textos únicos: 32,8%; reclamos en fit: 14.204. Términos extra: 'producing proof', 'legal time', 'authenticate'. 'La investigación no corrigió el error' 3,3 veces más frecuente que en todo el fit."
+ },
+ {
+  "cluster_id": 26,
+  "nombre": "Mezcla de cartas modelo y legales",
+  "descripcion": "Grupo mixto de textos copiados (cartas sin respuesta, declaración 'sin terceros', carta de privacidad) con menciones a la sección 605B de la FCRA, que trata el bloqueo de datos por robo de identidad.",
+  "confianza": "baja",
+  "evidencia": "Términos del modelo: accounts, credit, report, credit report, information, 15. Motivo (T1): información incorrecta en el reporte 36,4%; uso indebido del reporte 31,5%; problema con la investigación de la empresa 23,5%. Subtema: la central usó el reporte indebidamente 28,3%; la información es de otra persona 22,0%; la investigación no corrigió el error 17,0%. Empresas: Equifax 34,1%; Experian 32,7%; TransUnion 31,9%. Producto principal (Credit reporting or other personal consumer reports): 91,2%; texto idéntico más repetido: 15,7%; textos únicos: 15,7%; reclamos en fit: 11.256. Tres textos distintos (15,7%, 9,8%, 8,2%); términos 'fcra 605b', 'reinvestigation', 'letters'. Sin tema propio dominante. Copias idénticas de la carta de privacidad FCRA en este patrón (fit): 920."
+ },
+ {
+  "cluster_id": 27,
+  "nombre": "Retirar consulta por robo de identidad",
+  "descripcion": "Texto breve copiado: 'soy víctima de robo de identidad, retiren esta consulta fraudulenta de mi reporte'.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: redacted redacted, redacted, report, credit report, inquiry credit, fraud inquiry ('redacted' = texto anonimizado, no es un tema). Motivo (T1): problema con la investigación de la empresa 38,7%; información incorrecta en el reporte 31,8%; uso indebido del reporte 28,8%. Subtema: la investigación no corrigió el error 30,2%; la información es de otra persona 26,8%; consultas al reporte que no reconoce 20,5%. Empresas: Equifax 39,9%; TransUnion 31,7%; Experian 27,2%. Producto principal (Credit reporting or other personal consumer reports): 99,2%; texto idéntico más repetido: 23,1%; textos únicos: 13,2%; reclamos en fit: 8.018. Texto principal 23,1%; el segundo (12,6%) es otro tema ('siempre pagué a tiempo'). 'Consultas que no reconoce' 4,0 veces más frecuente que en todo el fit."
+ },
+ {
+  "cluster_id": 28,
+  "nombre": "Deudas y atrasos: cartas citando leyes",
+  "descripcion": "Cartas que citan varias leyes (FCRA 605B; 15 USC 1666, errores de facturación) para borrar cuentas negativas, atrasos y deudas en cobranza.",
+  "confianza": "baja",
+  "evidencia": "Términos del modelo: accounts, report, debt, credit, 15, code. Motivo (T1): información incorrecta en el reporte 41,4%; problema con la investigación de la empresa 20,3%; uso indebido del reporte 18,9%. Subtema: la información es de otra persona 25,0%; la central usó el reporte indebidamente 18,2%; la notificación no dijo que era un cobro 15,6%. Empresas: TransUnion 41,2%; Equifax 29,8%; Experian 28,1%. Producto principal (Credit reporting or other personal consumer reports): 79,6%; texto idéntico más repetido: 12,1%; textos únicos: 10,3%; reclamos en fit: 6.960. Tres textos distintos (12,1%, 10,0%, 8,5%). 'La notificación no dijo que era un cobro' 17,9 veces más frecuente que en todo el fit; cobranza de deudas 16,0%. Copias idénticas de la carta de privacidad FCRA en este patrón (fit): 588."
+ },
+ {
+  "cluster_id": 29,
+  "nombre": "Robo de identidad con denuncia FTC",
+  "descripcion": "Víctimas de robo de identidad que dicen haberlo denunciado ante la Comisión Federal de Comercio de EE.UU. (FTC) y piden borrar esos ítems de su expediente.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: identity, theft, identity theft, redacted redacted, redacted, items ('redacted' = texto anonimizado, no es un tema). Motivo (T1): información incorrecta en el reporte 50,0%; problema con la investigación de la empresa 32,6%; uso indebido del reporte 16,1%. Subtema: la información es de otra persona 42,1%; la investigación no corrigió el error 16,2%; no le informaron el estado o resultado de la investigación 13,9%. Empresas: Experian 34,7%; TransUnion 32,5%; Equifax 30,8%. Producto principal (Credit reporting or other personal consumer reports): 97,7%; texto idéntico más repetido: 12,0%; textos únicos: 19,3%; reclamos en fit: 9.166. Términos extra: 'victim identity', 'affidavit', 'trade commission', 'delete'. Su texto más repetido (12,0%) es de otro tema ('siempre pagué a tiempo')."
+ },
+ {
+  "cluster_id": 30,
+  "nombre": "Atrasos impugnados: estado de cuenta tardío",
+  "descripcion": "Disputas de pagos reportados como atrasados alegando que el acreedor no envió el estado de cuenta con 21 días de anticipación (secciones 1637 y 1666b de la ley de crédito al consumidor de EE.UU., no de la FCRA).",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: payment, late, payments, creditor, mailed delivered, periodic. Motivo (T1): información incorrecta en el reporte 54,2%; problema con la investigación de la empresa 29,6%; uso indebido del reporte 15,1%. Subtema: estado de la cuenta incorrecto 35,1%; la información es de otra persona 14,9%; la central usó el reporte indebidamente 14,4%. Empresas: Equifax 34,4%; TransUnion 30,6%; Experian 30,6%. Producto principal (Credit reporting or other personal consumer reports): 86,6%; texto idéntico más repetido: 3,3%; textos únicos: 31,6%; reclamos en fit: 21.597. Términos extra: 'payment date', 'usc 1666b', 'section 1637'. 'Estado de la cuenta incorrecto' 6,9 veces más frecuente que en todo el fit. Textos variados (el principal 3,3%). Su peso en el total pasó de 0,8% (2023-S1) a 3,0% (2024-S2)."
+ },
+ {
+  "cluster_id": 31,
+  "nombre": "Carta modelo: cuentas inexactas por corregir",
+  "descripcion": "Texto copiado de una sola frase: 'al revisar mi reporte identifiqué cuentas inexactas que su empresa debe corregir'.",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: need reporting, reporting correction, correction company, identified inaccurate, inaccurate accounts, reviewing credit. Motivo (T1): información incorrecta en el reporte 60,2%; notificación escrita sobre la deuda 14,0%; uso indebido del reporte 11,4%. Subtema: la información es de otra persona 42,9%; la notificación no dijo que era un cobro 14,0%; estado de la cuenta incorrecto 9,4%. Empresas: Equifax 34,7%; TransUnion 32,6%; Experian 31,1%. Producto principal (Credit reporting or other personal consumer reports): 77,7%; texto idéntico más repetido: 43,5%; textos únicos: 2,8%; reclamos en fit: 8.060. Texto principal 43,5%; sigue vivo: 5.920 copias idénticas en validación. 'La notificación no dijo que era un cobro' 16,0 veces más frecuente que en todo el fit."
+ },
+ {
+  "cluster_id": 32,
+  "nombre": "Atrasos y disputas rechazadas por 'tercero'",
+  "descripcion": "Mezcla de cartas: disputa rechazada por suponer un tercero, carta de exactitud dirigida a la FTC y carta de privacidad FCRA, con menciones a pagos atrasados.",
+  "confianza": "baja",
+  "evidencia": "Términos del modelo: redacted redacted, redacted, credit, late payment, section, consumer ('redacted' = texto anonimizado, no es un tema). Motivo (T1): información incorrecta en el reporte 43,4%; problema con la investigación de la empresa 31,4%; uso indebido del reporte 20,7%. Subtema: la información es de otra persona 37,0%; la central usó el reporte indebidamente 19,5%; la investigación no corrigió el error 17,1%. Empresas: Equifax 35,2%; TransUnion 34,1%; Experian 29,0%. Producto principal (Credit reporting or other personal consumer reports): 95,5%; texto idéntico más repetido: 14,1%; textos únicos: 15,9%; reclamos en fit: 9.040. Tres textos distintos (14,1%, 11,3%, 10,8%). Comparte con el patrón 7 el texto 'disputa rechazada por tercero'."
+ },
+ {
+  "cluster_id": 33,
+  "nombre": "Carta modelo: siempre pagué a tiempo",
+  "descripcion": "Texto copiado: 'siempre pagué a tiempo, me sorprende un error en mi reporte; pido registros actualizados que reflejen mis pagos puntuales'.",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: payments, updated records, consistently maintained, precise updated, seeking precise, reflect timely. Motivo (T1): problema con la investigación de la empresa 68,3%; uso indebido del reporte 17,3%; información incorrecta en el reporte 8,6%. Subtema: no le informaron el estado o resultado de la investigación 34,6%; la investigación no corrigió el error 26,5%; la central usó el reporte indebidamente 9,5%. Empresas: TransUnion 35,0%; Equifax 32,1%; Experian 31,4%. Producto principal (Credit reporting or other personal consumer reports): 88,5%; texto idéntico más repetido: 43,1%; textos únicos: 1,8%; reclamos en fit: 7.051. Texto principal 43,1%. 'No le informaron el resultado de la investigación' 12,9 veces más frecuente que en todo el fit. Su peso en el total cae a 0,2% en 2024-S2 y 0,1% en 2025-S1."
+ },
+ {
+  "cluster_id": 34,
+  "nombre": "Cartas enviadas sin respuesta (variante B)",
+  "descripcion": "El mismo texto copiado del patrón 15 ('envié cartas y no responden; no hay terceros'); el modelo lo separó porque aquí el nombre anonimizado tiene dos partes. Para el negocio es el mismo reclamo.",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: letters, bureaus continuously, happened mailed, really sure, far gotten, continuously far. Motivo (T1): problema con la investigación de la empresa 56,9%; información incorrecta en el reporte 36,4%; uso indebido del reporte 6,6%. Subtema: la investigación no corrigió el error 56,1%; datos personales incorrectos 35,6%; la central usó el reporte indebidamente 6,5%. Empresas: Experian 39,2%; Equifax 35,0%; TransUnion 25,7%. Producto principal (Credit reporting or other personal consumer reports): 99,2%; texto idéntico más repetido: 71,1%; textos únicos: 0,4%; reclamos en fit: 6.530. Sus dos textos más repetidos (71,1% y 21,0%) son el mismo mensaje. 'Datos personales incorrectos' 16,3 veces más frecuente que en todo el fit."
+ },
+ {
+  "cluster_id": 35,
+  "nombre": "Carta modelo: nadie ayuda con disputa",
+  "descripcion": "Texto copiado: 'intento disputar ítems incorrectos o inválidos y ni los acreedores ni las centrales me ayudan; vean los documentos adjuntos'.",
+  "confianza": "alta",
+  "evidencia": "Términos del modelo: dispute incorrect, invalid items, referenced issues, incorrect invalid, letter referenced, assistance creditors. Motivo (T1): problema con la investigación de la empresa 82,8%; información incorrecta en el reporte 16,8%; uso indebido del reporte 0,4%. Subtema: la investigación no corrigió el error 66,4%; la investigación tardó más de 30 días 14,3%; la información es de otra persona 9,9%. Empresas: TransUnion 34,0%; Experian 33,3%; Equifax 32,7%. Producto principal (Credit reporting or other personal consumer reports): 100,0%; texto idéntico más repetido: 68,3%; textos únicos: 0,2%; reclamos en fit: 2.888. Texto principal 68,3%; el segundo (21,4%) es 'disputa rechazada por tercero'. 'La investigación no corrigió el error' 5,3 veces más frecuente que en todo el fit."
+ },
+ {
+  "cluster_id": 36,
+  "nombre": "Reclamos con citas extensas de ley",
+  "descripcion": "Textos variados que citan artículos de la ley de EE.UU. (15 USC, FCRA) sobre centrales de riesgo e instituciones financieras, sobre todo para reclamar uso indebido del reporte.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: consumer, information, redacted, reporting, 15, redacted redacted ('redacted' = texto anonimizado, no es un tema). Motivo (T1): uso indebido del reporte 51,4%; información incorrecta en el reporte 25,7%; problema con la investigación de la empresa 19,0%. Subtema: la central usó el reporte indebidamente 47,1%; la información es de otra persona 13,0%; la investigación no corrigió el error 13,0%. Empresas: Equifax 28,8%; Experian 28,4%; TransUnion 27,2%. Producto principal (Credit reporting or other personal consumer reports): 96,0%; texto idéntico más repetido: 1,1%; textos únicos: 72,5%; reclamos en fit: 53.587. Términos extra: 'agencies', 'financial institution', 'shall', 'privacy'. 'La central usó el reporte indebidamente' 2,9 veces más frecuente que en todo el fit."
+ },
+ {
+  "cluster_id": 37,
+  "nombre": "Fechas inexactas y cartas sin respuesta",
+  "descripcion": "Mezcla de textos sobre fechas de cuenta inexactas (apertura, última actividad, último reporte) y la carta modelo 'envié cartas y no responden'.",
+  "confianza": "baja",
+  "evidencia": "Términos del modelo: letters, reporting, inaccurate date, date, written, 15. Motivo (T1): información incorrecta en el reporte 48,2%; problema con la investigación de la empresa 29,8%; cobro de deuda que no se debe 8,9%. Subtema: la investigación no corrigió el error 24,1%; la información es de otra persona 23,2%; estado de la cuenta incorrecto 16,2%. Empresas: Equifax 35,1%; Experian 33,2%; TransUnion 30,7%. Producto principal (Credit reporting or other personal consumer reports): 85,4%; texto idéntico más repetido: 22,4%; textos únicos: 4,8%; reclamos en fit: 6.255. Tres textos distintos (22,4%, 9,7%, 9,3%). 'Falta información que debería estar' 10,4 veces y 'no recibió aviso de su derecho a disputar' 9,7 veces más frecuentes que en todo el fit."
+ },
+ {
+  "cluster_id": 38,
+  "nombre": "Atraso reportado por error del acreedor",
+  "descripcion": "Clientes que dicen que nunca se atrasaron (por ejemplo, con pago automático) y que el atraso reportado es un error del acreedor; también citan el plazo de 21 días (sección 1666b).",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: payment, late, complaint, error, creditor, complaint bureaus. Motivo (T1): información incorrecta en el reporte 67,7%; problema con la investigación de la empresa 19,3%; uso indebido del reporte 11,2%. Subtema: estado de la cuenta incorrecto 36,4%; la información es de otra persona 24,6%; la investigación tardó más de 30 días 17,3%. Empresas: TransUnion 45,1%; Equifax 29,2%; Experian 25,3%. Producto principal (Credit reporting or other personal consumer reports): 96,6%; texto idéntico más repetido: 17,4%; textos únicos: 7,8%; reclamos en fit: 6.321. Textos: 'nunca me atrasé, pago automático, error de su sistema' (17,4%), 'me quejé hace un mes y sigue igual' (15,8%). 'Estado de la cuenta incorrecto' 7,1 veces más frecuente que en todo el fit. TransUnion 45,1%."
+ },
+ {
+  "cluster_id": 39,
+  "nombre": "Carta legal de privacidad: cuentas ajenas",
+  "descripcion": "Variantes de la carta de privacidad FCRA (15 USC 1681) usadas para disputar cuentas que el cliente dice que no son suyas.",
+  "confianza": "media",
+  "evidencia": "Términos del modelo: section, consumer, 15, information, 1681, states. Motivo (T1): información incorrecta en el reporte 57,4%; uso indebido del reporte 23,1%; problema con la investigación de la empresa 15,7%. Subtema: la información es de otra persona 44,7%; la central usó el reporte indebidamente 21,5%; la investigación tardó más de 30 días 5,8%. Empresas: Equifax 34,4%; TransUnion 33,9%; Experian 30,4%. Producto principal (Credit reporting or other personal consumer reports): 95,0%; texto idéntico más repetido: 13,0%; textos únicos: 12,2%; reclamos en fit: 8.485. Sus dos textos más repetidos son variantes de la carta de privacidad (13,0% y 8,2%). 'La información es de otra persona' 44,7%. Copias idénticas de la carta de privacidad FCRA en este patrón (fit): 1.099."
+ }
+]

@@ -1,0 +1,178 @@
+[
+ {
+  "familia": "A",
+  "nombre": "Banca, préstamos y cobranza",
+  "patrones": [
+   8,
+   12,
+   13
+  ],
+  "confianza_por_patron": {
+   "8": "alta",
+   "12": "alta",
+   "13": "alta"
+  },
+  "share_fit": 0.2844,
+  "share_calibration": 0.2341,
+  "share_validation": 0.2946,
+  "rows": {
+   "fit": 303515,
+   "calibration": 54909,
+   "validation": 204834
+  }
+ },
+ {
+  "familia": "B",
+  "nombre": "Disputas generales del reporte de crédito",
+  "patrones": [
+   3,
+   11,
+   14,
+   36
+  ],
+  "confianza_por_patron": {
+   "3": "baja",
+   "11": "media",
+   "14": "media",
+   "36": "media"
+  },
+  "share_fit": 0.3401,
+  "share_calibration": 0.4035,
+  "share_validation": 0.4588,
+  "rows": {
+   "fit": 362961,
+   "calibration": 94660,
+   "validation": 318984
+  }
+ },
+ {
+  "familia": "C",
+  "nombre": "Robo de identidad y fraude",
+  "patrones": [
+   6,
+   19,
+   24,
+   27,
+   29
+  ],
+  "confianza_por_patron": {
+   "6": "media",
+   "19": "alta",
+   "24": "media",
+   "27": "media",
+   "29": "media"
+  },
+  "share_fit": 0.0973,
+  "share_calibration": 0.1047,
+  "share_validation": 0.0822,
+  "rows": {
+   "fit": 103876,
+   "calibration": 24574,
+   "validation": 57177
+  }
+ },
+ {
+  "familia": "D",
+  "nombre": "Pagos reportados como atrasados",
+  "patrones": [
+   21,
+   30,
+   33,
+   38
+  ],
+  "confianza_por_patron": {
+   "21": "alta",
+   "30": "alta",
+   "33": "alta",
+   "38": "media"
+  },
+  "share_fit": 0.0366,
+  "share_calibration": 0.0397,
+  "share_validation": 0.024,
+  "rows": {
+   "fit": 39078,
+   "calibration": 9310,
+   "validation": 16695
+  }
+ },
+ {
+  "familia": "E",
+  "nombre": "Cartas modelo breves y disputas sin respuesta",
+  "patrones": [
+   0,
+   7,
+   9,
+   10,
+   15,
+   31,
+   32,
+   34,
+   35,
+   37
+  ],
+  "confianza_por_patron": {
+   "0": "alta",
+   "7": "media",
+   "9": "alta",
+   "10": "baja",
+   "15": "alta",
+   "31": "alta",
+   "32": "baja",
+   "34": "alta",
+   "35": "alta",
+   "37": "baja"
+  },
+  "share_fit": 0.0615,
+  "share_calibration": 0.061,
+  "share_validation": 0.0374,
+  "rows": {
+   "fit": 65676,
+   "calibration": 14306,
+   "validation": 26031
+  }
+ },
+ {
+  "familia": "F",
+  "nombre": "Cartas que citan la ley de reportes de crédito (FCRA)",
+  "patrones": [
+   1,
+   2,
+   4,
+   5,
+   16,
+   17,
+   18,
+   20,
+   22,
+   23,
+   25,
+   26,
+   28,
+   39
+  ],
+  "confianza_por_patron": {
+   "1": "media",
+   "2": "media",
+   "4": "media",
+   "5": "media",
+   "16": "media",
+   "17": "alta",
+   "18": "media",
+   "20": "alta",
+   "22": "media",
+   "23": "media",
+   "25": "media",
+   "26": "baja",
+   "28": "baja",
+   "39": "media"
+  },
+  "share_fit": 0.18,
+  "share_calibration": 0.157,
+  "share_validation": 0.1028,
+  "rows": {
+   "fit": 192088,
+   "calibration": 36841,
+   "validation": 71463
+  }
+ }
+]
