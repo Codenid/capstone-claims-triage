@@ -25,7 +25,7 @@ def load(name: str):
 
 
 F = load("facts.json")
-FAISS = load("faiss.json")
+FAISS = F["faiss"]
 CARDS = json.loads((HERE.parent / "triage_demo/cards.json").read_text(encoding="utf-8"))["cards"]
 NAMES = {p["cluster_id"]: p for p in load("pattern_names.json")}
 FAMILIES = load("pattern_families.json")

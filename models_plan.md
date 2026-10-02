@@ -1795,6 +1795,10 @@ con una auditoría de cifras, una revisión estadística y una prueba de lectura
 - Sensibilidad: corrido desde 2023 da lo mismo. Con la referencia congelada del
   2024-12-09 al 2025-01-06, o quitando también el patrón 14, suena además el
   patrón 12. Los otros 7 no suenan con ninguna variante.
+- Código: la cuenta sin el eco está en `src/triage/echo.py`, y
+  `src/triage/brief_facts.py` escribe todas las cifras del documento
+  (`scripts/hpc/m12_brief_facts.slurm`). El documento se genera con Quarto
+  desde `once_alertas.qmd`.
 - Criterio del documento, definido después de ver el episodio: actuar si suena
   sin el eco (14 y 3), vigilar si solo suena con alguna variante (12), no
   escalar si no suena con ninguna (4, 11, 13, 17, 19, 25 y 36) e incidente para
