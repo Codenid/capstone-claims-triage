@@ -1726,6 +1726,7 @@ ronda va antes de M12.
   M8, M9, M10 y M11, en ese orden.
 - Si nadie gana, los modelos congelados siguen y el resultado queda como
   análisis de sensibilidad.
+- Si varios ganan, se queda el de mejor métrica principal.
 
 ### 25.3 Bloque A: espacio semántico y clustering
 
@@ -1780,9 +1781,44 @@ una sola vez).
 - Referencia: NB-R4-H v3. Si el bloque A cambia el clustering, se reajusta con
   la misma especificación sobre los conteos nuevos.
 - Candidatos:
-  - Un modelo dinámico bayesiano de participaciones: aprende en `fit` qué tan
-    rápido adaptarse, en lugar de fijar 4 semanas, y las semanas atípicas no
-    arrastran el estado.
+  - **C-A, descuento y recorte**, especificación aprobada por el usuario el
+    2026-10-03. Cambia solo la participación de §7.9; la dispersión
+    $\alpha_c$ y su prior son los de NB-R4-H v3:
+
+    $$
+    r_{c,t}=\frac{\sum_{k\ge1}\delta^{k-1}\tilde y_{c,t-k}+1}
+    {\sum_{k\ge1}\delta^{k-1}\tilde N_{t-k}+40},
+    \qquad
+    \tilde y_{c,s}=\min\left(y_{c,s},\, m N_s r_{c,s}\right),
+    \qquad
+    \tilde N_s=\sum_c \tilde y_{c,s}.
+    $$
+
+    La memoria efectiva es $1/(1-\delta)$ semanas. $\delta$ y $m$ se eligen
+    en `fit` por menor WIS en la grilla
+    $\delta \in \{0.5, 0.6, 0.7, 0.75, 0.8, 0.9\}$ y
+    $m \in \{1.5, 2, 3, \infty\}$, con las $\alpha_c$ de NB-R4-H v3; después
+    $\alpha_c$ se reestima con PyMC. Con ventana rectangular de 4 semanas y
+    $m=\infty$ se recupera NB-R4-H v3. Costo conocido: si un patrón crece de
+    verdad, el recorte retrasa que el modelo lo aprenda.
+  - **C-B, espacio de estados**, especificación aprobada por el usuario el
+    2026-10-03:
+
+    $$
+    \eta_{c,t}=\eta_{c,t-1}+\varepsilon_{c,t},\qquad
+    \varepsilon_{c,t}\sim\operatorname{StudentT}(\nu,0,\tau),\qquad
+    p_{c,t}=\operatorname{softmax}(\boldsymbol\eta_t)_c,
+    $$
+
+    $$
+    y_{c,t}\sim\operatorname{NegativeBinomial}(N_t\,p_{c,t},\,\alpha_c),
+    $$
+
+    con $\boldsymbol\eta_t$ de suma cero en cada semana y $\alpha_c$ como en
+    NB-R4-H v3. $\alpha_c$, $\tau$ y $\nu$ se estiman solo con `fit`; en cada
+    semana de calibración se reestima solo el estado $\boldsymbol\eta$ con los
+    datos hasta la semana anterior. Los priors de $\tau$, $\nu$ y del estado
+    inicial se fijan con prior predictive sobre `fit` antes del piloto (§10).
   - Modelos fundacionales de series sin entrenamiento: Chronos-2, TimesFM 3.0 y
     TabPFN-TS, con el total semanal `N_t` como covariable, igual que M9. Las
     licencias se verifican antes de descargar.
@@ -1806,8 +1842,9 @@ predictive (§10).
 
 ### 25.7 Pendiente antes de implementar
 
-- [ ] Tamaño del contexto de los modelos fundacionales tabulares. Propuesta:
-  50,000 filas de ajuste al azar, semilla 42, debajo de las 60,000 filas con
-  que se preentrenó Kumo Tabular.
-- [ ] Especificación matemática del modelo dinámico del bloque C.
+- [x] Tamaño del contexto de los modelos fundacionales tabulares, aprobado por
+  el usuario el 2026-10-03: 50,000 filas de ajuste al azar, semilla 42, debajo
+  de las 60,000 filas con que se preentrenó Kumo Tabular.
+- [x] Especificación matemática del modelo dinámico del bloque C: el usuario
+  aprobó el 2026-10-03 que compitan C-A y C-B (25.5).
 - [ ] Permiso del usuario para cada descarga de pesos: nombre, fuente y tamaño.
