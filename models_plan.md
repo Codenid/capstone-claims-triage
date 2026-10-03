@@ -1758,6 +1758,11 @@ una sola vez).
   frente a los clusters de M7, en la misma muestra, es menor que 0.6 (cerca de
   la estabilidad propia de k-means, 0.626) o si, al rehacer M8–M11, cambian las
   alertas de M11 en `fit` + calibración.
+- Implementación (M7S, `src/models/space_sensitivity.py`): ese ARI se calcula
+  con k-means `k = 40` de cada espacio, para aislar el efecto del espacio. El
+  UMAP 15 con semilla 42 reutiliza las coordenadas de M7, y antes de comparar
+  nada sus etiquetas de k-means `k = 40` deben reproducir las de M7 con ARI de
+  al menos 0.99; si no, el resumen se detiene.
 
 ### 25.4 Bloque B: T1 con modelos fundacionales tabulares
 

@@ -27,6 +27,9 @@ paths:
   clustering_sizes_plot: reports/modeling/clustering_sizes.png
   clustering_artifacts: artifacts/models/clustering_comparison
   clustering_artifacts_dvc: artifacts/models/clustering_comparison.dvc
+  space_sensitivity_report: reports/modeling/space_sensitivity/results.json
+  space_sensitivity_candidates: reports/modeling/space_sensitivity/candidates.csv
+  space_sensitivity_artifacts: artifacts/models/space_sensitivity
   bge_full_report: reports/modeling/bge_full_results.json
   bge_full_artifacts: artifacts/models/bge_full
   bge_full_artifacts_dvc: artifacts/models/bge_full.dvc
@@ -245,6 +248,36 @@ clustering:
     minimum_stability_ari: 0.6
     minimum_future_coverage: 0.7
     maximum_template_dominated_fraction: 0.25
+
+# M7S, block A of the round approved on 2026-10-03 (models_plan.md §25.3): the
+# M7 grid plus GMM in every space, chosen by the BGE neighbor lift.
+space_sensitivity:
+  bge_dvc_hash: 009e3b35e25d9df095cf753e0a05f041.dir
+  semantic_dvc_hash: 08662a82971a71666b06c9ccf8120d7f.dir
+  clustering_dvc_hash: 425408aa84d0e2a44b8c5becd467e724.dir
+  reference_space: umap15_s42
+  reference_candidate: kmeans_k40
+  spaces:
+    pca128: {kind: pca, components: 128}
+    pca256: {kind: pca, components: 256}
+    pca512: {kind: pca, components: 512}
+    umap5_s42: {kind: umap, components: 5, seed: 42}
+    umap10_s42: {kind: umap, components: 10, seed: 42}
+    umap15_s42: {kind: umap, components: 15, seed: 42, reuse_m7: true}
+    umap30_s42: {kind: umap, components: 30, seed: 42}
+    umap15_s43: {kind: umap, components: 15, seed: 43}
+    umap15_s44: {kind: umap, components: 15, seed: 44}
+  gmm:
+    components: [20, 40, 80]
+    covariance: {pca: diag, umap: full}
+    max_iter: 200
+    n_init: 1
+    reg_covar: 1.0e-6
+  minimum_relative_gain: 0.05
+  bootstrap_draws: 2000
+  change_ari: 0.6
+  reproduction_ari: 0.99
+  threads: 4
 
 weekly_patterns:
   source_dvc_hash: 3ff36a299da1f2e19a00a4bce49f18ad.dir

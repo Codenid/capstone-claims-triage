@@ -449,6 +449,38 @@ Los resultados quedan en `reports/modeling/persistent_change/` y los registros
 en `reports/modeling/runs/persistent_change_<split>/run.json`. Ninguno de los
 dos comandos sobrescribe resultados existentes.
 
+M7S, el bloque A de `models_plan.md` §25.3, repite la comparación de M7 en 9
+espacios PCA y UMAP, con GMM además de los 12 candidatos de M7. Usa los
+artefactos de M5, M6 y M7 y no abre validación. Primero, una prueba rápida que
+no guarda nada:
+
+```bash
+uv sync --group semantic
+uv run --no-sync dvc pull artifacts/models/bge_sample.dvc
+uv run --no-sync dvc pull artifacts/models/semantic_space.dvc
+uv run --no-sync dvc pull artifacts/models/clustering_comparison.dvc
+uv run --no-sync python -m unittest tests.test_space_sensitivity -v
+sbatch scripts/hpc/m7s_space_sensitivity.slurm smoke
+```
+
+El run completo son tres pasos encadenados: 9 espacios, 36 tareas de
+clustering (espacio × algoritmo) y el resumen. `%8` mantiene el uso dentro del
+límite de 32 CPU y 98 GB por usuario:
+
+```bash
+prepare=$(sbatch --parsable --array=0-8%8 scripts/hpc/m7s_space_sensitivity.slurm prepare)
+cluster=$(sbatch --parsable --array=0-35%8 --dependency=afterok:$prepare \
+  scripts/hpc/m7s_space_sensitivity.slurm cluster)
+sbatch --dependency=afterok:$cluster scripts/hpc/m7s_space_sensitivity.slurm summarize
+```
+
+Cada tarea escribe en `artifacts/models/space_sensitivity/` a través de un
+directorio `.inprogress` y lo renombra al terminar. Reenviar una tarea salta
+las que ya terminaron. Si una tarea falla y queda su `.inprogress`, hay que
+revisarlo a mano: el script no lo borra. El resumen queda en
+`reports/modeling/space_sensitivity/` y el registro en
+`reports/modeling/runs/m7s/space_sensitivity/run.json`.
+
 Verificar acceso a la A100:
 
 ```bash

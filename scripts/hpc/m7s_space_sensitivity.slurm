@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+#SBATCH --job-name=claims-m7s
+#SBATCH --partition=standard
+#SBATCH --qos=a-postgrado
+#SBATCH --cpus-per-task=4
+#SBATCH --mem=12G
+#SBATCH --time=08:00:00
+#SBATCH --output=reports/modeling/slurm-%x-%j.out
+
+set -euo pipefail
+
+export CLAIMS_EXECUTION_HOST=khipu
+export MPLBACKEND=Agg
+export OMP_NUM_THREADS=4
+export MKL_NUM_THREADS=4
+export OPENBLAS_NUM_THREADS=4
+export NUMBA_NUM_THREADS=1
+
+# Steps: smoke, prepare (array 0-8), cluster (array 0-35) and summarize.
+# Array tasks read their index from SLURM_ARRAY_TASK_ID.
+uv run --no-sync python -m src.models.space_sensitivity "$@"

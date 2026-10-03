@@ -6,11 +6,15 @@ from sklearn.metrics import pairwise_distances
 from src.models.cluster_comparison import (
     acceptance_failures,
     candidate_definitions,
+    fit_algorithm,
+    future_assignment,
     labels_from_cure_clusters,
     semantic_metrics,
     silhouette_summary,
     structure_metrics,
 )
+
+GMM_SETTINGS = {"max_iter": 200, "n_init": 1, "reg_covar": 1e-6}
 
 
 class ClusterComparisonTests(unittest.TestCase):
@@ -37,6 +41,40 @@ class ClusterComparisonTests(unittest.TestCase):
             {candidate["algorithm"] for candidate in candidates},
             {"kmeans", "hdbscan", "cure"},
         )
+
+    def test_adds_gmm_only_when_configured(self):
+        settings = {
+            "kmeans": {"clusters": [20]},
+            "hdbscan": {"min_cluster_size": [], "min_samples": []},
+            "cure": {"candidates": []},
+            "gmm": {"components": [20, 40], "covariance": "full"},
+        }
+
+        identifiers = [entry["id"] for entry in candidate_definitions(settings)]
+
+        self.assertEqual(identifiers, ["kmeans_k20", "gmm_k20_full", "gmm_k40_full"])
+
+    def test_gmm_novelty_rejects_rows_far_from_fit(self):
+        rng = np.random.default_rng(0)
+        train = np.vstack(
+            [rng.normal(0, 1, (200, 2)), rng.normal(8, 1, (200, 2))]
+        ).astype(np.float32)
+        model, labels, extras = fit_algorithm(
+            "gmm",
+            {"components": 2, "covariance": "full"},
+            train,
+            {"gmm": GMM_SETTINGS},
+            seed=0,
+            threads=1,
+        )
+        near, *_ = future_assignment("gmm", model, extras, train, labels, train)
+        far, *_ = future_assignment(
+            "gmm", model, extras, train, labels, train + 50
+        )
+
+        self.assertEqual(len(np.unique(labels)), 2)
+        self.assertGreater(near["future_coverage"], 0.98)
+        self.assertEqual(far["future_coverage"], 0.0)
 
     def test_converts_cure_clusters_to_labels(self):
         labels = labels_from_cure_clusters([[0, 2], [1, 3]], rows=4)

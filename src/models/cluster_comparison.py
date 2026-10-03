@@ -28,6 +28,7 @@ from sklearn.metrics import (
     pairwise_distances_argmin_min,
     silhouette_samples,
 )
+from sklearn.mixture import GaussianMixture
 
 from src.data.apply_taxonomy import CANONICAL_PRODUCT_COLUMN
 from src.data.build_targets import COMPLETE_COLUMNS
@@ -48,6 +49,8 @@ from src.models.semantic_space import (
 
 NOISE_LABEL = -1
 MISSING_LABEL = -999
+# models_plan.md §25.3: a GMM row is novel below the 1% log-likelihood of fit.
+GMM_NOVELTY_QUANTILE = 0.01
 
 
 def load_inputs(config: dict[str, Any]) -> dict[str, Any]:
@@ -132,6 +135,20 @@ def candidate_definitions(settings: dict[str, Any]) -> list[dict[str, Any]]:
                 "parameters": parameters,
             }
         )
+    # M7 had no GMM; the §25.3 sensitivity round adds it with a per-space covariance.
+    if "gmm" in settings:
+        covariance = settings["gmm"]["covariance"]
+        for components in settings["gmm"]["components"]:
+            candidates.append(
+                {
+                    "id": f"gmm_k{components}_{covariance}",
+                    "algorithm": "gmm",
+                    "parameters": {
+                        "components": components,
+                        "covariance": covariance,
+                    },
+                }
+            )
     return candidates
 
 
@@ -197,6 +214,19 @@ def fit_algorithm(
         labels = labels_from_cure_clusters(model.get_clusters(), len(values))
         return model, labels, {
             "representatives": model.get_representors(),
+        }
+
+    if algorithm == "gmm":
+        model = GaussianMixture(
+            n_components=parameters["components"],
+            covariance_type=parameters["covariance"],
+            max_iter=settings["gmm"]["max_iter"],
+            n_init=settings["gmm"]["n_init"],
+            reg_covar=settings["gmm"]["reg_covar"],
+            random_state=seed,
+        ).fit(values)
+        return model, model.predict(values).astype(np.int32), {
+            "converged": float(model.converged_),
         }
 
     raise ValueError(f"Unknown clustering algorithm: {algorithm}")
@@ -479,6 +509,21 @@ def future_assignment(
             np.empty(0, dtype=np.int32),
             {},
         )
+    if algorithm == "gmm":
+        threshold = float(
+            np.quantile(model.score_samples(train_values), GMM_NOVELTY_QUANTILE)
+        )
+        accepted = model.score_samples(future_values) >= threshold
+        metrics = {
+            "assignment_type": "log_likelihood",
+            "future_coverage": float(accepted.mean()),
+            "future_rejected_fraction": float(1.0 - accepted.mean()),
+        }
+        references = np.asarray(model.means_, dtype=np.float32)
+        reference_labels = np.arange(len(references), dtype=np.int32)
+        return metrics, references, reference_labels, {
+            cluster: threshold for cluster in clusters
+        }
     if algorithm == "kmeans":
         references = np.asarray(model.cluster_centers_, dtype=np.float32)
         reference_labels = np.arange(len(references), dtype=np.int32)
