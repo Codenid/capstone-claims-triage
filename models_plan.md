@@ -1763,6 +1763,11 @@ una sola vez).
   UMAP 15 con semilla 42 reutiliza las coordenadas de M7, y antes de comparar
   nada sus etiquetas de k-means `k = 40` deben reproducir las de M7 con ARI de
   al menos 0.99; si no, el resumen se detiene.
+- Límite de tiempo, aprobado por el usuario el 2026-10-03 después de la prueba
+  rápida (SLURM 54194): CURE podría pasar las 8 h por job de Khipu en PCA 256 y
+  512. Si una tarea termina en TIMEOUT de SLURM, sus candidatos cuentan como
+  rechazados por tiempo y el reporte lo dice. Las tareas de k-means no pueden
+  quedar fuera, porque miden el efecto del espacio.
 
 ### 25.4 Bloque B: T1 con modelos fundacionales tabulares
 

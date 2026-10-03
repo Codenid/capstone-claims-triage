@@ -12,6 +12,7 @@ from src.models.space_sensitivity import (
     cluster_tasks,
     clustering_settings,
     decide,
+    load_results,
     neighbor_pairs,
     reproduction_check,
     start_output,
@@ -149,6 +150,29 @@ class SpaceSensitivityTests(unittest.TestCase):
                 start_output(final)
             staging.rename(final)
             self.assertIsNone(start_output(final))
+
+    def test_time_limited_tasks_are_explicit(self):
+        settings = {"spaces": {"a": {}, "b": {}}, "reference_space": "a"}
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            for space, algorithm in cluster_tasks(settings):
+                if (space, algorithm) == ("b", "cure"):
+                    continue
+                task = root / "clusters" / f"{space}__{algorithm}"
+                task.mkdir(parents=True)
+                (task / "records.json").write_text('[{"id": "x"}]', encoding="utf-8")
+                np.save(task / "labels.npy", np.zeros((1, 3), dtype=np.int32))
+
+            with self.assertRaisesRegex(FileNotFoundError, "b__cure"):
+                load_results(root, settings, [])
+            with self.assertRaisesRegex(ValueError, "did finish"):
+                load_results(root, settings, ["b__cure", "a__cure"])
+            with self.assertRaisesRegex(ValueError, "every k-means"):
+                load_results(root, settings, ["b__kmeans"])
+            results = load_results(root, settings, ["b__cure"])
+
+        self.assertEqual(len(results), 7)
+        self.assertNotIn("b__cure", results)
 
     def test_stops_when_m7_is_not_reproduced(self):
         with tempfile.TemporaryDirectory() as directory:

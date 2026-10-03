@@ -463,15 +463,25 @@ uv run --no-sync python -m unittest tests.test_space_sensitivity -v
 sbatch scripts/hpc/m7s_space_sensitivity.slurm smoke
 ```
 
-El run completo son tres pasos encadenados: 9 espacios, 36 tareas de
-clustering (espacio × algoritmo) y el resumen. `%8` mantiene el uso dentro del
-límite de 32 CPU y 98 GB por usuario:
+El run completo son tres pasos: 9 espacios, 36 tareas de clustering (espacio ×
+algoritmo) y el resumen. `%8` mantiene el uso dentro del límite de 32 CPU y
+98 GB por usuario:
 
 ```bash
 prepare=$(sbatch --parsable --array=0-8%8 scripts/hpc/m7s_space_sensitivity.slurm prepare)
-cluster=$(sbatch --parsable --array=0-35%8 --dependency=afterok:$prepare \
-  scripts/hpc/m7s_space_sensitivity.slurm cluster)
-sbatch --dependency=afterok:$cluster scripts/hpc/m7s_space_sensitivity.slurm summarize
+sbatch --array=0-35%8 --dependency=afterok:$prepare \
+  scripts/hpc/m7s_space_sensitivity.slurm cluster
+```
+
+Cuando termine el arreglo de clustering, revisar el estado de cada tarea con
+`sacct`. Las que terminen en TIMEOUT (CURE en PCA 256 o 512, §25.3) se pasan al
+resumen y cuentan como rechazadas por tiempo:
+
+```bash
+# Sin TIMEOUT:
+sbatch scripts/hpc/m7s_space_sensitivity.slurm summarize
+# Con TIMEOUT, por ejemplo en PCA 512:
+sbatch scripts/hpc/m7s_space_sensitivity.slurm summarize --time-limited pca512__cure
 ```
 
 Cada tarea escribe en `artifacts/models/space_sensitivity/` a través de un

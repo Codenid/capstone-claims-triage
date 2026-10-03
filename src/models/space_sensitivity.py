@@ -77,6 +77,13 @@ def parse_args() -> argparse.Namespace:
         default=None,
         help="Task of prepare or cluster; defaults to SLURM_ARRAY_TASK_ID.",
     )
+    parser.add_argument(
+        "--time-limited",
+        nargs="+",
+        default=[],
+        metavar="TASK",
+        help="summarize: tasks such as pca512__cure that SLURM stopped by TIMEOUT.",
+    )
     return parser.parse_args()
 
 
@@ -649,11 +656,28 @@ def cluster(config: dict[str, Any], index: int) -> None:
     print(f"M7S task {final.name} ready.")
 
 
-def load_results(root: Path, settings: dict[str, Any]) -> dict[str, dict[str, Any]]:
+def load_results(
+    root: Path,
+    settings: dict[str, Any],
+    time_limited: list[str],
+) -> dict[str, dict[str, Any]]:
+    """Every task's results; time-limited tasks count as rejected (§25.3)."""
+    keys = [task_key(space, algorithm) for space, algorithm in cluster_tasks(settings)]
+    unknown = sorted(set(time_limited) - set(keys))
+    if unknown:
+        raise ValueError(f"Unknown M7S tasks: {', '.join(unknown)}")
+    kmeans = [key for key in time_limited if key.endswith("__kmeans")]
+    if kmeans:
+        # k-means k=40 of every space measures the space effect.
+        raise ValueError(f"M7S needs every k-means task: {', '.join(kmeans)}")
     results = {}
     missing = []
     for space, algorithm in cluster_tasks(settings):
         directory = root / "clusters" / task_key(space, algorithm)
+        if directory.name in time_limited:
+            if directory.exists():
+                raise ValueError(f"M7S task {directory.name} did finish.")
+            continue
         if not directory.exists():
             missing.append(directory.name)
             continue
@@ -671,7 +695,7 @@ def load_results(root: Path, settings: dict[str, Any]) -> dict[str, dict[str, An
     return results
 
 
-def summarize(config: dict[str, Any]) -> None:
+def summarize(config: dict[str, Any], time_limited: list[str]) -> None:
     started = time.perf_counter()
     settings = config["space_sensitivity"]
     seed = config["experiment"]["seed"]
@@ -684,7 +708,7 @@ def summarize(config: dict[str, Any]) -> None:
 
     root = PROJECT_ROOT / paths["space_sensitivity_artifacts"]
     clustering_dir = PROJECT_ROOT / paths["clustering_artifacts"]
-    results = load_results(root, settings)
+    results = load_results(root, settings, time_limited)
     reproduction = reproduction_check(
         results[task_key(settings["reference_space"], "kmeans")],
         clustering_dir,
@@ -727,6 +751,7 @@ def summarize(config: dict[str, Any]) -> None:
         },
         "reproduction": reproduction,
         "spaces": spaces,
+        "time_limited_tasks": sorted(time_limited),
         "rule": {
             "minimum_relative_gain": settings["minimum_relative_gain"],
             "bootstrap_draws": settings["bootstrap_draws"],
@@ -805,6 +830,8 @@ def print_summary(report: dict[str, Any]) -> None:
             f"{space}: ARI={change['ari_same_candidate']:.3f} "
             f"changes={change['changes']}"
         )
+    for task in report.get("time_limited_tasks", []):
+        print(f"{task}: rejected by the 8 h time limit")
     print(f"Winner: {report['winner']}")
 
 
@@ -873,7 +900,7 @@ def main() -> None:
     elif args.step == "cluster":
         cluster(config, task_index(args.index))
     elif args.step == "summarize":
-        summarize(config)
+        summarize(config, args.time_limited)
     else:
         smoke(config)
 
