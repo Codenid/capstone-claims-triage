@@ -1413,6 +1413,10 @@ las salidas en Khipu y los runs de MLflow no se tocaron. Del trabajo de M12 solo
 se conserva la nota de §24 sobre el eco de la ráfaga de enero. La siguiente
 acción es M12.
 
+Actualización del 2026-10-03: por decisión del usuario, antes de M12 va una
+ronda de sensibilidad y alternativas (§25), con reglas aprobadas antes de
+calcular nada. La siguiente acción es cerrar los pendientes de §25.7.
+
 ## 21. Clasificadores T1–T4 con todo `fit`
 
 Decisiones del 2026-09-27 con aprobación del usuario:
@@ -1690,3 +1694,120 @@ patrón 8 desde el estado del CUSUM del 2025-01-06, deja 2 aumentos entre el
 2025-01-13 y el 2025-02-03: los patrones 14 y 3. Es una limitación de M9 y M11
 tal como están congelados; no se cambió ningún modelo. El código del diagnóstico
 quedó en el historial de Git (`src/triage/echo.py`, commit `2a97d93`).
+
+## 25. Ronda de sensibilidad y alternativas
+
+Reglas aprobadas por el usuario el 2026-10-03, antes de calcular nada. Esta
+ronda va antes de M12.
+
+### 25.1 Periodos
+
+| Nombre habitual | Nombre en este plan | Uso en esta ronda |
+|---|---|---|
+| Train | `fit` | Entrenar y ajustar |
+| Validation | Calibración | Elegir entre candidatos |
+| Test | Validación (2025-H1) | Ya consultada (§22, §24); solo se reporta |
+
+- Todo se elige con `fit` + calibración.
+- El ganador de cada bloque se mide una sola vez en validación, con todo
+  congelado, y se reporta como «ya consultada; no es evidencia limpia». Nada se
+  ajusta después.
+- T1 también se mide en `ood_2026_partial` después de congelarlo.
+- El bloque C se diseñó conociendo el eco de enero de 2025 (§24), que está en
+  validación. Su resultado de validación se reporta con esa advertencia.
+
+### 25.2 Regla común
+
+- Un candidato gana si mejora la métrica principal del modelo vigente al menos
+  5% relativo y el IC bootstrap 95% de la diferencia queda entero a favor del
+  candidato: 2000 remuestreos pareados por semana, semilla 42.
+- Si gana, reemplaza al modelo vigente y se rehacen, con sus reglas originales,
+  las etapas que dependen de él. Ejemplo: un clustering nuevo obliga a rehacer
+  M8, M9, M10 y M11, en ese orden.
+- Si nadie gana, los modelos congelados siguen y el resultado queda como
+  análisis de sensibilidad.
+
+### 25.3 Bloque A: espacio semántico y clustering
+
+Pregunta: ¿256 componentes PCA y un UMAP de 15 dimensiones con semilla 42
+cambian los clusters? Ningún espacio se probó hasta ahora (M6 y M7 los fijaron
+una sola vez).
+
+| Espacio | Detalle |
+|---|---|
+| PCA 128 | Primeras 128 componentes del PCA de M6 |
+| PCA 256 | PCA de M6 |
+| PCA 512 | PCA nuevo |
+| UMAP 5, 10, 15 y 30 | Sobre PCA 256, semilla 42; UMAP 15 es el actual |
+| UMAP 15, semillas 43 y 44 | Sobre PCA 256 |
+
+- Todo se ajusta solo con las 120,000 filas de ajuste de M5.
+- En cada espacio corren las 12 configuraciones de M7 (k-means con
+  `k = 20, 40, 80`, 6 de HDBSCAN y 3 de CURE) y GMM con `k = 20, 40, 80`:
+  covarianza completa en UMAP y diagonal en PCA. La novedad de GMM es una
+  log-verosimilitud menor al percentil 1 de ajuste.
+- Misma muestra de 20,000 filas y mismas reglas de aceptación de M7
+  (`acceptance` en `reports/modeling/clustering_results.json`).
+- Entre los que pasan, decide el **lift de vecinos**: tasa de vecinos BGE en el
+  mismo cluster menos la tasa por azar `sum(p^2)`, con los vecinos buscados en
+  las 1,024 dimensiones originales. El actual vale 0.639. El silhouette se
+  reporta, pero no decide, porque no es comparable entre espacios. El bootstrap
+  de 25.2 remuestrea las semanas de `fit` de la muestra.
+- Para describir la sensibilidad, un espacio cambia los clusters si su ARI
+  frente a los clusters de M7, en la misma muestra, es menor que 0.6 (cerca de
+  la estabilidad propia de k-means, 0.626) o si, al rehacer M8–M11, cambian las
+  alertas de M11 en `fit` + calibración.
+
+### 25.4 Bloque B: T1 con modelos fundacionales tabulares
+
+- Candidatos:
+  - TabPFN-3.5, con pesos locales de licencia no comercial: solo evaluación
+    académica, y en producción requeriría licencia comercial. El usuario acepta
+    la licencia en Hugging Face con su cuenta.
+  - Kumo Tabular de NVIDIA (`nvidia/Kumo-Tabular`, licencia OpenMDW 1.1, que
+    hay que confirmar con el área legal). Las 90 clases de T1 se resuelven con
+    códigos correctores de error (ECOC).
+- Entrada común: primeras 100 componentes del PCA de M6 + producto, y el mismo
+  contexto de filas de ajuste para ambos.
+- Referencia: el T1 congelado, BGE + producto (M5B).
+- Métrica principal: Macro-F1 en las 167,973 filas de calibración sin texto
+  compartido. Top-3 se reporta.
+- Corren en la A100 de Khipu. Los pesos se descargan antes en el nodo de login,
+  porque los nodos SLURM no tienen internet.
+
+### 25.5 Bloque C: conteos semanales (M9)
+
+- Referencia: NB-R4-H v3. Si el bloque A cambia el clustering, se reajusta con
+  la misma especificación sobre los conteos nuevos.
+- Candidatos:
+  - Un modelo dinámico bayesiano de participaciones: aprende en `fit` qué tan
+    rápido adaptarse, en lugar de fijar 4 semanas, y las semanas atípicas no
+    arrastran el estado.
+  - Modelos fundacionales de series sin entrenamiento: Chronos-2, TimesFM 3.0 y
+    TabPFN-TS, con el total semanal `N_t` como covariable, igual que M9. Las
+    licencias se verifican antes de descargar.
+- Pronóstico a una semana en las semanas de calibración, con la historia hasta
+  la semana anterior.
+- Métrica principal: WIS, con la regla de 25.2. Cobertura 80% y 95% dentro de
+  los rangos de §12.1. WAPE y MAE solo cuentan como degradación (§12.4).
+- Si gana, reemplaza a M9 y se rehace M11 con las reglas de §24.
+
+### 25.6 Orden
+
+1. Bloque A. Si hay ganador, se rehacen M8–M11.
+2. Bloque C, sobre los conteos vigentes.
+3. Bloque B, independiente; puede correr en paralelo con A.
+4. Reporte único en validación de los ganadores, marcado como en 25.1; T1
+   también en `ood_2026_partial`.
+
+Cada bloque corre primero una prueba rápida y después el run completo, con un
+run de MLflow por bloque. Los modelos bayesianos pasan antes por el prior
+predictive (§10).
+
+### 25.7 Pendiente antes de implementar
+
+- [ ] Tamaño del contexto de los modelos fundacionales tabulares. Propuesta:
+  50,000 filas de ajuste al azar, semilla 42, debajo de las 60,000 filas con
+  que se preentrenó Kumo Tabular.
+- [ ] Especificación matemática del modelo dinámico del bloque C.
+- [ ] Permiso del usuario para cada descarga de pesos: nombre, fuente y tamaño.
