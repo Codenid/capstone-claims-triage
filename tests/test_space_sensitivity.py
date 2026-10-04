@@ -59,6 +59,8 @@ class SpaceSensitivityTests(unittest.TestCase):
 
         self.assertEqual(pca["gmm"]["covariance"], "diag")
         self.assertEqual(umap["gmm"]["covariance"], "full")
+        self.assertEqual(pca["gmm"]["reg_covar"], 1e-6)
+        self.assertEqual(umap["gmm"]["reg_covar"], 1e-3)
         identifiers = [entry["id"] for entry in candidate_definitions(pca)]
         self.assertEqual(len(identifiers), 15)
         self.assertIn("gmm_k40_diag", identifiers)

@@ -272,7 +272,9 @@ space_sensitivity:
     covariance: {pca: diag, umap: full}
     max_iter: 200
     n_init: 1
-    reg_covar: 1.0e-6
+    # 1e-6 made the UMAP covariances singular in SLURM 54197; PCA variances
+    # are far smaller, so PCA keeps 1e-6.
+    reg_covar: {pca: 1.0e-6, umap: 1.0e-3}
   minimum_relative_gain: 0.05
   bootstrap_draws: 2000
   change_ari: 0.6

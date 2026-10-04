@@ -1768,6 +1768,11 @@ una sola vez).
   512. Si una tarea termina en TIMEOUT de SLURM, sus candidatos cuentan como
   rechazados por tiempo y el reporte lo dice. Las tareas de k-means no pueden
   quedar fuera, porque miden el efecto del espacio.
+- GMM, aprobado por el usuario el 2026-10-03: con `reg_covar = 1e-6` las 6
+  tareas UMAP fallaron (SLURM 54197) porque UMAP junta los textos de plantilla
+  en casi un punto y una covarianza colapsa. En UMAP se usa `reg_covar = 1e-3`;
+  PCA, con varianzas mucho más chicas, conserva `1e-6`. Las carpetas fallidas
+  se renombraron a `.failed-54197`, sin borrarlas.
 
 ### 25.4 Bloque B: T1 con modelos fundacionales tabulares
 

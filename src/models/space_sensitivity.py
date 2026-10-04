@@ -116,9 +116,10 @@ def clustering_settings(
     config: dict[str, Any],
     space: dict[str, Any],
 ) -> dict[str, Any]:
-    """M7 settings plus GMM, with the covariance that §25.3 fixes for the space."""
+    """M7 settings plus GMM, with the covariance and regularization of the space."""
     gmm = dict(config["space_sensitivity"]["gmm"])
-    gmm["covariance"] = gmm["covariance"][space["kind"]]
+    for name in ("covariance", "reg_covar"):
+        gmm[name] = gmm[name][space["kind"]]
     return {**config["clustering"], "gmm": gmm}
 
 
