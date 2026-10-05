@@ -1,0 +1,794 @@
+{
+  "stage": "M7S",
+  "plan": "models_plan.md §25.3",
+  "seed": 42,
+  "split_version": "temporal_v1",
+  "validation_used": false,
+  "sources": {
+    "bge_dvc_hash": "009e3b35e25d9df095cf753e0a05f041.dir",
+    "semantic_dvc_hash": "08662a82971a71666b06c9ccf8120d7f.dir",
+    "clustering_dvc_hash": "425408aa84d0e2a44b8c5becd467e724.dir"
+  },
+  "sample": {
+    "fit_rows": 20000,
+    "weeks": 93,
+    "id_sha256": "b3a4600faf201f8cd22e52448394f2cb4bc2a803641a915f0d8e4d0437c7723a"
+  },
+  "reproduction": {
+    "ari_vs_m7": {
+      "kmeans_k20": 1.0,
+      "kmeans_k40": 1.0,
+      "kmeans_k80": 1.0
+    },
+    "minimum_ari": 0.99,
+    "passed": true
+  },
+  "spaces": {
+    "pca128": {
+      "space": "pca128",
+      "kind": "pca",
+      "components": 128,
+      "explained_variance": 0.828580915927887,
+      "fitted_on_rows": 120000,
+      "sample_rows": 20000,
+      "elapsed_seconds": 5.390448202146217
+    },
+    "pca256": {
+      "space": "pca256",
+      "kind": "pca",
+      "components": 256,
+      "explained_variance": 0.9242143034934998,
+      "fitted_on_rows": 120000,
+      "sample_rows": 20000,
+      "elapsed_seconds": 5.589819710003212
+    },
+    "pca512": {
+      "space": "pca512",
+      "kind": "pca",
+      "components": 512,
+      "explained_variance": 0.9834254384040833,
+      "fitted_on_rows": 120000,
+      "sample_rows": 20000,
+      "elapsed_seconds": 23.651827994035557
+    },
+    "umap5_s42": {
+      "space": "umap5_s42",
+      "kind": "umap",
+      "components": 5,
+      "seed": 42,
+      "fitted_on_rows": 120000,
+      "sample_rows": 20000,
+      "elapsed_seconds": 195.5798264609184
+    },
+    "umap10_s42": {
+      "space": "umap10_s42",
+      "kind": "umap",
+      "components": 10,
+      "seed": 42,
+      "fitted_on_rows": 120000,
+      "sample_rows": 20000,
+      "elapsed_seconds": 206.77889960701577
+    },
+    "umap15_s42": {
+      "space": "umap15_s42",
+      "kind": "umap",
+      "components": 15,
+      "seed": 42,
+      "reuse_m7": true,
+      "reused": "M7",
+      "fitted_on_rows": 120000,
+      "sample_rows": 20000,
+      "elapsed_seconds": 0.4443180828820914
+    },
+    "umap30_s42": {
+      "space": "umap30_s42",
+      "kind": "umap",
+      "components": 30,
+      "seed": 42,
+      "fitted_on_rows": 120000,
+      "sample_rows": 20000,
+      "elapsed_seconds": 251.2567526011262
+    },
+    "umap15_s43": {
+      "space": "umap15_s43",
+      "kind": "umap",
+      "components": 15,
+      "seed": 43,
+      "fitted_on_rows": 120000,
+      "sample_rows": 20000,
+      "elapsed_seconds": 222.26550148101524
+    },
+    "umap15_s44": {
+      "space": "umap15_s44",
+      "kind": "umap",
+      "components": 15,
+      "seed": 44,
+      "fitted_on_rows": 120000,
+      "sample_rows": 20000,
+      "elapsed_seconds": 212.61714257788844
+    }
+  },
+  "time_limited_tasks": [],
+  "rule": {
+    "minimum_relative_gain": 0.05,
+    "bootstrap_draws": 2000,
+    "bootstrap_unit": "fit week of the comparison rows",
+    "change_ari": 0.6
+  },
+  "reference": {
+    "key": "umap15_s42/kmeans_k40",
+    "accepted": true,
+    "neighbor_lift": 0.637448305
+  },
+  "comparisons": [
+    {
+      "challenger": "umap5_s42/kmeans_k40",
+      "relative_gain": -0.017081079225710782,
+      "difference": {
+        "estimate": -0.010888305000000043,
+        "p025": -0.014334532942907097,
+        "p50": -0.010969848612973787,
+        "p975": -0.0074832330541116775
+      },
+      "wins": false
+    },
+    {
+      "challenger": "umap5_s42/gmm_k80_full",
+      "relative_gain": -0.03665547436038763,
+      "difference": {
+        "estimate": -0.02336597000000007,
+        "p025": -0.027217013914503704,
+        "p50": -0.02335224439262562,
+        "p975": -0.01950982312518622
+      },
+      "wins": false
+    },
+    {
+      "challenger": "umap10_s42/gmm_k80_full",
+      "relative_gain": -0.0003295875106296142,
+      "difference": {
+        "estimate": -0.00021009500000002124,
+        "p025": -0.003230390925071119,
+        "p50": -0.0002566000947651914,
+        "p975": 0.0027605836632132595
+      },
+      "wins": false
+    },
+    {
+      "challenger": "umap30_s42/gmm_k80_full",
+      "relative_gain": -0.07460614394448839,
+      "difference": {
+        "estimate": -0.04755756000000011,
+        "p025": -0.053118348105289766,
+        "p50": -0.04756067347794518,
+        "p975": -0.042501634698925664
+      },
+      "wins": false
+    },
+    {
+      "challenger": "umap15_s43/gmm_k80_full",
+      "relative_gain": -0.016812571177830637,
+      "difference": {
+        "estimate": -0.010717144999999983,
+        "p025": -0.014641892063146464,
+        "p50": -0.010754477687768271,
+        "p975": -0.007056911492757518
+      },
+      "wins": false
+    }
+  ],
+  "winner": null,
+  "replaces_reference": false,
+  "space_change": {
+    "pca128": {
+      "ari_same_candidate": 0.19457507314995118,
+      "changes": true
+    },
+    "pca256": {
+      "ari_same_candidate": 0.20818046244144686,
+      "changes": true
+    },
+    "pca512": {
+      "ari_same_candidate": 0.18531969682762228,
+      "changes": true
+    },
+    "umap5_s42": {
+      "ari_same_candidate": 0.507971150718672,
+      "changes": true
+    },
+    "umap10_s42": {
+      "ari_same_candidate": 0.6255560941033786,
+      "changes": false
+    },
+    "umap15_s42": {
+      "ari_same_candidate": 1.0,
+      "changes": false
+    },
+    "umap30_s42": {
+      "ari_same_candidate": 0.5016450882648785,
+      "changes": true
+    },
+    "umap15_s43": {
+      "ari_same_candidate": 0.6096106450571797,
+      "changes": false
+    },
+    "umap15_s44": {
+      "ari_same_candidate": 0.5835009312383975,
+      "changes": true
+    }
+  },
+  "selected": [
+    {
+      "key": "pca128/kmeans_k80",
+      "algorithm": "kmeans",
+      "accepted": false,
+      "final_failures": [
+        "stability"
+      ],
+      "neighbor_lift": 0.65922318,
+      "silhouette_mean": 0.11684010177850723,
+      "stability_ari": 0.4589492836147135,
+      "future_coverage": 0.9891,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.035,
+      "ari_vs_reference": 0.14345246951364382
+    },
+    {
+      "key": "pca128/hdbscan_mcs100_ms30",
+      "algorithm": "hdbscan",
+      "accepted": false,
+      "final_failures": [
+        "noise",
+        "future_coverage"
+      ],
+      "neighbor_lift": 0.933580034254413,
+      "silhouette_mean": 0.5416476726531982,
+      "stability_ari": 0.8949689512106996,
+      "future_coverage": 0.19035,
+      "noise_fraction": 0.835,
+      "largest_cluster_fraction": 0.0192,
+      "ari_vs_reference": 0.045724219076493586
+    },
+    {
+      "key": "pca128/cure_k20_r5_c0.5",
+      "algorithm": "cure",
+      "accepted": false,
+      "final_failures": [
+        "largest_cluster",
+        "neighbor_lift"
+      ],
+      "neighbor_lift": 0.001053835000000003,
+      "silhouette_mean": 0.16010555624961853,
+      "stability_ari": 0.6279012945214771,
+      "future_coverage": 0.99115,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.99895,
+      "ari_vs_reference": -8.586163800762798e-06
+    },
+    {
+      "key": "pca128/gmm_k80_diag",
+      "algorithm": "gmm",
+      "accepted": false,
+      "final_failures": [
+        "negative_silhouette",
+        "stability"
+      ],
+      "neighbor_lift": 0.632437445,
+      "silhouette_mean": 0.07835858315229416,
+      "stability_ari": 0.4413184510158007,
+      "future_coverage": 0.9926,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.07335,
+      "ari_vs_reference": 0.14067570021486778
+    },
+    {
+      "key": "pca256/kmeans_k80",
+      "algorithm": "kmeans",
+      "accepted": false,
+      "final_failures": [
+        "negative_silhouette",
+        "stability"
+      ],
+      "neighbor_lift": 0.65726481,
+      "silhouette_mean": 0.104240782558918,
+      "stability_ari": 0.43345416118989333,
+      "future_coverage": 0.988175,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.03275,
+      "ari_vs_reference": 0.14506412905401184
+    },
+    {
+      "key": "pca256/hdbscan_mcs100_ms30",
+      "algorithm": "hdbscan",
+      "accepted": false,
+      "final_failures": [
+        "noise",
+        "future_coverage"
+      ],
+      "neighbor_lift": 0.9318211160336651,
+      "silhouette_mean": 0.515142023563385,
+      "stability_ari": 1.0,
+      "future_coverage": 0.18025,
+      "noise_fraction": 0.8395,
+      "largest_cluster_fraction": 0.0187,
+      "ari_vs_reference": 0.04419588505170726
+    },
+    {
+      "key": "pca256/cure_k20_r5_c0.5",
+      "algorithm": "cure",
+      "accepted": false,
+      "final_failures": [
+        "largest_cluster",
+        "neighbor_lift"
+      ],
+      "neighbor_lift": 0.001003945000000006,
+      "silhouette_mean": 0.18759329617023468,
+      "stability_ari": 0.8482026618976954,
+      "future_coverage": 0.98965,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.999,
+      "ari_vs_reference": 3.307297880590267e-05
+    },
+    {
+      "key": "pca256/gmm_k80_diag",
+      "algorithm": "gmm",
+      "accepted": false,
+      "final_failures": [
+        "negative_silhouette",
+        "stability"
+      ],
+      "neighbor_lift": 0.55794829,
+      "silhouette_mean": 0.04678977653384209,
+      "stability_ari": 0.4958497830365971,
+      "future_coverage": 0.9918,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.1497,
+      "ari_vs_reference": 0.12945979375789451
+    },
+    {
+      "key": "pca512/kmeans_k80",
+      "algorithm": "kmeans",
+      "accepted": false,
+      "final_failures": [
+        "negative_silhouette",
+        "stability"
+      ],
+      "neighbor_lift": 0.669666735,
+      "silhouette_mean": 0.08108582347631454,
+      "stability_ari": 0.4031449014762267,
+      "future_coverage": 0.9906,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.05195,
+      "ari_vs_reference": 0.1573851624697588
+    },
+    {
+      "key": "pca512/hdbscan_mcs100_ms30",
+      "algorithm": "hdbscan",
+      "accepted": false,
+      "final_failures": [
+        "noise",
+        "future_coverage"
+      ],
+      "neighbor_lift": 0.9347144016033594,
+      "silhouette_mean": 0.5170636177062988,
+      "stability_ari": 1.0,
+      "future_coverage": 0.169375,
+      "noise_fraction": 0.8388,
+      "largest_cluster_fraction": 0.0187,
+      "ari_vs_reference": 0.04506414235876494
+    },
+    {
+      "key": "pca512/cure_k20_r5_c0.5",
+      "algorithm": "cure",
+      "accepted": false,
+      "final_failures": [
+        "largest_cluster",
+        "neighbor_lift"
+      ],
+      "neighbor_lift": 0.0009989449999999733,
+      "silhouette_mean": 0.20932631194591522,
+      "stability_ari": 0.8330006761301302,
+      "future_coverage": 0.993075,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.999,
+      "ari_vs_reference": -4.205015183928558e-05
+    },
+    {
+      "key": "pca512/gmm_k80_diag",
+      "algorithm": "gmm",
+      "accepted": false,
+      "final_failures": [
+        "negative_silhouette",
+        "stability"
+      ],
+      "neighbor_lift": 0.5005373599999999,
+      "silhouette_mean": 0.028365854173898697,
+      "stability_ari": 0.3828722967494304,
+      "future_coverage": 0.9916,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.0952,
+      "ari_vs_reference": 0.11374289080486377
+    },
+    {
+      "key": "umap5_s42/kmeans_k40",
+      "algorithm": "kmeans",
+      "accepted": true,
+      "final_failures": [],
+      "neighbor_lift": 0.62656,
+      "silhouette_mean": 0.2766856253147125,
+      "stability_ari": 0.7295645811284318,
+      "future_coverage": 0.987175,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.1582,
+      "ari_vs_reference": 0.507971150718672
+    },
+    {
+      "key": "umap5_s42/hdbscan_mcs250_ms30",
+      "algorithm": "hdbscan",
+      "accepted": false,
+      "final_failures": [
+        "cluster_count",
+        "noise",
+        "future_coverage"
+      ],
+      "neighbor_lift": 0.14827098127073213,
+      "silhouette_mean": 0.5533458590507507,
+      "stability_ari": 1.0,
+      "future_coverage": 0.614,
+      "noise_fraction": 0.4732,
+      "largest_cluster_fraction": 0.4818,
+      "ari_vs_reference": 0.07186111884566952
+    },
+    {
+      "key": "umap5_s42/cure_k80_r5_c0.5",
+      "algorithm": "cure",
+      "accepted": false,
+      "final_failures": [
+        "largest_cluster"
+      ],
+      "neighbor_lift": 0.20292963499999994,
+      "silhouette_mean": 0.38515639305114746,
+      "stability_ari": 0.7055007118549383,
+      "future_coverage": 0.910375,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.81145,
+      "ari_vs_reference": 0.06031258091156623
+    },
+    {
+      "key": "umap5_s42/gmm_k80_full",
+      "algorithm": "gmm",
+      "accepted": true,
+      "final_failures": [],
+      "neighbor_lift": 0.614082335,
+      "silhouette_mean": 0.187166228890419,
+      "stability_ari": 0.6099075929864781,
+      "future_coverage": 0.98485,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.08915,
+      "ari_vs_reference": 0.43487304842343333
+    },
+    {
+      "key": "umap10_s42/kmeans_k80",
+      "algorithm": "kmeans",
+      "accepted": false,
+      "final_failures": [
+        "stability"
+      ],
+      "neighbor_lift": 0.630287835,
+      "silhouette_mean": 0.21086889505386353,
+      "stability_ari": 0.5230507009224604,
+      "future_coverage": 0.97795,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.0977,
+      "ari_vs_reference": 0.5542395338910316
+    },
+    {
+      "key": "umap10_s42/hdbscan_mcs500_ms30",
+      "algorithm": "hdbscan",
+      "accepted": false,
+      "final_failures": [
+        "cluster_count",
+        "noise",
+        "future_coverage"
+      ],
+      "neighbor_lift": 0.15365938631816722,
+      "silhouette_mean": 0.5516408085823059,
+      "stability_ari": 0.9989459324886288,
+      "future_coverage": 0.624275,
+      "noise_fraction": 0.49335,
+      "largest_cluster_fraction": 0.4618,
+      "ari_vs_reference": 0.06412730097586247
+    },
+    {
+      "key": "umap10_s42/cure_k20_r5_c0.5",
+      "algorithm": "cure",
+      "accepted": false,
+      "final_failures": [
+        "largest_cluster",
+        "neighbor_lift",
+        "stability"
+      ],
+      "neighbor_lift": 0.007250459999999959,
+      "silhouette_mean": 0.3620389699935913,
+      "stability_ari": 0.49109341218534236,
+      "future_coverage": 0.89495,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.99015,
+      "ari_vs_reference": 0.002181783672018265
+    },
+    {
+      "key": "umap10_s42/gmm_k80_full",
+      "algorithm": "gmm",
+      "accepted": true,
+      "final_failures": [],
+      "neighbor_lift": 0.63723821,
+      "silhouette_mean": 0.23154142498970032,
+      "stability_ari": 0.6007910066345116,
+      "future_coverage": 0.973125,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.12695,
+      "ari_vs_reference": 0.6058744690886043
+    },
+    {
+      "key": "umap15_s42/kmeans_k40",
+      "algorithm": "kmeans",
+      "accepted": true,
+      "final_failures": [],
+      "neighbor_lift": 0.637448305,
+      "silhouette_mean": 0.13756345212459564,
+      "stability_ari": 0.6260025961209845,
+      "future_coverage": 0.9899,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.13885,
+      "ari_vs_reference": 1.0
+    },
+    {
+      "key": "umap15_s42/hdbscan_mcs500_ms30",
+      "algorithm": "hdbscan",
+      "accepted": false,
+      "final_failures": [
+        "cluster_count",
+        "noise",
+        "future_coverage"
+      ],
+      "neighbor_lift": 0.15459088139402133,
+      "silhouette_mean": 0.5454990267753601,
+      "stability_ari": 1.0,
+      "future_coverage": 0.626325,
+      "noise_fraction": 0.4891,
+      "largest_cluster_fraction": 0.46555,
+      "ari_vs_reference": 0.06513984716851022
+    },
+    {
+      "key": "umap15_s42/cure_k20_r5_c0.5",
+      "algorithm": "cure",
+      "accepted": false,
+      "final_failures": [
+        "largest_cluster",
+        "neighbor_lift",
+        "stability"
+      ],
+      "neighbor_lift": 0.003819000000000017,
+      "silhouette_mean": 0.40929749608039856,
+      "stability_ari": 0.4307434357964067,
+      "future_coverage": 0.95755,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.9921,
+      "ari_vs_reference": 0.001953435745847562
+    },
+    {
+      "key": "umap15_s42/gmm_k80_full",
+      "algorithm": "gmm",
+      "accepted": false,
+      "final_failures": [
+        "stability"
+      ],
+      "neighbor_lift": 0.634084725,
+      "silhouette_mean": 0.20019656419754028,
+      "stability_ari": 0.5561731900857717,
+      "future_coverage": 0.971875,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.12545,
+      "ari_vs_reference": 0.5267487309816764
+    },
+    {
+      "key": "umap30_s42/kmeans_k80",
+      "algorithm": "kmeans",
+      "accepted": false,
+      "final_failures": [
+        "negative_silhouette",
+        "stability"
+      ],
+      "neighbor_lift": 0.6161740649999999,
+      "silhouette_mean": 0.1003507599234581,
+      "stability_ari": 0.4856304005669023,
+      "future_coverage": 0.982925,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.06505,
+      "ari_vs_reference": 0.3983930416447252
+    },
+    {
+      "key": "umap30_s42/hdbscan_mcs250_ms30",
+      "algorithm": "hdbscan",
+      "accepted": false,
+      "final_failures": [
+        "cluster_count",
+        "noise",
+        "future_coverage"
+      ],
+      "neighbor_lift": 0.14656767575365537,
+      "silhouette_mean": 0.5399966239929199,
+      "stability_ari": 0.9989634629152951,
+      "future_coverage": 0.6255,
+      "noise_fraction": 0.4557,
+      "largest_cluster_fraction": 0.4981,
+      "ari_vs_reference": 0.07708228731175683
+    },
+    {
+      "key": "umap30_s42/cure_k20_r5_c0.5",
+      "algorithm": "cure",
+      "accepted": false,
+      "final_failures": [
+        "largest_cluster",
+        "neighbor_lift",
+        "stability"
+      ],
+      "neighbor_lift": 0.005107744999999997,
+      "silhouette_mean": 0.4450826048851013,
+      "stability_ari": 0.3683183913252593,
+      "future_coverage": 0.98785,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.99175,
+      "ari_vs_reference": 0.0020404131693738062
+    },
+    {
+      "key": "umap30_s42/gmm_k80_full",
+      "algorithm": "gmm",
+      "accepted": true,
+      "final_failures": [],
+      "neighbor_lift": 0.5898907449999999,
+      "silhouette_mean": 0.21382474899291992,
+      "stability_ari": 0.8543304708227245,
+      "future_coverage": 0.9756,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.38295,
+      "ari_vs_reference": 0.34046362540167774
+    },
+    {
+      "key": "umap15_s43/kmeans_k80",
+      "algorithm": "kmeans",
+      "accepted": false,
+      "final_failures": [
+        "stability"
+      ],
+      "neighbor_lift": 0.630521205,
+      "silhouette_mean": 0.16121433675289154,
+      "stability_ari": 0.5349717162687673,
+      "future_coverage": 0.98945,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.0918,
+      "ari_vs_reference": 0.5204777285396653
+    },
+    {
+      "key": "umap15_s43/hdbscan_mcs250_ms30",
+      "algorithm": "hdbscan",
+      "accepted": false,
+      "final_failures": [
+        "cluster_count",
+        "largest_cluster",
+        "noise",
+        "future_coverage"
+      ],
+      "neighbor_lift": 0.14065926207561685,
+      "silhouette_mean": 0.5459862351417542,
+      "stability_ari": 1.0,
+      "future_coverage": 0.6237,
+      "noise_fraction": 0.42365,
+      "largest_cluster_fraction": 0.52945,
+      "ari_vs_reference": 0.08766902508887552
+    },
+    {
+      "key": "umap15_s43/cure_k20_r5_c0.5",
+      "algorithm": "cure",
+      "accepted": false,
+      "final_failures": [
+        "largest_cluster",
+        "neighbor_lift",
+        "stability"
+      ],
+      "neighbor_lift": 0.004444130000000102,
+      "silhouette_mean": 0.3998633921146393,
+      "stability_ari": 0.5308753174359729,
+      "future_coverage": 0.956375,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.99275,
+      "ari_vs_reference": 0.0014088885001185918
+    },
+    {
+      "key": "umap15_s43/gmm_k80_full",
+      "algorithm": "gmm",
+      "accepted": true,
+      "final_failures": [],
+      "neighbor_lift": 0.6267311600000001,
+      "silhouette_mean": 0.18978743255138397,
+      "stability_ari": 0.6416189746678312,
+      "future_coverage": 0.9796,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.1576,
+      "ari_vs_reference": 0.46687118314762927
+    },
+    {
+      "key": "umap15_s44/kmeans_k80",
+      "algorithm": "kmeans",
+      "accepted": false,
+      "final_failures": [
+        "stability"
+      ],
+      "neighbor_lift": 0.621610585,
+      "silhouette_mean": 0.1606663465499878,
+      "stability_ari": 0.4848437114324838,
+      "future_coverage": 0.978025,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.0614,
+      "ari_vs_reference": 0.4027390129819246
+    },
+    {
+      "key": "umap15_s44/hdbscan_mcs250_ms30",
+      "algorithm": "hdbscan",
+      "accepted": false,
+      "final_failures": [
+        "cluster_count",
+        "largest_cluster",
+        "future_coverage"
+      ],
+      "neighbor_lift": 0.15900809684688588,
+      "silhouette_mean": 0.5319733023643494,
+      "stability_ari": 1.0,
+      "future_coverage": 0.62945,
+      "noise_fraction": 0.3964,
+      "largest_cluster_fraction": 0.5474,
+      "ari_vs_reference": 0.09655711669665701
+    },
+    {
+      "key": "umap15_s44/cure_k20_r5_c0.5",
+      "algorithm": "cure",
+      "accepted": false,
+      "final_failures": [
+        "largest_cluster",
+        "neighbor_lift",
+        "stability"
+      ],
+      "neighbor_lift": 0.009709775000000032,
+      "silhouette_mean": 0.4049626588821411,
+      "stability_ari": 0.29600639126609385,
+      "future_coverage": 0.9665,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.98925,
+      "ari_vs_reference": 0.002905784648745655
+    },
+    {
+      "key": "umap15_s44/gmm_k80_full",
+      "algorithm": "gmm",
+      "accepted": false,
+      "final_failures": [
+        "stability"
+      ],
+      "neighbor_lift": 0.647271665,
+      "silhouette_mean": 0.22713452577590942,
+      "stability_ari": 0.5619716757283731,
+      "future_coverage": 0.982975,
+      "noise_fraction": 0.0,
+      "largest_cluster_fraction": 0.12715,
+      "ari_vs_reference": 0.5388236111489162
+    }
+  ],
+  "versions": {
+    "scikit_learn": "1.9.1",
+    "umap_learn": "0.5.12",
+    "pyclustering": "0.10.1.2"
+  },
+  "resources": {
+    "elapsed_seconds": 100.28668867400847,
+    "maximum_rss_gib": 0.9523468017578125
+  }
+}
