@@ -1,0 +1,42 @@
+model_id: nb_state_space_v1
+
+source_dvc_hash: 87be2a97daa3b169bbd65850a64c89a6.dir
+weekly_counts_sha256: 35c5503b0b9b2a4b9e47984294683d27987b3c7824ae41de642c0a47cefd1ce1
+clusters: 40
+expected_complete_weeks:
+  fit: 91
+  calibration: 12
+  validation: 25
+time_scale_days: 365.25
+plot_clusters: 8
+# C-B of models_plan.md §25.5. tau_sigma follows the fit weeks: the weekly
+# change of centered log-shares has a median SD of 0.43 per cluster (with
+# sampling noise), and its excess kurtosis of 10 calls for Student-t steps.
+priors:
+  tau_sigma: 0.5
+  nu_alpha: 2.0
+  nu_beta: 0.1
+  initial_sigma: 3.0
+  log_alpha_global_mean: 2.302585093
+  log_alpha_global_sigma: 1.0
+  log_alpha_sigma: 0.75
+sampling:
+  backend: numpyro
+  chain_method: parallel
+  chains: 4
+  draws: 1000
+  tune: 1000
+  target_accept: 0.9
+  max_treedepth: 10
+  prior_draws: 500
+filter_sampling:
+  backend: numpyro
+  chain_method: parallel
+  chains: 4
+  draws: 1000
+  tune: 1000
+  target_accept: 0.9
+  max_treedepth: 10
+acceptance:
+  maximum_rhat: 1.01
+  minimum_ess: 400

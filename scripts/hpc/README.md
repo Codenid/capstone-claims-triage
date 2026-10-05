@@ -518,6 +518,23 @@ La prueba rápida no guarda nada. El run completo escribe
 `reports/modeling/foundation_t1/results.json` y se detiene si no reproduce el
 Macro-F1 publicado del T1 congelado.
 
+C-B, el segundo candidato del bloque C, es un modelo de espacio de estados en
+PyMC. Primero el prior predictive y un piloto con 2 semanas de calibración;
+después el run completo, que reestima los estados antes de cada una de las 12
+semanas de calibración:
+
+```bash
+sbatch --export=ALL,RUN_MODE=prior scripts/hpc/m9_state_space.slurm
+sbatch --export=ALL,RUN_MODE=pilot scripts/hpc/m9_state_space.slurm
+sbatch --export=ALL,RUN_MODE=full scripts/hpc/m9_state_space.slurm
+```
+
+Cada candidato del bloque C se compara después con M9 congelado:
+
+```bash
+uv run --no-sync python -m src.models.weekly_counts.challenge   reports/modeling/weekly_counts/<modelo>/<run_key>
+```
+
 Verificar acceso a la A100:
 
 ```bash
