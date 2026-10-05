@@ -491,6 +491,16 @@ revisarlo a mano: el script no lo borra. El resumen queda en
 `reports/modeling/space_sensitivity/` y el registro en
 `reports/modeling/runs/m7s/space_sensitivity/run.json`.
 
+C-A, el primer candidato del bloque C (`models_plan.md` §25.5), elige primero
+en `fit` la memoria (`discount`) y el recorte (`cap`) de sus participaciones,
+con la dispersión del run congelado de NB-R4-H v3. No usa PyMC ni abre
+calibración ni validación, y escribe
+`reports/modeling/weekly_counts/nb_discounted_hierarchical_v1/share_selection.json`:
+
+```bash
+sbatch scripts/hpc/m9_discount_grid.slurm
+```
+
 Verificar acceso a la A100:
 
 ```bash

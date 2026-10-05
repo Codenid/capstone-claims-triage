@@ -192,6 +192,16 @@ persistent_change:
     step_100: {kind: step, size: 1.00}
     none: {kind: none, size: 0.0}
 
+# C-A of the round approved on 2026-10-03 (models_plan.md §25.5): decaying
+# memory and a cap on atypical weeks, chosen in fit with the v3 dispersion.
+discount_grid:
+  reference_config: configs/weekly_counts/nb_rolling_4_hierarchical_v3.yaml
+  reference_run: reports/modeling/weekly_counts/nb_rolling_4_hierarchical_v3/20260927T161316.494762Z-full-a3ecfab3-9105ce1f
+  report: reports/modeling/weekly_counts/nb_discounted_hierarchical_v1/share_selection.json
+  warmup_weeks: 4
+  discounts: [0.5, 0.6, 0.7, 0.75, 0.8, 0.9]
+  caps: [1.5, 2, 3, null]
+
 clustering:
   source_dvc_hash: 08662a82971a71666b06c9ccf8120d7f.dir
   comparison_rows: 20000
