@@ -1417,6 +1417,10 @@ Actualización del 2026-10-03: por decisión del usuario, antes de M12 va una
 ronda de sensibilidad y alternativas (§25), con reglas aprobadas antes de
 calcular nada. La siguiente acción es cerrar los pendientes de §25.7.
 
+Actualización del 2026-10-05: el bloque A terminó sin ganador (§25.3) y M7
+sigue vigente. La siguiente acción es el bloque C (§25.5) y, en paralelo, el
+bloque B (§25.4); antes, el permiso del usuario para descargar pesos.
+
 ## 21. Clasificadores T1–T4 con todo `fit`
 
 Decisiones del 2026-09-27 con aprobación del usuario:
@@ -1773,6 +1777,34 @@ una sola vez).
   en casi un punto y una covarianza colapsa. En UMAP se usa `reg_covar = 1e-3`;
   PCA, con varianzas mucho más chicas, conserva `1e-6`. Las carpetas fallidas
   se renombraron a `.failed-54197`, sin borrarlas.
+
+Resultado del 2026-10-05 (SLURM 54196, 54197, 54255 y 54271; detalle en
+`reports/modeling/space_sensitivity/`). El UMAP 15 de M7 reprodujo sus
+etiquetas de k-means (ARI 1.000 con `k = 20, 40, 80`). Su lift fue 0.637; M7
+reportó 0.639 con 16 hilos en vez de 4, probablemente por empates entre textos
+idénticos al buscar vecinos. Ninguna tarea llegó al límite de 8 h.
+
+| Candidato aceptado | Lift | Diferencia con M7 (IC 95%) | Gana |
+|---|---:|---:|---|
+| M7: UMAP 15, semilla 42, k-means `k = 40` | 0.637 | — | — |
+| UMAP 10, GMM `k = 80` | 0.637 | −0.000 [−0.003, +0.003] | No |
+| UMAP 5, k-means `k = 40` | 0.627 | −0.011 [−0.014, −0.007] | No |
+| UMAP 15, semilla 43, GMM `k = 80` | 0.627 | −0.011 [−0.015, −0.007] | No |
+| UMAP 5, GMM `k = 80` | 0.614 | −0.023 [−0.027, −0.020] | No |
+| UMAP 30, GMM `k = 80` | 0.590 | −0.048 [−0.053, −0.043] | No |
+
+- **Ningún candidato gana; M7 sigue vigente y M8–M11 no se rehacen.**
+- **Sin UMAP no se pasa ninguna regla de M7.** En PCA 128, 256 y 512, k-means y
+  GMM fallan la estabilidad (ARI 0.38 a 0.50), HDBSCAN deja cerca del 84% de los reclamos
+  como ruido y CURE junta 99.9% en un solo cluster.
+- **La partición sí depende del espacio.** Frente a k-means `k = 40` de M7, el
+  mismo k-means da ARI 0.19 a 0.21 en PCA, 0.51 en UMAP 5, 0.63 en UMAP 10,
+  0.50 en UMAP 30, y 0.61 y 0.58 con solo cambiar la semilla de UMAP. Por la
+  regla de 25.3 cambian los clusters PCA 128, 256 y 512, UMAP 5, UMAP 30 y
+  UMAP 15 con semilla 44. Los candidatos aceptados tienen lift parecido (0.59 a
+  0.64), pero forman grupos distintos: los 40 patrones de M8 son una de varias
+  particiones de calidad parecida, y sus nombres no deben leerse como
+  categorías fijas.
 
 ### 25.4 Bloque B: T1 con modelos fundacionales tabulares
 
