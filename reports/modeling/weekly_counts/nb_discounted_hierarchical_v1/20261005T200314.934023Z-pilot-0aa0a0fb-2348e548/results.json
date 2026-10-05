@@ -1,0 +1,318 @@
+{
+  "backtest": {
+    "calibration": {
+      "baseline": {
+        "coverage_50": 0.035416666666666666,
+        "coverage_80": 0.09166666666666666,
+        "coverage_95": 0.15833333333333333,
+        "impossible_probability": 0.0,
+        "mae": 154.23854166666666,
+        "relative_bias": -0.00023995117110149237,
+        "rmse": 275.59201522207906,
+        "upper_95_excess_fraction": 0.3104166666666667,
+        "wape": 0.34494495100802786,
+        "width_50": 23.633333333333333,
+        "width_80": 44.69562499999999,
+        "width_95": 67.89921875,
+        "wis": 138.95690811011906
+      },
+      "model": {
+        "coverage_50": 0.625,
+        "coverage_80": 0.8520833333333333,
+        "coverage_95": 0.9583333333333334,
+        "impossible_probability": 0.0,
+        "mae": 52.60104166666667,
+        "relative_bias": -0.020712678274401635,
+        "rmse": 90.3202490908508,
+        "upper_95_excess_fraction": 0.025,
+        "wape": 0.11763897366128213,
+        "wape_skill": 0.6589630510100021,
+        "width_50": 108.3171875,
+        "width_80": 207.96083333333334,
+        "width_95": 322.93093749999997,
+        "wis": 30.35053794642857,
+        "wis_skill": 0.7815830939302657
+      }
+    },
+    "fit": {
+      "baseline": {
+        "coverage_50": 0.08103448275862069,
+        "coverage_80": 0.17385057471264367,
+        "coverage_95": 0.26839080459770115,
+        "impossible_probability": 0.0,
+        "mae": 67.4212643678161,
+        "relative_bias": -0.0005819226412670733,
+        "rmse": 108.51747237355295,
+        "upper_95_excess_fraction": 0.296551724137931,
+        "wape": 0.22831802948148552,
+        "width_50": 19.026221264367816,
+        "width_80": 36.09931034482758,
+        "width_95": 54.84663793103447,
+        "wis": 55.993399425287365
+      },
+      "model": {
+        "coverage_50": 0.5620689655172414,
+        "coverage_80": 0.8229885057471265,
+        "coverage_95": 0.9396551724137931,
+        "impossible_probability": 0.0,
+        "mae": 36.83204022988506,
+        "relative_bias": -0.018250281230172787,
+        "rmse": 59.77373344346256,
+        "upper_95_excess_fraction": 0.03936781609195402,
+        "wape": 0.12472947408984573,
+        "wape_skill": 0.45370291442551125,
+        "width_50": 69.48433908045978,
+        "width_80": 133.02364942528737,
+        "width_95": 205.62349856321833,
+        "wis": 20.77705044129721,
+        "wis_skill": 0.6289375059462095
+      }
+    }
+  },
+  "calibration_acceptance": {
+    "accepted": false,
+    "checks": {
+      "coverage_80": true,
+      "coverage_95": true,
+      "divergences": true,
+      "ess_bulk": true,
+      "ess_tail": false,
+      "mae": true,
+      "rhat": false,
+      "wape": true,
+      "wis_bootstrap": true,
+      "wis_gain": true
+    }
+  },
+  "candidate_role": "candidate",
+  "candidate_status": "pilot_only",
+  "comparison": {
+    "best_baseline": "b1_rolling_4",
+    "bootstrap_draws": 2000,
+    "candidate": "model",
+    "difference": {
+      "mae": {
+        "estimate": -3.034374999999997,
+        "p025": -6.063802083333332,
+        "p50": -3.046354166666667,
+        "p975": 0.6188281250000052
+      },
+      "wape": {
+        "estimate": -0.00678619185843346,
+        "p025": -0.013764308329388242,
+        "p50": -0.006824301959878806,
+        "p975": 0.0013208533260587363
+      },
+      "wis": {
+        "estimate": -12.70140959821429,
+        "p025": -15.954192550223212,
+        "p50": -12.772806547619055,
+        "p975": -9.470890466889875
+      }
+    },
+    "metrics": {
+      "b1_rolling_13": {
+        "mae": 78.63229166666666,
+        "wape": 0.17585625294114907,
+        "wis": 65.01835305059525
+      },
+      "b1_rolling_4": {
+        "mae": 55.635416666666664,
+        "wape": 0.1244251655197156,
+        "wis": 43.05194754464286
+      },
+      "baseline": {
+        "mae": 154.23854166666666,
+        "wape": 0.34494495100802786,
+        "wis": 138.95690811011906
+      },
+      "model": {
+        "mae": 52.60104166666667,
+        "wape": 0.11763897366128213,
+        "wis": 30.350537946428567
+      }
+    },
+    "split": "calibration",
+    "weeks": 12,
+    "wis_gain": 0.29502520379695996
+  },
+  "config_sha256": "0aa0a0fb226873d375506397b88ad51d88cade495a5990fc2c6d1398a8bb08f6",
+  "diagnostics": {
+    "bfmi_min": 0.8565848569193882,
+    "divergences": 0,
+    "ess_bulk_min": 417.27096242998437,
+    "ess_tail_min": 205.15955327829008,
+    "rhat_max": 1.0379431380199091,
+    "tree_depth_limit_hits": 0,
+    "tree_depth_max": 7
+  },
+  "evaluated_splits": [
+    "fit",
+    "calibration"
+  ],
+  "fit_only_training": true,
+  "formula": "complaint_count[c,t] ~ NegativeBinomial(mu[c,t], alpha[c]); mu[c,t] = weekly_total[t] * recent_share[c,t]; recent_share[c,t] = (sum_k discount**(k-1) * capped[c,t-k] + 1) / (sum_k discount**(k-1) * capped_total[t-k] + clusters); capped[c,s] = min(count[c,s], cap * weekly_total[s] * recent_share[c,s]); log_alpha_contrast ~ Normal(0, log_alpha_sigma); log_alpha[c] = log_alpha_global + (zero_sum_basis @ log_alpha_contrast)[c]; alpha[c] = exp(log_alpha[c])",
+  "mean_normalization": {
+    "by_split": {
+      "calibration": {
+        "maximum_abs_error": 3.3306690738754696e-15,
+        "mean_abs_error": 1.27675647831893e-15
+      },
+      "fit": {
+        "maximum_abs_error": 3.774758283725532e-15,
+        "mean_abs_error": 1.4637078267184535e-15
+      },
+      "validation": {
+        "maximum_abs_error": 4.773959005888173e-15,
+        "mean_abs_error": 2.504663143554353e-15
+      }
+    },
+    "maximum_abs_error": 4.773959005888173e-15
+  },
+  "model_id": "nb_discounted_hierarchical_v1",
+  "model_spec": {
+    "cluster_interpretation": "operational partition, not natural categories",
+    "clusters": 40,
+    "diagnostic_variables": [
+      "log_alpha_global",
+      "log_alpha_sigma",
+      "log_alpha_contrast"
+    ],
+    "dispersion": "hierarchical_by_cluster",
+    "expected_complete_weeks": {
+      "calibration": 12,
+      "fit": 91,
+      "validation": 25
+    },
+    "expected_variable": "mu",
+    "family": "negative_binomial",
+    "formula": "complaint_count[c,t] ~ NegativeBinomial(mu[c,t], alpha[c]); mu[c,t] = weekly_total[t] * recent_share[c,t]; recent_share[c,t] = (sum_k discount**(k-1) * capped[c,t-k] + 1) / (sum_k discount**(k-1) * capped_total[t-k] + clusters); capped[c,s] = min(count[c,s], cap * weekly_total[s] * recent_share[c,s]); log_alpha_contrast ~ Normal(0, log_alpha_sigma); log_alpha[c] = log_alpha_global + (zero_sum_basis @ log_alpha_contrast)[c]; alpha[c] = exp(log_alpha[c])",
+    "historical_run_id": null,
+    "mean_link": "discounted_capped_share_input",
+    "mean_sum_constrained": true,
+    "model_id": "nb_discounted_hierarchical_v1",
+    "negative_binomial_variance": "mu + mu**2 / alpha[c]",
+    "observed_variable": "observed",
+    "predictive_draw_sum_constrained": false,
+    "prior_strategy": "not_applicable_shares_are_data",
+    "priors": {
+      "log_alpha_global_mean": 2.302585093,
+      "log_alpha_global_sigma": 1.0,
+      "log_alpha_sigma": 0.75
+    },
+    "sampling": {
+      "backend": "numpyro",
+      "chain_method": "parallel",
+      "chains": 2,
+      "draws": 250,
+      "max_treedepth": 12,
+      "prediction_draws": 500,
+      "prior_draws": 500,
+      "target_accept": 0.9,
+      "tune": 250
+    },
+    "share_memory": "discount and cap in the config (share)",
+    "source_status": "native_versioned_source",
+    "summary_variables": [
+      "log_alpha_global",
+      "log_alpha_sigma",
+      "log_alpha_contrast",
+      "alpha"
+    ],
+    "time_center": "2023-11-13T00:00:00",
+    "time_scale_days": 365.25,
+    "trace_variables": [
+      "log_alpha_global",
+      "log_alpha_sigma"
+    ],
+    "warmup_weeks": 4,
+    "weekly_total_usage": "observed exposure; this is a conditional forecast",
+    "zero_sum_parameterization": "centered scaled Helmert contrasts with K-1 dimensions"
+  },
+  "prior_predictive": {
+    "impossible_fraction": 2.0114942528735632e-05,
+    "maximum": 73099.0,
+    "median": 96.0,
+    "p99": 2319.0
+  },
+  "priors": {
+    "log_alpha_global_mean": 2.302585093,
+    "log_alpha_global_sigma": 1.0,
+    "log_alpha_sigma": 0.75
+  },
+  "rejection_reason": "none",
+  "resources": {
+    "cpu_count": 64,
+    "elapsed_seconds": 84.30989656713791,
+    "maximum_rss_gib": 0.9912452697753906
+  },
+  "rows": {
+    "calibration": 480,
+    "fit": 3480,
+    "validation": 1000
+  },
+  "run_key": "20261005T200314.934023Z-pilot-0aa0a0fb-2348e548",
+  "run_mode": "pilot",
+  "sampling": {
+    "backend": "numpyro",
+    "chain_method": "parallel",
+    "chains": 2,
+    "draws": 250,
+    "max_treedepth": 12,
+    "prediction_draws": 500,
+    "prior_draws": 500,
+    "target_accept": 0.9,
+    "tune": 250
+  },
+  "source_dvc_hash": "87be2a97daa3b169bbd65850a64c89a6.dir",
+  "source_manifest": {
+    "artifacts/models/weekly_patterns.dvc": "6345bc6b668b096eded331854d55cfc3da7d29f92741335a2cc806e3e89c670d",
+    "configs/modeling.yaml": "b76a35e5967dfc0f24b489bd12c4dc72472e72c76c5a6112389dd3b49c40ce40",
+    "configs/weekly_counts/nb_discounted_hierarchical_v1.yaml": "0aa0a0fb226873d375506397b88ad51d88cade495a5990fc2c6d1398a8bb08f6",
+    "configs/weekly_counts/releases.json": "c5160a92c5efc230bbd8e4a6b1374f5c1bd89e5cc344ad5d157bd66f6f90a9c4",
+    "pyproject.toml": "22752be29fb633522e23662ecf8ae26da1abd02da9700bfd28169fba5d1b8f60",
+    "src/evaluation/experiment.py": "79dc06971a19f1af54f3841a6cbb66a037cfbcbd2e5a53f5d9dc6ed4b4b64821",
+    "src/models/semantic_space.py": "b21624cc95d5dd830a8d4d8948166723d4c8d53b01f21a6ee42719dc85ac22e6",
+    "src/models/weekly_counts/comparison.py": "366a5a41a25a3dddd6c7688d7432f2e66b1aad55d7262d40c2f82a8b71739858",
+    "src/models/weekly_counts/contracts.py": "8c341b74e052d18e5db995ba0030d3cdb01a04525fa7cbd9c16af4166dbeb37b",
+    "src/models/weekly_counts/data.py": "aa8ba294810bcceedf4ca9b41abf719f2fc9527b05835b5a3a63bdb008f3e74e",
+    "src/models/weekly_counts/diagnostics.py": "b4d8fa03e3497c6f6dfdd507b6d65c8ac824dc6b03b4907e4c83edbfc39776ab",
+    "src/models/weekly_counts/discounted_reference.py": "2127959534fd5236416765bd689b7e9ebbbcdfc723b6f9292c6e543182790495",
+    "src/models/weekly_counts/fixed_poisson_reference.py": "37e942f6afc86a0d2eb9f1000c902dd40becb1092da4495d4f0638476911967f",
+    "src/models/weekly_counts/metrics.py": "296181938e82a085c0e748ba067399ef1ce11fcafb3aefcac7afd3d89fbb150e",
+    "src/models/weekly_counts/models/__init__.py": "9d91cdb93c3406c0aad9c70ac0945fb6ce732fcc96c2098d5dc552318cb182b1",
+    "src/models/weekly_counts/models/nb_discounted_hierarchical_v1.py": "72eedc46ab95093ea9ca6af0a2f6bdbb226286d63e4e85763b0daedbab4fd464",
+    "src/models/weekly_counts/negative_binomial.py": "c57be82c2c21edacd7cf5660e00b39daf417694a6fca2f4c354681262c34b043",
+    "src/models/weekly_counts/prediction.py": "b813b9c9dc928d020daf84a51dd46feaf02867dc07f5299a38f099cdb002b90f",
+    "src/models/weekly_counts/registry.py": "8560745ca36191b2fec4cbe2e3358c1e9ae8f251db60742726884e8f7b0bcc4d",
+    "src/models/weekly_counts/reporting.py": "90fd457abb8d3a59356fb04fe116ab9c82d0b1e43912f3e82c5d7c9b19db8976",
+    "src/models/weekly_counts/rolling_reference.py": "046b7b7c728ccdf29bf4e34b5e9699900cb23e473969ca325cd6abbe34b5d934",
+    "src/models/weekly_counts/run.py": "8bbe416c5a649424129fa99ca2b58c040e37fbb641239333bbe94393c8531816",
+    "src/models/weekly_counts/sampling.py": "7a946ba428c871bfd4ea2912e18fb08e94753fb9e7ebdba5962106f47094145d",
+    "uv.lock": "b48786559ea323c59d63dce28ee3104b5c93cdda80ef3275c1c5a4e547bd81c3"
+  },
+  "source_manifest_sha256": "2348e5481ec46ae7c34792cd866714433d947da8f2e61af7de1768f3fb14944f",
+  "source_status": "native_versioned_source",
+  "stage": "M9",
+  "time_center": "2023-11-13T00:00:00",
+  "validation_used_for_selection": false,
+  "versions": {
+    "arviz": "0.23.4",
+    "jax": "0.11.2",
+    "jax_device_count": "4",
+    "jax_devices": "cpu:0,cpu:1,cpu:2,cpu:3",
+    "jaxlib": "0.11.2",
+    "numpy": "2.5.2",
+    "numpyro": "0.22.0",
+    "pandas": "3.0.5",
+    "pymc": "5.28.5",
+    "python": "3.12.13",
+    "sampling_backend": "numpyro"
+  },
+  "weekly_counts_sha256": "35c5503b0b9b2a4b9e47984294683d27987b3c7824ae41de642c0a47cefd1ce1",
+  "weeks": {
+    "calibration": 12,
+    "fit": 87,
+    "validation": 25
+  }
+}
