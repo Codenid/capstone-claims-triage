@@ -1,0 +1,63 @@
+{
+  "plan": "models_plan.md §25.2",
+  "git_commit": "3c427d14bd5871cadf686df643e23b065b7c57dc",
+  "candidate": "nb_discounted_hierarchical_v1",
+  "candidate_run": "reports/modeling/weekly_counts/nb_discounted_hierarchical_v1/20261005T200606.263137Z-full-0aa0a0fb-2348e548",
+  "reference_run": "reports/modeling/weekly_counts/nb_rolling_4_hierarchical_v3/20260927T161316.494762Z-full-a3ecfab3-9105ce1f",
+  "split": "calibration",
+  "validation_used": false,
+  "formula": "complaint_count[c,t] ~ NegativeBinomial(mu[c,t], alpha[c]); mu[c,t] = weekly_total[t] * recent_share[c,t]; recent_share[c,t] = (sum_k discount**(k-1) * capped[c,t-k] + 1) / (sum_k discount**(k-1) * capped_total[t-k] + clusters); capped[c,s] = min(count[c,s], cap * weekly_total[s] * recent_share[c,s]); log_alpha_contrast ~ Normal(0, log_alpha_sigma); log_alpha[c] = log_alpha_global + (zero_sum_basis @ log_alpha_contrast)[c]; alpha[c] = exp(log_alpha[c])",
+  "comparison": {
+    "split": "calibration",
+    "weeks": 12,
+    "bootstrap_draws": 2000,
+    "candidate": "model",
+    "best_baseline": "m9",
+    "metrics": {
+      "model": {
+        "wis": 30.29618675595238,
+        "wape": 0.11747357042683353,
+        "mae": 52.52708333333333
+      },
+      "m9": {
+        "wis": 32.41809895833333,
+        "wape": 0.12659637417473105,
+        "mae": 56.60625
+      }
+    },
+    "wis_gain": 0.06545455380058607,
+    "difference": {
+      "wis": {
+        "estimate": -2.121912202380951,
+        "p025": -3.3606151041666616,
+        "p50": -2.1184112723214312,
+        "p975": -0.8445055710565497
+      },
+      "wape": {
+        "estimate": -0.00912280374789752,
+        "p025": -0.015260251992783812,
+        "p50": -0.009195680663835457,
+        "p975": -0.0027454584595813097
+      },
+      "mae": {
+        "estimate": -4.079166666666673,
+        "p025": -6.824166666666663,
+        "p50": -4.103645833333331,
+        "p975": -1.2467187500000037
+      }
+    }
+  },
+  "coverage": {
+    "coverage_80": 0.8520833333333333,
+    "coverage_95": 0.96875
+  },
+  "checks": {
+    "wis_gain": true,
+    "wis_interval_below_zero": true,
+    "wape_not_worse": true,
+    "mae_not_worse": true,
+    "coverage_80": true,
+    "coverage_95": true
+  },
+  "wins": true
+}
