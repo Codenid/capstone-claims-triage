@@ -109,6 +109,7 @@ def model_source_paths(model_module: Any, config_path: Path) -> list[Path]:
         "negative_binomial.py",
         "fixed_poisson_reference.py",
         "rolling_reference.py",
+        "discounted_reference.py",
         "comparison.py",
     )
     return [

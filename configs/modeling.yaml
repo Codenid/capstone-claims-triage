@@ -202,6 +202,18 @@ discount_grid:
   discounts: [0.5, 0.6, 0.7, 0.75, 0.8, 0.9]
   caps: [1.5, 2, 3, null]
 
+# Block C of the round approved on 2026-10-03 (models_plan.md §25.2 and
+# §25.5): every candidate is compared with the frozen M9 in calibration.
+m9_challenge:
+  reference_run: reports/modeling/weekly_counts/nb_rolling_4_hierarchical_v3/20260927T161316.494762Z-full-a3ecfab3-9105ce1f
+  report_dir: reports/modeling/weekly_counts/challenges
+  minimum_wis_gain: 0.05
+  acceptance:
+    coverage_80_minimum: 0.70
+    coverage_80_maximum: 0.90
+    coverage_95_minimum: 0.88
+    coverage_95_maximum: 0.99
+
 clustering:
   source_dvc_hash: 08662a82971a71666b06c9ccf8120d7f.dir
   comparison_rows: 20000

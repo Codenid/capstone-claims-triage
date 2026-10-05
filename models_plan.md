@@ -1805,6 +1805,7 @@ idénticos al buscar vecinos. Ninguna tarea llegó al límite de 8 h.
   0.64), pero forman grupos distintos: los 40 patrones de M8 son una de varias
   particiones de calidad parecida, y sus nombres no deben leerse como
   categorías fijas.
+- Run de MLflow: `5ca3b797784d4a968fac0a95d7904cff` (`m7s-space-sensitivity`).
 
 ### 25.4 Bloque B: T1 con modelos fundacionales tabulares
 
@@ -1874,6 +1875,19 @@ idénticos al buscar vecinos. Ninguna tarea llegó al límite de 8 h.
 - Métrica principal: WIS, con la regla de 25.2. Cobertura 80% y 95% dentro de
   los rangos de §12.1. WAPE y MAE solo cuentan como degradación (§12.4).
 - Si gana, reemplaza a M9 y se rehace M11 con las reglas de §24.
+- Cada candidato se compara con M9 en `src/models/weekly_counts/challenge.py`,
+  que escribe `reports/modeling/weekly_counts/challenges/<modelo>.json`.
+
+Selección de C-A del 2026-10-05 (SLURM 54546; detalle en
+`reports/modeling/weekly_counts/nb_discounted_hierarchical_v1/share_selection.json`).
+La menor WIS de `fit` fue $\delta = 0.5$ sin recorte: 20.92, contra 22.39 de la
+ventana de 4 semanas de v3 con la misma dispersión. Es una comparación dentro
+de `fit`, así que es optimista. Dos observaciones:
+
+- $\delta = 0.5$ es el borde inferior de la grilla: la memoria óptima podría ser
+  aún más corta. Por la regla, C-A usa $\delta = 0.5$.
+- Ningún recorte mejoró en `fit`, así que C-A usa $m = \infty$ y no ataca el
+  eco. El eco de enero de 2025 está en validación, no en `fit`.
 
 ### 25.6 Orden
 

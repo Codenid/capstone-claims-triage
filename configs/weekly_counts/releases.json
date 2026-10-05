@@ -1,4 +1,11 @@
 {
+  "nb_discounted_hierarchical_v1": {
+    "model_source_sha256": "72eedc46ab95093ea9ca6af0a2f6bdbb226286d63e4e85763b0daedbab4fd464",
+    "config_sha256": "0aa0a0fb226873d375506397b88ad51d88cade495a5990fc2c6d1398a8bb08f6",
+    "source_status": "native_versioned_source",
+    "historical_run_id": null,
+    "candidate_role": "candidate"
+  },
   "nb_independent_linear_v1": {
     "model_source_sha256": "2f146e84f5aee82ef0f49fe756f9eb71971e8391873b6d2c10bbaa7bab4d8e16",
     "config_sha256": "b276b0e25c0233ed6ae863f994d35595f49d8028ef294ba71dc0c3f5ebae8f8b",

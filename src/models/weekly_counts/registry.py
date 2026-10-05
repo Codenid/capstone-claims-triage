@@ -1,6 +1,7 @@
 """Registry of versioned weekly count models."""
 
 from .models import (
+    nb_discounted_hierarchical_v1,
     nb_independent_linear_v1,
     nb_rolling_4_global_v1,
     nb_rolling_4_hierarchical_v1,
@@ -12,6 +13,7 @@ from .models import (
 )
 
 MODELS = {
+    nb_discounted_hierarchical_v1.MODEL_ID: nb_discounted_hierarchical_v1,
     nb_independent_linear_v1.MODEL_ID: nb_independent_linear_v1,
     nb_rolling_4_global_v1.MODEL_ID: nb_rolling_4_global_v1,
     nb_rolling_4_hierarchical_v1.MODEL_ID: nb_rolling_4_hierarchical_v1,
