@@ -1889,6 +1889,21 @@ de `fit`, así que es optimista. Dos observaciones:
 - Ningún recorte mejoró en `fit`, así que C-A usa $m = \infty$ y no ataca el
   eco. El eco de enero de 2025 está en validación, no en `fit`.
 
+Resultado de C-A del 2026-10-05 (prior SLURM 54550, piloto 54551, full 54553;
+detalle en `reports/modeling/weekly_counts/challenges/nb_discounted_hierarchical_v1.json`).
+Convergencia limpia: R-hat máximo 1.002, ESS mínimo 5,156, sin divergencias.
+
+| Calibración | C-A | M9 (NB-R4-H v3) |
+|---|---:|---:|
+| WIS | **30.30** | 32.42 |
+| WAPE | 11.7% | 12.7% |
+| Cobertura 80% y 95% | 85.2% y 96.9% | 85.4% y 95.6% |
+
+- **C-A gana por la regla de 25.2:** 6.5% menos WIS, con IC 95% de la
+  diferencia [−3.36, −0.84]; WAPE y MAE también mejoran.
+- Por la regla de "si varios ganan, se queda el mejor", M11 no se rehace hasta
+  que terminen C-B y los modelos fundacionales de series.
+
 ### 25.6 Orden
 
 1. Bloque A. Si hay ganador, se rehacen M8–M11.
