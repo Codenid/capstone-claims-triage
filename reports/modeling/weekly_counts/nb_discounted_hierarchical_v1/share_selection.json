@@ -1,0 +1,165 @@
+{
+  "stage": "M9 C-A",
+  "plan": "models_plan.md §25.5",
+  "git_commit": "bf1608215ff9c17de8d9937750159e80d150f473",
+  "weekly_counts_sha256": "35c5503b0b9b2a4b9e47984294683d27987b3c7824ae41de642c0a47cefd1ce1",
+  "source_dvc_hash": "87be2a97daa3b169bbd65850a64c89a6.dir",
+  "reference_run": "reports/modeling/weekly_counts/nb_rolling_4_hierarchical_v3/20260927T161316.494762Z-full-a3ecfab3-9105ce1f",
+  "scored_split": "fit",
+  "scored_weeks": 87,
+  "validation_used": false,
+  "dispersion": "posterior mean of alpha[c] in the v3 run",
+  "v3_window_wis": 22.389505336617404,
+  "scores": [
+    {
+      "discount": 0.5,
+      "cap": 1.5,
+      "memory_weeks": 2.0,
+      "wis": 22.27988300492611
+    },
+    {
+      "discount": 0.5,
+      "cap": 2,
+      "memory_weeks": 2.0,
+      "wis": 21.385047208538587
+    },
+    {
+      "discount": 0.5,
+      "cap": 3,
+      "memory_weeks": 2.0,
+      "wis": 21.070761494252874
+    },
+    {
+      "discount": 0.5,
+      "cap": null,
+      "memory_weeks": 2.0,
+      "wis": 20.922200328407225
+    },
+    {
+      "discount": 0.6,
+      "cap": 1.5,
+      "memory_weeks": 2.5,
+      "wis": 22.88865763546798
+    },
+    {
+      "discount": 0.6,
+      "cap": 2,
+      "memory_weeks": 2.5,
+      "wis": 21.77591338259442
+    },
+    {
+      "discount": 0.6,
+      "cap": 3,
+      "memory_weeks": 2.5,
+      "wis": 21.4032183908046
+    },
+    {
+      "discount": 0.6,
+      "cap": null,
+      "memory_weeks": 2.5,
+      "wis": 21.227227011494254
+    },
+    {
+      "discount": 0.7,
+      "cap": 1.5,
+      "memory_weeks": 3.333333333333333,
+      "wis": 24.068940886699504
+    },
+    {
+      "discount": 0.7,
+      "cap": 2,
+      "memory_weeks": 3.333333333333333,
+      "wis": 22.611046798029555
+    },
+    {
+      "discount": 0.7,
+      "cap": 3,
+      "memory_weeks": 3.333333333333333,
+      "wis": 22.115365353037763
+    },
+    {
+      "discount": 0.7,
+      "cap": null,
+      "memory_weeks": 3.333333333333333,
+      "wis": 21.900443349753697
+    },
+    {
+      "discount": 0.75,
+      "cap": 1.5,
+      "memory_weeks": 4.0,
+      "wis": 25.06259646962233
+    },
+    {
+      "discount": 0.75,
+      "cap": 2,
+      "memory_weeks": 4.0,
+      "wis": 23.312935139573067
+    },
+    {
+      "discount": 0.75,
+      "cap": 3,
+      "memory_weeks": 4.0,
+      "wis": 22.714741379310347
+    },
+    {
+      "discount": 0.75,
+      "cap": null,
+      "memory_weeks": 4.0,
+      "wis": 22.471366995073893
+    },
+    {
+      "discount": 0.8,
+      "cap": 1.5,
+      "memory_weeks": 5.000000000000001,
+      "wis": 26.56786945812808
+    },
+    {
+      "discount": 0.8,
+      "cap": 2,
+      "memory_weeks": 5.000000000000001,
+      "wis": 24.32674466338259
+    },
+    {
+      "discount": 0.8,
+      "cap": 3,
+      "memory_weeks": 5.000000000000001,
+      "wis": 23.579464285714284
+    },
+    {
+      "discount": 0.8,
+      "cap": null,
+      "memory_weeks": 5.000000000000001,
+      "wis": 23.301153530377672
+    },
+    {
+      "discount": 0.9,
+      "cap": 1.5,
+      "memory_weeks": 10.000000000000002,
+      "wis": 32.57595648604269
+    },
+    {
+      "discount": 0.9,
+      "cap": 2,
+      "memory_weeks": 10.000000000000002,
+      "wis": 28.512664203612477
+    },
+    {
+      "discount": 0.9,
+      "cap": 3,
+      "memory_weeks": 10.000000000000002,
+      "wis": 27.079025041050905
+    },
+    {
+      "discount": 0.9,
+      "cap": null,
+      "memory_weeks": 10.000000000000002,
+      "wis": 26.616910919540228
+    }
+  ],
+  "chosen": {
+    "discount": 0.5,
+    "cap": null,
+    "memory_weeks": 2.0,
+    "wis": 20.922200328407225
+  }
+}
