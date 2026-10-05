@@ -1823,6 +1823,13 @@ idénticos al buscar vecinos. Ninguna tarea llegó al límite de 8 h.
   compartido. Top-3 se reporta.
 - Corren en la A100 de Khipu. Los pesos se descargan antes en el nodo de login,
   porque los nodos SLURM no tienen internet.
+- Descargas aprobadas por el usuario el 2026-10-05: TabPFN-3.5
+  (`Prior-Labs/tabpfn_3_5`, `tabpfn-v3.5-20260909.safetensors`, 876 MB) y
+  Kumo Tabular (`nvidia/Kumo-Tabular`, `large/classifier.pt`, 855 MB, revisión
+  `v1.0.1`). Los paquetes van en el grupo `foundation` de uv: `tabpfn` 9.1.0 y
+  `structured-data-models` en el commit `98f6128`, porque Kumo Tabular todavía
+  no tiene versión etiquetada. Las licencias las resumió una IA; un experto
+  debe validarlas antes de usar resultados con el banco.
 
 ### 25.5 Bloque C: conteos semanales (M9)
 
@@ -1870,6 +1877,10 @@ idénticos al buscar vecinos. Ninguna tarea llegó al límite de 8 h.
   - Modelos fundacionales de series sin entrenamiento: Chronos-2, TimesFM 3.0 y
     TabPFN-TS, con el total semanal `N_t` como covariable, igual que M9. Las
     licencias se verifican antes de descargar.
+  - Cambio del 2026-10-05, antes de ver resultados y aprobado por el usuario:
+    TabPFN-TS sale del bloque, porque exige pandas < 3 y trae telemetría
+    activada. TimesFM se mantiene en 3.0, con licencia no comercial: si gana,
+    sus resultados no se pueden usar con el banco sin una licencia.
 - Pronóstico a una semana en las semanas de calibración, con la historia hasta
   la semana anterior.
 - Métrica principal: WIS, con la regla de 25.2. Cobertura 80% y 95% dentro de
@@ -1924,3 +1935,4 @@ predictive (§10).
 - [x] Especificación matemática del modelo dinámico del bloque C: el usuario
   aprobó el 2026-10-03 que compitan C-A y C-B (25.5).
 - [ ] Permiso del usuario para cada descarga de pesos: nombre, fuente y tamaño.
+  Bloque B aprobado el 2026-10-05 (25.4); faltan Chronos-2 y TimesFM 3.0.
