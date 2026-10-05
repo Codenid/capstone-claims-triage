@@ -214,6 +214,26 @@ m9_challenge:
     coverage_95_minimum: 0.88
     coverage_95_maximum: 0.99
 
+# Block B of the round approved on 2026-10-03 and 2026-10-05 (models_plan.md
+# §25.4): TabPFN-3.5 and Kumo Tabular against the frozen T1. Weights live
+# outside the repo; the SLURM nodes read them offline.
+foundation_t1:
+  bge_full_dvc_hash: 3ff36a299da1f2e19a00a4bce49f18ad.dir
+  semantic_dvc_hash: 08662a82971a71666b06c9ccf8120d7f.dir
+  reference_dvc: artifacts/models/representation_comparison.dvc
+  reference_dvc_hash: ecf6c9262d0e9a44ad9ea97617e316ba.dir
+  reference_predictions: artifacts/models/representation_comparison/calibration_t1.parquet
+  pca_components: 100
+  context_rows: 50000
+  estimators: 8
+  query_batch_rows: 10000
+  minimum_relative_gain: 0.05
+  bootstrap_draws: 2000
+  tabpfn_model_path: ~/models/tabpfn_3_5/tabpfn-v3.5-20260909.safetensors
+  kumo_size: large
+  report: reports/modeling/foundation_t1/results.json
+  artifacts: artifacts/models/foundation_t1
+
 clustering:
   source_dvc_hash: 08662a82971a71666b06c9ccf8120d7f.dir
   comparison_rows: 20000

@@ -501,6 +501,23 @@ calibración ni validación, y escribe
 sbatch scripts/hpc/m9_discount_grid.slurm
 ```
 
+El bloque B (`models_plan.md` §25.4) compara TabPFN-3.5 y Kumo Tabular con el
+T1 congelado en la A100. Necesita el grupo `foundation` y los pesos descargados
+antes en el nodo de acceso, fuera del repositorio:
+
+```bash
+uv sync --locked --group probabilistic --group semantic --group foundation
+uv run --no-sync hf download Prior-Labs/tabpfn_3_5   tabpfn-v3.5-20260909.safetensors --local-dir ~/models/tabpfn_3_5
+uv run --no-sync hf download nvidia/Kumo-Tabular large/classifier.pt config.json   --revision v1.0.1
+uv run --no-sync dvc pull artifacts/models/representation_comparison.dvc
+sbatch scripts/hpc/m5f_foundation_t1.slurm --smoke
+sbatch scripts/hpc/m5f_foundation_t1.slurm
+```
+
+La prueba rápida no guarda nada. El run completo escribe
+`reports/modeling/foundation_t1/results.json` y se detiene si no reproduce el
+Macro-F1 publicado del T1 congelado.
+
 Verificar acceso a la A100:
 
 ```bash
