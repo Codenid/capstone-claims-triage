@@ -9,14 +9,17 @@ expected_complete_weeks:
   validation: 25
 time_scale_days: 365.25
 plot_clusters: 8
-# C-B of models_plan.md §25.5. tau_sigma follows the fit weeks: the weekly
-# change of centered log-shares has a median SD of 0.43 per cluster (with
-# sampling noise), and its excess kurtosis of 10 calls for Student-t steps.
+# C-B of models_plan.md §25.5. The weekly change of centered log-shares in fit
+# has an excess kurtosis of 10, so the steps are Student-t. The first prior
+# check (SLURM 54556: tau_sigma 0.5, initial_sigma 3) put 47% of the cells at
+# zero and a median top weekly share of 0.58, against about 0% and 0.165 in
+# fit; tau_sigma 0.2 keeps the 90-week drift near 1.3 and initial_sigma 1.5
+# matches the spread of the fit log-shares.
 priors:
-  tau_sigma: 0.5
+  tau_sigma: 0.2
   nu_alpha: 2.0
   nu_beta: 0.1
-  initial_sigma: 3.0
+  initial_sigma: 1.5
   log_alpha_global_mean: 2.302585093
   log_alpha_global_sigma: 1.0
   log_alpha_sigma: 0.75
