@@ -1843,6 +1843,23 @@ idénticos al buscar vecinos. Ninguna tarea llegó al límite de 8 h.
   (política CIP). Se evaluaría con las mismas reglas de 25.4, como una prueba
   aparte.
 
+Resultado del bloque B del 2026-10-06 (SLURM 54658; detalle en
+`reports/modeling/foundation_t1/results.json`). El T1 congelado reprodujo su
+Macro-F1 publicado (0.2397) antes de comparar.
+
+| Calibración sin texto compartido | TabPFN-3.5 | T1 congelado |
+|---|---:|---:|
+| Macro-F1 | **0.2706** | 0.2397 |
+| Top-3 | 95.5% | 95.4% |
+
+- **TabPFN-3.5 gana por la regla de 25.2:** 12.9% más Macro-F1, con IC 95% de
+  la diferencia [+0.027, +0.035]. Aprende en contexto con 20,000 filas, contra
+  las 1,067,194 con que se entrenó el T1.
+- Por 25.2 reemplaza al T1. Falta medirlo una vez en validación, marcado como
+  ya consultado, y en `ood_2026_partial`.
+- Su licencia es no comercial: usarlo con el banco requiere una licencia de
+  Prior Labs, que debe validar un experto.
+
 ### 25.5 Bloque C: conteos semanales (M9)
 
 - Referencia: NB-R4-H v3. Si el bloque A cambia el clustering, se reajusta con
