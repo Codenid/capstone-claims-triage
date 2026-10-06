@@ -1910,6 +1910,12 @@ Macro-F1 publicado (0.2397) antes de comparar.
     TabPFN-TS sale del bloque, porque exige pandas < 3 y trae telemetría
     activada. TimesFM se mantiene en 3.0, con licencia no comercial: si gana,
     sus resultados no se pueden usar con el banco sin una licencia.
+  - Decisión del usuario del 2026-10-06, antes de correrlo: TimesFM 3.0 solo
+    predice deciles, así que no tiene intervalo de 95%. Se compara con M9
+    recalculando la WIS de ambos solo con los intervalos de 50% (interpolado
+    entre deciles) y 80%, y se revisa solo la cobertura de 80%. Chronos-2 usa
+    la regla completa. Los dos corren sin entrenamiento en CPU (descargas
+    aprobadas el mismo día: 478 MB y 1.32 GB).
 - Pronóstico a una semana en las semanas de calibración, con la historia hasta
   la semana anterior.
 - Métrica principal: WIS, con la regla de 25.2. Cobertura 80% y 95% dentro de
@@ -1982,5 +1988,6 @@ predictive (§10).
 - [x] Especificación matemática del modelo dinámico del bloque C: el usuario
   aprobó el 2026-10-03 que compitan C-A y C-B (25.5).
 - [ ] Permiso del usuario para cada descarga de pesos: nombre, fuente y tamaño.
-  Bloque B aprobado el 2026-10-05 (25.4); faltan Chronos-2 y TimesFM 3.0.
+  Bloque B aprobado el 2026-10-05 (25.4); Chronos-2 y TimesFM 3.0, el
+  2026-10-06.
 - [ ] Más adelante: Kumo Tabular, quizá vía NVIDIA NIM (25.4).

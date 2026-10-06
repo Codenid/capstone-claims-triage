@@ -33,6 +33,7 @@ def weighted_interval_score(
 def interval_bounds(
     frame: pd.DataFrame,
     prefix: str,
+    intervals: tuple[tuple[float, str, str], ...] = INTERVALS,
 ) -> list[tuple[float, np.ndarray, np.ndarray]]:
     return [
         (
@@ -40,7 +41,7 @@ def interval_bounds(
             frame[f"{prefix}_{lower}"].to_numpy(dtype=float),
             frame[f"{prefix}_{upper}"].to_numpy(dtype=float),
         )
-        for alpha, lower, upper in INTERVALS
+        for alpha, lower, upper in intervals
     ]
 
 

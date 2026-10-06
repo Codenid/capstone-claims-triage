@@ -7,6 +7,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from src.models.weekly_counts.contracts import INTERVALS
 from src.models.weekly_counts.metrics import interval_bounds, weighted_interval_score
 
 # Frozen in models_plan.md §12.5.
@@ -14,7 +15,11 @@ BOOTSTRAP_DRAWS = 2000
 DIFFERENCE_QUANTILES = {"p025": 0.025, "p50": 0.50, "p975": 0.975}
 
 
-def weekly_sums(frame: pd.DataFrame, prefix: str) -> pd.DataFrame:
+def weekly_sums(
+    frame: pd.DataFrame,
+    prefix: str,
+    intervals: tuple[tuple[float, str, str], ...] = INTERVALS,
+) -> pd.DataFrame:
     """Per-week sums that rebuild WIS, WAPE and MAE for one predictor."""
     observed = frame["complaint_count"].to_numpy(dtype=float)
     median = frame[f"{prefix}_p50"].to_numpy(dtype=float)
@@ -22,7 +27,7 @@ def weekly_sums(frame: pd.DataFrame, prefix: str) -> pd.DataFrame:
         {
             "week": frame["week"].to_numpy(),
             "wis": weighted_interval_score(
-                observed, median, interval_bounds(frame, prefix)
+                observed, median, interval_bounds(frame, prefix, intervals)
             ),
             "absolute_error": np.abs(median - observed),
             "observed": observed,
@@ -84,10 +89,13 @@ def compare_with_baselines(
     seed: int,
     candidate: str = "model",
     split: str = "calibration",
+    intervals: tuple[tuple[float, str, str], ...] = INTERVALS,
 ) -> dict[str, Any]:
     """Pick the lowest-WIS baseline in `split` and bootstrap the candidate against it."""
     rows = predictions.loc[predictions["split"] == split]
-    weekly = {name: weekly_sums(rows, name) for name in (candidate, *baselines)}
+    weekly = {
+        name: weekly_sums(rows, name, intervals) for name in (candidate, *baselines)
+    }
     metrics = {
         name: {key: float(value) for key, value in accuracy(sums.sum().to_dict()).items()}
         for name, sums in weekly.items()

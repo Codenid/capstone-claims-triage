@@ -529,6 +529,17 @@ sbatch --export=ALL,RUN_MODE=pilot scripts/hpc/m9_state_space.slurm
 sbatch --export=ALL,RUN_MODE=full scripts/hpc/m9_state_space.slurm
 ```
 
+Chronos-2 y TimesFM 3.0, los modelos fundacionales del bloque C, corren sin
+entrenamiento en CPU, con los pesos descargados antes en `~/models`:
+
+```bash
+uv run --no-sync hf download amazon/chronos-2 --local-dir ~/models/chronos_2
+uv run --no-sync hf download google/timesfm-3.0-pytorch --local-dir ~/models/timesfm_3
+sbatch scripts/hpc/m9_foundation_series.slurm chronos2 --smoke
+sbatch scripts/hpc/m9_foundation_series.slurm chronos2
+sbatch scripts/hpc/m9_foundation_series.slurm timesfm3
+```
+
 Cada candidato del bloque C se compara después con M9 congelado:
 
 ```bash

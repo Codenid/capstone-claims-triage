@@ -16,9 +16,11 @@ import pandas as pd
 
 from src.evaluation.experiment import PROJECT_ROOT, git_commit, load_experiment_config
 from src.models.weekly_counts.comparison import compare_with_baselines
+from src.models.weekly_counts.contracts import INTERVALS
 
 KEYS = ["split", "week", "cluster_id"]
 REFERENCE = "m9"
+WIDTHS = {50: 0.50, 80: 0.20, 95: 0.05}
 
 
 def parse_args() -> argparse.Namespace:
@@ -57,21 +59,33 @@ def decide(
     acceptance: dict[str, Any],
     minimum_gain: float,
 ) -> dict[str, Any]:
-    """§25.2 and §12.1/§12.4: every check must pass for the candidate to win."""
+    """§25.2 and §12.1/§12.4: every check must pass for the candidate to win.
+
+    A candidate without a 95% interval (TimesFM 3.0, §25.5) skips that coverage.
+    """
     difference = comparison["difference"]
     checks = {
         "wis_gain": comparison["wis_gain"] >= minimum_gain,
         "wis_interval_below_zero": difference["wis"]["p975"] < 0,
         "wape_not_worse": difference["wape"]["p025"] <= 0,
         "mae_not_worse": difference["mae"]["p025"] <= 0,
-        "coverage_80": acceptance["coverage_80_minimum"]
-        <= coverage["coverage_80"]
-        <= acceptance["coverage_80_maximum"],
-        "coverage_95": acceptance["coverage_95_minimum"]
-        <= coverage["coverage_95"]
-        <= acceptance["coverage_95_maximum"],
     }
+    for width in (80, 95):
+        value = coverage.get(f"coverage_{width}")
+        if value is not None:
+            checks[f"coverage_{width}"] = (
+                acceptance[f"coverage_{width}_minimum"]
+                <= value
+                <= acceptance[f"coverage_{width}_maximum"]
+            )
     return {"checks": checks, "wins": all(checks.values())}
+
+
+def candidate_intervals(results: dict[str, Any]) -> tuple[tuple[float, str, str], ...]:
+    """The WIS intervals the candidate provides; M9 is scored on the same ones."""
+    widths = results.get("interval_widths", list(WIDTHS))
+    alphas = {WIDTHS[width] for width in widths}
+    return tuple(interval for interval in INTERVALS if interval[0] in alphas)
 
 
 def main() -> None:
@@ -91,8 +105,9 @@ def main() -> None:
         pd.read_csv(run_dir / "predictions.csv"),
         pd.read_csv(PROJECT_ROOT / settings["reference_run"] / "predictions.csv"),
     )
+    intervals = candidate_intervals(results)
     comparison = compare_with_baselines(
-        predictions, (REFERENCE,), config["experiment"]["seed"]
+        predictions, (REFERENCE,), config["experiment"]["seed"], intervals=intervals
     )
     coverage = results["backtest"]["calibration"]["model"]
     decision = decide(
@@ -111,7 +126,8 @@ def main() -> None:
         "validation_used": False,
         "formula": results["formula"],
         "comparison": comparison,
-        "coverage": {key: coverage[key] for key in ("coverage_80", "coverage_95")},
+        "interval_widths": [round((1 - alpha) * 100) for alpha, *_ in intervals],
+        "coverage": {key: coverage.get(key) for key in ("coverage_80", "coverage_95")},
         **decision,
     }
     report_dir.mkdir(parents=True, exist_ok=True)
