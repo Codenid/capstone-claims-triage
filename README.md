@@ -3,6 +3,13 @@
 Esta rama nace de `EDA/pipaber` después de completar E0–E10 y P1–P5. Puede
 avanzar mientras el pull request de EDA hacia `develop` está en revisión.
 
+Para entender el proyecto sin leer este archivo completo:
+[`docs/metodologia.md`](docs/metodologia.md) explica qué construimos y por qué;
+[`docs/modelos.md`](docs/modelos.md) es el catálogo de modelos probados y
+vigentes; [`reports/modeling/README.md`](reports/modeling/README.md) dice qué
+es cada archivo de resultados. Lo que sigue aquí es el plan y los resultados
+por etapa, en el orden en que se hicieron.
+
 ## Objetivo
 
 Construir un prototipo reproducible que ayude a una persona a:
@@ -599,7 +606,7 @@ Después de V1 y V2 se compararon, en calibración, modelos con participaciones
 fijas y con las participaciones de semanas anteriores. B1-R4 y B1-R13 son
 baselines deterministas que usan las 4 o 13 semanas previas. En los nombres,
 R4 indica esa ventana de 4 semanas y H, una dispersión por grupo; la tabla de
-nombres está en `models_plan.md` §4:
+nombres está en `docs/registro/models_plan.md` §4:
 
 <!-- markdownlint-disable MD013 -->
 
@@ -619,7 +626,7 @@ La composición cambia de una semana a otra, por lo que las participaciones
 recientes predicen mucho mejor que las fijas. NB-R4-H v3 conserva el punto de
 B1-R4 y añade intervalos calibrados: reduce el WIS 24.7%, con un bootstrap
 semanal que confirma la mejora, y no empeora de forma significativa el WAPE.
-La regla de promoción y cada decisión están en `models_plan.md` y en
+La regla de promoción y cada decisión están en `docs/registro/models_plan.md` y en
 `reports/modeling/weekly_counts/<modelo>/decision.md`. La validación no se abrió
 para estos modelos; se usará una sola vez en la confirmación final.
 
@@ -650,7 +657,7 @@ están en `reports/modeling/weekly_composition/<modelo>/decision.md`.
 ## Confirmación final en validación
 
 Con todos los modelos congelados, la validación (2025-H1) se usó una sola vez,
-con reglas fijadas antes de abrirla (`models_plan.md` §22): cada modelo debía
+con reglas fijadas antes de abrirla (`docs/registro/models_plan.md` §22): cada modelo debía
 seguir superando a su referencia con un intervalo bootstrap por semanas entero a
 su favor.
 
@@ -675,7 +682,7 @@ detalle está en `reports/modeling/final_confirmation.md`.
 Después, T4 salió del triaje: responder a tiempo depende del proceso del banco y
 no del texto del reclamo. M12 mostrará en su lugar los días hábiles que faltan
 para el plazo de respuesta, 15 desde el registro o 45 con extensión, sin contar
-feriados nacionales (`models_plan.md` §23).
+feriados nacionales (`docs/registro/models_plan.md` §23).
 
 ## Cambios persistentes M11
 
@@ -684,7 +691,7 @@ semanas. Cada semana mide cuántas desviaciones se aleja lo observado de lo
 esperado por NB-R4-H v3, y un CUSUM por patrón va sumando esos excesos. Se
 comparó con la regla por exceso semanal, que mira una semana a la vez, con el
 mismo presupuesto: 1 falsa alerta al mes en total si M9 estuviera bien
-calibrado (`models_plan.md` §24).
+calibrado (`docs/registro/models_plan.md` §24).
 
 En `fit` + calibración se agregaron aumentos artificiales a las series reales.
 Dentro de 8 semanas:
@@ -803,10 +810,11 @@ Khipu usa SLURM. Los scripts reproducibles y sus instrucciones están en
 
 ## Documentos relacionados
 
-- [Resumen del EDA](docs/resumen-eda.md).
+- [Metodología: qué construimos y por qué](docs/metodologia.md).
 - [Catálogo de modelos: qué se probó y qué quedó vigente](docs/modelos.md).
 - [Índice de `reports/modeling`: qué es cada archivo de resultados](reports/modeling/README.md).
-- [Bitácora de decisiones del modelado](models_plan.md).
+- [Registro de reglas fijadas antes de cada corrida](docs/registro/models_plan.md).
+- [Resumen del EDA](docs/resumen-eda.md).
 - [Notebook de preparación](notebooks/02_revision_preparacion.ipynb).
 - [Notebook de modelos base](notebooks/03_modelos_base.ipynb).
 - [Notebook de comparación BGE](notebooks/04_bge.ipynb).

@@ -3,7 +3,7 @@
 Qué es cada archivo y carpeta, a qué etapa pertenece y si sigue vigente. El
 catálogo de modelos probados y ganadores está en
 [`docs/modelos.md`](../../docs/modelos.md); la bitácora completa de decisiones
-está en [`models_plan.md`](../../models_plan.md).
+está en [`docs/registro/models_plan.md`](../../docs/registro/models_plan.md).
 
 Los archivos no se movieron: muchas rutas están fijadas en
 `configs/modeling.yaml` y en el código que verifica resultados congelados.

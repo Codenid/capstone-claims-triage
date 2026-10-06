@@ -288,7 +288,7 @@ uv run --no-sync dvc status -c artifacts/models/weekly_patterns.dvc
 Ambos comandos deben indicar que los datos y la caché están actualizados.
 
 M5B compara las representaciones de T1–T4 entrenadas con todo `fit`
-(`models_plan.md` §21). Usa los embeddings de M8A y los modelos de M3, M4 y M5,
+(`docs/registro/models_plan.md` §21). Usa los embeddings de M8A y los modelos de M3, M4 y M5,
 así que corre en CPU. Primero se lanza una prueba rápida con una muestra, que no
 guarda nada, y después el run completo:
 
@@ -383,7 +383,7 @@ Cada run también calcula los baselines móviles B1-R4 y B1-R13 y compara el
 modelo con el mejor baseline mediante un bootstrap semanal pareado; el
 resultado queda en `bootstrap.json`. Las configuraciones que declaran
 `acceptance.rule: best_baseline_bootstrap_v1` usan la regla de promoción de
-`models_plan.md` (§12.4); las congeladas antes conservan su regla. Los runs no
+`docs/registro/models_plan.md` (§12.4); las congeladas antes conservan su regla. Los runs no
 evalúan ni grafican validación: sus predicciones quedan en `predictions.csv`
 para la confirmación final única.
 
@@ -420,7 +420,7 @@ uv run --no-sync dvc add artifacts/models/weekly_composition
 uv run --no-sync dvc push artifacts/models/weekly_composition.dvc
 ```
 
-La confirmación final en validación (`models_plan.md` §22) se ejecuta una sola
+La confirmación final en validación (`docs/registro/models_plan.md` §22) se ejecuta una sola
 vez. Antes se ensaya sobre calibración, donde debe reproducir los resultados ya
 publicados sin guardar nada:
 
@@ -434,7 +434,7 @@ El segundo comando abre validación, escribe
 `reports/modeling/runs/final_confirmation/run.json`. Se niega a correr si el
 reporte ya existe.
 
-M11 (`models_plan.md` §24) usa el posterior de NB-R4-H v3 que dejó M9 en
+M11 (`docs/registro/models_plan.md` §24) usa el posterior de NB-R4-H v3 que dejó M9 en
 `artifacts/models/weekly_counts`. El primer comando trabaja solo con `fit` +
 calibración: fija los umbrales, prueba los aumentos artificiales y elige la
 regla. El segundo reporta una sola vez las alertas de validación y solo se
@@ -451,7 +451,7 @@ escribió en `reports/modeling/persistent_change/`; después del bloque C
 (§25.5) usa C-A y escribe en `reports/modeling/persistent_change_c_a/`. Ninguno
 de los dos comandos sobrescribe resultados existentes.
 
-M7S, el bloque A de `models_plan.md` §25.3, repite la comparación de M7 en 9
+M7S, el bloque A de `docs/registro/models_plan.md` §25.3, repite la comparación de M7 en 9
 espacios PCA y UMAP, con GMM además de los 12 candidatos de M7. Usa los
 artefactos de M5, M6 y M7 y no abre validación. Primero, una prueba rápida que
 no guarda nada:
@@ -493,7 +493,7 @@ revisarlo a mano: el script no lo borra. El resumen queda en
 `reports/modeling/space_sensitivity/` y el registro en
 `reports/modeling/runs/m7s/space_sensitivity/run.json`.
 
-C-A, el primer candidato del bloque C (`models_plan.md` §25.5), elige primero
+C-A, el primer candidato del bloque C (`docs/registro/models_plan.md` §25.5), elige primero
 en `fit` la memoria (`discount`) y el recorte (`cap`) de sus participaciones,
 con la dispersión del run congelado de NB-R4-H v3. No usa PyMC ni abre
 calibración ni validación, y escribe
@@ -503,7 +503,7 @@ calibración ni validación, y escribe
 sbatch scripts/hpc/m9_discount_grid.slurm
 ```
 
-El bloque B (`models_plan.md` §25.4) compara TabPFN-3.5 y Kumo Tabular con el
+El bloque B (`docs/registro/models_plan.md` §25.4) compara TabPFN-3.5 y Kumo Tabular con el
 T1 congelado en la A100. Necesita el grupo `foundation` y los pesos descargados
 antes en el nodo de acceso, fuera del repositorio:
 

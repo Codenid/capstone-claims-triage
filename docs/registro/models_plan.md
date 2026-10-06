@@ -1,5 +1,12 @@
 # Plan ejecutable de modelos semanales
 
+> **Registro de reglas, no documento de lectura.** Este archivo guarda las
+> reglas fijadas antes de cada corrida y sus actualizaciones fechadas; es la
+> evidencia de que los criterios se escribieron antes de ver resultados. Para
+> entender el proyecto empieza por [`docs/metodologia.md`](../metodologia.md) y
+> [`docs/modelos.md`](../modelos.md). El código y los resultados lo citan como
+> `models_plan.md §N`; los números de sección no cambian.
+
 > Documento de traspaso para que otro agente pueda continuar el trabajo sin
 > contexto adicional. No iniciar un entrenamiento completo hasta completar la
 > checklist de preparación y congelar las decisiones indicadas aquí.

@@ -2,7 +2,7 @@
 
 Qué se probó, con qué regla se decidió y qué quedó vigente. Es un resumen:
 las reglas registradas antes de cada corrida y el detalle de cada decisión están
-en [`models_plan.md`](../models_plan.md); el mapa de los archivos de resultados
+en [`docs/registro/models_plan.md`](registro/models_plan.md); el mapa de los archivos de resultados
 está en [`reports/modeling/README.md`](../reports/modeling/README.md).
 
 Los datos son los reclamos públicos de la CFPB (EE. UU., narrativas en inglés).
