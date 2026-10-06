@@ -1830,6 +1830,18 @@ idénticos al buscar vecinos. Ninguna tarea llegó al límite de 8 h.
   `structured-data-models` en el commit `98f6128`, porque Kumo Tabular todavía
   no tiene versión etiquetada. Las licencias las resumió una IA; un experto
   debe validarlas antes de usar resultados con el banco.
+- Cambio aprobado por el usuario el 2026-10-06: Kumo Tabular sale del bloque.
+  Con 50,000 filas se quedó sin memoria de GPU (SLURM 54590) y con 20,000 filas
+  y 8 estimadores se quedó sin los 64 GB de RAM del nodo (SLURM 54591): su caché
+  de contexto ocupa cerca de 1 MB por fila y estimador. El bloque B queda con
+  TabPFN-3.5 y 20,000 filas.
+- Pendiente pedido por el usuario el 2026-10-06: probar Kumo Tabular más
+  adelante, quizá a través de NVIDIA NIM (microservicios de inferencia), con más
+  memoria que la de Khipu. Antes hay que confirmar que exista un NIM de Kumo
+  Tabular y cómo se despliega. Si es un servicio alojado, los datos salen de
+  Khipu: vale para los datos públicos de CFPB, pero no para datos del banco
+  (política CIP). Se evaluaría con las mismas reglas de 25.4, como una prueba
+  aparte.
 
 ### 25.5 Bloque C: conteos semanales (M9)
 
@@ -1915,6 +1927,21 @@ Convergencia limpia: R-hat máximo 1.002, ESS mínimo 5,156, sin divergencias.
 - Por la regla de "si varios ganan, se queda el mejor", M11 no se rehace hasta
   que terminen C-B y los modelos fundacionales de series.
 
+Resultado de C-B del 2026-10-06 (prior SLURM 54578, piloto 54579, full 54585;
+detalle en `reports/modeling/weekly_counts/challenges/nb_state_space_v1.json`).
+El primer piloto, con el paseo no centrado, no convergió (SLURM 54558: R-hat
+1.33); el paseo centrado sí.
+
+| Calibración | C-B | C-A | M9 |
+|---|---:|---:|---:|
+| WIS | 31.95 | **30.30** | 32.42 |
+| Cobertura 80% y 95% | 87.7% y 97.7% | 85.2% y 96.9% | 85.4% y 95.6% |
+
+- **C-B no gana:** 1.4% menos WIS que M9, con IC 95% de la diferencia
+  [−2.58, +1.57], que incluye 0.
+- Además, el ESS mínimo del paso de ajuste fue 300, debajo del mínimo de 400 de
+  §12.1. No se corrigió porque C-B no gana de todos modos.
+
 ### 25.6 Orden
 
 1. Bloque A. Si hay ganador, se rehacen M8–M11.
@@ -1939,3 +1966,4 @@ predictive (§10).
   aprobó el 2026-10-03 que compitan C-A y C-B (25.5).
 - [ ] Permiso del usuario para cada descarga de pesos: nombre, fuente y tamaño.
   Bloque B aprobado el 2026-10-05 (25.4); faltan Chronos-2 y TimesFM 3.0.
+- [ ] Más adelante: Kumo Tabular, quizá vía NVIDIA NIM (25.4).

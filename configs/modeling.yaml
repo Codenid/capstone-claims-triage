@@ -220,6 +220,9 @@ m9_challenge:
 foundation_t1:
   bge_full_dvc_hash: 3ff36a299da1f2e19a00a4bce49f18ad.dir
   semantic_dvc_hash: 08662a82971a71666b06c9ccf8120d7f.dir
+  # Kumo Tabular left on 2026-10-06 (models_plan.md §25.4): it ran out of GPU
+  # memory with 50,000 rows and of RAM with 20,000 rows and 8 estimators.
+  candidates: [tabpfn]
   reference_dvc: artifacts/models/representation_comparison.dvc
   reference_dvc_hash: ecf6c9262d0e9a44ad9ea97617e316ba.dir
   reference_predictions: artifacts/models/representation_comparison/calibration_t1.parquet

@@ -43,7 +43,6 @@ from src.models.representation_comparison import (
 from src.models.semantic_space import fixed_sample_positions, load_dvc_hash
 from src.models.tfidf_models import eligible_mask
 
-CANDIDATES = ("tabpfn", "kumo")
 REFERENCE = "bge_product"
 DIFFERENCE_QUANTILES = {"p025": 0.025, "p50": 0.50, "p975": 0.975}
 SMOKE = {"context_rows": 2_000, "query_rows": 2_000, "estimators": 1, "draws": 20}
@@ -322,7 +321,7 @@ def main() -> None:
     }
     truth = reference["truth"].astype(str).to_numpy()
     seconds = {}
-    for name in CANDIDATES:
+    for name in settings["candidates"]:
         candidate_started = time.perf_counter()
         if name == "tabpfn":
             probability, classes = run_tabpfn(
