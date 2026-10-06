@@ -804,7 +804,9 @@ Khipu usa SLURM. Los scripts reproducibles y sus instrucciones están en
 ## Documentos relacionados
 
 - [Resumen del EDA](docs/resumen-eda.md).
-- [Propuesta detallada de modelos](docs/modelos.md).
+- [Catálogo de modelos: qué se probó y qué quedó vigente](docs/modelos.md).
+- [Índice de `reports/modeling`: qué es cada archivo de resultados](reports/modeling/README.md).
+- [Bitácora de decisiones del modelado](models_plan.md).
 - [Notebook de preparación](notebooks/02_revision_preparacion.ipynb).
 - [Notebook de modelos base](notebooks/03_modelos_base.ipynb).
 - [Notebook de comparación BGE](notebooks/04_bge.ipynb).
