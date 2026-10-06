@@ -36,10 +36,13 @@ semantic = [
     "pyclustering==0.10.1.2",
     "umap-learn>=0.5.9,<1",
 ]
-# Block B of models_plan.md §25.4. TabPFN-3.5 weights are non-commercial;
-# Kumo Tabular exists only on the package's main branch, pinned by commit.
+# Blocks B and C of models_plan.md §25. TabPFN-3.5 and TimesFM 3.0 weights are
+# non-commercial. Kumo Tabular (tried in block B, then dropped) exists only on
+# the package's main branch, pinned by commit.
 foundation = [
+    "chronos-forecasting==2.3.2",
     "tabpfn==9.1.0",
+    "timesfm[torch]==3.0.2",
     "structured-data-models @ git+https://github.com/NVIDIA/structured-data-models@98f61289c7a4e1bce3b33771223ac2e123b63f19",
 ]
 probabilistic = [
