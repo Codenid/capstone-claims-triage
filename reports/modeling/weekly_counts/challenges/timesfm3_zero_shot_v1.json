@@ -1,0 +1,66 @@
+{
+  "plan": "models_plan.md §25.2",
+  "git_commit": "417b3fff5e5d989d1be6012917471853569e4230",
+  "candidate": "timesfm3_zero_shot_v1",
+  "candidate_run": "reports/modeling/weekly_counts/timesfm3_zero_shot_v1/20261006T161506.398848Z-full-f86109d6",
+  "reference_run": "reports/modeling/weekly_counts/nb_rolling_4_hierarchical_v3/20260927T161316.494762Z-full-a3ecfab3-9105ce1f",
+  "split": "calibration",
+  "validation_used": false,
+  "formula": "TimesFM 3.0 zero-shot, weekly total as a past-future covariate; deciles only, 50% interval interpolated",
+  "comparison": {
+    "split": "calibration",
+    "weeks": 12,
+    "bootstrap_draws": 2000,
+    "candidate": "model",
+    "best_baseline": "m9",
+    "metrics": {
+      "model": {
+        "wis": 40.70163475096374,
+        "wape": 0.12441550813970283,
+        "mae": 55.63109846979167
+      },
+      "m9": {
+        "wis": 41.37866458333334,
+        "wape": 0.12659637417473105,
+        "mae": 56.60625
+      }
+    },
+    "wis_gain": 0.01636180962307554,
+    "difference": {
+      "wis": {
+        "estimate": -0.6770298323695982,
+        "p025": -4.773942476585583,
+        "p50": -0.6621737704299981,
+        "p975": 3.5504049424094677
+      },
+      "wape": {
+        "estimate": -0.00218086603502822,
+        "p025": -0.016086951138413387,
+        "p50": -0.002064954013929407,
+        "p975": 0.011271397043328281
+      },
+      "mae": {
+        "estimate": -0.9751515302083362,
+        "p025": -6.988809832473966,
+        "p50": -0.921736858854171,
+        "p975": 5.01789822526042
+      }
+    }
+  },
+  "interval_widths": [
+    50,
+    80
+  ],
+  "coverage": {
+    "coverage_80": 0.7625,
+    "coverage_95": null
+  },
+  "checks": {
+    "wis_gain": false,
+    "wis_interval_below_zero": false,
+    "wape_not_worse": true,
+    "mae_not_worse": true,
+    "coverage_80": true
+  },
+  "wins": false
+}

@@ -1,0 +1,68 @@
+{
+  "plan": "models_plan.md §25.2",
+  "git_commit": "417b3fff5e5d989d1be6012917471853569e4230",
+  "candidate": "chronos2_zero_shot_v1",
+  "candidate_run": "reports/modeling/weekly_counts/chronos2_zero_shot_v1/20261006T161509.925715Z-full-f86109d6",
+  "reference_run": "reports/modeling/weekly_counts/nb_rolling_4_hierarchical_v3/20260927T161316.494762Z-full-a3ecfab3-9105ce1f",
+  "split": "calibration",
+  "validation_used": false,
+  "formula": "Chronos-2 zero-shot, weekly total as a known future covariate",
+  "comparison": {
+    "split": "calibration",
+    "weeks": 12,
+    "bootstrap_draws": 2000,
+    "candidate": "model",
+    "best_baseline": "m9",
+    "metrics": {
+      "model": {
+        "wis": 36.01722492430359,
+        "wape": 0.14408950298849485,
+        "mae": 64.42812032898267
+      },
+      "m9": {
+        "wis": 32.41809895833333,
+        "wape": 0.12659637417473105,
+        "mae": 56.60625
+      }
+    },
+    "wis_gain": -0.11102211670697226,
+    "difference": {
+      "wis": {
+        "estimate": 3.5991259659702592,
+        "p025": -0.9947118160423365,
+        "p50": 3.473830803567271,
+        "p975": 9.032097220831144
+      },
+      "wape": {
+        "estimate": 0.017493128813763803,
+        "p025": -0.002646437061662636,
+        "p50": 0.017051429792255803,
+        "p975": 0.03958941657762826
+      },
+      "mae": {
+        "estimate": 7.821870328982669,
+        "p025": -1.1457464098433667,
+        "p50": 7.622999686996138,
+        "p975": 17.82030594438314
+      }
+    }
+  },
+  "interval_widths": [
+    50,
+    80,
+    95
+  ],
+  "coverage": {
+    "coverage_80": 0.7729166666666667,
+    "coverage_95": 0.9625
+  },
+  "checks": {
+    "wis_gain": false,
+    "wis_interval_below_zero": false,
+    "wape_not_worse": true,
+    "mae_not_worse": true,
+    "coverage_80": true,
+    "coverage_95": true
+  },
+  "wins": false
+}

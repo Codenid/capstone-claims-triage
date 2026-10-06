@@ -1,0 +1,38 @@
+{
+  "stage": "M9 block C",
+  "plan": "models_plan.md §25.5",
+  "run_key": "20261006T161509.925715Z-full-f86109d6",
+  "run_mode": "full",
+  "model_id": "chronos2_zero_shot_v1",
+  "formula": "Chronos-2 zero-shot, weekly total as a known future covariate",
+  "interval_widths": [
+    50,
+    80,
+    95
+  ],
+  "git_commit": "417b3fff5e5d989d1be6012917471853569e4230",
+  "weekly_counts_sha256": "35c5503b0b9b2a4b9e47984294683d27987b3c7824ae41de642c0a47cefd1ce1",
+  "source_dvc_hash": "87be2a97daa3b169bbd65850a64c89a6.dir",
+  "weights": "chronos_2",
+  "trained": false,
+  "validation_used_for_selection": false,
+  "evaluated_splits": [
+    "calibration"
+  ],
+  "backtest": {
+    "calibration": {
+      "model": {
+        "wis": 36.0172249243036,
+        "mae": 64.42812032898267,
+        "wape": 0.14408950298849485,
+        "relative_bias": -0.001362636556582132,
+        "coverage_95": 0.9625,
+        "coverage_50": 0.44166666666666665,
+        "coverage_80": 0.7729166666666667
+      }
+    }
+  },
+  "resources": {
+    "elapsed_seconds": 28.935118145076558
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "stage": "M9 block C",
+  "plan": "models_plan.md §25.5",
+  "run_key": "20261006T161506.398848Z-full-f86109d6",
+  "run_mode": "full",
+  "model_id": "timesfm3_zero_shot_v1",
+  "formula": "TimesFM 3.0 zero-shot, weekly total as a past-future covariate; deciles only, 50% interval interpolated",
+  "interval_widths": [
+    50,
+    80
+  ],
+  "git_commit": "417b3fff5e5d989d1be6012917471853569e4230",
+  "weekly_counts_sha256": "35c5503b0b9b2a4b9e47984294683d27987b3c7824ae41de642c0a47cefd1ce1",
+  "source_dvc_hash": "87be2a97daa3b169bbd65850a64c89a6.dir",
+  "weights": "timesfm_3",
+  "trained": false,
+  "validation_used_for_selection": false,
+  "evaluated_splits": [
+    "calibration"
+  ],
+  "backtest": {
+    "calibration": {
+      "model": {
+        "wis": 40.70163491644462,
+        "mae": 55.631099528074266,
+        "wape": 0.12441551050648636,
+        "relative_bias": -0.010731509357617634,
+        "coverage_95": null,
+        "coverage_50": 0.49375,
+        "coverage_80": 0.7625
+      }
+    }
+  },
+  "resources": {
+    "elapsed_seconds": 25.41207701107487
+  }
+}
