@@ -1965,6 +1965,17 @@ El primer piloto, con el paseo no centrado, no convergió (SLURM 54558: R-hat
 - Además, el ESS mínimo del paso de ajuste fue 300, debajo del mínimo de 400 de
   §12.1. No se corrigió porque C-B no gana de todos modos.
 
+Resultado de los modelos fundacionales de series del 2026-10-06 (SLURM 54669 y
+54670, sin entrenamiento; detalle en `reports/modeling/weekly_counts/challenges/`):
+
+| Calibración | WIS candidato | WIS M9 | Diferencia (IC 95%) | Gana |
+|---|---:|---:|---:|---|
+| Chronos-2 (intervalos 50, 80 y 95%) | 36.02 | 32.42 | +3.60 [−0.99, +9.03] | No |
+| TimesFM 3.0 (intervalos 50 y 80%) | 40.70 | 41.38 | −0.68 [−4.77, +3.55] | No |
+
+**Cierre del bloque C:** C-A es el único ganador y reemplaza a NB-R4-H v3 como
+M9. Por 25.2 hay que rehacer M11 con C-A, con las reglas de §24.
+
 ### 25.6 Orden
 
 1. Bloque A. Si hay ganador, se rehacen M8–M11.
