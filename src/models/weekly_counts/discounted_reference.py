@@ -21,17 +21,27 @@ def discounted_shares(
     cap: float | None,
 ) -> pd.DataFrame:
     """Share of each cluster from the previous weeks only; NaN in the first week."""
-    if not 0 < discount <= 1:
-        raise ValueError("The discount must be in (0, 1].")
-    if cap is not None and cap < 1:
-        raise ValueError("The cap must be at least 1 or None.")
     counts = (
         frame.pivot(index="week", columns="cluster_id", values="complaint_count")
         .sort_index()
         .reindex(columns=range(clusters))
     )
-    values = counts.to_numpy(dtype=float)
-    shares = np.full_like(values, np.nan)
+    shares = shares_from_counts(counts.to_numpy(dtype=float), discount, cap)
+    return pd.DataFrame(shares, index=counts.index, columns=counts.columns)
+
+
+def shares_from_counts(
+    values: np.ndarray,
+    discount: float,
+    cap: float | None,
+) -> np.ndarray:
+    """The same shares for a (weeks, clusters) array of counts in week order."""
+    if not 0 < discount <= 1:
+        raise ValueError("The discount must be in (0, 1].")
+    if cap is not None and cap < 1:
+        raise ValueError("The cap must be at least 1 or None.")
+    clusters = values.shape[1]
+    shares = np.full(values.shape, np.nan)
     memory = np.zeros(clusters)
     for week, observed in enumerate(values):
         if week > 0:
@@ -39,7 +49,7 @@ def discounted_shares(
             if cap is not None:
                 observed = np.minimum(observed, cap * observed.sum() * shares[week])
         memory = discount * memory + observed
-    return pd.DataFrame(shares, index=counts.index, columns=counts.columns)
+    return shares
 
 
 def row_discounted_shares(

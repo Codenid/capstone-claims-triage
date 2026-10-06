@@ -177,6 +177,13 @@ representations:
 # M11: CUSUM against the weekly excess rule, approved on 2026-10-01
 # (models_plan.md §24).
 persistent_change:
+  # Redone with C-A after block C (models_plan.md §25.5). The first M11 used
+  # nb_rolling_4_hierarchical_v3, run 20260927T161316.494762Z-full-a3ecfab3-9105ce1f,
+  # wrote reports/modeling/persistent_change and published m11-persistent-change-*.
+  m9_model: nb_discounted_hierarchical_v1
+  m9_run_key: 20261005T200606.263137Z-full-0aa0a0fb-2348e548
+  report_dir: reports/modeling/persistent_change_c_a
+  run_name: m11-persistent-change-c-a
   cusum_k: 0.5
   false_alarms_per_month: 1
   simulation_series: 2000

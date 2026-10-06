@@ -18,6 +18,7 @@ from src.models.persistent_change import (
     first_alarm,
     increased_counts,
     injected_scores,
+    m9_shares,
     recent_shares,
     scenario_factors,
     windowed_rows,
@@ -67,6 +68,19 @@ class PersistentChangeTests(unittest.TestCase):
         np.testing.assert_allclose(
             recent_shares(panel["counts"]), panel["recent_share"]
         )
+
+    def test_m9_shares_follow_the_frozen_m9(self):
+        counts = np.random.default_rng(3).poisson([50, 30, 20], size=(8, 3))
+
+        rolling = m9_shares(counts, {"clusters": 3})
+        memory = m9_shares(counts, {"share": {"discount": 0.5, "cap": None}})
+
+        np.testing.assert_allclose(rolling, recent_shares(counts), equal_nan=True)
+        weights = 0.5 ** np.arange(3)
+        last = (weights @ counts[[6, 5, 4]] + 0.5**3 * (weights @ counts[[3, 2, 1]]))
+        first = 0.5**6 * counts[0]
+        expected = (last + first + 1) / ((last + first).sum() + 3)
+        np.testing.assert_allclose(memory[7], expected)
 
     def test_excess_scores_average_the_cdf_over_draws(self):
         observed = np.array([5])

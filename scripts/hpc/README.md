@@ -445,9 +445,11 @@ sbatch scripts/hpc/m11_persistent_change.slurm
 sbatch scripts/hpc/m11_persistent_change.slurm --validation
 ```
 
-Los resultados quedan en `reports/modeling/persistent_change/` y los registros
-en `reports/modeling/runs/persistent_change_<split>/run.json`. Ninguno de los
-dos comandos sobrescribe resultados existentes.
+El run de M9 que usa M11 y el directorio de salida están en
+`persistent_change` de `configs/modeling.yaml`. El primer M11 usó NB-R4-H v3 y
+escribió en `reports/modeling/persistent_change/`; después del bloque C
+(§25.5) usa C-A y escribe en `reports/modeling/persistent_change_c_a/`. Ninguno
+de los dos comandos sobrescribe resultados existentes.
 
 M7S, el bloque A de `models_plan.md` §25.3, repite la comparación de M7 en 9
 espacios PCA y UMAP, con GMM además de los 12 candidatos de M7. Usa los

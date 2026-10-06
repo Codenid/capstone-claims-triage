@@ -4,11 +4,17 @@ Each week's excess is the normal score of the mid-PIT under the frozen M9
 predictive. An upper CUSUM per pattern is compared with a weekly excess rule at
 the same false-alarm budget, with increases injected on fit + calibration.
 --validation then reports the 2025-H1 alerts once, with everything frozen.
+
+The M9 run comes from `persistent_change` in configs/modeling.yaml: NB-R4-H v3
+for the first M11, C-A after block C (§25.5). Its expected counts follow its
+own shares: the 4 previous weeks, or C-A's decaying memory.
 """
 
 from __future__ import annotations
 
 import argparse
+from collections.abc import Callable
+from functools import partial
 import json
 from pathlib import Path
 from typing import Any
@@ -27,12 +33,7 @@ from src.evaluation.experiment import (
     save_run_record,
     set_seed,
 )
-from src.evaluation.final_confirmation import (
-    M9_MODEL,
-    M9_REPORT,
-    M9_RUN_KEY,
-    load_settings,
-)
+from src.evaluation.final_confirmation import load_settings
 from src.models.representation_comparison import (
     check_new_outputs,
     read_json,
@@ -43,10 +44,15 @@ from src.models.weekly_composition.data import (
     composition_panel,
     select_weeks,
 )
+from src.models.weekly_counts.discounted_reference import shares_from_counts
 from src.models.weekly_counts.run import load_frozen_frame
 from src.models.weekly_counts.sampling import subsample_posterior
 
-M9_ARTIFACT = PROJECT_ROOT / "artifacts/models/weekly_counts" / M9_MODEL / M9_RUN_KEY
+Shares = Callable[[np.ndarray], np.ndarray]
+M9_ROOTS = {
+    "report": "reports/modeling/weekly_counts",
+    "artifact": "artifacts/models/weekly_counts",
+}
 RULES = ("cusum", "weekly")
 RULE_LABELS = {"cusum": "CUSUM", "weekly": "Regla semanal"}
 DESIGN_SPLITS = ("fit", "calibration")
@@ -86,6 +92,21 @@ def recent_shares(counts: np.ndarray) -> np.ndarray:
     rolling = pd.DataFrame(counts).shift(1).rolling(RECENT_WEEKS)
     previous = np.asarray(rolling.sum(), dtype=float)
     return (previous + 1) / (previous.sum(axis=1, keepdims=True) + counts.shape[1])
+
+
+def m9_shares(counts: np.ndarray, m9_settings: dict[str, Any]) -> np.ndarray:
+    """The shares behind M9's expected counts: C-A's memory, or the 4 weeks."""
+    share = m9_settings.get("share")
+    if share is None:
+        return recent_shares(counts)
+    return shares_from_counts(counts.astype(float), share["discount"], share["cap"])
+
+
+def m9_run(settings: dict[str, Any], kind: str) -> Path:
+    """Report or artifact directory of the M9 run that M11 uses."""
+    return (
+        PROJECT_ROOT / M9_ROOTS[kind] / settings["m9_model"] / settings["m9_run_key"]
+    )
 
 
 def predictive_cdf(values: np.ndarray, mu: np.ndarray, alpha: np.ndarray) -> np.ndarray:
@@ -134,18 +155,22 @@ def cusum_threshold(rate: float, k: float, series: int, weeks: int, seed: int) -
     return high
 
 
-def load_alpha(settings: dict[str, Any], seed: int) -> np.ndarray:
+def load_alpha(settings: dict[str, Any], artifact: Path, seed: int) -> np.ndarray:
     """M9's dispersion draws used by its predictions, shape (draws, clusters)."""
-    idata = az.from_netcdf(M9_ARTIFACT / "posterior.nc")
+    idata = az.from_netcdf(artifact / "posterior.nc")
     draws = settings["sampling"]["prediction_draws"]
     posterior = subsample_posterior(idata, draws, seed)
     return posterior["alpha"].transpose("sample", "cluster").to_numpy()
 
 
-def windowed_rows(panel: dict[str, np.ndarray], alpha: np.ndarray) -> pd.DataFrame:
+def windowed_rows(
+    panel: dict[str, np.ndarray],
+    alpha: np.ndarray,
+    shares: Shares = recent_shares,
+) -> pd.DataFrame:
     """Observed and expected count and excess score of every week with a full window."""
     counts = panel["counts"]
-    expected = counts.sum(axis=1, keepdims=True) * recent_shares(counts)
+    expected = counts.sum(axis=1, keepdims=True) * shares(counts)
     weeks, clusters = np.meshgrid(
         np.arange(RECENT_WEEKS, len(counts)),
         np.arange(counts.shape[1]),
@@ -172,9 +197,10 @@ def check_m9(
     rows: pd.DataFrame,
     alpha: np.ndarray,
     tolerance: float,
+    report: Path,
 ) -> dict[str, float]:
     """M11 must reproduce M9's expected counts and its saved upper tail P(Y >= y)."""
-    predictions = pd.read_csv(M9_REPORT / "predictions.csv", parse_dates=["week"])
+    predictions = pd.read_csv(report / "predictions.csv", parse_dates=["week"])
     merged = rows.merge(predictions, on=["week", "cluster_id"], validate="one_to_one")
     upper_tail = 1 - predictive_cdf(
         merged["observed"].to_numpy() - 1,
@@ -265,15 +291,16 @@ def injected_scores(
     cluster: int,
     start: int,
     factors: np.ndarray,
+    shares: Shares = recent_shares,
 ) -> np.ndarray:
     """Excess scores of one pattern during an artificial increase.
 
-    The added complaints raise the weekly total, and the following weeks' R4
+    The added complaints raise the weekly total, and the following weeks'
     shares use the increased counts, as M9 would.
     """
     window = slice(start, start + len(factors))
     increased = increased_counts(counts, cluster, start, factors)
-    expected = increased[window].sum(axis=1) * recent_shares(increased)[window, cluster]
+    expected = increased[window].sum(axis=1) * shares(increased)[window, cluster]
     return excess_scores(increased[window, cluster], expected, alpha[:, [cluster]])
 
 
@@ -288,6 +315,7 @@ def detection_runs(
     alpha: np.ndarray,
     thresholds: dict[str, float],
     settings: dict[str, Any],
+    shares: Shares = recent_shares,
 ) -> pd.DataFrame:
     """Each rule's delay for every scenario, pattern and start week that fits."""
     counts = panel["counts"]
@@ -297,7 +325,7 @@ def detection_runs(
         factors = scenario_factors(scenario["kind"], scenario["size"], horizon)
         for cluster in range(counts.shape[1]):
             for start in range(RECENT_WEEKS, len(counts) - horizon + 1):
-                z = injected_scores(counts, alpha, cluster, start, factors)
+                z = injected_scores(counts, alpha, cluster, start, factors, shares)
                 alarms = cusum(z, settings["cusum_k"], thresholds["cusum"])[1]
                 rows.append(
                     {
@@ -378,7 +406,8 @@ def flat_metrics(prefix: str, value: Any) -> dict[str, float]:
 
 def record_path(config: dict[str, Any], split: str) -> Path:
     directory = PROJECT_ROOT / config["paths"]["offline_runs"]
-    return directory / f"persistent_change_{split}" / "run.json"
+    name = config["persistent_change"]["run_name"].replace("-", "_")
+    return directory / f"{name}_{split}" / "run.json"
 
 
 def offline_record(
@@ -394,7 +423,7 @@ def offline_record(
     }
     record = build_run_record(
         config=config,
-        run_name=f"m11-persistent-change-{report['split']}",
+        run_name=f"{config['persistent_change']['run_name']}-{report['split']}",
         stage="M11",
         target="weekly_cluster_counts",
         split=report["split"],
@@ -402,8 +431,8 @@ def offline_record(
         features=["cluster_id", "week", "weekly_total"],
         parameters={
             "rule": "models_plan.md §24",
-            "m9_model": M9_MODEL,
-            "m9_run_key": M9_RUN_KEY,
+            "m9_model": report["m9_model"],
+            "m9_run_key": report["m9_run_key"],
             "settings": json.dumps(report["settings"], sort_keys=True),
             "chosen_rule": report["decision"]["rule"],
         },
@@ -426,6 +455,7 @@ def run_design(
     panel: dict[str, np.ndarray],
     alpha: np.ndarray,
     report_dir: Path,
+    shares: Shares,
 ) -> None:
     """Thresholds, real alerts and injected increases on fit + calibration."""
     settings = config["persistent_change"]
@@ -445,17 +475,19 @@ def run_design(
         ),
         "weekly": float(norm.ppf(1 - rate)),
     }
-    rows = windowed_rows(panel, alpha)
-    m9_check = check_m9(rows, alpha, settings["pit_tolerance"])
+    rows = windowed_rows(panel, alpha, shares)
+    m9_check = check_m9(
+        rows, alpha, settings["pit_tolerance"], m9_run(settings, "report")
+    )
     rows = add_alarms(rows, thresholds, settings["cusum_k"])
-    runs = detection_runs(panel, alpha, thresholds, settings)
+    runs = detection_runs(panel, alpha, thresholds, settings, shares)
     detection = detection_summary(runs)
     report = {
         "stage": "M11",
         "split": "fit_calibration",
         "rule": "models_plan.md §24",
-        "m9_model": M9_MODEL,
-        "m9_run_key": M9_RUN_KEY,
+        "m9_model": settings["m9_model"],
+        "m9_run_key": settings["m9_run_key"],
         "seed": seed,
         "settings": settings,
         "false_alarm_rate": rate,
@@ -487,6 +519,7 @@ def run_validation(
     panel: dict[str, np.ndarray],
     alpha: np.ndarray,
     report_dir: Path,
+    shares: Shares,
 ) -> None:
     """The single 2025-H1 report, with the CUSUM continued from calibration."""
     design = read_json(report_dir / DESIGN_FILES["results"])
@@ -494,8 +527,10 @@ def run_validation(
     record_file = record_path(config, "validation")
     check_new_outputs([*paths.values(), record_file])
     settings = design["settings"]
-    rows = windowed_rows(panel, alpha)
-    m9_check = check_m9(rows, alpha, settings["pit_tolerance"])
+    rows = windowed_rows(panel, alpha, shares)
+    m9_check = check_m9(
+        rows, alpha, settings["pit_tolerance"], m9_run(settings, "report")
+    )
     rows = add_alarms(rows, design["thresholds"], settings["cusum_k"])
     cluster_summary = pd.read_csv(PROJECT_ROOT / config["paths"]["cluster_summary"])
     alerts = alerts_table(rows, cluster_summary)
@@ -511,8 +546,8 @@ def run_validation(
         "stage": "M11",
         "split": "validation",
         "rule": "models_plan.md §24",
-        "m9_model": M9_MODEL,
-        "m9_run_key": M9_RUN_KEY,
+        "m9_model": settings["m9_model"],
+        "m9_run_key": settings["m9_run_key"],
         "settings": settings,
         "thresholds": design["thresholds"],
         "decision": design["decision"],
@@ -533,16 +568,18 @@ def main() -> None:
     config = load_experiment_config()
     seed = config["experiment"]["seed"]
     set_seed(seed)
-    m9_settings = load_settings("weekly_counts", M9_MODEL)
+    settings = config["persistent_change"]
+    m9_settings = load_settings("weekly_counts", settings["m9_model"])
     frame, _, _, _ = load_frozen_frame(config, m9_settings)
     panel = composition_panel(frame, m9_settings["clusters"])
-    alpha = load_alpha(m9_settings, seed)
-    report_dir = PROJECT_ROOT / config["paths"]["persistent_change_reports"]
+    alpha = load_alpha(m9_settings, m9_run(settings, "artifact"), seed)
+    shares = partial(m9_shares, m9_settings=m9_settings)
+    report_dir = PROJECT_ROOT / settings["report_dir"]
     if args.validation:
-        run_validation(config, panel, alpha, report_dir)
+        run_validation(config, panel, alpha, report_dir, shares)
         return
     design = select_weeks(panel, np.isin(panel["split"], DESIGN_SPLITS))
-    run_design(config, design, alpha, report_dir)
+    run_design(config, design, alpha, report_dir, shares)
 
 
 if __name__ == "__main__":
