@@ -106,7 +106,10 @@ def features(
     )
     semantic_dir = PROJECT_ROOT / config["paths"]["semantic_artifacts"]
     pca = joblib.load(semantic_dir / "pca.joblib")
-    products = sorted(frames["fit"][CANONICAL_PRODUCT_COLUMN].astype(str).unique())
+    # M4's encoder knows every fit product; the context sample may miss some.
+    tfidf_dir = PROJECT_ROOT / config["paths"]["tfidf_models"]
+    encoder = joblib.load(tfidf_dir / "product_encoder.joblib")
+    products = [str(product) for product in encoder.categories_[0]]
     numerical = {}
     codes = {}
     for split, values in embeddings.items():
@@ -115,7 +118,7 @@ def features(
             frames[split][CANONICAL_PRODUCT_COLUMN].astype(str), categories=products
         )
         if (product.codes < 0).any():
-            raise ValueError(f"Block B found a {split} product absent from fit.")
+            raise ValueError(f"Block B found a {split} product unknown to M4.")
         codes[split] = product.codes.astype(np.int64)
     return numerical, codes, products
 

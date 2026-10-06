@@ -60,7 +60,7 @@ class StateSpaceTests(unittest.TestCase):
         model = build_model(observed, observed.sum(axis=1).astype(float), PRIORS, fixed)
 
         free = {variable.name for variable in model.free_RVs}
-        self.assertEqual(free, {"z0", "innovations"})
+        self.assertEqual(free, {"z"})
 
     def test_one_step_draws_center_on_the_last_shares(self):
         z_last = np.tile(np.array([[0.5, -0.2]]), (4000, 1))

@@ -59,7 +59,7 @@ HYPERPARAMETERS = (
     "log_alpha_sigma",
     "log_alpha_contrast",
 )
-STATE_VARIABLES = ("z0", "innovations")
+STATE_VARIABLES = ("z",)
 RUN_MODES = ("prior", "pilot", "full")
 PILOT_SAMPLING = {"chains": 2, "tune": 250, "draws": 250}
 PILOT_CALIBRATION_WEEKS = 2
@@ -98,7 +98,7 @@ def build_model(
     basis = zero_sum_basis(clusters)
     coords = {
         "contrast": np.arange(clusters - 1),
-        "step": np.arange(weeks - 1),
+        "week": np.arange(weeks),
         "cluster": np.arange(clusters),
     }
     with pm.Model(coords=coords) as model:
@@ -124,16 +124,20 @@ def build_model(
         else:
             tau, nu = fixed["tau"], fixed["nu"]
             alpha = pt.as_tensor_variable(fixed["alpha"])
-        z0 = pm.Normal("z0", mu=0, sigma=priors["initial_sigma"], dims="contrast")
-        innovations = pm.StudentT(
-            "innovations", nu=nu, mu=0, sigma=1, dims=("step", "contrast")
+        # Centered: with thousands of complaints a week the data pin down each
+        # state, and a cumulative sum of scaled innovations mixed badly
+        # (pilot SLURM 54558: R-hat 1.33, BFMI 0.10).
+        z = pm.RandomWalk(
+            "z",
+            init_dist=pm.Normal.dist(0, priors["initial_sigma"], shape=(clusters - 1,)),
+            innovation_dist=pm.StudentT.dist(
+                nu=nu, mu=0, sigma=tau, shape=(clusters - 1,)
+            ),
+            steps=weeks - 1,
+            dims=("contrast", "week"),
         )
-        z = pt.concatenate(
-            [z0[None, :], z0[None, :] + pt.cumsum(tau * innovations, axis=0)],
-            axis=0,
-        )
-        pm.Deterministic("z_last", z[-1], dims="contrast")
-        shares = pt.special.softmax(pt.dot(z, basis.T), axis=1)
+        pm.Deterministic("z_last", z[:, -1], dims="contrast")
+        shares = pt.special.softmax(pt.dot(z.T, basis.T), axis=1)
         pm.Deterministic("mu", totals[:, None] * shares)
         pm.NegativeBinomial(
             "observed",
