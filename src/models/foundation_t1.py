@@ -186,7 +186,7 @@ def run_kumo(
     seed: int,
 ) -> tuple[np.ndarray, np.ndarray]:
     import torch
-    from sdm import CategoricalTensor, StringTensor, TableTensor
+    from sdm import CategoricalTensor, StringTensor, Stype, TableTensor
     from sdm.models import KumoTabular
 
     names = [f"pc{index}" for index in range(numerical["fit"].shape[1])]
@@ -225,15 +225,14 @@ def run_kumo(
                 table("calibration", slice(start, start + batch)),
                 num_estimators=estimators,
                 generator=generator,
-            ).numerical
-            # One column per context class, in the order of the target categories.
-            if output.dim() == 3:
-                output = output.mean(dim=0)
-            parts.append(output.float().cpu().numpy())
-    probability = np.vstack(parts)
-    if probability.shape[1] != len(classes):
-        raise ValueError("Kumo Tabular returned an unexpected number of classes.")
-    return probability, classes
+            )
+            # The recipe reorders the classes, so each column is read by name.
+            names = list(output.columns[Stype.numerical])
+            if sorted(names) != sorted(classes.tolist()):
+                raise ValueError("Kumo Tabular classes differ from the context.")
+            order = [names.index(name) for name in classes.tolist()]
+            parts.append(output.numerical[..., order].float().cpu().numpy())
+    return np.vstack(parts), classes
 
 
 def compare(
