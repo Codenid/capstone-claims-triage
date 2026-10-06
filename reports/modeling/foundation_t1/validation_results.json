@@ -1,0 +1,35 @@
+{
+  "stage": "M5F",
+  "plan": "models_plan.md §25.1 and §25.4",
+  "split": "validation",
+  "view": "no_shared_text",
+  "already_consulted": true,
+  "note": "2025-H1 was opened in §22; this is not clean evidence.",
+  "git_commit": "b60a1188dd343bf02eab8ca5b41e28d970bda25e",
+  "seed": 42,
+  "metrics": {
+    "bge_product": {
+      "macro_f1": 0.22674740653547165,
+      "top_three": 0.958727932961883
+    },
+    "tabpfn": {
+      "macro_f1": 0.26983968680753667,
+      "top_three": 0.9591847213148422
+    }
+  },
+  "comparisons": {
+    "tabpfn": {
+      "relative_gain": 0.1900453060543552,
+      "difference": {
+        "estimate": 0.04309228027206502,
+        "p025": 0.03884440239784895,
+        "p50": 0.04276626815269115,
+        "p975": 0.04586124532931333
+      }
+    }
+  },
+  "weeks": 27,
+  "query_rows": 564813,
+  "context_rows": 20000,
+  "elapsed_seconds": 1392.700438146945
+}
