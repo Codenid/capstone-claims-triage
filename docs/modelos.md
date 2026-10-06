@@ -30,7 +30,7 @@ peruano.
 
 | Componente | Modelo vigente | Calibración | Validación (2025-H1) | Dónde |
 |---|---|---|---|---|
-| T1, motivo del reclamo (90 clases) | **TabPFN-3.5** en contexto con 20,000 filas de PCA 100 + producto | Macro-F1 0.271, top-3 95.5% | pendiente (en curso) | `reports/modeling/foundation_t1/` |
+| T1, motivo del reclamo (90 clases) | **TabPFN-3.5** en contexto con 20,000 filas de PCA 100 + producto | Macro-F1 0.271, top-3 95.5% | Macro-F1 0.270, top-3 95.9% (ya consultado) | `reports/modeling/foundation_t1/` |
 | T2, alguna solución registrada | TF-IDF solo texto, logística calibrada; umbral 0.300 | AP 0.609 | AP 0.570 | `artifacts/models/representation_comparison/` |
 | T3, compensación monetaria | TF-IDF solo texto; umbral 0.182 | AP 0.364 | AP 0.270 | ídem |
 | T4, respuesta no oportuna | Sale del triaje; lo reemplaza una regla de plazo (15 o 45 días hábiles) | — | AP 0.078, peor que la regla | `configs/peru_holidays.yaml` |
@@ -60,7 +60,7 @@ precisión promedio (AP) para T2–T4. Mayor es mejor.
 | M5B | BGE + producto, todo `fit` | 0.240 | 0.610 | 0.351 | 0.042 | **Elegido para T1** (+11.9% sobre TF-IDF + producto) |
 | M5B | TF-IDF + producto (T4) | — | — | — | 0.055 | Elegido para T4, luego no confirmado |
 | §22 | Confirmación en validación | 0.227 vs 0.068 | 0.570 vs 0.451 | 0.270 vs 0.127 | 0.078 vs 0.121 | T1–T3 confirmados; T4 rechazado |
-| Bloque B | **TabPFN-3.5**, 20,000 filas de contexto, 8 estimadores | **0.271** | — | — | — | **Gana a BGE + producto** (+12.9%, IC [+0.027, +0.035]) |
+| Bloque B | **TabPFN-3.5**, 20,000 filas de contexto, 8 estimadores | **0.271** | — | — | — | **Gana a BGE + producto** (+12.9%, IC [+0.027, +0.035]); en 2025-H1, 0.270 vs 0.227 |
 | Bloque B | Kumo Tabular (NVIDIA) | — | — | — | — | No corrió: sin memoria con 50,000 filas en GPU ni con 20,000 en RAM |
 
 Regla de desempate de M5B: de la representación más simple a la más compleja,

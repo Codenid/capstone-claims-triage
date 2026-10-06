@@ -1864,6 +1864,14 @@ Macro-F1 publicado (0.2397) antes de comparar.
   quedan como mejoras posibles. Kumo Relational (KumoRFM-2) queda para después,
   junto a Kumo Tabular vía NIM.
 
+Reporte único en validación del 2026-10-06 (SLURM 54684; detalle en
+`reports/modeling/foundation_t1/validation_results.json`), marcado como ya
+consultado (25.1). En las 564,813 filas de 2025-H1 sin texto compartido, con el
+mismo contexto de 20,000 filas: TabPFN-3.5 Macro-F1 0.2698 y top-3 95.9%,
+contra 0.2267 y 95.9% del T1 congelado, que reprodujo su valor de §22. La
+diferencia es +0.043 [+0.039, +0.046], 19.0% relativo: la ventaja de
+calibración se mantiene. Falta `ood_2026_partial`.
+
 ### 25.5 Bloque C: conteos semanales (M9)
 
 - Referencia: NB-R4-H v3. Si el bloque A cambia el clustering, se reajusta con
