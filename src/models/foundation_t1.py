@@ -163,6 +163,8 @@ def run_tabpfn(
         n_estimators=estimators,
         categorical_features_indices=[numerical["fit"].shape[1]],
         random_state=seed,
+        # The context is processed once and reused by every query batch.
+        fit_mode="fit_with_cache",
     )
     model.fit(table("fit"), labels)
     query = table("calibration")
@@ -214,18 +216,13 @@ def run_kumo(
         task="classification", size=settings["kumo_size"], device="cuda"
     )
     generator = torch.Generator(device="cuda").manual_seed(seed)
-    context = table("fit")
     batch = settings["query_batch_rows"]
     parts = []
     with torch.no_grad():
+        # The context is processed once and reused by every query batch.
+        model.fit(table("fit"), target, num_estimators=estimators, generator=generator)
         for start in range(0, len(numerical["calibration"]), batch):
-            output = model(
-                context,
-                target,
-                table("calibration", slice(start, start + batch)),
-                num_estimators=estimators,
-                generator=generator,
-            )
+            output = model.predict(table("calibration", slice(start, start + batch)))
             # The recipe reorders the classes, so each column is read by name.
             names = list(output.columns[Stype.numerical])
             if sorted(names) != sorted(classes.tolist()):
