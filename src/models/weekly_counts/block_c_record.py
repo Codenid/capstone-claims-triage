@@ -58,7 +58,8 @@ def main() -> None:
         artifacts=[path.relative_to(PROJECT_ROOT).as_posix() for path in paths],
     )
     record["tags"]["run_mode"] = "full"
-    path = PROJECT_ROOT / config["paths"]["offline_runs"] / "m9" / "block_c" / "run.json"
+    runs = PROJECT_ROOT / config["paths"]["offline_runs"]
+    path = runs / "m9" / "block_c" / "run.json"
     save_run_record(record, path)
     print(f"Candidates: {[report['candidate'] for report in reports]}")
     print(f"Winners: {winners}")
