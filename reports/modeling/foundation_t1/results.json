@@ -1,0 +1,41 @@
+{
+  "stage": "M5F",
+  "plan": "models_plan.md §25.4",
+  "git_commit": "4d144839f27dba2f3b0a8867a0b43c9d4057f537",
+  "seed": 42,
+  "validation_used": false,
+  "reference": "bge_product",
+  "context_rows": 20000,
+  "context_classes": 76,
+  "query_rows": 167973,
+  "pca_components": 100,
+  "estimators": 8,
+  "bootstrap_draws": 2000,
+  "metrics": {
+    "bge_product": {
+      "macro_f1": 0.2397446436210775,
+      "top_three": 0.9539866526167896
+    },
+    "tabpfn": {
+      "macro_f1": 0.27063657960221493,
+      "top_three": 0.9554333136873188
+    }
+  },
+  "comparisons": {
+    "tabpfn": {
+      "relative_gain": 0.12885349809926483,
+      "difference": {
+        "estimate": 0.03089193598113743,
+        "p025": 0.02681964421178736,
+        "p50": 0.031239434911558422,
+        "p975": 0.03526747515369032
+      },
+      "wins": true
+    }
+  },
+  "weeks": 14,
+  "elapsed_seconds": {
+    "tabpfn": 371.42675530491397,
+    "total": 444.43696049717255
+  }
+}
