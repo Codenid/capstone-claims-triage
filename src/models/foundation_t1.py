@@ -191,6 +191,7 @@ def run_kumo(
 
     names = [f"pc{index}" for index in range(numerical["fit"].shape[1])]
 
+    # Tables are built on the CPU and moved whole: every block must share a device.
     def table(split: str, rows: slice = slice(None)) -> TableTensor:
         return TableTensor(
             columns={"numerical": names, "categorical": ["product"]},
@@ -199,8 +200,7 @@ def run_kumo(
                 code=torch.from_numpy(codes[split][rows, None]),
                 categories=(StringTensor.from_list(products),),
             ),
-            device="cuda",
-        )
+        ).to("cuda")
 
     classes = np.unique(labels)
     target = TableTensor(
@@ -209,8 +209,7 @@ def run_kumo(
             code=torch.from_numpy(np.searchsorted(classes, labels)[:, None]),
             categories=(StringTensor.from_list(classes.tolist()),),
         ),
-        device="cuda",
-    )
+    ).to("cuda")
     model = KumoTabular(
         task="classification", size=settings["kumo_size"], device="cuda"
     )
