@@ -1932,6 +1932,9 @@ predictive (§10).
 - [x] Tamaño del contexto de los modelos fundacionales tabulares, aprobado por
   el usuario el 2026-10-03: 50,000 filas de ajuste al azar, semilla 42, debajo
   de las 60,000 filas con que se preentrenó Kumo Tabular.
+  Cambio aprobado por el usuario el 2026-10-06: con 50,000 filas Kumo Tabular
+  large necesita unos 50 GB de GPU y el run se quedó sin memoria (SLURM 54590;
+  la RTX A6000 tiene 47 GB, compartidos). Los dos modelos usan 20,000 filas.
 - [x] Especificación matemática del modelo dinámico del bloque C: el usuario
   aprobó el 2026-10-03 que compitan C-A y C-B (25.5).
 - [ ] Permiso del usuario para cada descarga de pesos: nombre, fuente y tamaño.

@@ -224,9 +224,10 @@ foundation_t1:
   reference_dvc_hash: ecf6c9262d0e9a44ad9ea97617e316ba.dir
   reference_predictions: artifacts/models/representation_comparison/calibration_t1.parquet
   pca_components: 100
-  context_rows: 50000
+  # 50,000 rows ran out of GPU memory in Kumo Tabular (SLURM 54590).
+  context_rows: 20000
   estimators: 8
-  query_batch_rows: 10000
+  query_batch_rows: 5000
   minimum_relative_gain: 0.05
   bootstrap_draws: 2000
   tabpfn_model_path: ~/models/tabpfn_3_5/tabpfn-v3.5-20260909.safetensors

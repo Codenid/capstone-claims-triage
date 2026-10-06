@@ -17,6 +17,7 @@ export OMP_NUM_THREADS=8
 # node, and nothing reports usage.
 export HF_HUB_OFFLINE=1
 export TABPFN_DISABLE_TELEMETRY=1
+export PYTORCH_CUDA_ALLOC_CONF=expandable_segments:True
 
 nvidia-smi --query-gpu=name,memory.total --format=csv,noheader
 uv run --no-sync python -m src.models.foundation_t1 "$@"
