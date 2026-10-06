@@ -1,0 +1,138 @@
+{
+  "stage": "M11",
+  "split": "fit_calibration",
+  "rule": "models_plan.md §24",
+  "m9_model": "nb_discounted_hierarchical_v1",
+  "m9_run_key": "20261005T200606.263137Z-full-0aa0a0fb-2348e548",
+  "seed": 42,
+  "settings": {
+    "m9_model": "nb_discounted_hierarchical_v1",
+    "m9_run_key": "20261005T200606.263137Z-full-0aa0a0fb-2348e548",
+    "report_dir": "reports/modeling/persistent_change_c_a",
+    "run_name": "m11-persistent-change-c-a",
+    "cusum_k": 0.5,
+    "false_alarms_per_month": 1,
+    "simulation_series": 2000,
+    "simulation_weeks": 5000,
+    "horizon_weeks": 8,
+    "pit_tolerance": 0.06,
+    "minimum_detection_gain": 0.05,
+    "deciding_scenarios": [
+      "growth_10",
+      "growth_20"
+    ],
+    "scenarios": {
+      "growth_10": {
+        "kind": "growth",
+        "size": 0.1
+      },
+      "growth_20": {
+        "kind": "growth",
+        "size": 0.2
+      },
+      "step_50": {
+        "kind": "step",
+        "size": 0.5
+      },
+      "step_100": {
+        "kind": "step",
+        "size": 1.0
+      },
+      "none": {
+        "kind": "none",
+        "size": 0.0
+      }
+    }
+  },
+  "false_alarm_rate": 0.005749486652977413,
+  "thresholds": {
+    "cusum": 3.3682710863649845,
+    "weekly": 2.527158075861908
+  },
+  "m9_check": {
+    "rows": 3960,
+    "expected_max_difference": 1.8462742445990443e-10,
+    "upper_tail_max_difference": 0.03855564512859794
+  },
+  "real_alarms": {
+    "fit": {
+      "weeks": 87,
+      "cusum": 45,
+      "cusum_per_month": 2.249076354679803,
+      "weekly": 58,
+      "weekly_per_month": 2.8988095238095237
+    },
+    "calibration": {
+      "weeks": 12,
+      "cusum": 4,
+      "cusum_per_month": 1.4494047619047619,
+      "weekly": 3,
+      "weekly_per_month": 1.0870535714285714
+    }
+  },
+  "detection": {
+    "growth_10": {
+      "runs": 3680,
+      "cusum": {
+        "detected": 0.42282608695652174,
+        "median_delay": 5.0
+      },
+      "weekly": {
+        "detected": 0.31956521739130433,
+        "median_delay": 4.0
+      }
+    },
+    "growth_20": {
+      "runs": 3680,
+      "cusum": {
+        "detected": 0.7089673913043478,
+        "median_delay": 4.0
+      },
+      "weekly": {
+        "detected": 0.5402173913043479,
+        "median_delay": 3.0
+      }
+    },
+    "step_50": {
+      "runs": 3680,
+      "cusum": {
+        "detected": 0.3160326086956522,
+        "median_delay": 2.0
+      },
+      "weekly": {
+        "detected": 0.36086956521739133,
+        "median_delay": 1.0
+      }
+    },
+    "step_100": {
+      "runs": 3680,
+      "cusum": {
+        "detected": 0.5160326086956522,
+        "median_delay": 2.0
+      },
+      "weekly": {
+        "detected": 0.5690217391304347,
+        "median_delay": 1.0
+      }
+    },
+    "none": {
+      "runs": 3680,
+      "cusum": {
+        "detected": 0.06521739130434782,
+        "median_delay": 5.0
+      },
+      "weekly": {
+        "detected": 0.10489130434782609,
+        "median_delay": 4.0
+      }
+    }
+  },
+  "decision": {
+    "rule": "cusum",
+    "gains": {
+      "growth_10": 0.1032608695652174,
+      "growth_20": 0.16874999999999996
+    },
+    "minimum": 0.05
+  }
+}
