@@ -1,0 +1,63 @@
+{
+  "plan": "models_plan.md §25.2",
+  "git_commit": "a720e95914eba694fad280beb629dea6fa1d6183",
+  "candidate": "nb_state_space_v1",
+  "candidate_run": "reports/modeling/weekly_counts/nb_state_space_v1/20261006T012448.409619Z-full-68d5f71c",
+  "reference_run": "reports/modeling/weekly_counts/nb_rolling_4_hierarchical_v3/20260927T161316.494762Z-full-a3ecfab3-9105ce1f",
+  "split": "calibration",
+  "validation_used": false,
+  "formula": "z[t] = z[t-1] + tau * e[t], e[t] ~ StudentT(nu, 0, 1) in K-1 zero-sum contrasts; p[t] = softmax(B z[t]); complaint_count[c,t] ~ NegativeBinomial(weekly_total[t] * p[c,t], alpha[c]); alpha, tau and nu from fit only; states re-estimated before each calibration week",
+  "comparison": {
+    "split": "calibration",
+    "weeks": 12,
+    "bootstrap_draws": 2000,
+    "candidate": "model",
+    "best_baseline": "m9",
+    "metrics": {
+      "model": {
+        "wis": 31.95133668154762,
+        "wape": 0.12051838771450003,
+        "mae": 53.88854166666667
+      },
+      "m9": {
+        "wis": 32.41809895833333,
+        "wape": 0.12659637417473105,
+        "mae": 56.60625
+      }
+    },
+    "wis_gain": 0.014398200134611128,
+    "difference": {
+      "wis": {
+        "estimate": -0.4667622767857118,
+        "p025": -2.5798017485119007,
+        "p50": -0.4645219494047659,
+        "p975": 1.5700999813988115
+      },
+      "wape": {
+        "estimate": -0.0060779864602310135,
+        "p025": -0.017288812975117782,
+        "p50": -0.005908812911353423,
+        "p975": 0.0037861411255014745
+      },
+      "mae": {
+        "estimate": -2.7177083333333343,
+        "p025": -7.4885677083333295,
+        "p50": -2.6609374999999993,
+        "p975": 1.7221874999999955
+      }
+    }
+  },
+  "coverage": {
+    "coverage_80": 0.8770833333333333,
+    "coverage_95": 0.9770833333333333
+  },
+  "checks": {
+    "wis_gain": false,
+    "wis_interval_below_zero": false,
+    "wape_not_worse": true,
+    "mae_not_worse": true,
+    "coverage_80": true,
+    "coverage_95": true
+  },
+  "wins": false
+}
