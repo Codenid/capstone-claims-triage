@@ -1877,7 +1877,13 @@ consultado (25.1). En las 564,813 filas de 2025-H1 sin texto compartido, con el
 mismo contexto de 20,000 filas: TabPFN-3.5 Macro-F1 0.2698 y top-3 95.9%,
 contra 0.2267 y 95.9% del T1 congelado, que reprodujo su valor de §22. La
 diferencia es +0.043 [+0.039, +0.046], 19.0% relativo: la ventaja de
-calibración se mantiene. Falta `ood_2026_partial`.
+calibración se mantiene.
+
+Decisión del usuario del 2026-10-06: no se corre `ood_2026_partial`. Es el
+único periodo que nadie consultó, pero es parcial (la CFPB publica narrativas
+con retraso y consentimiento, así que la muestra está sesgada), solo serviría
+para T1 y exigiría generar embeddings de 2026. Se reserva 2026 completo como
+test final de todo el sistema cuando la cobertura esté cerrada.
 
 ### 25.5 Bloque C: conteos semanales (M9)
 

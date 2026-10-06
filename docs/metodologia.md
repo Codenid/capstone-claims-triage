@@ -189,7 +189,9 @@ una limitación conocida; la memoria corta la atenúa pero no la corrige.
 ## 7. Límites y pendientes
 
 - Las cifras de validación posteriores al 2026-10-01 están contaminadas por
-  haberla abierto antes; el siguiente periodo limpio sería 2026 completo.
+  haberla abierto antes. 2026 se reserva, sin abrir, como test final de todo
+  el sistema cuando su cobertura esté completa; su versión parcial está
+  sesgada por el retraso de publicación de la CFPB.
 - TabPFN-3.5 y TimesFM 3.0 tienen licencias no comerciales. Un experto debe
   validar esa lectura antes de proponerlos al banco.
 - El eco de ráfagas en M9 y M11.
