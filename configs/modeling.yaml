@@ -253,6 +253,13 @@ foundation_series:
   chronos2_path: ~/models/chronos_2
   timesfm3_path: ~/models/timesfm_3
 
+# Evidence card (docs/registro/models_plan.md §25, decision of 2026-10-06):
+# a few real calibration complaints with the five frozen signals, no action.
+evidence_card:
+  products: 3
+  neighbors: 5
+  facts: reports/evidence_card/facts.json
+
 clustering:
   source_dvc_hash: 08662a82971a71666b06c9ccf8120d7f.dir
   comparison_rows: 20000

@@ -548,6 +548,17 @@ Cada candidato del bloque C se compara después con M9 congelado:
 uv run --no-sync python -m src.models.weekly_counts.challenge   reports/modeling/weekly_counts/<modelo>/<run_key>
 ```
 
+La ficha de evidencia (M12, decisión del 2026-10-06) calcula en Khipu las
+cinco salidas de cinco reclamos reales de calibración y las guarda en
+`reports/evidence_card/facts.json`; TabPFN necesita GPU. La página se genera
+en Windows con Quarto desde ese JSON:
+
+```bash
+sbatch scripts/hpc/m12_evidence_card.slurm --as-of 2026-10-06
+# en Windows, dentro de reports/evidence_card:
+QUARTO_PYTHON=../../.venv/Scripts/python.exe quarto render ficha.qmd
+```
+
 Verificar acceso a la A100:
 
 ```bash

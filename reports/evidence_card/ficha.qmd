@@ -1,0 +1,137 @@
+---
+title: "Ficha de evidencia por reclamo"
+subtitle: "Cinco reclamos reales de calibración con las salidas de los modelos congelados"
+lang: es
+format:
+  html:
+    minimal: true
+    embed-resources: true
+    toc: true
+    toc-depth: 2
+    css: ficha.css
+execute:
+  echo: false
+---
+
+```{python}
+import json
+from html import escape
+from pathlib import Path
+
+facts = json.loads(Path("facts.json").read_text(encoding="utf-8"))
+
+
+def pct(value: float) -> str:
+    return f"{value:.0%}"
+
+
+def issue_rows(items: list[dict]) -> str:
+    return "".join(
+        f"<tr><td>{escape(item['issue'])}</td><td class='num'>{pct(item['probability'])}</td></tr>"
+        for item in items
+    )
+
+
+def bar(signal: dict) -> str:
+    width = round(signal["probability"] * 100)
+    mark = round(signal["threshold"] * 100)
+    label = "probable" if signal["likely"] else "poco probable"
+    return (
+        f"<div class='bar'><div class='fill' style='width:{width}%'></div>"
+        f"<div class='mark' style='left:{mark}%'></div></div>"
+        f"<span class='num'>{pct(signal['probability'])}</span> "
+        f"<span class='muted'>umbral {pct(signal['threshold'])}: {label}</span>"
+    )
+
+
+def yes_no(value) -> str:
+    return "—" if value is None else ("sí" if value else "no")
+
+
+def card(c: dict) -> str:
+    p = c["pattern"]
+    alert = p["alert"]
+    if alert is None:
+        status = "sin alerta esa semana"
+    else:
+        rules = [name for name, on in (("CUSUM", alert["cusum"]), ("semanal", alert["weekly"])) if on]
+        status = (
+            f"<strong>alerta {' y '.join(rules)}</strong>: {alert['observed']} reclamos "
+            f"frente a {alert['expected']:.0f} esperados"
+        )
+    novelty = "<strong>novedoso</strong>" if p["is_novel"] else "dentro de lo conocido"
+    d = c["deadline"]
+    similar = "".join(
+        f"<tr><td>{s['received']}</td><td>{escape(s['product'])}</td>"
+        f"<td>{escape(s['issue'])}</td><td>{yes_no(s['relief'])}</td>"
+        f"<td>{yes_no(s['monetary'])}</td><td class='num'>{s['similarity']:.2f}</td></tr>"
+        f"<tr class='snippet'><td colspan='6'>{escape(s['snippet'])}…</td></tr>"
+        for s in c["similar"]
+    )
+    return f"""
+<section class="card">
+<h2>Reclamo {c['complaint_id']}</h2>
+<p class="meta">Recibido el {c['received']} · {escape(c['product'])} · {escape(c['company'])} · {c['state']}<br>
+<span class="muted">Elegido porque: {escape(c['reason'])}</span></p>
+<details><summary>Narrativa (inglés, texto público de la CFPB)</summary><blockquote>{escape(c['narrative'])}</blockquote></details>
+
+<div class="grid">
+<div class="box">
+<h3>1. Motivo sugerido</h3>
+<div class="two">
+<div><h4>TabPFN-3.5 (vigente)</h4><table>{issue_rows(c['issues']['tabpfn'])}</table></div>
+<div><h4>BGE + producto lineal</h4><table>{issue_rows(c['issues']['linear'])}</table></div>
+</div>
+<p class="muted">Motivo registrado por la CFPB: <strong>{escape(c['actual']['issue'])}</strong></p>
+</div>
+
+<div class="box">
+<h3>2. Resultado histórico probable</h3>
+<p>Alguna solución (T2)<br>{bar(c['T2'])}</p>
+<p>Compensación monetaria (T3)<br>{bar(c['T3'])}</p>
+<p class="muted">Registrado: solución {yes_no(c['actual']['relief'])}, compensación {yes_no(c['actual']['monetary'])}</p>
+</div>
+
+<div class="box wide">
+<h3>3. Reclamos históricos parecidos</h3>
+<table class="similar"><thead><tr><th>Recibido</th><th>Producto</th><th>Motivo</th><th>Solución</th><th>Monetaria</th><th>Similitud</th></tr></thead>
+<tbody>{similar}</tbody></table>
+</div>
+
+<div class="box">
+<h3>4. Patrón semántico</h3>
+<p>Patrón <strong>{p['cluster_id']}</strong> ({escape(p['main_product'])}): {novelty}.<br>
+<span class="muted">Distancia {p['distance']:.1f}; el 95% de los reclamos del patrón en ajuste está bajo {p['p95_distance_fit']:.1f}.</span></p>
+<p class="terms">{escape(p['terms'])}</p>
+<p>Semana del {p['week']}: {status}.</p>
+</div>
+
+<div class="box">
+<h3>5. Plazo de respuesta</h3>
+<p>Registro supuesto: <strong>{d['registered']}</strong><br>
+Vence a {d['standard_days']} días hábiles: <strong>{d['standard_due']}</strong><br>
+Con extensión, {d['extended_days']} días hábiles: <strong>{d['extended_due']}</strong></p>
+<p class="muted">Lunes a viernes sin feriados nacionales de gob.pe. Los reclamos son de 2024; la fecha se simula porque solo hay feriados de 2026.</p>
+</div>
+</div>
+</section>
+"""
+
+
+cards = "".join(card(c) for c in facts["cards"])
+intro = f"""
+<p class="lead">Cada ficha muestra lo que el sistema entregaría a la persona que hace el triaje.
+Ninguna salida es una acción: son sugerencias con su incertidumbre, para decidir con evidencia.
+Las probabilidades, los vecinos y las alertas vienen de los modelos congelados; nada se reentrenó.</p>
+<p class="muted">Reclamos de calibración (oct–dic 2024) sin texto compartido, elegidos por una regla fija con semilla {facts['seed']}.
+Commit {facts['git_commit'][:8]}. Las etiquetas «registrado» son las de la CFPB y no se muestran al usuario en producción.</p>
+"""
+```
+
+```{python}
+#| output: asis
+print("```{=html}")
+print(intro)
+print(cards)
+print("```")
+```
