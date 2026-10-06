@@ -1859,6 +1859,10 @@ Macro-F1 publicado (0.2397) antes de comparar.
   ya consultado, y en `ood_2026_partial`.
 - Su licencia es no comercial: usarlo con el banco requiere una licencia de
   Prior Labs, que debe validar un experto.
+- Decisión del usuario del 2026-10-06: TabPFN se queda como está. El
+  fine-tuning (`FinetunedTabPFNClassifier`) y un ensamble de varios contextos
+  quedan como mejoras posibles. Kumo Relational (KumoRFM-2) queda para después,
+  junto a Kumo Tabular vía NIM.
 
 ### 25.5 Bloque C: conteos semanales (M9)
 
@@ -1975,6 +1979,30 @@ Resultado de los modelos fundacionales de series del 2026-10-06 (SLURM 54669 y
 
 **Cierre del bloque C:** C-A es el único ganador y reemplaza a NB-R4-H v3 como
 M9. Por 25.2 hay que rehacer M11 con C-A, con las reglas de §24.
+
+MLflow del 2026-10-06: bloque B `b29a0b2a36b047e0a37a17d6217bc1e4`
+(`m5f-foundation-t1`) y bloque C `21ec486b702948fd9969e8b80e5357e2`
+(`m9-block-c-challenge`).
+
+M11 rehecho con C-A el 2026-10-06 (SLURM 54682; detalle en
+`reports/modeling/persistent_change_c_a/`). M11 reprodujo a C-A (cola superior
+con diferencia máxima 0.039). Los umbrales no cambian ($h = 3.37$,
+$z^* = 2.53$) y la regla vuelve a elegir CUSUM, que detecta 10.3 y 16.9 puntos
+más en los dos crecimientos.
+
+| `fit` + calibración | M11 con C-A | M11 con v3 |
+|---|---:|---:|
+| Alertas reales por mes, `fit` | 2.2 | 3.8 |
+| Alertas reales por mes, calibración | 1.4 | 2.2 |
+| Detecta crecimiento 10% semanal | 42.3% | 50.8% |
+| Detecta crecimiento 20% semanal | 70.9% | 79.7% |
+| Avisa sin aumento | 6.5% | 11.5% |
+
+Con C-A hay menos alertas reales, más cerca del presupuesto de 1 al mes, pero
+también se detectan menos aumentos artificiales. La memoria más corta hace que
+lo esperado alcance antes a un patrón que crece, y eso le quita señal al
+CUSUM. Parte de la ventaja de v3 viene de que avisaba más de la cuenta: 11.5%
+de avisos sin aumento, contra 6.5%.
 
 ### 25.6 Orden
 
