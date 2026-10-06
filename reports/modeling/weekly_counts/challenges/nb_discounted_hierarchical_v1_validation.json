@@ -1,0 +1,82 @@
+{
+  "plan": "models_plan.md §25.1",
+  "git_commit": "d3ad4fbdfb79abba3f0353dc7d166550618f3f6e",
+  "candidate": "nb_discounted_hierarchical_v1",
+  "candidate_run": "reports/modeling/weekly_counts/nb_discounted_hierarchical_v1/20261005T200606.263137Z-full-0aa0a0fb-2348e548",
+  "reference_run": "reports/modeling/weekly_counts/nb_rolling_4_hierarchical_v3/20260927T161316.494762Z-full-a3ecfab3-9105ce1f",
+  "split": "validation",
+  "already_consulted": true,
+  "note": "2025-H1 was opened in §22; this is not clean evidence.",
+  "comparison": {
+    "split": "validation",
+    "weeks": 25,
+    "bootstrap_draws": 2000,
+    "candidate": "model",
+    "best_baseline": "m9",
+    "metrics": {
+      "model": {
+        "wis": 129.60923160714287,
+        "wape": 0.25381184020176606,
+        "mae": 172.289
+      },
+      "m9": {
+        "wis": 133.63223053571429,
+        "wape": 0.2636438098661473,
+        "mae": 178.963
+      }
+    },
+    "wis_gain": 0.030105004701663107,
+    "difference": {
+      "wis": {
+        "estimate": -4.022998928571411,
+        "p025": -21.065636973214303,
+        "p50": -4.3199391964285745,
+        "p975": 15.050542160714285
+      },
+      "wape": {
+        "estimate": -0.009831969664381268,
+        "p025": -0.03986668160665924,
+        "p50": -0.010248642629369017,
+        "p975": 0.020742307800883316
+      },
+      "mae": {
+        "estimate": -6.674000000000007,
+        "p025": -26.171250000000004,
+        "p50": -6.900750000000002,
+        "p975": 14.955862499999979
+      }
+    }
+  },
+  "metrics": {
+    "model": {
+      "wis": 129.60923160714287,
+      "mae": 172.289,
+      "rmse": 1206.047425062547,
+      "wape": 0.25381184020176606,
+      "relative_bias": -0.015415302752185455,
+      "coverage_50": 0.542,
+      "coverage_80": 0.785,
+      "coverage_95": 0.895,
+      "width_50": 139.1895,
+      "width_80": 267.1125,
+      "width_95": 416.5954249999998,
+      "upper_95_excess_fraction": 0.054,
+      "impossible_probability": 0.0
+    },
+    "m9": {
+      "wis": 133.63223053571429,
+      "mae": 178.963,
+      "rmse": 1193.5689820869175,
+      "wape": 0.2636438098661473,
+      "relative_bias": -0.01851633603710044,
+      "coverage_50": 0.544,
+      "coverage_80": 0.767,
+      "coverage_95": 0.887,
+      "width_50": 148.74925,
+      "width_80": 286.27020000000005,
+      "width_95": 447.4549749999998,
+      "upper_95_excess_fraction": 0.062,
+      "impossible_probability": 0.0
+    }
+  }
+}
