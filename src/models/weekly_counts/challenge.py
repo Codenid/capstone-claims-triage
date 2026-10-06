@@ -17,6 +17,7 @@ import pandas as pd
 from src.evaluation.experiment import PROJECT_ROOT, git_commit, load_experiment_config
 from src.models.weekly_counts.comparison import compare_with_baselines
 from src.models.weekly_counts.contracts import INTERVALS
+from src.models.weekly_counts.metrics import predictive_metrics
 
 KEYS = ["split", "week", "cluster_id"]
 REFERENCE = "m9"
@@ -29,6 +30,11 @@ def parse_args() -> argparse.Namespace:
         "candidate_run",
         type=Path,
         help="Project-relative report directory of the candidate's full run.",
+    )
+    parser.add_argument(
+        "--validation",
+        action="store_true",
+        help="Report the winner once on 2025-H1 (§25.1), with no decision.",
     )
     return parser.parse_args()
 
@@ -88,6 +94,52 @@ def candidate_intervals(results: dict[str, Any]) -> tuple[tuple[float, str, str]
     return tuple(interval for interval in INTERVALS if interval[0] in alphas)
 
 
+def write_validation(
+    predictions: pd.DataFrame,
+    intervals: tuple[tuple[float, str, str], ...],
+    results: dict[str, Any],
+    args: argparse.Namespace,
+    settings: dict[str, Any],
+    config: dict[str, Any],
+    report_path: Path,
+) -> None:
+    """The single 2025-H1 report of a block C winner; nothing is decided here."""
+    rows = predictions.loc[predictions["split"] == "validation"]
+    if rows.empty or rows["m9_p50"].isna().any():
+        raise ValueError("Both runs need predictions for every validation row.")
+    comparison = compare_with_baselines(
+        predictions,
+        (REFERENCE,),
+        config["experiment"]["seed"],
+        split="validation",
+        intervals=intervals,
+    )
+    report = {
+        "plan": "models_plan.md §25.1",
+        "git_commit": git_commit(),
+        "candidate": results["model_id"],
+        "candidate_run": str(args.candidate_run).replace("\\", "/"),
+        "reference_run": settings["reference_run"],
+        "split": "validation",
+        "already_consulted": True,
+        "note": "2025-H1 was opened in §22; this is not clean evidence.",
+        "comparison": comparison,
+        "metrics": {
+            "model": predictive_metrics(rows, "model"),
+            REFERENCE: predictive_metrics(rows, REFERENCE),
+        },
+    }
+    report_path.write_text(
+        json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
+    metrics = report["metrics"]
+    print(
+        f"2025-H1 WIS {results['model_id']}={metrics['model']['wis']:.3f} "
+        f"M9={metrics[REFERENCE]['wis']:.3f}"
+    )
+    print(f"Report: {report_path.relative_to(PROJECT_ROOT)}")
+
+
 def main() -> None:
     args = parse_args()
     config = load_experiment_config()
@@ -97,7 +149,8 @@ def main() -> None:
     if results["run_mode"] != "full":
         raise ValueError("Only full runs are compared with M9.")
     report_dir = PROJECT_ROOT / settings["report_dir"]
-    report_path = report_dir / f"{results['model_id']}.json"
+    suffix = "_validation" if args.validation else ""
+    report_path = report_dir / f"{results['model_id']}{suffix}.json"
     if report_path.exists():
         raise FileExistsError(f"The M9 challenge never overwrites: {report_path}")
 
@@ -106,6 +159,11 @@ def main() -> None:
         pd.read_csv(PROJECT_ROOT / settings["reference_run"] / "predictions.csv"),
     )
     intervals = candidate_intervals(results)
+    if args.validation:
+        write_validation(
+            predictions, intervals, results, args, settings, config, report_path
+        )
+        return
     comparison = compare_with_baselines(
         predictions, (REFERENCE,), config["experiment"]["seed"], intervals=intervals
     )

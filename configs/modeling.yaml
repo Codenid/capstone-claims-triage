@@ -243,6 +243,7 @@ foundation_t1:
   tabpfn_model_path: ~/models/tabpfn_3_5/tabpfn-v3.5-20260909.safetensors
   kumo_size: large
   report: reports/modeling/foundation_t1/results.json
+  validation_report: reports/modeling/foundation_t1/validation_results.json
   artifacts: artifacts/models/foundation_t1
 
 # Block C foundation models (models_plan.md §25.5), approved on 2026-10-06:

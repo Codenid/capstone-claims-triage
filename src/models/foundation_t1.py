@@ -7,6 +7,10 @@ each one wins only if its Macro-F1 beats the frozen T1 (BGE + product) by at
 least 5% with a 95% weekly bootstrap interval above 0 (§25.2).
 
 Weights are read from local files: the SLURM nodes have no internet.
+
+--validation measures the winner once on 2025-H1 (§25.1): the same context
+against the frozen T1 on the rows without shared text, reported as already
+consulted.
 """
 
 from __future__ import annotations
@@ -31,12 +35,15 @@ from src.evaluation.experiment import (
     save_run_record,
     set_seed,
 )
+from src.evaluation.final_confirmation import load_split, model_path, split_features
 from src.models.bge_sample import ID_COLUMN
 from src.models.representation_comparison import (
     attach_embedding_rows,
     bootstrap_metric,
     load_embeddings,
     load_frames,
+    read_json,
+    t1_outputs,
     week_resamples,
     weighted_macro_f1,
 )
@@ -54,6 +61,11 @@ def parse_args() -> argparse.Namespace:
         "--smoke",
         action="store_true",
         help="Run both models on a few rows and save nothing.",
+    )
+    parser.add_argument(
+        "--validation",
+        action="store_true",
+        help="Report TabPFN once on 2025-H1, with everything frozen.",
     )
     return parser.parse_args()
 
@@ -150,6 +162,7 @@ def run_tabpfn(
     settings: dict[str, Any],
     estimators: int,
     seed: int,
+    query_split: str = "calibration",
 ) -> tuple[np.ndarray, np.ndarray]:
     from tabpfn import TabPFNClassifier
 
@@ -166,7 +179,7 @@ def run_tabpfn(
         fit_mode="fit_with_cache",
     )
     model.fit(table("fit"), labels)
-    query = table("calibration")
+    query = table(query_split)
     batch = settings["query_batch_rows"]
     probability = np.vstack(
         [
@@ -283,6 +296,67 @@ def compare(
     return {"metrics": metrics, "comparisons": comparisons, "weeks": weeks_used}
 
 
+def validation_report(
+    config: dict[str, Any],
+    settings: dict[str, Any],
+    seed: int,
+) -> dict[str, Any]:
+    """TabPFN and the frozen T1 on 2025-H1 without shared text, as in §22."""
+    frames = load_split(config, "validation")
+    fit = frames["fit"].loc[eligible_mask(frames["fit"], "T1", "complete")]
+    positions = fixed_sample_positions(len(fit), settings["context_rows"], seed)
+    context = fit.iloc[positions].reset_index(drop=True)
+    manifest = PROJECT_ROOT / config["paths"]["bge_full_artifacts"] / "manifest.parquet"
+    attach_embedding_rows({"fit": context}, manifest)
+    rows = frames["validation"]
+    truth = rows["T1"].astype(str).to_numpy()
+    frozen = joblib.load(model_path(REFERENCE, "T1", config))
+    inputs = split_features(rows, "validation", config)[REFERENCE]
+    reference = t1_outputs(frozen, inputs, truth)
+    keep = rows["no_shared_text"].to_numpy(dtype=bool)
+    query = rows.loc[keep].reset_index(drop=True)
+    print(f"Inputs: {len(context)} context, {len(query)} query rows.", flush=True)
+
+    numerical, codes, _ = features(
+        {"fit": context, "validation": query}, config, settings["pca_components"]
+    )
+    labels = context["T1"].astype(str).to_numpy()
+    probability, classes = run_tabpfn(
+        numerical, codes, labels, settings, settings["estimators"], seed, "validation"
+    )
+    prediction, three = top_three(probability, classes)
+    truth = truth[keep]
+    outputs = {
+        REFERENCE: {key: values[keep] for key, values in reference.items()},
+        "tabpfn": {
+            "prediction": prediction.astype(str),
+            "top_three": (three.astype(str) == truth[:, None]).any(axis=1),
+        },
+    }
+    all_classes = np.unique(
+        np.concatenate([truth, *(values["prediction"] for values in outputs.values())])
+    )
+    result = compare(
+        outputs,
+        truth,
+        pd.to_datetime(query["week"]).to_numpy(),
+        all_classes,
+        settings["minimum_relative_gain"],
+        settings["bootstrap_draws"],
+        seed,
+    )
+    published = read_json(PROJECT_ROOT / "reports/modeling/final_confirmation.json")
+    expected = published["classifiers"]["T1"]["metrics"]["no_shared_text"]["model"]
+    if not np.isclose(
+        result["metrics"][REFERENCE]["macro_f1"], expected["macro_f1"], atol=1e-9
+    ):
+        raise ValueError("The frozen T1 does not reproduce its §22 Macro-F1.")
+    # A report, not a decision: the winner was chosen on calibration.
+    for comparison in result["comparisons"].values():
+        comparison.pop("wins")
+    return result | {"query_rows": len(query), "context_rows": len(context)}
+
+
 def main() -> None:
     args = parse_args()
     started = time.perf_counter()
@@ -293,6 +367,30 @@ def main() -> None:
     os.environ.setdefault("HF_HUB_OFFLINE", "1")
     os.environ.setdefault("TABPFN_DISABLE_TELEMETRY", "1")
     check_sources(config, settings)
+    if args.validation:
+        path = PROJECT_ROOT / settings["validation_report"]
+        if path.exists():
+            raise FileExistsError(f"Block B reports 2025-H1 only once: {path}")
+        result = validation_report(config, settings, seed)
+        report = {
+            "stage": "M5F",
+            "plan": "models_plan.md §25.1 and §25.4",
+            "split": "validation",
+            "view": "no_shared_text",
+            "already_consulted": True,
+            "note": "2025-H1 was opened in §22; this is not clean evidence.",
+            "git_commit": git_commit(),
+            "seed": seed,
+            **result,
+            "elapsed_seconds": time.perf_counter() - started,
+        }
+        path.write_text(
+            json.dumps(report, indent=2, ensure_ascii=False) + "\n", encoding="utf-8"
+        )
+        for name, values in result["metrics"].items():
+            print(f"{name}: Macro-F1={values['macro_f1']:.4f}")
+        print(f"Report: {path.relative_to(PROJECT_ROOT)}")
+        return
     report_path = PROJECT_ROOT / settings["report"]
     artifact_dir = PROJECT_ROOT / settings["artifacts"]
     if not args.smoke and (report_path.exists() or artifact_dir.exists()):
