@@ -134,6 +134,7 @@ def tabpfn_issues(
     fit: pd.DataFrame,
     config: dict[str, Any],
     seed: int,
+    device: str,
 ) -> list[list[dict[str, Any]]]:
     """Top issues of TabPFN-3.5 with the block B context (§25.4)."""
     settings = config["foundation_t1"]
@@ -153,6 +154,7 @@ def tabpfn_issues(
         settings["estimators"],
         seed,
         "calibration",
+        device,
     )
     return top_issues(probability, classes)
 
@@ -281,7 +283,7 @@ def main() -> None:
     print(f"Chosen: {rows[ID_COLUMN].tolist()}", flush=True)
 
     linear = linear_issues(rows, config)
-    tabpfn = tabpfn_issues(rows, frames["fit"], config, seed)
+    tabpfn = tabpfn_issues(rows, frames["fit"], config, seed, settings["device"])
     binary = binary_signals(rows, config)
     similar = similar_complaints(rows, config, settings["neighbors"])
     patterns = pattern_info(rows, alerts, config)

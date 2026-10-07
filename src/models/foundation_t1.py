@@ -163,6 +163,7 @@ def run_tabpfn(
     estimators: int,
     seed: int,
     query_split: str = "calibration",
+    device: str = "cuda",
 ) -> tuple[np.ndarray, np.ndarray]:
     from tabpfn import TabPFNClassifier
 
@@ -171,7 +172,7 @@ def run_tabpfn(
 
     model = TabPFNClassifier(
         model_path=str(Path(settings["tabpfn_model_path"]).expanduser()),
-        device="cuda",
+        device=device,
         n_estimators=estimators,
         categorical_features_indices=[numerical["fit"].shape[1]],
         random_state=seed,

@@ -258,6 +258,8 @@ foundation_series:
 evidence_card:
   products: 3
   neighbors: 5
+  # Five queries: TabPFN runs on CPU, so the card does not wait for a GPU.
+  device: cpu
   facts: reports/evidence_card/facts.json
 
 clustering:

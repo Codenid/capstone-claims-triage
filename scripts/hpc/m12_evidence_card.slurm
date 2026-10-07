@@ -1,11 +1,10 @@
 #!/usr/bin/env bash
 #SBATCH --job-name=claims-m12-card
-#SBATCH --partition=gpu
+#SBATCH --partition=standard
 #SBATCH --qos=a-postgrado
-#SBATCH --gres=shard:a100_3g.20gb:8
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=48G
-#SBATCH --time=01:00:00
+#SBATCH --time=02:00:00
 #SBATCH --output=reports/modeling/slurm-%x-%j.out
 
 set -euo pipefail
