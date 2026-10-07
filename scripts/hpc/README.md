@@ -599,6 +599,8 @@ columna por columna y escribe `docs/diccionario/diccionario.csv` y
 sbatch scripts/hpc/p6_document_prepared.slurm
 ```
 
-El trabajo ejecuta `dvc repro document_prepared`, que actualiza `dvc.lock` solo
-para esa etapa. Después, confirmar `dvc.lock`, el diccionario y el informe.
+El trabajo ejecuta `dvc repro --single-item document_prepared`: solo esa etapa,
+porque el clon de Khipu no tiene el crudo ni los intermedios. Actualiza
+`dvc.lock` solo para ella. Después, confirmar `dvc.lock`, el diccionario y el
+informe.
 

@@ -13,5 +13,7 @@ export OMP_NUM_THREADS=4
 
 # The stage reads prepared.parquet one column at a time and writes the data
 # dictionary and the cleaning report; dvc.lock records the new stage only.
-uv run --no-sync dvc repro document_prepared
+# --single-item: the raw and interim tables are not on this clone, and the
+# stage only needs the prepared table that finalize_prepared published.
+uv run --no-sync dvc repro --single-item document_prepared
 git status --short dvc.lock docs/diccionario reports/preparation
