@@ -1,0 +1,129 @@
+# ============================================================================
+# params.yaml · Decisiones declaradas del pipeline de preparación (dvc.yaml).
+#
+# Las etapas type_data → finalize_prepared conservan sus constantes en el
+# código (docs/decisiones/0002-preparacion-y-particion.md): moverlas aquí
+# obliga a reejecutar P1–P5 y queda registrado como pendiente. La etapa
+# document_prepared sí lee este archivo; DVC anota sus valores en dvc.lock.
+# ============================================================================
+
+documentar:
+  # Columnas que crea cada etapa, en el orden del grafo. document_prepared se
+  # detiene si la tabla y esta lista no coinciden.
+  columnas_por_etapa:
+    type_data:
+      - "Date received"
+      - Product
+      - Sub-product
+      - Issue
+      - Sub-issue
+      - Consumer complaint narrative
+      - Company public response
+      - Company
+      - State
+      - ZIP code
+      - Tags
+      - Submitted via
+      - Date sent to company
+      - Company response to consumer
+      - "Timely response?"
+      - Complaint ID
+    normalize_text:
+      - Consumer complaint narrative normalized
+      - Consumer complaint narrative SHA-256
+    apply_taxonomy:
+      - Product canonical
+      - Issue canonical
+      - known_product
+      - known_issue
+      - known_product_issue_pair
+    build_targets:
+      - period
+      - T1
+      - T2
+      - T3
+      - T4
+      - known_T1
+      - known_T2
+      - known_T3
+      - known_T4
+      - previously_reviewed_id
+      - excluded_by_reviewed_text_group
+      - holdout_status
+      - no_shared_reference_text
+      - eligible_T1_complete
+      - eligible_T2_complete
+      - eligible_T3_complete
+      - eligible_T4_complete
+      - eligible_T1_no_shared_text
+      - eligible_T2_no_shared_text
+      - eligible_T3_no_shared_text
+      - eligible_T4_no_shared_text
+    finalize_prepared: []
+
+  descripcion_etapas:
+    type_data: "P1 · valida el esquema de 16 columnas y tipa las dos fechas"
+    normalize_text: "P2 · normaliza la narrativa (text_normalizer_v1) y su SHA-256"
+    apply_taxonomy: "P3 · aplica la taxonomía propuesta congelada al 2025-06-30"
+    build_targets: "P4 · construye T1–T4, periodos, bloqueos y elegibilidad"
+    finalize_prepared: "P5 · valida el contrato y publica la tabla sin transformarla"
+
+  # Rol de cada columna en el contrato de modelado:
+  # reports/modeling/evaluation_contract.json y docs/decisiones/0001-alcance-y-fugas.md.
+  roles:
+    identificador:
+      - "Complaint ID"
+    predictora:
+      - "Consumer complaint narrative"
+      - "Consumer complaint narrative normalized"
+      - "Product"
+      - "Sub-product"
+      - "Product canonical"
+    candidata:
+      - "Company"
+      - "State"
+      - "Date received"
+      - "ZIP code"
+      - "Tags"
+      - "Submitted via"
+    posterior_al_evento:
+      - "Issue"
+      - "Sub-issue"
+      - "Issue canonical"
+      - "Company public response"
+      - "Company response to consumer"
+      - "Timely response?"
+      - "Date sent to company"
+    objetivo:
+      - "T1"
+      - "T2"
+      - "T3"
+      - "T4"
+    control_de_evaluacion:
+      - "Consumer complaint narrative SHA-256"
+      - "known_product"
+      - "known_issue"
+      - "known_product_issue_pair"
+      - "period"
+      - "known_T1"
+      - "known_T2"
+      - "known_T3"
+      - "known_T4"
+      - "previously_reviewed_id"
+      - "excluded_by_reviewed_text_group"
+      - "holdout_status"
+      - "no_shared_reference_text"
+      - "eligible_T1_complete"
+      - "eligible_T2_complete"
+      - "eligible_T3_complete"
+      - "eligible_T4_complete"
+      - "eligible_T1_no_shared_text"
+      - "eligible_T2_no_shared_text"
+      - "eligible_T3_no_shared_text"
+      - "eligible_T4_no_shared_text"
+
+  # El diccionario no reproduce texto de reclamos: estas columnas no llevan ejemplo.
+  columnas_sin_ejemplo:
+    - Consumer complaint narrative
+    - Consumer complaint narrative normalized
+  ejemplo_max_caracteres: 40

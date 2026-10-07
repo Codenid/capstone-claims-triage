@@ -1,5 +1,8 @@
 stages:
   type_data:
+    desc: >-
+      P1 · Validar el esquema y tipar las fechas ·
+      decisión: docs/decisiones/0002-preparacion-y-particion.md
     cmd: uv run python src/data/type_data.py
     deps:
       - data/raw/cfpb_reclamos_narrativa.parquet
@@ -8,6 +11,9 @@ stages:
       - data/interim/typed.parquet
 
   normalize_text:
+    desc: >-
+      P2 · Normalizar la narrativa y calcular su SHA-256 ·
+      decisión: docs/decisiones/0002-preparacion-y-particion.md
     cmd: uv run python src/data/normalize_text.py
     deps:
       - data/interim/typed.parquet
@@ -16,6 +22,9 @@ stages:
       - data/interim/normalized.parquet
 
   apply_taxonomy:
+    desc: >-
+      P3 · Aplicar la taxonomía propuesta congelada al 2025-06-30 ·
+      decisión: docs/decisiones/0002-preparacion-y-particion.md
     cmd: uv run python src/data/apply_taxonomy.py
     deps:
       - data/interim/normalized.parquet
@@ -27,6 +36,9 @@ stages:
       - data/interim/taxonomy.parquet
 
   build_targets:
+    desc: >-
+      P4 · Objetivos T1–T4, periodos y elegibilidad anti-fuga ·
+      decisión: docs/decisiones/0001-alcance-y-fugas.md y 0002
     cmd: uv run python src/data/build_targets.py
     deps:
       - data/interim/taxonomy.parquet
@@ -36,9 +48,30 @@ stages:
       - data/interim/targets_periods.parquet
 
   finalize_prepared:
+    desc: >-
+      P5 · Validar el contrato y publicar la tabla sin transformarla ·
+      decisión: docs/decisiones/0002-preparacion-y-particion.md
     cmd: uv run python src/data/finalize_prepared.py
     deps:
       - data/interim/targets_periods.parquet
       - src/data/finalize_prepared.py
     outs:
       - data/processed/prepared.parquet
+
+  document_prepared:
+    desc: >-
+      P6 · Diccionario de datos e informe de limpieza generados desde la tabla ·
+      decisión: docs/decisiones/0004-documentacion-de-la-tabla.md
+    cmd: uv run python src/data/document_prepared.py
+    deps:
+      - data/processed/prepared.parquet
+      - docs/diccionario/descripciones.yaml
+      - src/data/document_prepared.py
+    params:
+      - documentar
+    outs:
+      - docs/diccionario/diccionario.csv:
+          cache: false
+    metrics:
+      - reports/preparation/informe_limpieza.json:
+          cache: false

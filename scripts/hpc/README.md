@@ -588,3 +588,17 @@ Cuando un trabajo ya no aparezca en `squeue`, revisar su resultado y consumo:
 ```bash
 sacct -j JOB_ID --format=JobID,State,ExitCode,Elapsed,MaxRSS
 ```
+
+## Diccionario de datos e informe de limpieza (PB-14)
+
+La etapa `document_prepared` de `dvc.yaml` lee `data/processed/prepared.parquet`
+columna por columna y escribe `docs/diccionario/diccionario.csv` y
+`reports/preparation/informe_limpieza.json`. No transforma datos. En Khipu:
+
+```bash
+sbatch scripts/hpc/p6_document_prepared.slurm
+```
+
+El trabajo ejecuta `dvc repro document_prepared`, que actualiza `dvc.lock` solo
+para esa etapa. Después, confirmar `dvc.lock`, el diccionario y el informe.
+
