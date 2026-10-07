@@ -2085,3 +2085,24 @@ Pre-registrada el 2026-10-07, aprobada por el usuario, antes de correr nada.
 - Código: `src/models/foundation_t1_ablation.py`, configuración
   `foundation_t1_ablation`, SLURM `scripts/hpc/m5f_foundation_t1_ablation.slurm`.
   Reporte en `reports/modeling/foundation_t1/ablation_results.json`.
+
+Resultado del 2026-10-07 (SLURM 54804, A100 de 40 GB; humo 54800). TabPFN-100
+reprodujo su Macro-F1 publicado (0.2706) antes de comparar.
+
+| Calibración sin texto compartido | Macro-F1 | Top-3 | Ganancia | IC 95% | Tiempo |
+|---|---:|---:|---:|---|---:|
+| TabPFN-100 (referencia) | 0.2706 | 95.5% | — | — | 371 s |
+| TabPFN, 256 componentes PCA | 0.2679 | 95.5% | −1.0% | [−0.0062, +0.0010] | 292 s |
+| TabPFN, BGE 1,024 sin PCA | 0.1922 | 88.7% | −29.0% | [−0.0846, −0.0734] | 786 s |
+
+- **Ninguna variante gana.** 256 componentes empatan (el intervalo incluye 0);
+  las 1,024 dimensiones crudas pierden con claridad. TabPFN-100 sigue vigente
+  y la ficha de evidencia no se rehace.
+- Lectura: con 1,024 columnas cada estimador de TabPFN ve como máximo 768
+  (`max_features_per_estimator`), así que los 8 estimadores muestrean
+  subconjuntos distintos; el PCA concentra la señal en pocas columnas que
+  todos ven. 100 componentes bastan.
+- No hizo falta `ignore_pretraining_limits` ni reducir memoria: 9.3 GB de RAM
+  y la A100 completa.
+- MLflow `d07b98c6fa3644269b69254021b87552`; predicciones de ambas variantes
+  en `artifacts/models/foundation_t1_ablation` (DVC).

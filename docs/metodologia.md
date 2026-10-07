@@ -75,7 +75,8 @@ Después, **TabPFN-3.5**, un modelo fundacional tabular que aprende "en
 contexto" a partir de 20,000 ejemplos sin entrenamiento propio, subió a 0.271
 (+12.9%) usando las primeras 100 componentes del embedding más el producto. Es
 el vigente, con una advertencia: sus pesos son de uso no comercial, así que
-llevarlo al banco requiere licencia.
+llevarlo al banco requiere licencia. Darle más columnas no ayuda: con las 256
+componentes del PCA empata (0.268) y con el embedding completo pierde (0.192).
 
 El top-3 es 95–96% en todos los modelos buenos: para una lista de sugerencias
 casi todos sirven; la diferencia está en acertar a la primera.

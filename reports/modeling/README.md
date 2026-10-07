@@ -29,6 +29,7 @@ Los archivos no se movieron: muchas rutas están fijadas en
 | M5 | `bge_sample_results.json` | BGE vs TF-IDF en una muestra de 120,000 filas | Histórico (M5B lo supera) |
 | M5B | `representation_results.json`, `representation_decision.md` | Cinco representaciones de T1–T4 con todo `fit`; elige T1 = BGE + producto, T2 y T3 = TF-IDF solo texto | Confirmado |
 | M5F (bloque B) | `foundation_t1/results.json` | TabPFN-3.5 contra el T1 congelado | **Vigente para T1** |
+| M5F (ablación §26) | `foundation_t1/ablation_results.json` | TabPFN con 256 componentes y con BGE 1,024 contra TabPFN-100 | Ninguna gana; 100 componentes bastan |
 | M6 | `semantic_space_results.json`, `semantic_pca_variance.png`, `semantic_umap_2d.png` | PCA 1,024→256, UMAP 2D para visualizar, índice FAISS exacto | **Vigente** |
 | M7 | `clustering_results.json`, `clustering_candidates.csv`, `clustering_*.png` | 12 configuraciones de clustering sobre UMAP 15D; gana k-means `k=40` | **Vigente** |
 | M7S (bloque A) | `space_sensitivity/results.json`, `space_sensitivity/candidates.csv` | 9 espacios × 15 candidatos; ninguno supera a M7 | Sensibilidad |
@@ -114,4 +115,5 @@ Un run por decisión (DagsHub, experimento `claims-triage-modeling`). Los
 |---|---|
 | `5ca3b797784d4a968fac0a95d7904cff` | M7S, bloque A |
 | `b29a0b2a36b047e0a37a17d6217bc1e4` | M5F, bloque B |
+| `d07b98c6fa3644269b69254021b87552` | M5F, ablación de entrada de TabPFN (§26) |
 | `21ec486b702948fd9969e8b80e5357e2` | Bloque C, los 4 candidatos contra v3 |

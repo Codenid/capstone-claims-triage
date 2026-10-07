@@ -61,6 +61,8 @@ precisión promedio (AP) para T2–T4. Mayor es mejor.
 | M5B | TF-IDF + producto (T4) | — | — | — | 0.055 | Elegido para T4, luego no confirmado |
 | §22 | Confirmación en validación | 0.227 vs 0.068 | 0.570 vs 0.451 | 0.270 vs 0.127 | 0.078 vs 0.121 | T1–T3 confirmados; T4 rechazado |
 | Bloque B | **TabPFN-3.5**, 20,000 filas de contexto, 8 estimadores | **0.271** | — | — | — | **Gana a BGE + producto** (+12.9%, IC [+0.027, +0.035]); en 2025-H1, 0.270 vs 0.227 |
+| Ablación §26 | TabPFN-3.5 con 256 componentes PCA | 0.268 | — | — | — | Empata con TabPFN-100 (−1.0%, IC [−0.006, +0.001]): no reemplaza |
+| Ablación §26 | TabPFN-3.5 con BGE 1,024 sin PCA | 0.192 | — | — | — | Pierde (−29%): cada estimador ve 768 de 1,025 columnas |
 | Bloque B | Kumo Tabular (NVIDIA) | — | — | — | — | No corrió: sin memoria con 50,000 filas en GPU ni con 20,000 en RAM |
 
 Regla de desempate de M5B: de la representación más simple a la más compleja,
