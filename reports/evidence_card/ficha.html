@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Ficha de evidencia por reclamo</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+width: 0.8em;
+margin: 0 0.8em 0.2em -1em;  vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+
+
+
+
+<style type="text/css">body { font-family: Segoe UI, system-ui, sans-serif; max-width: 1100px; margin: 2rem auto; padding: 0 1rem; color: #1f2937; line-height: 1.45; }
+h1 { font-size: 1.7rem; } h2 { font-size: 1.3rem; margin-top: 2.5rem; border-top: 2px solid #e5e7eb; padding-top: 1rem; }
+h3 { font-size: 1rem; margin: 0 0 .5rem; } h4 { font-size: .85rem; margin: .3rem 0; color: #4b5563; }
+.lead { font-size: 1.05rem; } .muted { color: #6b7280; font-size: .9rem; } .meta { margin: .2rem 0 .8rem; }
+details { margin: .5rem 0 1rem; } blockquote { background: #f9fafb; border-left: 3px solid #d1d5db; margin: .5rem 0; padding: .6rem .9rem; white-space: pre-wrap; font-size: .92rem; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; } .box { border: 1px solid #e5e7eb; border-radius: 8px; padding: .9rem 1rem; } .wide { grid-column: 1 / -1; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+table { border-collapse: collapse; width: 100%; font-size: .9rem; } td, th { padding: .25rem .4rem; border-bottom: 1px solid #f3f4f6; text-align: left; vertical-align: top; } .num { text-align: right; font-variant-numeric: tabular-nums; }
+.similar th { color: #6b7280; font-weight: 600; font-size: .8rem; } .snippet td { color: #6b7280; font-size: .82rem; padding-bottom: .6rem; }
+.bar { position: relative; height: 10px; background: #f3f4f6; border-radius: 5px; margin: .3rem 0; } .fill { height: 100%; background: #2563eb; border-radius: 5px; } .mark { position: absolute; top: -3px; width: 2px; height: 16px; background: #111827; }
+.terms { font-size: .85rem; color: #374151; background: #f9fafb; padding: .4rem .6rem; border-radius: 6px; }
+@media (max-width: 760px) { .grid, .two { grid-template-columns: 1fr; } }
+</style>
+</head>
+
+<body>
+
+
+<header id="title-block-header">
+<h1 class="title">Ficha de evidencia por reclamo</h1>
+<p class="subtitle">Cinco reclamos reales de calibración con las salidas de los modelos congelados</p>
+
+</header>
+
+
+<p class="lead">Cada ficha muestra lo que el sistema entregaría a la persona que hace el triaje.
+Ninguna salida es una acción: son sugerencias con su incertidumbre, para decidir con evidencia.
+Las probabilidades, los vecinos y las alertas vienen de los modelos congelados; nada se reentrenó.</p>
+<p class="muted">Reclamos de calibración (oct–dic 2024) sin texto compartido, elegidos por una regla fija con semilla 42.
+Commit dc23e598. Las etiquetas «registrado» son las de la CFPB y no se muestran al usuario en producción.</p>
+
+
+<section class="card" id="reclamo-10757200">
+<h2>Reclamo 10757200</h2>
+<p class="meta">Recibido el 2024-11-11 · Credit reporting or other personal consumer reports · EQUIFAX, INC. · FL<br>
+<span class="muted">Elegido porque: patrón con alerta de M11 esa semana</span></p>
+<details><summary>Narrativa (inglés, texto público de la CFPB)</summary><blockquote>XXXX XXXX XXXX XXXX XXXX XXXX  XXXX XXXX, Florida, XXXX XXXX ( XXXX ) XXXX XX/XX/XXXX Equifax XXXX XXXX XXXX XXXX, GA XXXX XXXX XXXX XXXX XXXX XXXX, TX XXXX XXXX XXXX XXXX XXXX XXXX, PA XXXX Re : Request for Update of Personal Information and Deletion of Incorrect Data Dear Sir/Madam, I am writing to request an update to my personal information on my credit report and to ask that any information that no longer matches my updated details be deleted. The information currently reported may be outdated or incorrect, and I want to ensure that my credit report accurately reflects my current personal details. 
+
+Current Information on File ( as per my credit report ) : Full Name : XXXX XXXX XXXX Address : XXXX XXXX XXXX XXXX 
+Date of Birth : XX/XX/XXXX Social Security Number ( last four digits ) : XXXX Updated Information : Full Name : XXXX XXXX XXXX XXXX Address : XXXX XXXX XXXX XXXX, XXXX XXXX, Fl, XXXX Phone Number : ( XXXX ) XXXX Email Address : XXXX Please update my credit file to reflect the correct personal information. Additionally, I request that any outdated or incorrect information that does not match the updated details be removed from my credit report. If there are any discrepancies, I expect that they will be corrected in accordance with the Fair Credit Reporting Act ( FCRA ). 
+
+If you require any additional documentation or have questions, I am happy to provide further information. Please notify me of any actions taken and provide me with a copy of my updated credit report once the changes have been made. 
+
+Thank you for your prompt attention to this matter. I look forward to your response. 
+
+Sincerely, XXXX XXXX XXXX XXXX</blockquote></details>
+
+<div class="grid">
+<div class="box">
+<h3>1. Motivo sugerido</h3>
+<div class="two">
+<div><h4>TabPFN-3.5 (vigente)</h4>
+<table class="caption-top">
+<tbody>
+<tr class="odd">
+<td>Incorrect information on your report</td>
+<td class="num">75%</td>
+</tr>
+<tr class="even">
+<td>Improper use of your report</td>
+<td class="num">11%</td>
+</tr>
+<tr class="odd">
+<td>Problem with a company&#39;s investigation into an existing problem</td>
+<td class="num">9%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div><h4>BGE + producto lineal</h4>
+<table class="caption-top">
+<tbody>
+<tr class="odd">
+<td>Incorrect information on your report</td>
+<td class="num">51%</td>
+</tr>
+<tr class="even">
+<td>Improper use of your report</td>
+<td class="num">27%</td>
+</tr>
+<tr class="odd">
+<td>Problem with a company&#39;s investigation into an existing problem</td>
+<td class="num">13%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p class="muted">Motivo registrado por la CFPB: <strong>Problem with a company&#39;s investigation into an existing problem</strong></p>
+</div>
+
+<div class="box">
+<h3>2. Resultado histórico probable</h3>
+<p>Alguna solución (T2)<br></p><div class="bar"><div class="fill" style="width:30%"></div><div class="mark" style="left:30%"></div></div><span class="num">30%</span> <span class="muted">umbral 30%: probable</span><p></p>
+<p>Compensación monetaria (T3)<br></p><div class="bar"><div class="fill" style="width:0%"></div><div class="mark" style="left:18%"></div></div><span class="num">0%</span> <span class="muted">umbral 18%: poco probable</span><p></p>
+<p class="muted">Registrado: solución sí, compensación no</p>
+</div>
+
+<div class="box wide">
+<h3>3. Reclamos históricos parecidos</h3>
+
+<table class="similar caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Recibido</th>
+<th data-quarto-table-cell-role="th">Producto</th>
+<th data-quarto-table-cell-role="th">Motivo</th>
+<th data-quarto-table-cell-role="th">Solución</th>
+<th data-quarto-table-cell-role="th">Monetaria</th>
+<th data-quarto-table-cell-role="th">Similitud</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2023-03-06</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Problem with a company&#39;s investigation into an existing problem</td>
+<td>sí</td>
+<td>no</td>
+<td class="num">0.92</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">XX/XX/XXXX XXXX XXXX XXXXXXXX XXXX XXXX XXXXXXXX, Florida XXXX SSN : SS # : XXXX XXXX : Date of Birth : XX/XX/XXXX Dear Sir/Madam, I am writing to dispute the inquiries made by various entities on my credit report, including XXXX, XXXX, XXXX, XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XX…</td>
+</tr>
+<tr class="odd">
+<td>2023-03-18</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Incorrect information on your report</td>
+<td>sí</td>
+<td>no</td>
+<td class="num">0.91</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">XXXX XXXX XXXX XXXX XXXX XXXX, Florida XXXX XX/XX/XXXX To Whom It May Concern : I have recently checked out a copy of my credit profile and unfortunately, it has come to my attention that some of my personal information is incorrect. If you would please be so kind as to delete this inaccurate information from my credit profile within the next thirty days, I would greatly appreciate it. Ive listed …</td>
+</tr>
+<tr class="odd">
+<td>2024-08-21</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Incorrect information on your report</td>
+<td>no</td>
+<td>no</td>
+<td class="num">0.91</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">XXXX XXXX XXXX XXXX XXXX XXXX XXXX, AL XXXX XX/XX/XXXX XXXX XXXX XXXX XXXX XXXX XXXX po box XXXX XXXX, PA XXXX XXXX XXXX XXXX XXXX XXXX, TX XXXX Equifax Information Services LLC XXXX XXXX XXXX XXXX, GA XXXX RE : Social Security Number : XXXX To Whom It May Concern : This is my second time writing to you to update my personal information. 15 USC 1681 ( a ) ( 4 ) There is a need to insure that con…</td>
+</tr>
+<tr class="odd">
+<td>2023-02-24</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Problem with a company&#39;s investigation into an existing problem</td>
+<td>sí</td>
+<td>no</td>
+<td class="num">0.91</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">XX/XX/XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX, Florida XXXX SSN : SS # : XXXX XXXX : Date of Birth : XX/XX/XXXX Dear Sir/Madam, I am writing to dispute the accuracy of the credit information that [ Credit Bureau XXXX XXXX has XXXX on my credit report. Specifically, I am disputing the following accounts : XXXX XXXX XXXX XXXX late payment account XXXX XXXX late payment account XXXX XXXX late paymen…</td>
+</tr>
+<tr class="odd">
+<td>2024-04-24</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Incorrect information on your report</td>
+<td>sí</td>
+<td>no</td>
+<td class="num">0.91</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">XXXX XXXX XXXX XXXX XXXX XXXX XXXX, Florida XXXX Date of Birth : XX/XX/1962 SS # : XXXX To Whom It May Concern : I have recently checked out a copy of my credit profile and unfortunately, it has come to my attention that some of my personal information is incorrect. If you would please be so kind as to delete this inaccurate information from my credit profile within the next XXXX days, I would gre…</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+<div class="box">
+<h3>4. Patrón semántico</h3>
+<p>Patrón <strong>14</strong> (Credit reporting or other personal consumer reports): dentro de lo conocido.<br>
+<span class="muted">Distancia 0.7; el 95% de los reclamos del patrón en ajuste está bajo 2.9.</span></p>
+<p class="terms">redacted, redacted redacted, account, credit, report, information, credit report, reporting, fcra, consumer</p>
+<p>Semana del 2024-11-11: <strong>alerta CUSUM</strong>: 4178 reclamos frente a 3655 esperados.</p>
+</div>
+
+<div class="box">
+<h3>5. Plazo de respuesta</h3>
+<p>Registro supuesto: <strong>2026-10-06</strong><br>
+Vence a 15 días hábiles: <strong>2026-10-28</strong><br>
+Con extensión, 45 días hábiles: <strong>2026-12-11</strong></p>
+<p class="muted">Lunes a viernes sin feriados nacionales de gob.pe. Los reclamos son de 2024; la fecha se simula porque solo hay feriados de 2026.</p>
+</div>
+</div>
+</section>
+
+<section class="card" id="reclamo-11144267">
+<h2>Reclamo 11144267</h2>
+<p class="meta">Recibido el 2024-12-14 · Credit reporting or other personal consumer reports · EQUIFAX, INC. · RI<br>
+<span class="muted">Elegido porque: marcado como novedoso por M8</span></p>
+<details><summary>Narrativa (inglés, texto público de la CFPB)</summary><blockquote>I have a goal of getting a house as soon as possible but the stuff on my credit report will really put me in trouble. My name and all other information doesnt seem to look exactly the same on my ID and other documents. I have attached the letters and ID Docs for you to be able to update my personal information. I know these are just personal information but these things will definitely help a lot if updated.</blockquote></details>
+
+<div class="grid">
+<div class="box">
+<h3>1. Motivo sugerido</h3>
+<div class="two">
+<div><h4>TabPFN-3.5 (vigente)</h4>
+<table class="caption-top">
+<tbody>
+<tr class="odd">
+<td>Incorrect information on your report</td>
+<td class="num">98%</td>
+</tr>
+<tr class="even">
+<td>Problem with a company&#39;s investigation into an existing problem</td>
+<td class="num">1%</td>
+</tr>
+<tr class="odd">
+<td>Improper use of your report</td>
+<td class="num">0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div><h4>BGE + producto lineal</h4>
+<table class="caption-top">
+<tbody>
+<tr class="odd">
+<td>Incorrect information on your report</td>
+<td class="num">63%</td>
+</tr>
+<tr class="even">
+<td>Problem with a company&#39;s investigation into an existing problem</td>
+<td class="num">23%</td>
+</tr>
+<tr class="odd">
+<td>Improper use of your report</td>
+<td class="num">6%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p class="muted">Motivo registrado por la CFPB: <strong>Incorrect information on your report</strong></p>
+</div>
+
+<div class="box">
+<h3>2. Resultado histórico probable</h3>
+<p>Alguna solución (T2)<br></p><div class="bar"><div class="fill" style="width:52%"></div><div class="mark" style="left:30%"></div></div><span class="num">52%</span> <span class="muted">umbral 30%: probable</span><p></p>
+<p>Compensación monetaria (T3)<br></p><div class="bar"><div class="fill" style="width:0%"></div><div class="mark" style="left:18%"></div></div><span class="num">0%</span> <span class="muted">umbral 18%: poco probable</span><p></p>
+<p class="muted">Registrado: solución no, compensación no</p>
+</div>
+
+<div class="box wide">
+<h3>3. Reclamos históricos parecidos</h3>
+
+<table class="similar caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Recibido</th>
+<th data-quarto-table-cell-role="th">Producto</th>
+<th data-quarto-table-cell-role="th">Motivo</th>
+<th data-quarto-table-cell-role="th">Solución</th>
+<th data-quarto-table-cell-role="th">Monetaria</th>
+<th data-quarto-table-cell-role="th">Similitud</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2024-01-22</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Incorrect information on your report</td>
+<td>no</td>
+<td>no</td>
+<td class="num">1.00</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">I have a goal of getting a house as soon as possible but the stuff on my credit report will really put me in trouble.My name and all other information doesnt seem to look exactly the same on my ID and other documents. I have attached the letters and ID Docs for you to be able to update my personal information. I know these are just personal information but these things will definitely help a lot i…</td>
+</tr>
+<tr class="odd">
+<td>2024-01-19</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Incorrect information on your report</td>
+<td>no</td>
+<td>no</td>
+<td class="num">1.00</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">I have a goal of getting a house as soon as possible but the stuff on my credit report will really put me in trouble.My name and all other information doesnt seem to look exactly the same on my ID and other documents. I have attached the letters and ID Docs for you to be able to update my personal information. I know these are just personal information but these things will definitely help a lot i…</td>
+</tr>
+<tr class="odd">
+<td>2024-01-18</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Incorrect information on your report</td>
+<td>no</td>
+<td>no</td>
+<td class="num">1.00</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">I have a goal of getting a house as soon as possible but the stuff on my credit report will really put me in trouble.My name and all other information doesnt seem to look exactly the same on my ID and other documents. I have attached the letters and ID Docs for you to be able to update my personal information. I know these are just personal information but these things will definitely help a lot i…</td>
+</tr>
+<tr class="odd">
+<td>2024-01-18</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Incorrect information on your report</td>
+<td>no</td>
+<td>no</td>
+<td class="num">1.00</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">I have a goal of getting a house as soon as possible but the stuff on my credit report will really put me in trouble.My name and all other information doesnt seem to look exactly the same on my ID and other documents. I have attached the letters and ID Docs for you to be able to update my personal information. I know these are just personal information but these things will definitely help a lot i…</td>
+</tr>
+<tr class="odd">
+<td>2024-01-18</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Incorrect information on your report</td>
+<td>sí</td>
+<td>no</td>
+<td class="num">1.00</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">I have a goal of getting a house as soon as possible but the stuff on my credit report will really put me in trouble.My name and all other information doesnt seem to look exactly the same on my ID and other documents. I have attached the letters and ID Docs for you to be able to update my personal information. I know these are just personal information but these things will definitely help a lot i…</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+<div class="box">
+<h3>4. Patrón semántico</h3>
+<p>Patrón <strong>17</strong> (Credit reporting or other personal consumer reports): <strong>novedoso</strong> (aunque tiene vecinos casi idénticos: la novedad se mide en el espacio de patrones, no en el texto).<br>
+<span class="muted">Distancia 14.7; el 95% de los reclamos del patrón en ajuste está bajo 12.9.</span></p>
+<p class="terms">redacted account, account, account redacted, section, redacted, redacted redacted, 15, 1681, states, consumer</p>
+<p>Semana del 2024-12-09: sin alerta esa semana.</p>
+</div>
+
+<div class="box">
+<h3>5. Plazo de respuesta</h3>
+<p>Registro supuesto: <strong>2026-10-06</strong><br>
+Vence a 15 días hábiles: <strong>2026-10-28</strong><br>
+Con extensión, 45 días hábiles: <strong>2026-12-11</strong></p>
+<p class="muted">Lunes a viernes sin feriados nacionales de gob.pe. Los reclamos son de 2024; la fecha se simula porque solo hay feriados de 2026.</p>
+</div>
+</div>
+</section>
+
+<section class="card" id="reclamo-10997319">
+<h2>Reclamo 10997319</h2>
+<p class="meta">Recibido el 2024-12-02 · Credit reporting or other personal consumer reports · EQUIFAX, INC. · TN<br>
+<span class="muted">Elegido porque: producto: Credit reporting or other personal consumer reports</span></p>
+<details><summary>Narrativa (inglés, texto público de la CFPB)</summary><blockquote>Account Information : Account Name : XXXX Account Number : XXXX Account Type : Unsecured Responsibility : Individual Date Opened : XX/XX/XXXX Status : Closed. {$16000.00} written off. 
+Status Updated : XX/XX/XXXX Balance : {$0.00} ( Balance Updated on XX/XX/XXXX ) Original Balance : {$15000.00} Terms : 60 Months Dispute Reason : I am disputing the accuracy of the reporting on this account for the following reasons : Dispute Code : 112 : &quot; Account status incorrect &#39;&#39; XXXX  : &quot; Payment history incorrect &#39;&#39; XXXX : &quot; Balance inconsistent &#39;&#39; Payment History Inconsistencies : The reported payment history contains discrepancies, including duplicate or inconsistent entries for charge-offs ( &quot; CO &#39;&#39; ) in XXXX and XXXX. For example : The account is reported as &quot; CO &#39;&#39; in several months when the status update date shows no significant change in the account &#39;s condition or balance. 
+There is no clarity on the progression of delinquencies and the timeline leading to the charge-off. 
+
+Status and Balance Discrepancies : The original balance is reported as {$15000.00}, but the written-off amount is {$16000.00}. This inconsistency needs clarification. 
+Current Status and Payment Terms : The account status indicates &quot; Closed &#39;&#39; with a {$0.00} balance, yet the delinquency history does not align with the terms of the account. There is a need to confirm whether this was reported accurately following the closure of the account. 
+Missing Documentation : I have not been provided with sufficient documentation to verify the accuracy of the reporting. Specifically, I request evidence supporting the charge-off status, including payment records and any relevant account activity. 
+Requested Action : I kindly request that XXXX and the credit reporting agency : Conduct a thorough investigation of the reported information. 
+Verify the accuracy of all payment history entries and adjust any incorrect information. 
+Provide all relevant supporting documentation justifying the current account status, including charge-off validation, balance details, and past-due payment reporting. 
+Correct any inaccuracies identified in this dispute process and update my credit report accordingly. 
+
+Payment records. 
+Correspondence with XXXX regarding the account status. 
+All documents that support the dispute. 
+Closing Statement : I value the accuracy of my credit report and trust that XXXX and the credit reporting agency will address this matter promptly. If no verifiable documentation is available, I respectfully request the removal of this account from my credit file.</blockquote></details>
+
+<div class="grid">
+<div class="box">
+<h3>1. Motivo sugerido</h3>
+<div class="two">
+<div><h4>TabPFN-3.5 (vigente)</h4>
+<table class="caption-top">
+<tbody>
+<tr class="odd">
+<td>Incorrect information on your report</td>
+<td class="num">44%</td>
+</tr>
+<tr class="even">
+<td>Problem with a company&#39;s investigation into an existing problem</td>
+<td class="num">43%</td>
+</tr>
+<tr class="odd">
+<td>Improper use of your report</td>
+<td class="num">12%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div><h4>BGE + producto lineal</h4>
+<table class="caption-top">
+<tbody>
+<tr class="odd">
+<td>Problem with a company&#39;s investigation into an existing problem</td>
+<td class="num">48%</td>
+</tr>
+<tr class="even">
+<td>Incorrect information on your report</td>
+<td class="num">41%</td>
+</tr>
+<tr class="odd">
+<td>Improper use of your report</td>
+<td class="num">9%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p class="muted">Motivo registrado por la CFPB: <strong>Incorrect information on your report</strong></p>
+</div>
+
+<div class="box">
+<h3>2. Resultado histórico probable</h3>
+<p>Alguna solución (T2)<br></p><div class="bar"><div class="fill" style="width:46%"></div><div class="mark" style="left:30%"></div></div><span class="num">46%</span> <span class="muted">umbral 30%: probable</span><p></p>
+<p>Compensación monetaria (T3)<br></p><div class="bar"><div class="fill" style="width:0%"></div><div class="mark" style="left:18%"></div></div><span class="num">0%</span> <span class="muted">umbral 18%: poco probable</span><p></p>
+<p class="muted">Registrado: solución sí, compensación no</p>
+</div>
+
+<div class="box wide">
+<h3>3. Reclamos históricos parecidos</h3>
+
+<table class="similar caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Recibido</th>
+<th data-quarto-table-cell-role="th">Producto</th>
+<th data-quarto-table-cell-role="th">Motivo</th>
+<th data-quarto-table-cell-role="th">Solución</th>
+<th data-quarto-table-cell-role="th">Monetaria</th>
+<th data-quarto-table-cell-role="th">Similitud</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2023-08-21</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Incorrect information on your report</td>
+<td>no</td>
+<td>no</td>
+<td class="num">0.92</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">This is a dispute and request for the correction of account information regarding Account Number : XXXX Date Reported : XX/XX/XXXX, Date Assigned : XX/XX/XXXX, Creditor : XXXX XXXX Original Amount : {$110.00}, Status Date : XX/XX/XXXX, Balance Date : XX/XX/XXXX Account Number ending in XXXX, that is currently being reported. After a thorough review of my credit report, I have identified discrepanc…</td>
+</tr>
+<tr class="odd">
+<td>2023-11-08</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Problem with a company&#39;s investigation into an existing problem</td>
+<td>no</td>
+<td>no</td>
+<td class="num">0.92</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">I am writing to formally dispute the accuracy of information on my credit report, specifically regarding the reporting of late open accounts, late closed and charge off account. I have carefully reviewed my credit report from your agency and have identified discrepancies that I believe require immediate attention and correction or removal. I have outlined the details of the disputed information al…</td>
+</tr>
+<tr class="odd">
+<td>2023-11-08</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Problem with a company&#39;s investigation into an existing problem</td>
+<td>sí</td>
+<td>no</td>
+<td class="num">0.92</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">I am writing to formally dispute the accuracy of information on my credit report, specifically regarding the reporting of late open accounts, late closed and charge off account. I have carefully reviewed my credit report from your agency and have identified discrepancies that I believe require immediate attention and correction or removal. I have outlined the details of the disputed information al…</td>
+</tr>
+<tr class="odd">
+<td>2024-08-21</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Problem with a company&#39;s investigation into an existing problem</td>
+<td>no</td>
+<td>no</td>
+<td class="num">0.92</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX, FL XXXX XXXX Re : Request for Removal of Charge-Off Account Account : XXXX Account Number : [ XXXX ] Dear Sir/Madam, I am writing to formally dispute the accuracy of the information being reported on my credit report under the account listed above. Pursuant to the Fair Credit Reporting Act ( FCRA ), 15 USC 1681 et seq., I am exercising my ri…</td>
+</tr>
+<tr class="odd">
+<td>2024-09-18</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Improper use of your report</td>
+<td>sí</td>
+<td>no</td>
+<td class="num">0.91</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX Charge-off Dispute for Account XXXX I am writing to formally dispute the charge-off status of my account, XXXX XXXX XXXX XXXX, which is currently listed on my credit report. I believe this entry is inaccurate and would like to request a thorough investigation into this matter. Details of the Account : - Account Holder Name : XXXX - Accou…</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+<div class="box">
+<h3>4. Patrón semántico</h3>
+<p>Patrón <strong>14</strong> (Credit reporting or other personal consumer reports): dentro de lo conocido.<br>
+<span class="muted">Distancia 1.2; el 95% de los reclamos del patrón en ajuste está bajo 2.9.</span></p>
+<p class="terms">redacted, redacted redacted, account, credit, report, information, credit report, reporting, fcra, consumer</p>
+<p>Semana del 2024-12-02: sin alerta esa semana.</p>
+</div>
+
+<div class="box">
+<h3>5. Plazo de respuesta</h3>
+<p>Registro supuesto: <strong>2026-10-06</strong><br>
+Vence a 15 días hábiles: <strong>2026-10-28</strong><br>
+Con extensión, 45 días hábiles: <strong>2026-12-11</strong></p>
+<p class="muted">Lunes a viernes sin feriados nacionales de gob.pe. Los reclamos son de 2024; la fecha se simula porque solo hay feriados de 2026.</p>
+</div>
+</div>
+</section>
+
+<section class="card" id="reclamo-10748881">
+<h2>Reclamo 10748881</h2>
+<p class="meta">Recibido el 2024-11-10 · Debt collection · Amsher Collection Services, Inc. · NY<br>
+<span class="muted">Elegido porque: producto: Debt collection</span></p>
+<details><summary>Narrativa (inglés, texto público de la CFPB)</summary><blockquote>Within the last 4 months, an account with XXXX XXXX XXXX XXXX XXXX ) was opened by my mother. She was approached by someone at the supermarket advertising XXXX and who offered her a lower rate to enroll me as the account holder. 
+
+My mother is XXXX and not adept with technology. She was quickly frustrated with the attempt to use the new equipment XXXX XXXX XXXX XXXX XXXX ) and immediately called to cancel the service and to arrange to return the new equipment. 
+
+XXXX  continued to contact me about the account and we called them utilizing her account in order to address the issue. My account was closed and customer service notes were supposed to have been made on my account and hers noting that she was retaining her account at the address and closing mine, which was not active for even a month. 
+
+The equipment provided for my account was not used longer than an hour tops, most of which was the time for me to set up the account. Because of this reason and the fact my mother is a long time customer of XXXX ( previously XXXX XXXX, since XXXX ), any payment was waived or so we were told by the customer support agent. 
+
+Yesterday, while doing a routine check of my credit report, I noticed a collection amount on my XXXX credit report from XXXX XXXX XXXX, in the amount t of {$150.00}. The date for the debt was XX/XX/year&gt;. No attempts by either XXXX or this collection agency were made at time of writing to collect on this debt or to verify its validity with me. 
+
+This negative entry on my credit report XXXX have prevented me from being approved by XXXX XXXX XXXX XXXX for XXXX XXXX XXXX, which would have allowed me to pay off my credit card debt and improve my XXXX XXXX. 
+
+Had we been told months prior that we would be required to pay some termination fee, my family would have paid it. My mothers payment history with XXXX is impeccable. Her account is under the name XXXX XXXX, at the same address as myself ( XXXX XXXX XXXX XXXX XXXX, XXXX XXXX, XXXX  XXXX ). 
+
+Whether it was an error on the part of XXXX XXXX XXXX XXXX XXXX a failure of the customer service representative handling my mothers account and mine is irrelevant. I dispute this debt as I do not believe it to be valid. The account was opened for a brief time closed almost as quickly, with the equipment returned to a physical XXXX location in XXXX, XXXX 
+
+Having called the company today, a dispute was opened under reference number XXXX. Prior to opening this dispute, it was noted that no customer service notes were found on my account. This is an omission that likely led to debt collection action being erroneously taken against me. 
+
+I would greatly appreciate the help of the CFPB in sorting out this situation. As for XXXX XXXX XXXX XXXX and the XXXX credit bureaus, I would greatly appreciate the support of the CFPB and XXXX XXXX XXXX XXXX XXXX the situation and clearing my name of this debt. Thank you.</blockquote></details>
+
+<div class="grid">
+<div class="box">
+<h3>1. Motivo sugerido</h3>
+<div class="two">
+<div><h4>TabPFN-3.5 (vigente)</h4>
+<table class="caption-top">
+<tbody>
+<tr class="odd">
+<td>Attempts to collect debt not owed</td>
+<td class="num">56%</td>
+</tr>
+<tr class="even">
+<td>False statements or representation</td>
+<td class="num">18%</td>
+</tr>
+<tr class="odd">
+<td>Took or threatened to take negative or legal action</td>
+<td class="num">12%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div><h4>BGE + producto lineal</h4>
+<table class="caption-top">
+<tbody>
+<tr class="odd">
+<td>Attempts to collect debt not owed</td>
+<td class="num">57%</td>
+</tr>
+<tr class="even">
+<td>Written notification about debt</td>
+<td class="num">14%</td>
+</tr>
+<tr class="odd">
+<td>False statements or representation</td>
+<td class="num">11%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p class="muted">Motivo registrado por la CFPB: <strong>Attempts to collect debt not owed</strong></p>
+</div>
+
+<div class="box">
+<h3>2. Resultado histórico probable</h3>
+<p>Alguna solución (T2)<br></p><div class="bar"><div class="fill" style="width:22%"></div><div class="mark" style="left:30%"></div></div><span class="num">22%</span> <span class="muted">umbral 30%: poco probable</span><p></p>
+<p>Compensación monetaria (T3)<br></p><div class="bar"><div class="fill" style="width:2%"></div><div class="mark" style="left:18%"></div></div><span class="num">2%</span> <span class="muted">umbral 18%: poco probable</span><p></p>
+<p class="muted">Registrado: solución no, compensación no</p>
+</div>
+
+<div class="box wide">
+<h3>3. Reclamos históricos parecidos</h3>
+
+<table class="similar caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Recibido</th>
+<th data-quarto-table-cell-role="th">Producto</th>
+<th data-quarto-table-cell-role="th">Motivo</th>
+<th data-quarto-table-cell-role="th">Solución</th>
+<th data-quarto-table-cell-role="th">Monetaria</th>
+<th data-quarto-table-cell-role="th">Similitud</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2024-09-11</td>
+<td>Debt collection</td>
+<td>Attempts to collect debt not owed</td>
+<td>sí</td>
+<td>no</td>
+<td class="num">0.92</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">On XX/XX/year&gt; I received a letter from a debt collection agency stating I owed XXXX XXXX {$870.00}. I immediately contacted XXXX XXXX because I know that I had returned all of my equipment and had completed my contract with XXXX XXXX and all bills were paid. I spoke with XXXX XXXX XXXX XXXX ID XXXX. I explained to her what I was calling for and she asked for a minute to look over my account. When…</td>
+</tr>
+<tr class="odd">
+<td>2023-10-02</td>
+<td>Debt collection</td>
+<td>Took or threatened to take negative or legal action</td>
+<td>no</td>
+<td>no</td>
+<td class="num">0.91</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">XXXX ( aka XXXX ) has been repeatedly through hundreds of phone calls been attempting to extort a claimed owing of {$87.00} on a previous account which was closed properly and equipment returned properly. One of several debt collectors, this one called &quot; XXXX XXXX XXXX &#39;&#39; contacted me in XXXX of XXXX regarding the demand for collection of this {$87.00} dollars, to which I responded on their websit…</td>
+</tr>
+<tr class="odd">
+<td>2024-07-02</td>
+<td>Debt collection</td>
+<td>Attempts to collect debt not owed</td>
+<td>no</td>
+<td>no</td>
+<td class="num">0.91</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">In XX/XX/XXXX, I switched my service to XXXX XXXX XXXX. On XX/XX/XXXX, I called XXXX because I was unable to pay online since they had shut down my online account when I switched. A customer service representative processed my payment of {$530.00} and confirmed that all outstanding balances were settled and my account would be closed. However, in XX/XX/XXXX, I received a call stating that my accou…</td>
+</tr>
+<tr class="odd">
+<td>2024-08-22</td>
+<td>Credit reporting or other personal consumer reports</td>
+<td>Incorrect information on your report</td>
+<td>sí</td>
+<td>no</td>
+<td class="num">0.91</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">XXXX XXXX reported inaccurate, negative information on my credit report to the big XXXX consumer reporting agencies ( XXXX, XXXX, and TransUnion ) for a debt that does not belong to me. The collection ( opened on XX/XX/year&gt; for {$XXXX} ) purportedly involves a XXXX XXXX account. I called XXXX XXXX years ago when it first attempted to collect this debt. XXXX confirmed the account neither belonge…</td>
+</tr>
+<tr class="odd">
+<td>2023-01-19</td>
+<td>Debt collection</td>
+<td>Attempts to collect debt not owed</td>
+<td>no</td>
+<td>no</td>
+<td class="num">0.91</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">In XXXX of XXXX an account was opened with XXXX XXXX using my identity ( personal information ) in XXXX, Illinois. I have never lived in XXXX nor have I purchased products or services from XXXX XXXX The account became delinquent and the {$1300.00} balance was sent to the first collection agency in XXXX of XXXX. In XXXX of XXXX, my wife and I were trying to get a loan to build our house and that is…</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+<div class="box">
+<h3>4. Patrón semántico</h3>
+<p>Patrón <strong>12</strong> (Debt collection): dentro de lo conocido.<br>
+<span class="muted">Distancia 0.7; el 95% de los reclamos del patrón en ajuste está bajo 1.9.</span></p>
+<p class="terms">debt, collection, redacted, redacted redacted, account, company, alleged, credit, collect, validation</p>
+<p>Semana del 2024-11-04: sin alerta esa semana.</p>
+</div>
+
+<div class="box">
+<h3>5. Plazo de respuesta</h3>
+<p>Registro supuesto: <strong>2026-10-06</strong><br>
+Vence a 15 días hábiles: <strong>2026-10-28</strong><br>
+Con extensión, 45 días hábiles: <strong>2026-12-11</strong></p>
+<p class="muted">Lunes a viernes sin feriados nacionales de gob.pe. Los reclamos son de 2024; la fecha se simula porque solo hay feriados de 2026.</p>
+</div>
+</div>
+</section>
+
+<section class="card" id="reclamo-10763132">
+<h2>Reclamo 10763132</h2>
+<p class="meta">Recibido el 2024-11-11 · Checking or savings account · NAVY FEDERAL CREDIT UNION · CA<br>
+<span class="muted">Elegido porque: producto: Checking or savings account</span></p>
+<details><summary>Narrativa (inglés, texto público de la CFPB)</summary><blockquote>I bank with Navy Federal Credit Union and my family has for years. There has been multiple occasions where I will have enough money in my account then be charged an overdraft fee which causes my account to be in the negatives. I have also transferred money into my account using third party like XXXX  or XXXX to make sure i have enough and then still get hit with an over draft fee that puts me in the negatives. As of now I have no longer used Navy Federal ad my main bank due to this issue, I havent had this happen with any other bank. 
+
+XX/XX/year&gt; returned check fee XX/XX/year&gt; returned check fee XX/XX/year&gt; returned check fee XX/XX/year&gt; returned check fee XX/XX/year&gt; returned check fee XX/XX/year&gt; returned check fee XX/XX/year&gt; returned check fee {$230.00} worth of returned check fees as listed in statements</blockquote></details>
+
+<div class="grid">
+<div class="box">
+<h3>1. Motivo sugerido</h3>
+<div class="two">
+<div><h4>TabPFN-3.5 (vigente)</h4>
+<table class="caption-top">
+<tbody>
+<tr class="odd">
+<td>Problem caused by your funds being low</td>
+<td class="num">77%</td>
+</tr>
+<tr class="even">
+<td>Managing an account</td>
+<td class="num">18%</td>
+</tr>
+<tr class="odd">
+<td>Closing an account</td>
+<td class="num">2%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div><h4>BGE + producto lineal</h4>
+<table class="caption-top">
+<tbody>
+<tr class="odd">
+<td>Problem caused by your funds being low</td>
+<td class="num">52%</td>
+</tr>
+<tr class="even">
+<td>Managing an account</td>
+<td class="num">34%</td>
+</tr>
+<tr class="odd">
+<td>Problem with a lender or other company charging your account</td>
+<td class="num">6%</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<p class="muted">Motivo registrado por la CFPB: <strong>Problem caused by your funds being low</strong></p>
+</div>
+
+<div class="box">
+<h3>2. Resultado histórico probable</h3>
+<p>Alguna solución (T2)<br></p><div class="bar"><div class="fill" style="width:25%"></div><div class="mark" style="left:30%"></div></div><span class="num">25%</span> <span class="muted">umbral 30%: poco probable</span><p></p>
+<p>Compensación monetaria (T3)<br></p><div class="bar"><div class="fill" style="width:41%"></div><div class="mark" style="left:18%"></div></div><span class="num">41%</span> <span class="muted">umbral 18%: probable</span><p></p>
+<p class="muted">Registrado: solución sí, compensación sí</p>
+</div>
+
+<div class="box wide">
+<h3>3. Reclamos históricos parecidos</h3>
+
+<table class="similar caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Recibido</th>
+<th data-quarto-table-cell-role="th">Producto</th>
+<th data-quarto-table-cell-role="th">Motivo</th>
+<th data-quarto-table-cell-role="th">Solución</th>
+<th data-quarto-table-cell-role="th">Monetaria</th>
+<th data-quarto-table-cell-role="th">Similitud</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>2024-08-24</td>
+<td>Checking or savings account</td>
+<td>Problem caused by your funds being low</td>
+<td>sí</td>
+<td>sí</td>
+<td class="num">0.88</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">I have a checking account with Navy Federal Credit Union. Back in XX/XX/year&gt;, I started getting text regarding suspicious transaction attempts, which wasn&#39;t me. I froze the debit card and opened a new checking account with them. After reviewing my accounts online, I discovered that I have been charged a return check fee of {$29.00} XXXX times. The total of {$370.00} from XX/XX/year&gt; to XX/XX/year…</td>
+</tr>
+<tr class="odd">
+<td>2023-02-08</td>
+<td>Checking or savings account</td>
+<td>Managing an account</td>
+<td>no</td>
+<td>no</td>
+<td class="num">0.87</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">Over the course of banking with XXXX since XXXX I received NUMEROUS overdraft fees that I shouldnt have because of how they process pending charges and deposits etc. {$39.00} a fee is ridiculous and I can only ever get a partial reimbursement AND only have some many granted per year. I lost HUNDREDS if not thousands of dollars to them.…</td>
+</tr>
+<tr class="odd">
+<td>2023-01-22</td>
+<td>Checking or savings account</td>
+<td>Closing an account</td>
+<td>no</td>
+<td>no</td>
+<td class="num">0.87</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">I was being charged overdraft fees even when I wasnt overdrawn on my account. I went in personally to fix this problem and the lady I spoke with in the XXXX XXXX office told me there was nothing they could do. So not only did they take money that was mine they charged over draft fees to my account. The bank made a mistake when I had money in their to cover my purchases but showed I didnt so I was …</td>
+</tr>
+<tr class="odd">
+<td>2023-06-08</td>
+<td>Checking or savings account</td>
+<td>Problem caused by your funds being low</td>
+<td>no</td>
+<td>no</td>
+<td class="num">0.86</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">XXXX XXXX is charging fees that are excessive and posted in an order to assure that they are able to charge as many fees as possible. I was going through a financial hardship last year and also dealt with fraud. My account had accrued over {$900.00} in NSF Fees. I was unable to get my head above water for weeks. Every paycheck that was deposited was being depleted with NSF Fees. I finally made the…</td>
+</tr>
+<tr class="odd">
+<td>2024-09-18</td>
+<td>Checking or savings account</td>
+<td>Problem caused by your funds being low</td>
+<td>sí</td>
+<td>sí</td>
+<td class="num">0.86</td>
+</tr>
+<tr class="snippet even">
+<td colspan="6">My account went into overdraft for an XXXX XXXX charge, a charge that I deposited into my account. As I was in negative because of an overdraft fee Wells Fargo placed on me, a recurring payment of XXXX XXXX debited my account. My account was then about XXXX dollars negative. XXXX of which came from an initial overdraft fee I was trying to get reversed. While this charge debited my account, the s…</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+
+<div class="box">
+<h3>4. Patrón semántico</h3>
+<p>Patrón <strong>8</strong> (Checking or savings account): dentro de lo conocido.<br>
+<span class="muted">Distancia 1.0; el 95% de los reclamos del patrón en ajuste está bajo 2.0.</span></p>
+<p class="terms">bank, card, account, redacted, 00, told, money, called, funds, check</p>
+<p>Semana del 2024-11-11: sin alerta esa semana.</p>
+</div>
+
+<div class="box">
+<h3>5. Plazo de respuesta</h3>
+<p>Registro supuesto: <strong>2026-10-06</strong><br>
+Vence a 15 días hábiles: <strong>2026-10-28</strong><br>
+Con extensión, 45 días hábiles: <strong>2026-12-11</strong></p>
+<p class="muted">Lunes a viernes sin feriados nacionales de gob.pe. Los reclamos son de 2024; la fecha se simula porque solo hay feriados de 2026.</p>
+</div>
+</div>
+</section>
+
+
+
+
+
+</body></html>

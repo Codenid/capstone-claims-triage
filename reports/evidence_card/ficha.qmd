@@ -60,6 +60,11 @@ def card(c: dict) -> str:
             f"frente a {alert['expected']:.0f} esperados"
         )
     novelty = "<strong>novedoso</strong>" if p["is_novel"] else "dentro de lo conocido"
+    if p["is_novel"] and max(s["similarity"] for s in c["similar"]) > 0.98:
+        novelty += (
+            " (aunque tiene vecinos casi idénticos: la novedad se mide en el espacio "
+            "de patrones, no en el texto)"
+        )
     d = c["deadline"]
     similar = "".join(
         f"<tr><td>{s['received']}</td><td>{escape(s['product'])}</td>"
@@ -69,7 +74,7 @@ def card(c: dict) -> str:
         for s in c["similar"]
     )
     return f"""
-<section class="card">
+<section class="card" id="reclamo-{c['complaint_id']}">
 <h2>Reclamo {c['complaint_id']}</h2>
 <p class="meta">Recibido el {c['received']} · {escape(c['product'])} · {escape(c['company'])} · {c['state']}<br>
 <span class="muted">Elegido porque: {escape(c['reason'])}</span></p>
