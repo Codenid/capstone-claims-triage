@@ -45,7 +45,7 @@ preparacion:
     salida: data/interim/taxonomy.parquet
     version: taxonomy_v1_proposed
     estado: proposed_no_business_review    # sin revisión de negocio
-    fecha_congelamiento: 2025-06-30        # pares conocidos observados hasta aquí
+    fecha_congelamiento: "2025-06-30"      # pares conocidos hasta aquí (texto: DVC no admite fechas)
     categoria_desconocida: "__UNKNOWN__"
     productos: configs/product_taxonomy_v1.csv
     motivos: configs/issue_taxonomy_v1.csv
@@ -57,10 +57,10 @@ preparacion:
     estado_holdout: configs/holdout_review_status.json
     version: targets_periods_v1
     inicio_de_periodo:                     # antes del primero: context_2015_2022
-      train_2023_2024: 2023-01-01
-      validation_2025_h1: 2025-01-01
-      holdout_2025_h2: 2025-07-01
-      ood_2026_partial: 2026-01-01
+      train_2023_2024: "2023-01-01"
+      validation_2025_h1: "2025-01-01"
+      holdout_2025_h2: "2025-07-01"
+      ood_2026_partial: "2026-01-01"
     respuestas:                            # Company response to consumer
       con_solucion: ["Closed with monetary relief", "Closed with non-monetary relief"]
       sin_solucion: ["Closed with explanation"]

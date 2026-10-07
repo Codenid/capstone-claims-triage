@@ -13,7 +13,7 @@ from src.data.params import preparation_settings
 SETTINGS = preparation_settings("apply_taxonomy")
 TAXONOMY_VERSION: str = SETTINGS["version"]
 TAXONOMY_STATUS: str = SETTINGS["estado"]
-FREEZE_DATE: date = SETTINGS["fecha_congelamiento"]
+FREEZE_DATE = date.fromisoformat(SETTINGS["fecha_congelamiento"])
 UNKNOWN_CATEGORY: str = SETTINGS["categoria_desconocida"]
 
 CANONICAL_PRODUCT_COLUMN = "Product canonical"

@@ -66,7 +66,8 @@ TIMELY_POSITIVE: str = SETTINGS["respuesta_no_oportuna"]["positivo"]
 TIMELY_NEGATIVE: str = SETTINGS["respuesta_no_oportuna"]["negativo"]
 # Start date of every period after the context; the names are schema values.
 PERIOD_STARTS: list[tuple[date, str]] = sorted(
-    (start, name) for name, start in SETTINGS["inicio_de_periodo"].items()
+    (date.fromisoformat(start), name)
+    for name, start in SETTINGS["inicio_de_periodo"].items()
 )
 if [name for _, name in PERIOD_STARTS] != [TRAIN, VALIDATION, HOLDOUT, OOD]:
     raise ValueError("params.yaml must declare the four periods after the context.")
