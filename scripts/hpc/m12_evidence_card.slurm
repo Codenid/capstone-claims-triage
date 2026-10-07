@@ -14,6 +14,8 @@ export OMP_NUM_THREADS=8
 export PYTENSOR_FLAGS=cxx=
 export HF_HUB_OFFLINE=1
 export TABPFN_DISABLE_TELEMETRY=1
+# 20,000 context rows on CPU: TabPFN refuses more than 5,000 unless allowed.
+export TABPFN_ALLOW_CPU_LARGE_DATASET=1
 
 # Facts of the evidence card; pass --as-of YYYY-MM-DD for the deadline.
 uv run --no-sync python -m src.evidence.facts "$@"
