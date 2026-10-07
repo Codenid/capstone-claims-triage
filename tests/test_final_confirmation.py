@@ -71,6 +71,9 @@ class ConfirmationHelperTests(unittest.TestCase):
 
 class RehearsalTests(unittest.TestCase):
     def test_m9_reproduces_its_published_calibration_bootstrap(self):
+        if not (M9_REPORT / "predictions.csv").is_file():
+            # The result tables live in DVC since 2026-10-07 (decision 0008).
+            self.skipTest("M9 predictions not pulled: run dvc pull first")
         path = M9_REPORT / "bootstrap.json"
         published = json.loads(path.read_text(encoding="utf-8"))
 
