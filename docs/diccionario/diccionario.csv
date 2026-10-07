@@ -1,0 +1,45 @@
+columna,tipo,etapa,rol,no_nulos,pct_nulos,valores_unicos,ejemplo,descripcion
+Date received,date32[day],type_data,candidata,3837184,0.0,4138,2023-04-21,Fecha en que la CFPB recibió el reclamo. Define el periodo temporal.
+Product,large_string,type_data,predictora,3837184,0.0,21,Checking or savings account,"Producto financiero declarado por la persona, en la taxonomía histórica de la CFPB."
+Sub-product,large_string,type_data,predictora,3784979,1.36,85,Checking account,"Subproducto declarado, cuando existe."
+Issue,large_string,type_data,posterior_al_evento,3837184,0.0,173,Managing an account,"Motivo del reclamo en la taxonomía histórica. Es la etiqueta de T1, no una entrada."
+Sub-issue,large_string,type_data,posterior_al_evento,3501916,8.74,266,Deposits and withdrawals,"Submotivo declarado, cuando existe. Posterior al evento, no se usa como entrada."
+Consumer complaint narrative,large_string,type_data,predictora,3837184,0.0,2583683,(texto libre),"Narrativa pública escrita por la persona, con marcas XXXX de anonimización. Entrada principal."
+Company public response,large_string,type_data,posterior_al_evento,2041763,46.79,11,Company has responded to the consumer a…,"Respuesta pública opcional de la empresa. Posterior al evento, excluida."
+Company,large_string,type_data,candidata,3837184,0.0,6831,U.S. BANCORP,Empresa a la que se dirige el reclamo. Candidata a entrada; no usada por los modelos vigentes.
+State,large_string,type_data,candidata,3823466,0.36,63,CA,Estado de EE. UU. de la persona. Candidata a entrada.
+ZIP code,large_string,type_data,candidata,3836894,0.01,6938,91362,"Código postal, a menudo truncado por la CFPB. Candidata a entrada."
+Tags,large_string,type_data,candidata,367632,90.42,3,Older American,"Etiquetas de la CFPB (por ejemplo, Older American, Servicemember). Candidata a entrada."
+Submitted via,large_string,type_data,candidata,3837184,0.0,1,Web,"Canal por el que llegó el reclamo (Web, Phone, …). Candidata a entrada."
+Date sent to company,date32[day],type_data,posterior_al_evento,3837184,0.0,4120,2023-04-22,Fecha en que la CFPB envió el reclamo a la empresa. Posterior al evento.
+Company response to consumer,large_string,type_data,posterior_al_evento,3837175,0.0,6,Closed with explanation,Cierre registrado por la CFPB. De aquí salen T2 y T3; excluida como entrada.
+Timely response?,large_string,type_data,posterior_al_evento,3837184,0.0,2,Yes,Si la empresa respondió a tiempo según la CFPB. Define T4; excluida como entrada.
+Complaint ID,large_string,type_data,identificador,3837184,0.0,3837184,6872134,Identificador único del reclamo en la CFPB. Único en toda la tabla.
+Consumer complaint narrative normalized,large_string,normalize_text,predictora,3837184,0.0,2476614,(texto libre),"Narrativa tras text_normalizer_v1 (Unicode NFKC, minúsculas, marcas XXXX unificadas, espacios). Entrada de TF-IDF y BGE."
+Consumer complaint narrative SHA-256,string,normalize_text,control_de_evaluacion,3837184,0.0,2476614,12d5a5c4697d7cc20540c29bd5a772928d3fb0a…,Huella de la narrativa normalizada. Identifica textos repetidos para controlar la evaluación.
+Product canonical,large_string,apply_taxonomy,predictora,3837184,0.0,18,Checking or savings account,"Producto en la taxonomía propuesta (21 originales → 18), congelada al 2025-06-30. Entrada categórica."
+Issue canonical,large_string,apply_taxonomy,posterior_al_evento,3837184,0.0,140,Managing an account,Motivo en la taxonomía propuesta (173 originales → 140). Es T1.
+known_product,bool,apply_taxonomy,control_de_evaluacion,3837184,0.0,1,True,Verdadero si el producto original existe en el mapa congelado.
+known_issue,bool,apply_taxonomy,control_de_evaluacion,3837184,0.0,1,True,Verdadero si el motivo original existe en el mapa congelado.
+known_product_issue_pair,bool,apply_taxonomy,control_de_evaluacion,3837184,0.0,2,True,Verdadero si el par producto–motivo está entre los 323 pares observados hasta el 2025-06-30.
+period,string,build_targets,control_de_evaluacion,3837184,0.0,5,train_2023_2024,"Periodo temporal del reclamo: context_2015_2022, train_2023_2024, validation_2025_h1, holdout_2025_h2 u ood_2026_partial."
+T1,large_string,build_targets,objetivo,3837179,0.0,140,Managing an account,"Objetivo 1, motivo canónico del reclamo (90 clases en el entrenamiento). Métrica Macro-F1."
+T2,bool,build_targets,objetivo,3822231,0.39,2,False,"Objetivo 2, verdadero si la CFPB registró compensación monetaria o no monetaria. Métrica average precision."
+T3,bool,build_targets,objetivo,3822231,0.39,2,False,"Objetivo 3, verdadero si la CFPB registró compensación monetaria. Métrica average precision."
+T4,bool,build_targets,objetivo,3837184,0.0,2,False,"Objetivo 4, verdadero si la empresa no respondió a tiempo según la CFPB. Descartado en §22."
+known_T1,bool,build_targets,control_de_evaluacion,3837184,0.0,2,True,Verdadero si T1 está definido (motivo conocido).
+known_T2,bool,build_targets,control_de_evaluacion,3837184,0.0,2,True,Verdadero si el cierre registrado permite saber T2; las respuestas ambiguas quedan como desconocidas.
+known_T3,bool,build_targets,control_de_evaluacion,3837184,0.0,2,True,Verdadero si el cierre registrado permite saber T3.
+known_T4,bool,build_targets,control_de_evaluacion,3837184,0.0,1,True,Verdadero si Timely response? está informado.
+previously_reviewed_id,bool,build_targets,control_de_evaluacion,3310312,13.73,1,False,Verdadero para los identificadores de 2025-H2 revisados antes del EDA y no recuperados.
+excluded_by_reviewed_text_group,bool,build_targets,control_de_evaluacion,3310312,13.73,1,False,Verdadero si el reclamo comparte texto con un identificador revisado y por eso se excluye de la evaluación final.
+holdout_status,string,build_targets,control_de_evaluacion,3837184,0.0,2,not_blocked,Estado del reclamo frente a la evaluación final de 2025-H2 (bloqueada por los identificadores no recuperados).
+no_shared_reference_text,bool,build_targets,control_de_evaluacion,3837184,0.0,2,True,Verdadero si la narrativa no comparte texto con los periodos usados como referencia (contexto y entrenamiento).
+eligible_T1_complete,bool,build_targets,control_de_evaluacion,3837184,0.0,2,True,Verdadero si el reclamo puede evaluarse para T1 en la vista completa.
+eligible_T2_complete,bool,build_targets,control_de_evaluacion,3837184,0.0,2,True,Verdadero si el reclamo puede evaluarse para T2 en la vista completa.
+eligible_T3_complete,bool,build_targets,control_de_evaluacion,3837184,0.0,2,True,Verdadero si el reclamo puede evaluarse para T3 en la vista completa.
+eligible_T4_complete,bool,build_targets,control_de_evaluacion,3837184,0.0,2,True,Verdadero si el reclamo puede evaluarse para T4 en la vista completa.
+eligible_T1_no_shared_text,bool,build_targets,control_de_evaluacion,3837184,0.0,2,True,Verdadero si el reclamo puede evaluarse para T1 sin texto compartido con la referencia.
+eligible_T2_no_shared_text,bool,build_targets,control_de_evaluacion,3837184,0.0,2,True,Verdadero si el reclamo puede evaluarse para T2 sin texto compartido con la referencia.
+eligible_T3_no_shared_text,bool,build_targets,control_de_evaluacion,3837184,0.0,2,True,Verdadero si el reclamo puede evaluarse para T3 sin texto compartido con la referencia.
+eligible_T4_no_shared_text,bool,build_targets,control_de_evaluacion,3837184,0.0,2,True,Verdadero si el reclamo puede evaluarse para T4 sin texto compartido con la referencia.

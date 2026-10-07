@@ -1,0 +1,287 @@
+{
+  "tabla": {
+    "ruta": "data/processed/prepared.parquet",
+    "filas": 3837184,
+    "columnas": 44,
+    "md5": "d189a3ae6ea7a8f9041fc8210968eda6",
+    "bytes": 1836831076
+  },
+  "etapas": [
+    {
+      "etapa": "type_data",
+      "descripcion": "P1 · valida el esquema de 16 columnas y tipa las dos fechas",
+      "salida": "data/interim/typed.parquet",
+      "md5": "2647f1c469e9ec64b42267a72145ef47",
+      "bytes": 908544467,
+      "filas_entrada": null,
+      "filas_salida": null,
+      "columnas_entrada": 0,
+      "columnas_salida": 16,
+      "columnas_nuevas": [
+        "Date received",
+        "Product",
+        "Sub-product",
+        "Issue",
+        "Sub-issue",
+        "Consumer complaint narrative",
+        "Company public response",
+        "Company",
+        "State",
+        "ZIP code",
+        "Tags",
+        "Submitted via",
+        "Date sent to company",
+        "Company response to consumer",
+        "Timely response?",
+        "Complaint ID"
+      ]
+    },
+    {
+      "etapa": "normalize_text",
+      "descripcion": "P2 · normaliza la narrativa (text_normalizer_v1) y su SHA-256",
+      "salida": "data/interim/normalized.parquet",
+      "md5": "1b86d9d939f239def4bef9af3c9c06bf",
+      "bytes": 1829100354,
+      "filas_entrada": null,
+      "filas_salida": null,
+      "columnas_entrada": 16,
+      "columnas_salida": 18,
+      "columnas_nuevas": [
+        "Consumer complaint narrative normalized",
+        "Consumer complaint narrative SHA-256"
+      ]
+    },
+    {
+      "etapa": "apply_taxonomy",
+      "descripcion": "P3 · aplica la taxonomía propuesta congelada al 2025-06-30",
+      "salida": "data/interim/taxonomy.parquet",
+      "md5": "8222473644f1b729dce3c62f4eb38830",
+      "bytes": 1832663530,
+      "filas_entrada": null,
+      "filas_salida": null,
+      "columnas_entrada": 18,
+      "columnas_salida": 23,
+      "columnas_nuevas": [
+        "Product canonical",
+        "Issue canonical",
+        "known_product",
+        "known_issue",
+        "known_product_issue_pair"
+      ]
+    },
+    {
+      "etapa": "build_targets",
+      "descripcion": "P4 · construye T1–T4, periodos, bloqueos y elegibilidad",
+      "salida": "data/interim/targets_periods.parquet",
+      "md5": "d189a3ae6ea7a8f9041fc8210968eda6",
+      "bytes": 1836831076,
+      "filas_entrada": null,
+      "filas_salida": null,
+      "columnas_entrada": 23,
+      "columnas_salida": 44,
+      "columnas_nuevas": [
+        "period",
+        "T1",
+        "T2",
+        "T3",
+        "T4",
+        "known_T1",
+        "known_T2",
+        "known_T3",
+        "known_T4",
+        "previously_reviewed_id",
+        "excluded_by_reviewed_text_group",
+        "holdout_status",
+        "no_shared_reference_text",
+        "eligible_T1_complete",
+        "eligible_T2_complete",
+        "eligible_T3_complete",
+        "eligible_T4_complete",
+        "eligible_T1_no_shared_text",
+        "eligible_T2_no_shared_text",
+        "eligible_T3_no_shared_text",
+        "eligible_T4_no_shared_text"
+      ]
+    },
+    {
+      "etapa": "finalize_prepared",
+      "descripcion": "P5 · valida el contrato y publica la tabla sin transformarla",
+      "salida": "data/processed/prepared.parquet",
+      "md5": "d189a3ae6ea7a8f9041fc8210968eda6",
+      "bytes": 1836831076,
+      "filas_entrada": null,
+      "filas_salida": 3837184,
+      "columnas_entrada": 44,
+      "columnas_salida": 44,
+      "columnas_nuevas": []
+    }
+  ],
+  "problemas": [
+    {
+      "problema": "El archivo cambia con el tiempo: 2025 reúne cerca de un tercio de los reclamos y 2026 es parcial",
+      "tratamiento": "Periodos temporales en la columna period; ningún reparto al azar entre entrenamiento y evaluación",
+      "columnas": [
+        "period"
+      ],
+      "cifra": {
+        "filas_por_periodo": {
+          "context_2015_2022": 1206176,
+          "holdout_2025_h2": 526872,
+          "ood_2026_partial": 107158,
+          "train_2023_2024": 1301794,
+          "validation_2025_h1": 695184
+        }
+      }
+    },
+    {
+      "problema": "La taxonomía histórica cambió de nombres entre periodos",
+      "tratamiento": "Mapa canónico congelado al 2025-06-30 (Product canonical, Issue canonical) y banderas de categorías y pares conocidos",
+      "columnas": [
+        "Product canonical",
+        "Issue canonical",
+        "known_product",
+        "known_issue",
+        "known_product_issue_pair"
+      ],
+      "cifra": {
+        "productos_originales": 21,
+        "productos_canonicos": 18,
+        "motivos_originales": 173,
+        "motivos_canonicos": 140,
+        "filas_con_par_desconocido_por_periodo": {
+          "holdout_2025_h2": 2,
+          "ood_2026_partial": 3
+        }
+      }
+    },
+    {
+      "problema": "Pocas categorías concentran los casos y hay motivos raros",
+      "tratamiento": "Sin transformación: la métrica principal de T1 es Macro-F1 y la elegibilidad por objetivo se declara en columnas",
+      "columnas": [
+        "T1",
+        "eligible_T1_complete"
+      ],
+      "cifra": {
+        "motivos_T1_en_entrenamiento": 90
+      }
+    },
+    {
+      "problema": "T3 y T4 tienen pocos positivos",
+      "tratamiento": "Sin remuestreo: métrica principal average precision y umbral fijado en calibración",
+      "columnas": [
+        "T3",
+        "T4"
+      ],
+      "cifra": {
+        "pct_positivos_T2_conocidos": 33.315,
+        "pct_positivos_T3_conocidos": 2.568,
+        "pct_positivos_T4": 1.111
+      }
+    },
+    {
+      "problema": "Las narrativas tienen longitudes muy distintas y marcas XXXX",
+      "tratamiento": "Se conservan íntegras; la normalización no recorta ni elimina filas",
+      "columnas": [
+        "Consumer complaint narrative"
+      ],
+      "cifra": {
+        "narrativas_no_nulas": 3837184
+      }
+    },
+    {
+      "problema": "Mucha reutilización textual entre reclamos",
+      "tratamiento": "SHA-256 del texto normalizado para identificar grupos; vista de evaluación sin textos compartidos con los periodos de referencia; no se elimina ninguna fila",
+      "columnas": [
+        "Consumer complaint narrative SHA-256",
+        "no_shared_reference_text",
+        "eligible_T1_no_shared_text"
+      ],
+      "cifra": {
+        "textos_normalizados_distintos": 2476614,
+        "filas_que_comparten_texto": 1642513,
+        "pct_filas_que_comparten_texto": 42.81,
+        "filas_sin_texto_compartido_de_referencia": 3556967
+      }
+    },
+    {
+      "problema": "Los resultados T2–T4 cambian con el tiempo",
+      "tratamiento": "Evaluación en periodos posteriores al entrenamiento; las respuestas ambiguas quedan como desconocidas (known_T2, known_T3)",
+      "columnas": [
+        "known_T2",
+        "known_T3",
+        "period"
+      ],
+      "cifra": {
+        "pct_T2_entrenamiento": 43.226,
+        "pct_T2_validacion": 38.722,
+        "filas_con_respuesta_desconocida": 14953
+      }
+    },
+    {
+      "problema": "Los 25,000 identificadores revisados antes no se recuperaron",
+      "tratamiento": "2025-H2 bloqueado como evaluación final; banderas de identificador revisado y de grupo de texto excluido",
+      "columnas": [
+        "previously_reviewed_id",
+        "excluded_by_reviewed_text_group",
+        "holdout_status"
+      ],
+      "cifra": {
+        "identificadores_revisados": 0,
+        "filas_excluidas_por_grupo_revisado": 0,
+        "holdout_status": {
+          "contaminated_ids_unavailable": 526872,
+          "not_blocked": 3310312
+        }
+      }
+    }
+  ],
+  "elegibilidad_por_periodo": {
+    "eligible_T1_complete": {
+      "context_2015_2022": 1206176,
+      "ood_2026_partial": 107155,
+      "train_2023_2024": 1301794,
+      "validation_2025_h1": 695184
+    },
+    "eligible_T2_complete": {
+      "context_2015_2022": 1198659,
+      "train_2023_2024": 1300650,
+      "validation_2025_h1": 693502
+    },
+    "eligible_T3_complete": {
+      "context_2015_2022": 1198659,
+      "train_2023_2024": 1300650,
+      "validation_2025_h1": 693502
+    },
+    "eligible_T4_complete": {
+      "context_2015_2022": 1206176,
+      "train_2023_2024": 1301794,
+      "validation_2025_h1": 695184
+    },
+    "eligible_T1_no_shared_text": {
+      "context_2015_2022": 1206176,
+      "ood_2026_partial": 102557,
+      "train_2023_2024": 1301794,
+      "validation_2025_h1": 564813
+    },
+    "eligible_T2_no_shared_text": {
+      "context_2015_2022": 1198659,
+      "train_2023_2024": 1300650,
+      "validation_2025_h1": 563148
+    },
+    "eligible_T3_no_shared_text": {
+      "context_2015_2022": 1198659,
+      "train_2023_2024": 1300650,
+      "validation_2025_h1": 563148
+    },
+    "eligible_T4_no_shared_text": {
+      "context_2015_2022": 1206176,
+      "train_2023_2024": 1301794,
+      "validation_2025_h1": 564813
+    }
+  },
+  "diccionario": {
+    "columnas": 44,
+    "sin_descripcion": 0,
+    "cobertura_pct": 100.0
+  }
+}

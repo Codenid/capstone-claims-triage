@@ -96,3 +96,146 @@ stages:
       hash: md5
       md5: d189a3ae6ea7a8f9041fc8210968eda6
       size: 1836831076
+  document_prepared:
+    cmd: uv run --no-sync python src/data/document_prepared.py
+    deps:
+    - path: data/processed/prepared.parquet
+      hash: md5
+      md5: d189a3ae6ea7a8f9041fc8210968eda6
+      size: 1836831076
+    - path: docs/diccionario/descripciones.yaml
+      hash: md5
+      md5: feef17c59dc188d97c761bbc455becff
+      size: 4904
+    - path: src/data/document_prepared.py
+      hash: md5
+      md5: 15c10e2c3834c5a1cbf4b89fe565df7a
+      size: 15095
+    params:
+      params.yaml:
+        documentar:
+          columnas_por_etapa:
+            type_data:
+            - Date received
+            - Product
+            - Sub-product
+            - Issue
+            - Sub-issue
+            - Consumer complaint narrative
+            - Company public response
+            - Company
+            - State
+            - ZIP code
+            - Tags
+            - Submitted via
+            - Date sent to company
+            - Company response to consumer
+            - Timely response?
+            - Complaint ID
+            normalize_text:
+            - Consumer complaint narrative normalized
+            - Consumer complaint narrative SHA-256
+            apply_taxonomy:
+            - Product canonical
+            - Issue canonical
+            - known_product
+            - known_issue
+            - known_product_issue_pair
+            build_targets:
+            - period
+            - T1
+            - T2
+            - T3
+            - T4
+            - known_T1
+            - known_T2
+            - known_T3
+            - known_T4
+            - previously_reviewed_id
+            - excluded_by_reviewed_text_group
+            - holdout_status
+            - no_shared_reference_text
+            - eligible_T1_complete
+            - eligible_T2_complete
+            - eligible_T3_complete
+            - eligible_T4_complete
+            - eligible_T1_no_shared_text
+            - eligible_T2_no_shared_text
+            - eligible_T3_no_shared_text
+            - eligible_T4_no_shared_text
+            finalize_prepared: []
+          descripcion_etapas:
+            type_data: P1 · valida el esquema de 16 columnas y tipa las dos 
+              fechas
+            normalize_text: P2 · normaliza la narrativa (text_normalizer_v1) y 
+              su SHA-256
+            apply_taxonomy: P3 · aplica la taxonomía propuesta congelada al 
+              2025-06-30
+            build_targets: P4 · construye T1–T4, periodos, bloqueos y 
+              elegibilidad
+            finalize_prepared: P5 · valida el contrato y publica la tabla sin 
+              transformarla
+          roles:
+            identificador:
+            - Complaint ID
+            predictora:
+            - Consumer complaint narrative
+            - Consumer complaint narrative normalized
+            - Product
+            - Sub-product
+            - Product canonical
+            candidata:
+            - Company
+            - State
+            - Date received
+            - ZIP code
+            - Tags
+            - Submitted via
+            posterior_al_evento:
+            - Issue
+            - Sub-issue
+            - Issue canonical
+            - Company public response
+            - Company response to consumer
+            - Timely response?
+            - Date sent to company
+            objetivo:
+            - T1
+            - T2
+            - T3
+            - T4
+            control_de_evaluacion:
+            - Consumer complaint narrative SHA-256
+            - known_product
+            - known_issue
+            - known_product_issue_pair
+            - period
+            - known_T1
+            - known_T2
+            - known_T3
+            - known_T4
+            - previously_reviewed_id
+            - excluded_by_reviewed_text_group
+            - holdout_status
+            - no_shared_reference_text
+            - eligible_T1_complete
+            - eligible_T2_complete
+            - eligible_T3_complete
+            - eligible_T4_complete
+            - eligible_T1_no_shared_text
+            - eligible_T2_no_shared_text
+            - eligible_T3_no_shared_text
+            - eligible_T4_no_shared_text
+          columnas_sin_ejemplo:
+          - Consumer complaint narrative
+          - Consumer complaint narrative normalized
+          ejemplo_max_caracteres: 40
+    outs:
+    - path: docs/diccionario/diccionario.csv
+      hash: md5
+      md5: 2178141df783ec8dc011940c275dcd83
+      size: 7390
+    - path: reports/preparation/informe_limpieza.json
+      hash: md5
+      md5: a03e6275ae56f9ae23a4684a7986c967
+      size: 8848
