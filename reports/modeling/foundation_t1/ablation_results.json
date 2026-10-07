@@ -1,0 +1,68 @@
+{
+  "stage": "M5F",
+  "plan": "models_plan.md §26",
+  "git_commit": "5b41e6bfd523180949cfa397cb8f8672542ca5de",
+  "seed": 42,
+  "validation_used": false,
+  "reference": "tabpfn",
+  "reference_pca_components": 100,
+  "inputs": {
+    "tabpfn_pca256": {
+      "pca_components": 256,
+      "label": "BGE PCA 256"
+    },
+    "tabpfn_bge1024": {
+      "pca_components": null,
+      "label": "BGE 1024"
+    }
+  },
+  "context_rows": 20000,
+  "context_classes": 76,
+  "query_rows": 167973,
+  "estimators": 8,
+  "bootstrap_draws": 2000,
+  "metrics": {
+    "tabpfn": {
+      "macro_f1": 0.27063657960221493,
+      "top_three": 0.9554333136873188
+    },
+    "tabpfn_pca256": {
+      "macro_f1": 0.2678826950181029,
+      "top_three": 0.9547724931983116
+    },
+    "tabpfn_bge1024": {
+      "macro_f1": 0.1922231595547792,
+      "top_three": 0.8866544027909248
+    }
+  },
+  "comparisons": {
+    "tabpfn_pca256": {
+      "relative_gain": -0.010175581542449685,
+      "difference": {
+        "estimate": -0.0027538845841120208,
+        "p025": -0.006156704281084907,
+        "p50": -0.0029537011964622106,
+        "p975": 0.001035991084346402
+      },
+      "wins": false
+    },
+    "tabpfn_bge1024": {
+      "relative_gain": -0.2897369607711152,
+      "difference": {
+        "estimate": -0.07841342004743573,
+        "p025": -0.08462577909937782,
+        "p50": -0.0790321492623851,
+        "p975": -0.07344598890571251
+      },
+      "wins": false
+    }
+  },
+  "weeks": 14,
+  "winners": [],
+  "best_winner": null,
+  "elapsed_seconds": {
+    "tabpfn_pca256": 291.6261081888806,
+    "tabpfn_bge1024": 786.4599279710092,
+    "total": 1102.27478525904
+  }
+}

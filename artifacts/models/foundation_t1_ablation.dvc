@@ -1,0 +1,6 @@
+outs:
+- md5: 635f5c69bf30c6673c6c9dd8ec680945.dir
+  size: 1335633
+  nfiles: 1
+  hash: md5
+  path: foundation_t1_ablation
