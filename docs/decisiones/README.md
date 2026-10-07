@@ -32,8 +32,8 @@ pre-registro `docs/registro/models_plan.md`, donde cada decisión tiene fecha.
 
 Copia `0000-plantilla.md` para cada nueva entrada.
 
-Las cinco etapas de preparación llevan `desc` hacia 0001 y 0002; sus constantes
-siguen en el código y su traslado a `params.yaml` queda pendiente (0004). Los
+Las seis etapas llevan `desc` hacia su entrada y declaran sus decisiones en
+`params.yaml` (0002 y 0004). Los
 ejemplos de selección/limpieza/construcción/partición permanecen en
 `etapa_3_preparacion/dvc.yaml.example`; esa receta genérica no es el pipeline
 activo de CFPB.

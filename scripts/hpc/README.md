@@ -604,3 +604,18 @@ porque el clon de Khipu no tiene el crudo ni los intermedios. Actualiza
 `dvc.lock` solo para ella. Después, confirmar `dvc.lock`, el diccionario y el
 informe.
 
+## Reejecutar la preparación con sus parámetros (PB-11)
+
+Las decisiones de P1–P5 viven en `params.yaml` (`preparacion.<etapa>`). Tras
+cambiar una, o para acreditar que el pipeline sigue reproduciendo la tabla,
+descargar el crudo en el nodo de acceso y lanzar la cadena completa:
+
+```bash
+uv run --no-sync dvc pull data/raw/cfpb_reclamos_narrativa.parquet.dvc
+sbatch scripts/hpc/p1_5_preparation.slurm
+```
+
+El trabajo reejecuta `type_data` → `finalize_prepared` y `document_prepared`,
+compara el MD5 de `data/processed/prepared.parquet` con el del contrato
+(`d189a3ae…`) y falla si cambió: en ese caso no se confirma `dvc.lock`.
+

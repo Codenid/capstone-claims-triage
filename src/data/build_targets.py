@@ -14,7 +14,11 @@ from src.data.apply_taxonomy import (
 )
 from src.data.normalize_text import HASH_COLUMN
 
-TARGETS_VERSION = "targets_periods_v1"
+from src.data.params import preparation_settings
+
+# Decisions declared in params.yaml (preparacion.build_targets).
+SETTINGS = preparation_settings("build_targets")
+TARGETS_VERSION: str = SETTINGS["version"]
 
 PERIOD_COLUMN = "period"
 T1_COLUMN = "T1"
@@ -49,48 +53,54 @@ NO_SHARED_COLUMNS = {
     T4_COLUMN: "eligible_T4_no_shared_text",
 }
 
-RELIEF_POSITIVE = {
-    "Closed with monetary relief",
-    "Closed with non-monetary relief",
-}
-EXPLANATION = "Closed with explanation"
-MONETARY_RELIEF = "Closed with monetary relief"
-NON_MONETARY_RELIEF = "Closed with non-monetary relief"
+# Company responses that decide T2 and T3; anything else stays unknown.
+_RESPONSES = SETTINGS["respuestas"]
+RELIEF_POSITIVE = set(_RESPONSES["con_solucion"])
+EXPLANATION_RESPONSES = set(_RESPONSES["sin_solucion"])
+MONETARY_RESPONSES = set(_RESPONSES["monetaria"])
+EXPLANATION = next(iter(EXPLANATION_RESPONSES))
+MONETARY_RELIEF = next(iter(MONETARY_RESPONSES))
+NON_MONETARY_RELIEF = next(iter(RELIEF_POSITIVE - MONETARY_RESPONSES))
+# T4 reads the CFPB flag: "No" is the positive (not timely) case.
+TIMELY_POSITIVE: str = SETTINGS["respuesta_no_oportuna"]["positivo"]
+TIMELY_NEGATIVE: str = SETTINGS["respuesta_no_oportuna"]["negativo"]
+# Start date of every period after the context; the names are schema values.
+PERIOD_STARTS: list[tuple[date, str]] = sorted(
+    (start, name) for name, start in SETTINGS["inicio_de_periodo"].items()
+)
+if [name for _, name in PERIOD_STARTS] != [TRAIN, VALIDATION, HOLDOUT, OOD]:
+    raise ValueError("params.yaml must declare the four periods after the context.")
 
 
 def period_for_date(received: date) -> str:
     """Assign one and only one approved temporal period."""
-    if received < date(2023, 1, 1):
-        return CONTEXT
-    if received < date(2025, 1, 1):
-        return TRAIN
-    if received < date(2025, 7, 1):
-        return VALIDATION
-    if received < date(2026, 1, 1):
-        return HOLDOUT
-    return OOD
+    period = CONTEXT
+    for start, name in PERIOD_STARTS:
+        if received >= start:
+            period = name
+    return period
 
 
 def relief_target(response: str | None) -> bool | None:
     if response in RELIEF_POSITIVE:
         return True
-    if response == EXPLANATION:
+    if response in EXPLANATION_RESPONSES:
         return False
     return None
 
 
 def monetary_target(response: str | None) -> bool | None:
-    if response == MONETARY_RELIEF:
+    if response in MONETARY_RESPONSES:
         return True
-    if response in {NON_MONETARY_RELIEF, EXPLANATION}:
+    if response in RELIEF_POSITIVE or response in EXPLANATION_RESPONSES:
         return False
     return None
 
 
 def timely_target(value: str | None) -> bool | None:
-    if value == "No":
+    if value == TIMELY_POSITIVE:
         return True
-    if value == "Yes":
+    if value == TIMELY_NEGATIVE:
         return False
     return None
 
@@ -277,9 +287,9 @@ def prepare(input_path: Path, output_path: Path, holdout_status_path: Path) -> N
 
 def main() -> None:
     prepare(
-        Path("data/interim/taxonomy.parquet"),
-        Path("data/interim/targets_periods.parquet"),
-        Path("configs/holdout_review_status.json"),
+        Path(SETTINGS["entrada"]),
+        Path(SETTINGS["salida"]),
+        Path(SETTINGS["estado_holdout"]),
     )
 
 

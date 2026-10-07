@@ -56,7 +56,8 @@ La etapa se detiene si las columnas de la tabla no coinciden con las que
 
 ## Consecuencias
 
-Los cinco scripts P1–P5 conservan sus constantes en el código: moverlas a
-`params.yaml` obliga a reejecutar el pipeline completo y a comprobar que el MD5
-`d189a3ae…` de la tabla no cambia. Queda registrado como pendiente de PB-11,
-junto con la verificación desde un clon limpio (PB-15).
+El mismo día, por decisión del usuario, las constantes de P1–P5 pasaron a
+`params.yaml` (`preparacion.<etapa>`); el pipeline completo se reejecuta en
+Khipu con `scripts/hpc/p1_5_preparation.slurm`, que se detiene si el MD5 de la
+tabla preparada difiere de `d189a3ae…`. El resultado de esa corrida se anota
+en 0002. Sigue pendiente la verificación desde un clon limpio (PB-15).

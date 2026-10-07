@@ -7,10 +7,14 @@ from pathlib import Path
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-TAXONOMY_VERSION = "taxonomy_v1_proposed"
-TAXONOMY_STATUS = "proposed_no_business_review"
-FREEZE_DATE = date(2025, 6, 30)
-UNKNOWN_CATEGORY = "__UNKNOWN__"
+from src.data.params import preparation_settings
+
+# Decisions declared in params.yaml (preparacion.apply_taxonomy).
+SETTINGS = preparation_settings("apply_taxonomy")
+TAXONOMY_VERSION: str = SETTINGS["version"]
+TAXONOMY_STATUS: str = SETTINGS["estado"]
+FREEZE_DATE: date = SETTINGS["fecha_congelamiento"]
+UNKNOWN_CATEGORY: str = SETTINGS["categoria_desconocida"]
 
 CANONICAL_PRODUCT_COLUMN = "Product canonical"
 CANONICAL_ISSUE_COLUMN = "Issue canonical"
@@ -157,11 +161,11 @@ def prepare(
 
 def main() -> None:
     prepare(
-        Path("data/interim/normalized.parquet"),
-        Path("data/interim/taxonomy.parquet"),
-        Path("configs/product_taxonomy_v1.csv"),
-        Path("configs/issue_taxonomy_v1.csv"),
-        Path("configs/valid_product_issue_pairs_v1.csv"),
+        Path(SETTINGS["entrada"]),
+        Path(SETTINGS["salida"]),
+        Path(SETTINGS["productos"]),
+        Path(SETTINGS["motivos"]),
+        Path(SETTINGS["pares"]),
     )
 
 

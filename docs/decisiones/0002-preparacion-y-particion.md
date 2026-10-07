@@ -47,16 +47,23 @@ Python 3.12.12, pandas 3.0.5, PyArrow 25.0.1 y DVC 3.67.1.
 Esta verificación no equivale a descargar los datos y ejecutar todo el
 corpus desde un clon limpio.
 
-## Adaptación pendiente al curso
+## Adaptación al curso
 
 El pipeline original mantiene sus rutas y hashes. La receta genérica del
 curso queda en `etapa_3_preparacion/dvc.yaml.example` para evitar dos
-pipelines activos con decisiones distintas. Las constantes aún deben
-trasladarse a parámetros consumidos por el código y registrados en el lock.
-También faltan el diccionario de las 44 columnas y el informe de limpieza
-como salidas del pipeline, y una reproducción independiente con
-`dvc pull` + `dvc repro -f` y comparación del lock. Los README de la etapa
-documentan estos pendientes sin declarar su cierre.
+pipelines activos con decisiones distintas.
+
+El 2026-10-07 las decisiones de las cinco etapas pasaron a `params.yaml`
+(`preparacion.<etapa>`): columnas esperadas y formato de fecha, versión y
+reglas del normalizador, versión, estado y fecha de congelamiento de la
+taxonomía, inicio de cada periodo, respuestas que definen T2–T4 y filas
+esperadas. Cada script las lee al cargarse (`src/data/params.py`), cada
+etapa las declara en `dvc.yaml` y `dvc.lock` las anota. El pipeline se
+reejecuta en Khipu con `scripts/hpc/p1_5_preparation.slurm`, que falla si la
+tabla preparada no conserva el MD5 `d189a3ae…`; el resultado de esa corrida se
+anota aquí al terminar. El diccionario y el informe de limpieza son salidas del
+pipeline desde esa fecha. Queda pendiente la reproducción independiente
+desde un clon limpio (PB-15).
 
 La importación añade `scripts/repro_preparacion.py` para fijar el directorio y
 `PYTHONPATH` del pipeline: los scripts históricos con imports `src.data` fallan

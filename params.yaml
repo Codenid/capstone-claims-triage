@@ -1,11 +1,79 @@
 # ============================================================================
 # params.yaml · Decisiones declaradas del pipeline de preparación (dvc.yaml).
 #
-# Las etapas type_data → finalize_prepared conservan sus constantes en el
-# código (docs/decisiones/0002-preparacion-y-particion.md): moverlas aquí
-# obliga a reejecutar P1–P5 y queda registrado como pendiente. La etapa
-# document_prepared sí lee este archivo; DVC anota sus valores en dvc.lock.
+# Regla del curso: ningún umbral, lista ni constante de negocio vive dentro
+# del código. Cada etapa declara aquí sus decisiones y las lee al cargarse
+# (src/data/params.py); dvc.yaml nombra la sección de cada etapa y dvc.lock
+# anota sus valores. Cambiar un valor invalida la etapa y queda visible en el
+# Pull Request. Justificación: docs/decisiones/0002-preparacion-y-particion.md.
 # ============================================================================
+
+preparacion:
+  type_data:                               # P1 · validar el esquema y tipar fechas
+    entrada: data/raw/cfpb_reclamos_narrativa.parquet
+    salida: data/interim/typed.parquet
+    columnas_esperadas:                    # 16 columnas públicas de la CFPB, en orden
+      - "Date received"
+      - Product
+      - Sub-product
+      - Issue
+      - Sub-issue
+      - Consumer complaint narrative
+      - Company public response
+      - Company
+      - State
+      - ZIP code
+      - Tags
+      - Submitted via
+      - Date sent to company
+      - Company response to consumer
+      - "Timely response?"
+      - Complaint ID
+    columnas_fecha: ["Date received", "Date sent to company"]
+    formato_fecha: "%Y-%m-%d"
+
+  normalize_text:                          # P2 · normalizar la narrativa
+    entrada: data/interim/typed.parquet
+    salida: data/interim/normalized.parquet
+    version: text_normalizer_v1
+    forma_unicode: NFKC
+    patron_anonimizacion: '\bx{2,}\b'      # marcas XXXX de la CFPB (tras casefold)
+    reemplazo_anonimizacion: "<redacted>"
+
+  apply_taxonomy:                          # P3 · taxonomía propuesta
+    entrada: data/interim/normalized.parquet
+    salida: data/interim/taxonomy.parquet
+    version: taxonomy_v1_proposed
+    estado: proposed_no_business_review    # sin revisión de negocio
+    fecha_congelamiento: 2025-06-30        # pares conocidos observados hasta aquí
+    categoria_desconocida: "__UNKNOWN__"
+    productos: configs/product_taxonomy_v1.csv
+    motivos: configs/issue_taxonomy_v1.csv
+    pares: configs/valid_product_issue_pairs_v1.csv
+
+  build_targets:                           # P4 · objetivos, periodos y elegibilidad
+    entrada: data/interim/taxonomy.parquet
+    salida: data/interim/targets_periods.parquet
+    estado_holdout: configs/holdout_review_status.json
+    version: targets_periods_v1
+    inicio_de_periodo:                     # antes del primero: context_2015_2022
+      train_2023_2024: 2023-01-01
+      validation_2025_h1: 2025-01-01
+      holdout_2025_h2: 2025-07-01
+      ood_2026_partial: 2026-01-01
+    respuestas:                            # Company response to consumer
+      con_solucion: ["Closed with monetary relief", "Closed with non-monetary relief"]
+      sin_solucion: ["Closed with explanation"]
+      monetaria: ["Closed with monetary relief"]
+      # cualquier otra respuesta deja T2 y T3 como desconocidos
+    respuesta_no_oportuna:                 # Timely response?
+      positivo: "No"
+      negativo: "Yes"
+
+  finalize_prepared:                       # P5 · validar y publicar
+    entrada: data/interim/targets_periods.parquet
+    salida: data/processed/prepared.parquet
+    filas_esperadas: 3837184
 
 documentar:
   # Columnas que crea cada etapa, en el orden del grafo. document_prepared se

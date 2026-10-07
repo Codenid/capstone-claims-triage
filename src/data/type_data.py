@@ -7,28 +7,15 @@ import pyarrow as pa
 import pyarrow.compute as pc
 import pyarrow.parquet as pq
 
+from src.data.params import preparation_settings
+
 compute = cast(Any, pc)
 
-EXPECTED_COLUMNS = [
-    "Date received",
-    "Product",
-    "Sub-product",
-    "Issue",
-    "Sub-issue",
-    "Consumer complaint narrative",
-    "Company public response",
-    "Company",
-    "State",
-    "ZIP code",
-    "Tags",
-    "Submitted via",
-    "Date sent to company",
-    "Company response to consumer",
-    "Timely response?",
-    "Complaint ID",
-]
-
-DATE_COLUMNS = ["Date received", "Date sent to company"]
+# Decisions declared in params.yaml (preparacion.type_data); dvc.lock records them.
+SETTINGS = preparation_settings("type_data")
+EXPECTED_COLUMNS: list[str] = list(SETTINGS["columnas_esperadas"])
+DATE_COLUMNS: list[str] = list(SETTINGS["columnas_fecha"])
+DATE_FORMAT: str = SETTINGS["formato_fecha"]
 
 
 def type_table(table: pa.Table) -> pa.Table:
@@ -43,7 +30,7 @@ def type_table(table: pa.Table) -> pa.Table:
         original = typed[column_name]
         parsed = compute.strptime(
             original,
-            format="%Y-%m-%d",
+            format=DATE_FORMAT,
             unit="s",
             error_is_null=True,
         )
@@ -89,10 +76,7 @@ def prepare(input_path: Path, output_path: Path) -> None:
 
 
 def main() -> None:
-    prepare(
-        Path("data/raw/cfpb_reclamos_narrativa.parquet"),
-        Path("data/interim/typed.parquet"),
-    )
+    prepare(Path(SETTINGS["entrada"]), Path(SETTINGS["salida"]))
 
 
 if __name__ == "__main__":

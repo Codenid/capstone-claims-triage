@@ -8,20 +8,26 @@ import unicodedata
 import pyarrow as pa
 import pyarrow.parquet as pq
 
-NORMALIZER_VERSION = "text_normalizer_v1"
+from src.data.params import preparation_settings
+
+# Decisions declared in params.yaml (preparacion.normalize_text).
+SETTINGS = preparation_settings("normalize_text")
+NORMALIZER_VERSION: str = SETTINGS["version"]
 NARRATIVE_COLUMN = "Consumer complaint narrative"
 NORMALIZED_COLUMN = "Consumer complaint narrative normalized"
 HASH_COLUMN = "Consumer complaint narrative SHA-256"
+UNICODE_FORM: str = SETTINGS["forma_unicode"]
+REDACTION_REPLACEMENT: str = SETTINGS["reemplazo_anonimizacion"]
 
-_REDACTION_PATTERN = re.compile(r"\bx{2,}\b")
+_REDACTION_PATTERN = re.compile(SETTINGS["patron_anonimizacion"])
 _WHITESPACE_PATTERN = re.compile(r"\s+")
 
 
 def normalize_text(text: str) -> str:
     """Apply the approved normalization rules in their fixed order."""
-    normalized = unicodedata.normalize("NFKC", text)
+    normalized = unicodedata.normalize(UNICODE_FORM, text)
     normalized = normalized.casefold()
-    normalized = _REDACTION_PATTERN.sub("<redacted>", normalized)
+    normalized = _REDACTION_PATTERN.sub(REDACTION_REPLACEMENT, normalized)
     normalized = _WHITESPACE_PATTERN.sub(" ", normalized)
     return normalized.strip()
 
@@ -85,10 +91,7 @@ def prepare(input_path: Path, output_path: Path) -> None:
 
 
 def main() -> None:
-    prepare(
-        Path("data/interim/typed.parquet"),
-        Path("data/interim/normalized.parquet"),
-    )
+    prepare(Path(SETTINGS["entrada"]), Path(SETTINGS["salida"]))
 
 
 if __name__ == "__main__":

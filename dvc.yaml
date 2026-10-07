@@ -7,6 +7,9 @@ stages:
     deps:
       - data/raw/cfpb_reclamos_narrativa.parquet
       - src/data/type_data.py
+      - src/data/params.py
+    params:
+      - preparacion.type_data
     outs:
       - data/interim/typed.parquet
 
@@ -18,6 +21,9 @@ stages:
     deps:
       - data/interim/typed.parquet
       - src/data/normalize_text.py
+      - src/data/params.py
+    params:
+      - preparacion.normalize_text
     outs:
       - data/interim/normalized.parquet
 
@@ -32,6 +38,9 @@ stages:
       - configs/issue_taxonomy_v1.csv
       - configs/valid_product_issue_pairs_v1.csv
       - src/data/apply_taxonomy.py
+      - src/data/params.py
+    params:
+      - preparacion.apply_taxonomy
     outs:
       - data/interim/taxonomy.parquet
 
@@ -44,6 +53,9 @@ stages:
       - data/interim/taxonomy.parquet
       - configs/holdout_review_status.json
       - src/data/build_targets.py
+      - src/data/params.py
+    params:
+      - preparacion.build_targets
     outs:
       - data/interim/targets_periods.parquet
 
@@ -55,6 +67,9 @@ stages:
     deps:
       - data/interim/targets_periods.parquet
       - src/data/finalize_prepared.py
+      - src/data/params.py
+    params:
+      - preparacion.finalize_prepared
     outs:
       - data/processed/prepared.parquet
 

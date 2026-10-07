@@ -46,11 +46,14 @@ from src.data.normalize_text import (
     NORMALIZED_COLUMN,
     NORMALIZER_VERSION,
 )
+from src.data.params import preparation_settings
 from src.data.type_data import DATE_COLUMNS, EXPECTED_COLUMNS
 
 compute = cast(Any, pc)
 
-EXPECTED_ROW_COUNT = 3_837_184
+# Decisions declared in params.yaml (preparacion.finalize_prepared).
+SETTINGS = preparation_settings("finalize_prepared")
+EXPECTED_ROW_COUNT: int = int(SETTINGS["filas_esperadas"])
 EXPECTED_PERIODS = {CONTEXT, TRAIN, VALIDATION, HOLDOUT, OOD}
 EXPECTED_PREPARED_COLUMNS = [
     *EXPECTED_COLUMNS,
@@ -150,10 +153,7 @@ def finalize_prepared(
 
 
 def main() -> None:
-    finalize_prepared(
-        Path("data/interim/targets_periods.parquet"),
-        Path("data/processed/prepared.parquet"),
-    )
+    finalize_prepared(Path(SETTINGS["entrada"]), Path(SETTINGS["salida"]))
 
 
 if __name__ == "__main__":
