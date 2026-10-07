@@ -83,6 +83,7 @@ stages:
                     "name": "test-experiment",
                     "seed": 42,
                     "run_contract_version": "test-v1",
+                    "data_version": "datos-v1",
                 },
                 "paths": {
                     "input_data": "data.parquet",
@@ -111,6 +112,9 @@ stages:
 
         self.assertEqual(record["tags"]["git_commit"], "git-hash")
         self.assertEqual(record["tags"]["dvc_data_hash"], "data-hash")
+        self.assertEqual(record["tags"]["datos_md5"], "data-hash")
+        self.assertEqual(record["tags"]["version_datos"], "datos-v1")
+        self.assertEqual(record["tags"]["tipo"], "experimento")
         self.assertEqual(record["tags"]["execution_host"], "khipu")
         self.assertEqual(record["tags"]["evaluation_split_version"], "temporal-test-v1")
         self.assertEqual(record["tags"]["execution_mode"], "slurm")
@@ -178,6 +182,23 @@ stages:
             check_publishable(pilot, set())
         with self.assertRaisesRegex(ValueError, "already has a run"):
             check_publishable(full, {"m9-model-full"})
+
+
+
+
+class BackfillTagsTests(unittest.TestCase):
+    def test_only_missing_course_tags_are_added(self):
+        from src.evaluation.backfill_tags import missing_tags
+
+        old_run = {"git_commit": "abc", "dvc_data_hash": "md5"}
+        new_run = old_run | {"version_datos": "datos-v1", "datos_md5": "md5"}
+
+        self.assertEqual(
+            missing_tags(old_run, "datos-v1"),
+            {"version_datos": "datos-v1", "datos_md5": "md5", "tipo": "experimento"},
+        )
+        self.assertEqual(missing_tags(new_run, "datos-v1"), {"tipo": "experimento"})
+        self.assertNotIn("datos_md5", missing_tags({"git_commit": "abc"}, "datos-v1"))
 
 
 if __name__ == "__main__":

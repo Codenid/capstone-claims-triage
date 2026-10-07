@@ -76,6 +76,11 @@ def build_run_record(
         "evaluation_split_version": config["evaluation"]["split_version"],
         "git_commit": git_commit(),
         "dvc_data_hash": contract["dvc_md5"],
+        # The course vocabulary (utec-dsia/pi1-262-g1): every run names its
+        # data version and the MD5 of the table it was measured on.
+        "version_datos": experiment["data_version"],
+        "datos_md5": contract["dvc_md5"],
+        "tipo": "experimento",
         "stage": stage,
         "target": target,
         "split": split,

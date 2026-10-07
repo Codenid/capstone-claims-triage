@@ -2,6 +2,9 @@ experiment:
   name: claims-triage-modeling
   seed: 42
   run_contract_version: modeling_run_v1
+  # Course tag `version_datos`: one data version so far (prepared.parquet,
+  # MD5 d189a3ae…, from dvc.lock on 2026-09-18).
+  data_version: datos-v1
 
 paths:
   input_data: data/processed/prepared.parquet
