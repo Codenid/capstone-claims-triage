@@ -296,7 +296,7 @@ def main() -> None:
             {
                 "complaint_id": row[ID_COLUMN],
                 "reason": row["reason"],
-                "received": str(pd.Timestamp(row[DATE_COLUMN]).date()),
+                "received": str(pd.Timestamp(text[DATE_COLUMN]).date()),
                 "product": str(row[CANONICAL_PRODUCT_COLUMN]),
                 "company": str(text["Company"]),
                 "state": str(text["State"]),
