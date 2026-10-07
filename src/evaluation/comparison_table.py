@@ -40,6 +40,13 @@ REPRESENTATION = "reports/modeling/representation_results.json"
 BASELINES = "reports/modeling/baseline_results.json"
 FOUNDATION = "reports/modeling/foundation_t1/results.json"
 FOUNDATION_VALIDATION = "reports/modeling/foundation_t1/validation_results.json"
+ABLATION = "reports/modeling/foundation_t1/ablation_results.json"
+TABPFN_LABEL = "TabPFN-3.5 (PCA 100 + producto)"
+ABLATION_LABELS = {
+    "tabpfn": TABPFN_LABEL,
+    "tabpfn_pca256": "TabPFN-3.5 (PCA 256 + producto)",
+    "tabpfn_bge1024": "TabPFN-3.5 (BGE 1,024 + producto)",
+}
 FINAL = "reports/modeling/final_confirmation.json"
 COUNTS = "reports/modeling/weekly_counts"
 COMPOSITION = "reports/modeling/weekly_composition"
@@ -48,7 +55,6 @@ PERSISTENT = "reports/modeling/persistent_change_c_a/results.json"
 PERSISTENT_VALIDATION = "reports/modeling/persistent_change_c_a/validation_results.json"
 SPACE = "reports/modeling/space_sensitivity/results.json"
 VALIDATION = "validacion_2025_h1 (ya consultada)"
-TABPFN_LABEL = "TabPFN-3.5 (PCA 100 + producto)"
 CALIBRATION = "calibracion_2024_q4"
 # Models whose record names a stage; the rest of the catalogue is in modelos.md.
 COUNT_FAMILIES = {
@@ -206,6 +212,27 @@ def foundation_rows() -> list[dict[str, Any]]:
                     fuente=path,
                 )
             )
+    report = load(ABLATION)
+    for name, metrics in report["metrics"].items():
+        comparison = report["comparisons"].get(name, {})
+        rows.append(
+            row(
+                etapa="M5F ablación §26",
+                tarea="T1",
+                modelo=ABLATION_LABELS[name],
+                rol="referencia (bloque B)" if name == "tabpfn" else "candidato",
+                conjunto=CALIBRATION,
+                vista="no_shared_text",
+                metrica="macro_f1",
+                valor=metrics["macro_f1"],
+                referencia=TABPFN_LABEL if name != "tabpfn" else "",
+                ganancia_relativa=comparison.get("relative_gain", ""),
+                ic95_inferior=comparison.get("difference", {}).get("p025", ""),
+                ic95_superior=comparison.get("difference", {}).get("p975", ""),
+                decision=verdict(comparison.get("wins")),
+                fuente=ABLATION,
+            )
+        )
     return rows
 
 

@@ -28,6 +28,9 @@ M5F bloque B,T1,bge_product,ganador M5B (referencia),calibracion_2024_q4,no_shar
 M5F bloque B,T1,TabPFN-3.5 (PCA 100 + producto),ganador bloque B,calibracion_2024_q4,no_shared_text,macro_f1,0.270637,bge_product,0.128853,0.026820,0.035267,reemplaza,reports/modeling/foundation_t1/results.json
 M5F bloque B,T1,bge_product,ganador M5B (referencia),validacion_2025_h1 (ya consultada),no_shared_text,macro_f1,0.226747,,,,,,reports/modeling/foundation_t1/validation_results.json
 M5F bloque B,T1,TabPFN-3.5 (PCA 100 + producto),candidato,validacion_2025_h1 (ya consultada),no_shared_text,macro_f1,0.269840,bge_product,0.190045,0.038844,0.045861,,reports/modeling/foundation_t1/validation_results.json
+M5F ablación §26,T1,TabPFN-3.5 (PCA 100 + producto),referencia (bloque B),calibracion_2024_q4,no_shared_text,macro_f1,0.270637,,,,,,reports/modeling/foundation_t1/ablation_results.json
+M5F ablación §26,T1,TabPFN-3.5 (PCA 256 + producto),candidato,calibracion_2024_q4,no_shared_text,macro_f1,0.267883,TabPFN-3.5 (PCA 100 + producto),-0.010176,-0.006157,0.001036,no reemplaza,reports/modeling/foundation_t1/ablation_results.json
+M5F ablación §26,T1,"TabPFN-3.5 (BGE 1,024 + producto)",candidato,calibracion_2024_q4,no_shared_text,macro_f1,0.192223,TabPFN-3.5 (PCA 100 + producto),-0.289737,-0.084626,-0.073446,no reemplaza,reports/modeling/foundation_t1/ablation_results.json
 M5B §22,T1,product_rule,baseline,validacion_2025_h1 (ya consultada),no_shared_text,macro_f1,0.068374,,,,,,reports/modeling/final_confirmation.json
 M5B §22,T1,bge_product,ganador M5B,validacion_2025_h1 (ya consultada),no_shared_text,macro_f1,0.226747,product_rule,,0.155733,0.163135,confirmado,reports/modeling/final_confirmation.json
 M5B §22,T2,product_rule,baseline,validacion_2025_h1 (ya consultada),no_shared_text,average_precision,0.450860,,,,,,reports/modeling/final_confirmation.json
