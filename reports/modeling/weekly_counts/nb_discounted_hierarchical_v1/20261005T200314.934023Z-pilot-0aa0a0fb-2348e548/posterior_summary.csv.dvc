@@ -1,0 +1,5 @@
+outs:
+- md5: cecb55a89f68aa37dc63cfebbc2f0fb2
+  size: 15310
+  hash: md5
+  path: posterior_summary.csv

@@ -1,0 +1,5 @@
+outs:
+- md5: d68554dc17c011cc916b62b7934d16c0
+  size: 33913
+  hash: md5
+  path: tfidf_t1_per_class.csv

@@ -1,0 +1,5 @@
+outs:
+- md5: 43e2d4e7a78cb13ee92fdd4432c59001
+  size: 50602
+  hash: md5
+  path: negative_binomial_metrics.csv

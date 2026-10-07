@@ -1,0 +1,5 @@
+outs:
+- md5: da799789eecb7497ec9f7d0c748983b0
+  size: 321922
+  hash: md5
+  path: weekly_counts.csv

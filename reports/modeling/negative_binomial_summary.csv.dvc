@@ -1,0 +1,5 @@
+outs:
+- md5: 7d4c8133ab9f0cb76ac8442c89454a73
+  size: 17630
+  hash: md5
+  path: negative_binomial_summary.csv

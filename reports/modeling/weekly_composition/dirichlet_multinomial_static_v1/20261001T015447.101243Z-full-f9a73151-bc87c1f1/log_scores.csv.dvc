@@ -1,0 +1,5 @@
+outs:
+- md5: f6bef4e5d1e00bd04919905e0fa6852b
+  size: 7398
+  hash: md5
+  path: log_scores.csv
