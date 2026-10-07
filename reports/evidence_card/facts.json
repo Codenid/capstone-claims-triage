@@ -1,0 +1,646 @@
+{
+  "plan": "docs/registro/models_plan.md §25",
+  "git_commit": "dc23e5980713564d0658072b1f4cd75f9c7a408f",
+  "seed": 42,
+  "split": "calibration",
+  "view": "no_shared_text",
+  "selection_rule": {
+    "alerted_pattern": 1,
+    "novel": 1,
+    "top_products": 3
+  },
+  "models": {
+    "T1": [
+      "tabpfn-v3.5 (block B context)",
+      "bge_product (M5B)"
+    ],
+    "T2": "tfidf_text (M5B)",
+    "T3": "tfidf_text (M5B)",
+    "neighbors": "M6 faiss_fit.index, 120,000 fit rows",
+    "patterns": "M8 kmeans k=40, novelty p99",
+    "alerts": "reports/modeling/persistent_change_c_a"
+  },
+  "deadline_assumption": "registro supuesto el 2026-10-06; feriados de configs/peru_holidays.yaml",
+  "cards": [
+    {
+      "complaint_id": "10757200",
+      "reason": "patrón con alerta de M11 esa semana",
+      "received": "2024-11-11",
+      "product": "Credit reporting or other personal consumer reports",
+      "company": "EQUIFAX, INC.",
+      "state": "FL",
+      "narrative": "XXXX XXXX XXXX XXXX XXXX XXXX  XXXX XXXX, Florida, XXXX XXXX ( XXXX ) XXXX XX/XX/XXXX Equifax XXXX XXXX XXXX XXXX, GA XXXX XXXX XXXX XXXX XXXX XXXX, TX XXXX XXXX XXXX XXXX XXXX XXXX, PA XXXX Re : Request for Update of Personal Information and Deletion of Incorrect Data Dear Sir/Madam, I am writing to request an update to my personal information on my credit report and to ask that any information that no longer matches my updated details be deleted. The information currently reported may be outdated or incorrect, and I want to ensure that my credit report accurately reflects my current personal details. \n\nCurrent Information on File ( as per my credit report ) : Full Name : XXXX XXXX XXXX Address : XXXX XXXX XXXX XXXX \nDate of Birth : XX/XX/XXXX Social Security Number ( last four digits ) : XXXX Updated Information : Full Name : XXXX XXXX XXXX XXXX Address : XXXX XXXX XXXX XXXX, XXXX XXXX, Fl, XXXX Phone Number : ( XXXX ) XXXX Email Address : XXXX Please update my credit file to reflect the correct personal information. Additionally, I request that any outdated or incorrect information that does not match the updated details be removed from my credit report. If there are any discrepancies, I expect that they will be corrected in accordance with the Fair Credit Reporting Act ( FCRA ). \n\nIf you require any additional documentation or have questions, I am happy to provide further information. Please notify me of any actions taken and provide me with a copy of my updated credit report once the changes have been made. \n\nThank you for your prompt attention to this matter. I look forward to your response. \n\nSincerely, XXXX XXXX XXXX XXXX",
+      "actual": {
+        "issue": "Problem with a company's investigation into an existing problem",
+        "relief": true,
+        "monetary": false
+      },
+      "issues": {
+        "tabpfn": [
+          {
+            "issue": "Incorrect information on your report",
+            "probability": 0.7470692992210388
+          },
+          {
+            "issue": "Improper use of your report",
+            "probability": 0.10730574280023575
+          },
+          {
+            "issue": "Problem with a company's investigation into an existing problem",
+            "probability": 0.08829790353775024
+          }
+        ],
+        "linear": [
+          {
+            "issue": "Incorrect information on your report",
+            "probability": 0.5095999240875244
+          },
+          {
+            "issue": "Improper use of your report",
+            "probability": 0.2688532769680023
+          },
+          {
+            "issue": "Problem with a company's investigation into an existing problem",
+            "probability": 0.1301112174987793
+          }
+        ]
+      },
+      "T2": {
+        "probability": 0.3006699239590691,
+        "threshold": 0.3003271199199449,
+        "likely": true
+      },
+      "T3": {
+        "probability": 0.0002513148056920307,
+        "threshold": 0.18147360873370025,
+        "likely": false
+      },
+      "similar": [
+        {
+          "complaint_id": "6656421",
+          "received": "2023-03-06",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Problem with a company's investigation into an existing problem",
+          "relief": true,
+          "monetary": false,
+          "similarity": 0.919374942779541,
+          "snippet": "XX/XX/XXXX XXXX XXXX XXXXXXXX XXXX XXXX XXXXXXXX, Florida XXXX SSN : SS # : XXXX XXXX : Date of Birth : XX/XX/XXXX Dear Sir/Madam, I am writing to dispute the inquiries made by various entities on my credit report, including XXXX, XXXX, XXXX, XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XX"
+        },
+        {
+          "complaint_id": "6709565",
+          "received": "2023-03-18",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Incorrect information on your report",
+          "relief": true,
+          "monetary": false,
+          "similarity": 0.9137919545173645,
+          "snippet": "XXXX XXXX XXXX XXXX XXXX XXXX, Florida XXXX XX/XX/XXXX To Whom It May Concern : I have recently checked out a copy of my credit profile and unfortunately, it has come to my attention that some of my personal information is incorrect. If you would please be so kind as to delete this inaccurate information from my credit profile within the next thirty days, I would greatly appreciate it. Ive listed "
+        },
+        {
+          "complaint_id": "9877761",
+          "received": "2024-08-21",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Incorrect information on your report",
+          "relief": false,
+          "monetary": false,
+          "similarity": 0.9119381308555603,
+          "snippet": "XXXX XXXX XXXX XXXX XXXX XXXX XXXX, AL XXXX XX/XX/XXXX XXXX XXXX XXXX XXXX XXXX XXXX po box XXXX XXXX, PA XXXX XXXX XXXX XXXX XXXX XXXX, TX XXXX Equifax Information Services LLC XXXX XXXX XXXX XXXX, GA XXXX RE : Social Security Number : XXXX To Whom It May Concern : This is my second time writing to you to update my personal information. \n\n15 USC 1681 ( a ) ( 4 ) There is a need to insure that con"
+        },
+        {
+          "complaint_id": "6611546",
+          "received": "2023-02-24",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Problem with a company's investigation into an existing problem",
+          "relief": true,
+          "monetary": false,
+          "similarity": 0.908440351486206,
+          "snippet": "XX/XX/XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX, Florida XXXX SSN : SS # : XXXX XXXX : Date of Birth : XX/XX/XXXX Dear Sir/Madam, I am writing to dispute the accuracy of the credit information that [ Credit Bureau XXXX XXXX has XXXX on my credit report. Specifically, I am disputing the following accounts : XXXX XXXX  XXXX XXXX late payment account XXXX XXXX late payment account XXXX XXXX late paymen"
+        },
+        {
+          "complaint_id": "8844998",
+          "received": "2024-04-24",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Incorrect information on your report",
+          "relief": true,
+          "monetary": false,
+          "similarity": 0.9081712961196899,
+          "snippet": "XXXX XXXX XXXX XXXX XXXX XXXX XXXX, Florida XXXX Date of Birth : XX/XX/1962 SS # : XXXX To Whom It May Concern : I have recently checked out a copy of my credit profile and unfortunately, it has come to my attention that some of my personal information is incorrect. If you would please be so kind as to delete this inaccurate information from my credit profile within the next XXXX days, I would gre"
+        }
+      ],
+      "pattern": {
+        "cluster_id": 14,
+        "main_product": "Credit reporting or other personal consumer reports",
+        "terms": "redacted, redacted redacted, account, credit, report, information, credit report, reporting, fcra, consumer",
+        "distance": 0.7252469062805176,
+        "p95_distance_fit": 2.8860865235328674,
+        "is_novel": false,
+        "week": "2024-11-11",
+        "alert": {
+          "cusum": true,
+          "weekly": false,
+          "observed": 4178,
+          "expected": 3655.176322967091
+        }
+      },
+      "deadline": {
+        "registered": "2026-10-06",
+        "standard_days": 15,
+        "standard_due": "2026-10-28",
+        "extended_days": 45,
+        "extended_due": "2026-12-11"
+      }
+    },
+    {
+      "complaint_id": "11144267",
+      "reason": "marcado como novedoso por M8",
+      "received": "2024-12-14",
+      "product": "Credit reporting or other personal consumer reports",
+      "company": "EQUIFAX, INC.",
+      "state": "RI",
+      "narrative": "I have a goal of getting a house as soon as possible but the stuff on my credit report will really put me in trouble. My name and all other information doesnt seem to look exactly the same on my ID and other documents. I have attached the letters and ID Docs for you to be able to update my personal information. I know these are just personal information but these things will definitely help a lot if updated.",
+      "actual": {
+        "issue": "Incorrect information on your report",
+        "relief": false,
+        "monetary": false
+      },
+      "issues": {
+        "tabpfn": [
+          {
+            "issue": "Incorrect information on your report",
+            "probability": 0.9848932027816772
+          },
+          {
+            "issue": "Problem with a company's investigation into an existing problem",
+            "probability": 0.0066508157178759575
+          },
+          {
+            "issue": "Improper use of your report",
+            "probability": 0.003834260394796729
+          }
+        ],
+        "linear": [
+          {
+            "issue": "Incorrect information on your report",
+            "probability": 0.6330508589744568
+          },
+          {
+            "issue": "Problem with a company's investigation into an existing problem",
+            "probability": 0.22631961107254028
+          },
+          {
+            "issue": "Improper use of your report",
+            "probability": 0.06355658918619156
+          }
+        ]
+      },
+      "T2": {
+        "probability": 0.517800464349346,
+        "threshold": 0.3003271199199449,
+        "likely": true
+      },
+      "T3": {
+        "probability": 0.0006564728040761172,
+        "threshold": 0.18147360873370025,
+        "likely": false
+      },
+      "similar": [
+        {
+          "complaint_id": "8201268",
+          "received": "2024-01-22",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Incorrect information on your report",
+          "relief": false,
+          "monetary": false,
+          "similarity": 1.0000001192092896,
+          "snippet": "I have a goal of getting a house as soon as possible but the stuff on my credit report will really put me in trouble.My name and all other information doesnt seem to look exactly the same on my ID and other documents. I have attached the letters and ID Docs for you to be able to update my personal information. I know these are just personal information but these things will definitely help a lot i"
+        },
+        {
+          "complaint_id": "8175653",
+          "received": "2024-01-19",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Incorrect information on your report",
+          "relief": false,
+          "monetary": false,
+          "similarity": 1.0000001192092896,
+          "snippet": "I have a goal of getting a house as soon as possible but the stuff on my credit report will really put me in trouble.My name and all other information doesnt seem to look exactly the same on my ID and other documents. I have attached the letters and ID Docs for you to be able to update my personal information. I know these are just personal information but these things will definitely help a lot i"
+        },
+        {
+          "complaint_id": "8169012",
+          "received": "2024-01-18",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Incorrect information on your report",
+          "relief": false,
+          "monetary": false,
+          "similarity": 1.0000001192092896,
+          "snippet": "I have a goal of getting a house as soon as possible but the stuff on my credit report will really put me in trouble.My name and all other information doesnt seem to look exactly the same on my ID and other documents. I have attached the letters and ID Docs for you to be able to update my personal information. I know these are just personal information but these things will definitely help a lot i"
+        },
+        {
+          "complaint_id": "8169004",
+          "received": "2024-01-18",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Incorrect information on your report",
+          "relief": false,
+          "monetary": false,
+          "similarity": 1.0000001192092896,
+          "snippet": "I have a goal of getting a house as soon as possible but the stuff on my credit report will really put me in trouble.My name and all other information doesnt seem to look exactly the same on my ID and other documents. I have attached the letters and ID Docs for you to be able to update my personal information. I know these are just personal information but these things will definitely help a lot i"
+        },
+        {
+          "complaint_id": "8166250",
+          "received": "2024-01-18",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Incorrect information on your report",
+          "relief": true,
+          "monetary": false,
+          "similarity": 1.0000001192092896,
+          "snippet": "I have a goal of getting a house as soon as possible but the stuff on my credit report will really put me in trouble.My name and all other information doesnt seem to look exactly the same on my ID and other documents. I have attached the letters and ID Docs for you to be able to update my personal information. I know these are just personal information but these things will definitely help a lot i"
+        }
+      ],
+      "pattern": {
+        "cluster_id": 17,
+        "main_product": "Credit reporting or other personal consumer reports",
+        "terms": "redacted account, account, account redacted, section, redacted, redacted redacted, 15, 1681, states, consumer",
+        "distance": 14.687631607055664,
+        "p95_distance_fit": 12.874988555908203,
+        "is_novel": true,
+        "week": "2024-12-09",
+        "alert": null
+      },
+      "deadline": {
+        "registered": "2026-10-06",
+        "standard_days": 15,
+        "standard_due": "2026-10-28",
+        "extended_days": 45,
+        "extended_due": "2026-12-11"
+      }
+    },
+    {
+      "complaint_id": "10997319",
+      "reason": "producto: Credit reporting or other personal consumer reports",
+      "received": "2024-12-02",
+      "product": "Credit reporting or other personal consumer reports",
+      "company": "EQUIFAX, INC.",
+      "state": "TN",
+      "narrative": "Account Information : Account Name : XXXX Account Number : XXXX Account Type : Unsecured Responsibility : Individual Date Opened : XX/XX/XXXX Status : Closed. {$16000.00} written off. \nStatus Updated : XX/XX/XXXX Balance : {$0.00} ( Balance Updated on XX/XX/XXXX ) Original Balance : {$15000.00} Terms : 60 Months Dispute Reason : I am disputing the accuracy of the reporting on this account for the following reasons : Dispute Code : 112 : \" Account status incorrect '' XXXX  : \" Payment history incorrect '' XXXX : \" Balance inconsistent '' Payment History Inconsistencies : The reported payment history contains discrepancies, including duplicate or inconsistent entries for charge-offs ( \" CO '' ) in XXXX and XXXX. For example : The account is reported as \" CO '' in several months when the status update date shows no significant change in the account 's condition or balance. \nThere is no clarity on the progression of delinquencies and the timeline leading to the charge-off. \n\nStatus and Balance Discrepancies : The original balance is reported as {$15000.00}, but the written-off amount is {$16000.00}. This inconsistency needs clarification. \nCurrent Status and Payment Terms : The account status indicates \" Closed '' with a {$0.00} balance, yet the delinquency history does not align with the terms of the account. There is a need to confirm whether this was reported accurately following the closure of the account. \nMissing Documentation : I have not been provided with sufficient documentation to verify the accuracy of the reporting. Specifically, I request evidence supporting the charge-off status, including payment records and any relevant account activity. \nRequested Action : I kindly request that XXXX and the credit reporting agency : Conduct a thorough investigation of the reported information. \nVerify the accuracy of all payment history entries and adjust any incorrect information. \nProvide all relevant supporting documentation justifying the current account status, including charge-off validation, balance details, and past-due payment reporting. \nCorrect any inaccuracies identified in this dispute process and update my credit report accordingly. \n\nPayment records. \nCorrespondence with XXXX regarding the account status. \nAll documents that support the dispute. \nClosing Statement : I value the accuracy of my credit report and trust that XXXX and the credit reporting agency will address this matter promptly. If no verifiable documentation is available, I respectfully request the removal of this account from my credit file.",
+      "actual": {
+        "issue": "Incorrect information on your report",
+        "relief": true,
+        "monetary": false
+      },
+      "issues": {
+        "tabpfn": [
+          {
+            "issue": "Incorrect information on your report",
+            "probability": 0.4372822940349579
+          },
+          {
+            "issue": "Problem with a company's investigation into an existing problem",
+            "probability": 0.4330390989780426
+          },
+          {
+            "issue": "Improper use of your report",
+            "probability": 0.12404917180538177
+          }
+        ],
+        "linear": [
+          {
+            "issue": "Problem with a company's investigation into an existing problem",
+            "probability": 0.4841214418411255
+          },
+          {
+            "issue": "Incorrect information on your report",
+            "probability": 0.41429224610328674
+          },
+          {
+            "issue": "Improper use of your report",
+            "probability": 0.09216529875993729
+          }
+        ]
+      },
+      "T2": {
+        "probability": 0.45562740996353013,
+        "threshold": 0.3003271199199449,
+        "likely": true
+      },
+      "T3": {
+        "probability": 0.0010302218302386782,
+        "threshold": 0.18147360873370025,
+        "likely": false
+      },
+      "similar": [
+        {
+          "complaint_id": "7434981",
+          "received": "2023-08-21",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Incorrect information on your report",
+          "relief": false,
+          "monetary": false,
+          "similarity": 0.9226928949356079,
+          "snippet": "This is a dispute and request for the correction of account information regarding Account Number : XXXX Date Reported : XX/XX/XXXX, Date Assigned : XX/XX/XXXX, Creditor : XXXX XXXX Original Amount : {$110.00}, Status Date : XX/XX/XXXX, Balance Date : XX/XX/XXXX Account Number ending in XXXX, that is currently being reported. After a thorough review of my credit report, I have identified discrepanc"
+        },
+        {
+          "complaint_id": "7812725",
+          "received": "2023-11-08",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Problem with a company's investigation into an existing problem",
+          "relief": false,
+          "monetary": false,
+          "similarity": 0.9170483350753784,
+          "snippet": "I am writing to formally dispute the accuracy of information on my credit report, specifically regarding the reporting of late open accounts, late closed and charge off account. I have carefully reviewed my credit report from your agency and have identified discrepancies that I believe require immediate attention and correction or removal. I have outlined the details of the disputed information al"
+        },
+        {
+          "complaint_id": "7812751",
+          "received": "2023-11-08",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Problem with a company's investigation into an existing problem",
+          "relief": true,
+          "monetary": false,
+          "similarity": 0.9157150983810425,
+          "snippet": "I am writing to formally dispute the accuracy of information on my credit report, specifically regarding the reporting of late open accounts, late closed and charge off account. I have carefully reviewed my credit report from your agency and have identified discrepancies that I believe require immediate attention and correction or removal. I have outlined the details of the disputed information al"
+        },
+        {
+          "complaint_id": "9877633",
+          "received": "2024-08-21",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Problem with a company's investigation into an existing problem",
+          "relief": false,
+          "monetary": false,
+          "similarity": 0.9154632687568665,
+          "snippet": "XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX, FL XXXX XXXX Re : Request for Removal of Charge-Off Account Account : XXXX  Account Number : [ XXXX ] Dear Sir/Madam, I am writing to formally dispute the accuracy of the information being reported on my credit report under the account listed above. Pursuant to the Fair Credit Reporting Act ( FCRA ), 15 USC 1681 et seq., I am exercising my ri"
+        },
+        {
+          "complaint_id": "10160435",
+          "received": "2024-09-18",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Improper use of your report",
+          "relief": true,
+          "monetary": false,
+          "similarity": 0.914908766746521,
+          "snippet": "XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX  Charge-off Dispute for Account XXXX I am writing to formally dispute the charge-off status of my account, XXXX XXXX XXXX XXXX, which is currently listed on my credit report. I believe this entry is inaccurate and would like to request a thorough investigation into this matter. Details of the Account : - Account Holder Name : XXXX - Accou"
+        }
+      ],
+      "pattern": {
+        "cluster_id": 14,
+        "main_product": "Credit reporting or other personal consumer reports",
+        "terms": "redacted, redacted redacted, account, credit, report, information, credit report, reporting, fcra, consumer",
+        "distance": 1.1578058004379272,
+        "p95_distance_fit": 2.8860865235328674,
+        "is_novel": false,
+        "week": "2024-12-02",
+        "alert": null
+      },
+      "deadline": {
+        "registered": "2026-10-06",
+        "standard_days": 15,
+        "standard_due": "2026-10-28",
+        "extended_days": 45,
+        "extended_due": "2026-12-11"
+      }
+    },
+    {
+      "complaint_id": "10748881",
+      "reason": "producto: Debt collection",
+      "received": "2024-11-10",
+      "product": "Debt collection",
+      "company": "Amsher Collection Services, Inc.",
+      "state": "NY",
+      "narrative": "Within the last 4 months, an account with XXXX XXXX XXXX XXXX XXXX ) was opened by my mother. She was approached by someone at the supermarket advertising XXXX and who offered her a lower rate to enroll me as the account holder. \n\nMy mother is XXXX and not adept with technology. She was quickly frustrated with the attempt to use the new equipment XXXX XXXX XXXX XXXX XXXX ) and immediately called to cancel the service and to arrange to return the new equipment. \n\nXXXX  continued to contact me about the account and we called them utilizing her account in order to address the issue. My account was closed and customer service notes were supposed to have been made on my account and hers noting that she was retaining her account at the address and closing mine, which was not active for even a month. \n\nThe equipment provided for my account was not used longer than an hour tops, most of which was the time for me to set up the account. Because of this reason and the fact my mother is a long time customer of XXXX ( previously XXXX XXXX, since XXXX ), any payment was waived or so we were told by the customer support agent. \n\nYesterday, while doing a routine check of my credit report, I noticed a collection amount on my XXXX credit report from XXXX XXXX XXXX, in the amount t of {$150.00}. The date for the debt was XX/XX/year>. No attempts by either XXXX or this collection agency were made at time of writing to collect on this debt or to verify its validity with me. \n\nThis negative entry on my credit report XXXX have prevented me from being approved by XXXX XXXX XXXX XXXX for XXXX XXXX XXXX, which would have allowed me to pay off my credit card debt and improve my XXXX XXXX. \n\nHad we been told months prior that we would be required to pay some termination fee, my family would have paid it. My mothers payment history with XXXX is impeccable. Her account is under the name XXXX XXXX, at the same address as myself ( XXXX XXXX XXXX XXXX XXXX, XXXX XXXX, XXXX  XXXX ). \n\nWhether it was an error on the part of XXXX XXXX XXXX XXXX XXXX a failure of the customer service representative handling my mothers account and mine is irrelevant. I dispute this debt as I do not believe it to be valid. The account was opened for a brief time closed almost as quickly, with the equipment returned to a physical XXXX location in XXXX, XXXX \n\nHaving called the company today, a dispute was opened under reference number XXXX. Prior to opening this dispute, it was noted that no customer service notes were found on my account. This is an omission that likely led to debt collection action being erroneously taken against me. \n\nI would greatly appreciate the help of the CFPB in sorting out this situation. As for XXXX XXXX XXXX XXXX and the XXXX credit bureaus, I would greatly appreciate the support of the CFPB and XXXX XXXX XXXX XXXX XXXX the situation and clearing my name of this debt. Thank you.",
+      "actual": {
+        "issue": "Attempts to collect debt not owed",
+        "relief": false,
+        "monetary": false
+      },
+      "issues": {
+        "tabpfn": [
+          {
+            "issue": "Attempts to collect debt not owed",
+            "probability": 0.5604496002197266
+          },
+          {
+            "issue": "False statements or representation",
+            "probability": 0.18006367981433868
+          },
+          {
+            "issue": "Took or threatened to take negative or legal action",
+            "probability": 0.1190311387181282
+          }
+        ],
+        "linear": [
+          {
+            "issue": "Attempts to collect debt not owed",
+            "probability": 0.56700599193573
+          },
+          {
+            "issue": "Written notification about debt",
+            "probability": 0.14203280210494995
+          },
+          {
+            "issue": "False statements or representation",
+            "probability": 0.10989561676979065
+          }
+        ]
+      },
+      "T2": {
+        "probability": 0.21557013975307965,
+        "threshold": 0.3003271199199449,
+        "likely": false
+      },
+      "T3": {
+        "probability": 0.015924794316472136,
+        "threshold": 0.18147360873370025,
+        "likely": false
+      },
+      "similar": [
+        {
+          "complaint_id": "10087065",
+          "received": "2024-09-11",
+          "product": "Debt collection",
+          "issue": "Attempts to collect debt not owed",
+          "relief": true,
+          "monetary": false,
+          "similarity": 0.9153575897216797,
+          "snippet": "On XX/XX/year> I received a letter from a debt collection agency stating I owed XXXX XXXX {$870.00}. I immediately contacted XXXX XXXX because I know that I had returned all of my equipment and had completed my contract with XXXX XXXX and all bills were paid. I spoke with XXXX XXXX XXXX XXXX ID XXXX. I explained to her what I was calling for and she asked for a minute to look over my account. When"
+        },
+        {
+          "complaint_id": "7624026",
+          "received": "2023-10-02",
+          "product": "Debt collection",
+          "issue": "Took or threatened to take negative or legal action",
+          "relief": false,
+          "monetary": false,
+          "similarity": 0.9104005098342896,
+          "snippet": "XXXX ( aka XXXX ) has been repeatedly through hundreds of phone calls been attempting to extort a claimed owing of {$87.00} on a previous account which was closed properly and equipment returned properly. One of several debt collectors, this one called \" XXXX XXXX XXXX '' contacted me in XXXX of XXXX regarding the demand for collection of this {$87.00} dollars, to which I responded on their websit"
+        },
+        {
+          "complaint_id": "9396587",
+          "received": "2024-07-02",
+          "product": "Debt collection",
+          "issue": "Attempts to collect debt not owed",
+          "relief": false,
+          "monetary": false,
+          "similarity": 0.9080445170402527,
+          "snippet": "In XX/XX/XXXX, I switched my service to XXXX XXXX XXXX. On XX/XX/XXXX, I called XXXX because I was unable to pay online since they had shut down my online account when I switched. A customer service representative processed my payment of {$530.00} and confirmed that all outstanding balances were settled and my account would be closed. However, in XX/XX/XXXX, I received a call stating that my accou"
+        },
+        {
+          "complaint_id": "9889749",
+          "received": "2024-08-22",
+          "product": "Credit reporting or other personal consumer reports",
+          "issue": "Incorrect information on your report",
+          "relief": true,
+          "monetary": false,
+          "similarity": 0.9078795313835144,
+          "snippet": "XXXX XXXX reported inaccurate, negative information on my credit report to the big XXXX consumer reporting agencies ( XXXX, XXXX, and TransUnion ) for a debt that does not belong to me. The collection ( opened on XX/XX/year> for {$XXXX} ) purportedly involves a XXXX XXXX account. \n\nI called XXXX XXXX years ago when it first attempted to collect this debt. XXXX confirmed the account neither belonge"
+        },
+        {
+          "complaint_id": "6457322",
+          "received": "2023-01-19",
+          "product": "Debt collection",
+          "issue": "Attempts to collect debt not owed",
+          "relief": false,
+          "monetary": false,
+          "similarity": 0.9071119427680969,
+          "snippet": "In XXXX of XXXX an account was opened with XXXX XXXX using my identity ( personal information ) in XXXX, Illinois. I have never lived in XXXX nor have I purchased products or services from XXXX XXXX The account became delinquent and the {$1300.00} balance was sent to the first collection agency in XXXX of XXXX. In XXXX of XXXX, my wife and I were trying to get a loan to build our house and that is"
+        }
+      ],
+      "pattern": {
+        "cluster_id": 12,
+        "main_product": "Debt collection",
+        "terms": "debt, collection, redacted, redacted redacted, account, company, alleged, credit, collect, validation",
+        "distance": 0.6720393300056458,
+        "p95_distance_fit": 1.9072715640068048,
+        "is_novel": false,
+        "week": "2024-11-04",
+        "alert": null
+      },
+      "deadline": {
+        "registered": "2026-10-06",
+        "standard_days": 15,
+        "standard_due": "2026-10-28",
+        "extended_days": 45,
+        "extended_due": "2026-12-11"
+      }
+    },
+    {
+      "complaint_id": "10763132",
+      "reason": "producto: Checking or savings account",
+      "received": "2024-11-11",
+      "product": "Checking or savings account",
+      "company": "NAVY FEDERAL CREDIT UNION",
+      "state": "CA",
+      "narrative": "I bank with Navy Federal Credit Union and my family has for years. There has been multiple occasions where I will have enough money in my account then be charged an overdraft fee which causes my account to be in the negatives. I have also transferred money into my account using third party like XXXX  or XXXX to make sure i have enough and then still get hit with an over draft fee that puts me in the negatives. As of now I have no longer used Navy Federal ad my main bank due to this issue, I havent had this happen with any other bank. \n\nXX/XX/year> returned check fee XX/XX/year> returned check fee XX/XX/year> returned check fee XX/XX/year> returned check fee XX/XX/year> returned check fee XX/XX/year> returned check fee XX/XX/year> returned check fee {$230.00} worth of returned check fees as listed in statements",
+      "actual": {
+        "issue": "Problem caused by your funds being low",
+        "relief": true,
+        "monetary": true
+      },
+      "issues": {
+        "tabpfn": [
+          {
+            "issue": "Problem caused by your funds being low",
+            "probability": 0.7745878100395203
+          },
+          {
+            "issue": "Managing an account",
+            "probability": 0.1771562248468399
+          },
+          {
+            "issue": "Closing an account",
+            "probability": 0.0214184932410717
+          }
+        ],
+        "linear": [
+          {
+            "issue": "Problem caused by your funds being low",
+            "probability": 0.5154411196708679
+          },
+          {
+            "issue": "Managing an account",
+            "probability": 0.34158310294151306
+          },
+          {
+            "issue": "Problem with a lender or other company charging your account",
+            "probability": 0.06488408148288727
+          }
+        ]
+      },
+      "T2": {
+        "probability": 0.25477969429024366,
+        "threshold": 0.3003271199199449,
+        "likely": false
+      },
+      "T3": {
+        "probability": 0.41141951777517727,
+        "threshold": 0.18147360873370025,
+        "likely": true
+      },
+      "similar": [
+        {
+          "complaint_id": "9908007",
+          "received": "2024-08-24",
+          "product": "Checking or savings account",
+          "issue": "Problem caused by your funds being low",
+          "relief": true,
+          "monetary": true,
+          "similarity": 0.8791423439979553,
+          "snippet": "I have a checking account with Navy Federal Credit Union. Back in XX/XX/year>, I started getting text regarding suspicious transaction attempts, which wasn't me. I froze the debit card and opened a new checking account with them. After reviewing my accounts online, I discovered that I have been charged a return check fee of {$29.00} XXXX times. The total of {$370.00} from XX/XX/year> to XX/XX/year"
+        },
+        {
+          "complaint_id": "6547904",
+          "received": "2023-02-08",
+          "product": "Checking or savings account",
+          "issue": "Managing an account",
+          "relief": false,
+          "monetary": false,
+          "similarity": 0.8685040473937988,
+          "snippet": "Over the course of banking with XXXX since XXXX I received NUMEROUS overdraft fees that I shouldnt have because of how they process pending charges and deposits etc. {$39.00} a fee is ridiculous and I can only ever get a partial reimbursement AND only have some many granted per year. I lost HUNDREDS if not thousands of dollars to them."
+        },
+        {
+          "complaint_id": "6467646",
+          "received": "2023-01-22",
+          "product": "Checking or savings account",
+          "issue": "Closing an account",
+          "relief": false,
+          "monetary": false,
+          "similarity": 0.8655585646629333,
+          "snippet": "I was being charged overdraft fees even when I wasnt overdrawn on my account. I went in personally to fix this problem and the lady I spoke with in the XXXX XXXX office told me there was nothing they could do. So not only did they take money that was mine they charged over draft fees to my account. The bank made a mistake when I had money in their to cover my purchases but showed I didnt so I was "
+        },
+        {
+          "complaint_id": "7090097",
+          "received": "2023-06-08",
+          "product": "Checking or savings account",
+          "issue": "Problem caused by your funds being low",
+          "relief": false,
+          "monetary": false,
+          "similarity": 0.860312819480896,
+          "snippet": "XXXX XXXX is charging fees that are excessive and posted in an order to assure that they are able to charge as many fees as possible. I was going through a financial hardship last year and also dealt with fraud. My account had accrued over {$900.00} in NSF Fees. I was unable to get my head above water for weeks. Every paycheck that was deposited was being depleted with NSF Fees. I finally made the"
+        },
+        {
+          "complaint_id": "10158373",
+          "received": "2024-09-18",
+          "product": "Checking or savings account",
+          "issue": "Problem caused by your funds being low",
+          "relief": true,
+          "monetary": true,
+          "similarity": 0.8593656420707703,
+          "snippet": "My account went into overdraft for an XXXX XXXX  charge, a charge that I deposited into my account. As I was in negative because of an overdraft fee Wells Fargo placed on me, a recurring payment of XXXX XXXX  debited my account. My account was then about XXXX dollars negative. XXXX of which came from an initial overdraft fee I was trying to get reversed. While this charge debited my account, the s"
+        }
+      ],
+      "pattern": {
+        "cluster_id": 8,
+        "main_product": "Checking or savings account",
+        "terms": "bank, card, account, redacted, 00, told, money, called, funds, check",
+        "distance": 0.9530145525932312,
+        "p95_distance_fit": 1.980591946840284,
+        "is_novel": false,
+        "week": "2024-11-11",
+        "alert": null
+      },
+      "deadline": {
+        "registered": "2026-10-06",
+        "standard_days": 15,
+        "standard_due": "2026-10-28",
+        "extended_days": 45,
+        "extended_due": "2026-12-11"
+      }
+    }
+  ]
+}
