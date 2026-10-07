@@ -62,7 +62,8 @@ stages:
     desc: >-
       P6 · Diccionario de datos e informe de limpieza generados desde la tabla ·
       decisión: docs/decisiones/0004-documentacion-de-la-tabla.md
-    cmd: uv run python src/data/document_prepared.py
+    # --no-sync: the SLURM nodes have no internet to resolve the build.
+    cmd: uv run --no-sync python src/data/document_prepared.py
     deps:
       - data/processed/prepared.parquet
       - docs/diccionario/descripciones.yaml
