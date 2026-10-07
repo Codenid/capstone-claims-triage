@@ -41,6 +41,25 @@ class FoundationT1Tests(unittest.TestCase):
         self.assertEqual(result["weeks"], 12)
         self.assertNotIn(REFERENCE, result["comparisons"])
 
+    def test_the_reference_can_be_any_candidate(self):
+        truth = np.repeat(np.array(["a", "b", "c", "d"]), 300)
+        weeks = np.tile(np.arange(12), 100)
+        flips = {"tabpfn": 0.5, "tabpfn_bge1024": 0.2}
+
+        result = compare(
+            outputs(truth, flips),
+            truth,
+            weeks,
+            np.unique(truth),
+            0.05,
+            200,
+            0,
+            reference="tabpfn",
+        )
+
+        self.assertEqual(list(result["comparisons"]), ["tabpfn_bge1024"])
+        self.assertTrue(result["comparisons"]["tabpfn_bge1024"]["wins"])
+
 
 if __name__ == "__main__":
     unittest.main()

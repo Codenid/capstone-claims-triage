@@ -520,6 +520,18 @@ La prueba rápida no guarda nada. El run completo escribe
 `reports/modeling/foundation_t1/results.json` y se detiene si no reproduce el
 Macro-F1 publicado del T1 congelado.
 
+La ablación de entrada de TabPFN (§26) reutiliza el mismo contexto y compara
+256 componentes del PCA y el embedding BGE completo contra las predicciones
+guardadas de TabPFN-100:
+
+```bash
+sbatch scripts/hpc/m5f_foundation_t1_ablation.slurm --smoke
+sbatch scripts/hpc/m5f_foundation_t1_ablation.slurm
+```
+
+Escribe `reports/modeling/foundation_t1/ablation_results.json` y se detiene si
+no reproduce el Macro-F1 publicado de TabPFN-100.
+
 C-B, el segundo candidato del bloque C, es un modelo de espacio de estados en
 PyMC. Primero el prior predictive y un piloto con 2 semanas de calibración;
 después el run completo, que reestima los estados antes de cada una de las 12

@@ -109,9 +109,12 @@ def load_rows(
 def features(
     frames: dict[str, pd.DataFrame],
     config: dict[str, Any],
-    components: int,
+    components: int | None,
 ) -> tuple[dict[str, np.ndarray], dict[str, np.ndarray], list[str]]:
-    """First PCA components of each row's BGE embedding, and its product code."""
+    """First PCA components of each row's BGE embedding, and its product code.
+
+    `components=None` keeps the 1,024 BGE dimensions without the PCA (§26).
+    """
     embeddings = load_embeddings(
         PROJECT_ROOT / config["paths"]["bge_full_artifacts"], frames
     )
@@ -124,7 +127,11 @@ def features(
     numerical = {}
     codes = {}
     for split, values in embeddings.items():
-        numerical[split] = pca.transform(values)[:, :components].astype(np.float32)
+        if components is None:
+            numerical[split] = np.asarray(values, dtype=np.float32)
+        else:
+            numerical[split] = pca.transform(values)[:, :components]
+            numerical[split] = numerical[split].astype(np.float32)
         product = pd.Categorical(
             frames[split][CANONICAL_PRODUCT_COLUMN].astype(str), categories=products
         )
@@ -253,6 +260,7 @@ def compare(
     minimum_gain: float,
     draws: int,
     seed: int,
+    reference: str = REFERENCE,
 ) -> dict[str, Any]:
     """Macro-F1 and top-3 of each model, and the §25.2 rule against the reference."""
     truth_codes = pd.Categorical(truth, categories=classes).codes
@@ -273,10 +281,10 @@ def compare(
         }
         for name, values in outputs.items()
     }
-    reference_draws = bootstrap_metric(macro_f1(REFERENCE), counts, positions)
+    reference_draws = bootstrap_metric(macro_f1(reference), counts, positions)
     comparisons = {}
     for name in outputs:
-        if name == REFERENCE:
+        if name == reference:
             continue
         candidate_draws = bootstrap_metric(macro_f1(name), counts, positions)
         difference = candidate_draws - reference_draws
@@ -284,11 +292,11 @@ def compare(
         interval = {
             label: float(value) for label, value in zip(DIFFERENCE_QUANTILES, quantiles)
         }
-        gain = metrics[name]["macro_f1"] / metrics[REFERENCE]["macro_f1"] - 1
+        gain = metrics[name]["macro_f1"] / metrics[reference]["macro_f1"] - 1
         comparisons[name] = {
             "relative_gain": float(gain),
             "difference": {
-                "estimate": metrics[name]["macro_f1"] - metrics[REFERENCE]["macro_f1"],
+                "estimate": metrics[name]["macro_f1"] - metrics[reference]["macro_f1"],
                 **interval,
             },
             "wins": bool(gain >= minimum_gain and interval["p025"] > 0),

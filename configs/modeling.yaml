@@ -246,6 +246,19 @@ foundation_t1:
   validation_report: reports/modeling/foundation_t1/validation_results.json
   artifacts: artifacts/models/foundation_t1
 
+# Input ablation of TabPFN-3.5 (models_plan.md §26), pre-registered on
+# 2026-10-07: same context, estimators and seed as block B; only the numerical
+# input changes. The reference is TabPFN-100's saved calibration predictions.
+foundation_t1_ablation:
+  inputs:
+    tabpfn_pca256: 256
+    tabpfn_bge1024: null
+  reference_dvc: artifacts/models/foundation_t1.dvc
+  reference_dvc_hash: 5ee008be5b45badae71d95e7007bb1f4.dir
+  reference_predictions: artifacts/models/foundation_t1/calibration_t1.parquet
+  ablation_report: reports/modeling/foundation_t1/ablation_results.json
+  ablation_artifacts: artifacts/models/foundation_t1_ablation
+
 # Block C foundation models (models_plan.md §25.5), approved on 2026-10-06:
 # zero-shot, on CPU, with weights fetched on the login node.
 foundation_series:

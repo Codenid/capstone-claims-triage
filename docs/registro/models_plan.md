@@ -2051,3 +2051,37 @@ predictive (§10).
   Bloque B aprobado el 2026-10-05 (25.4); Chronos-2 y TimesFM 3.0, el
   2026-10-06.
 - [ ] Más adelante: Kumo Tabular, quizá vía NVIDIA NIM (25.4).
+
+## 26. Ablación de entrada de TabPFN-3.5 en T1
+
+Pre-registrada el 2026-10-07, aprobada por el usuario, antes de correr nada.
+
+- Pregunta: el bloque B fijó 100 componentes del PCA de M6 como entrada común
+  por el límite de Kumo Tabular, que ya salió del bloque. ¿TabPFN-3.5 mejora
+  con más información de la narrativa?
+- Variantes, cambiando solo la entrada numérica:
+  - `tabpfn_pca256`: las 256 componentes del PCA congelado de M6.
+  - `tabpfn_bge1024`: el embedding BGE-large completo, sin PCA.
+  - No se prueba 512: el PCA congelado tiene 256 componentes y una variante de
+    512 exigiría un artefacto nuevo (decisión del usuario del 2026-10-07).
+- Todo lo demás igual que en 25.4: producto como categórica, contexto de
+  20,000 filas de ajuste con semilla 42, 8 estimadores, lotes de 5,000, las
+  167,973 filas de calibración sin texto compartido.
+- Referencia: las predicciones guardadas de TabPFN-100
+  (`artifacts/models/foundation_t1/calibration_t1.parquet`, DVC
+  `5ee008be…`). El run se detiene si no reproduce su Macro-F1 publicado
+  (0.2706).
+- Regla: la de 25.2 contra TabPFN-100. Si varias ganan, la de mayor Macro-F1.
+  Si hay ganadora, reemplaza a TabPFN-100 como T1 vigente, se cambia
+  `pca_components` en `foundation_t1`, se mide una vez en 2025-H1 marcada
+  como ya consultada y se rehace la ficha de evidencia. Si ninguna gana,
+  TabPFN-100 sigue y la ablación queda como evidencia de que 100 componentes
+  bastan.
+- Memoria: la variante de 1,024 columnas usa unas 10 veces más atención por
+  columna que la de 100. Si no entra en la A100 de 20 GB, se registra aquí el
+  cambio antes del full, en este orden: 4 estimadores; después 10,000 filas de
+  contexto. Si TabPFN rechaza las 1,024 columnas por su límite de
+  preentrenamiento, se activa `ignore_pretraining_limits` y se anota.
+- Código: `src/models/foundation_t1_ablation.py`, configuración
+  `foundation_t1_ablation`, SLURM `scripts/hpc/m5f_foundation_t1_ablation.slurm`.
+  Reporte en `reports/modeling/foundation_t1/ablation_results.json`.
