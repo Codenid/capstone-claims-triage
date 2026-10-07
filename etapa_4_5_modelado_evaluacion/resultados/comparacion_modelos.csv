@@ -1,0 +1,85 @@
+etapa,tarea,modelo,rol,conjunto,vista,metrica,valor,referencia,ganancia_relativa,ic95_inferior,ic95_superior,decision,fuente
+M3,T1,baseline global_frequency,baseline,calibracion_2024_q4,no_shared_text,macro_f1,0.006302,,,,,,reports/modeling/baseline_results.json
+M5B,T1,product_rule,baseline,calibracion_2024_q4,no_shared_text,macro_f1,0.076161,,,,,,reports/modeling/representation_results.json
+M5B,T1,tfidf_product,candidato,calibracion_2024_q4,no_shared_text,macro_f1,0.214242,tfidf_text,0.523528,0.070738,0.077888,reemplaza,reports/modeling/representation_results.json
+M5B,T1,bge_product_m5_sample,candidato,calibracion_2024_q4,no_shared_text,macro_f1,0.239610,,,,,,reports/modeling/representation_results.json
+M5B,T1,tfidf_text,candidato,calibracion_2024_q4,no_shared_text,macro_f1,0.140622,product_rule,0.846379,0.061069,0.069010,reemplaza,reports/modeling/representation_results.json
+M5B,T1,bge_text,candidato,calibracion_2024_q4,no_shared_text,macro_f1,0.158184,tfidf_product,-0.261660,-0.061071,-0.052650,,reports/modeling/representation_results.json
+M5B,T1,bge_product,ganador M5B,calibracion_2024_q4,no_shared_text,macro_f1,0.239745,tfidf_product,0.119036,0.022898,0.028577,reemplaza,reports/modeling/representation_results.json
+M3,T2,baseline global_frequency,baseline,calibracion_2024_q4,no_shared_text,average_precision,0.391229,,,,,,reports/modeling/baseline_results.json
+M5B,T2,product_rule,baseline,calibracion_2024_q4,no_shared_text,average_precision,0.453571,,,,,,reports/modeling/representation_results.json
+M5B,T2,tfidf_product,candidato,calibracion_2024_q4,no_shared_text,average_precision,0.611940,tfidf_text,0.004202,0.001674,0.003369,,reports/modeling/representation_results.json
+M5B,T2,tfidf_text,ganador M5B,calibracion_2024_q4,no_shared_text,average_precision,0.609380,product_rule,0.343515,0.147782,0.163629,reemplaza,reports/modeling/representation_results.json
+M5B,T2,bge_text,candidato,calibracion_2024_q4,no_shared_text,average_precision,0.605607,tfidf_text,-0.006191,-0.007957,0.001115,,reports/modeling/representation_results.json
+M5B,T2,bge_product,candidato,calibracion_2024_q4,no_shared_text,average_precision,0.610361,tfidf_text,0.001609,-0.003062,0.005861,,reports/modeling/representation_results.json
+M3,T3,baseline global_frequency,baseline,calibracion_2024_q4,no_shared_text,average_precision,0.021951,,,,,,reports/modeling/baseline_results.json
+M5B,T3,product_rule,baseline,calibracion_2024_q4,no_shared_text,average_precision,0.173889,,,,,,reports/modeling/representation_results.json
+M5B,T3,tfidf_product,candidato,calibracion_2024_q4,no_shared_text,average_precision,0.369878,tfidf_text,0.016286,0.001464,0.012057,,reports/modeling/representation_results.json
+M5B,T3,tfidf_text,ganador M5B,calibracion_2024_q4,no_shared_text,average_precision,0.363951,product_rule,1.093007,0.177099,0.203027,reemplaza,reports/modeling/representation_results.json
+M5B,T3,bge_text,candidato,calibracion_2024_q4,no_shared_text,average_precision,0.334717,tfidf_text,-0.080325,-0.039368,-0.017021,,reports/modeling/representation_results.json
+M5B,T3,bge_product,candidato,calibracion_2024_q4,no_shared_text,average_precision,0.351157,tfidf_text,-0.035154,-0.025263,0.002341,,reports/modeling/representation_results.json
+M3,T4,baseline global_frequency,baseline,calibracion_2024_q4,no_shared_text,average_precision,0.005566,,,,,,reports/modeling/baseline_results.json
+M5B,T4,product_rule,baseline,calibracion_2024_q4,no_shared_text,average_precision,0.031280,,,,,,reports/modeling/representation_results.json
+M5B,T4,tfidf_product,ganador M5B,calibracion_2024_q4,no_shared_text,average_precision,0.055059,tfidf_text,0.168132,0.002623,0.015142,reemplaza,reports/modeling/representation_results.json
+M5B,T4,tfidf_text,candidato,calibracion_2024_q4,no_shared_text,average_precision,0.047135,product_rule,0.506853,0.004062,0.025086,reemplaza,reports/modeling/representation_results.json
+M5B,T4,bge_text,candidato,calibracion_2024_q4,no_shared_text,average_precision,0.030535,tfidf_product,-0.445416,-0.031160,-0.019479,,reports/modeling/representation_results.json
+M5B,T4,bge_product,candidato,calibracion_2024_q4,no_shared_text,average_precision,0.041693,tfidf_product,-0.242756,-0.019010,-0.008135,,reports/modeling/representation_results.json
+M5F bloque B,T1,bge_product,ganador M5B (referencia),calibracion_2024_q4,no_shared_text,macro_f1,0.239745,,,,,,reports/modeling/foundation_t1/results.json
+M5F bloque B,T1,TabPFN-3.5 (PCA 100 + producto),ganador bloque B,calibracion_2024_q4,no_shared_text,macro_f1,0.270637,bge_product,0.128853,0.026820,0.035267,reemplaza,reports/modeling/foundation_t1/results.json
+M5F bloque B,T1,bge_product,ganador M5B (referencia),validacion_2025_h1 (ya consultada),no_shared_text,macro_f1,0.226747,,,,,,reports/modeling/foundation_t1/validation_results.json
+M5F bloque B,T1,TabPFN-3.5 (PCA 100 + producto),candidato,validacion_2025_h1 (ya consultada),no_shared_text,macro_f1,0.269840,bge_product,0.190045,0.038844,0.045861,,reports/modeling/foundation_t1/validation_results.json
+M5B §22,T1,product_rule,baseline,validacion_2025_h1 (ya consultada),no_shared_text,macro_f1,0.068374,,,,,,reports/modeling/final_confirmation.json
+M5B §22,T1,bge_product,ganador M5B,validacion_2025_h1 (ya consultada),no_shared_text,macro_f1,0.226747,product_rule,,0.155733,0.163135,confirmado,reports/modeling/final_confirmation.json
+M5B §22,T2,product_rule,baseline,validacion_2025_h1 (ya consultada),no_shared_text,average_precision,0.450860,,,,,,reports/modeling/final_confirmation.json
+M5B §22,T2,tfidf_text,ganador M5B,validacion_2025_h1 (ya consultada),no_shared_text,average_precision,0.570360,product_rule,,0.103645,0.137969,confirmado,reports/modeling/final_confirmation.json
+M5B §22,T3,product_rule,baseline,validacion_2025_h1 (ya consultada),no_shared_text,average_precision,0.127226,,,,,,reports/modeling/final_confirmation.json
+M5B §22,T3,tfidf_text,ganador M5B,validacion_2025_h1 (ya consultada),no_shared_text,average_precision,0.269540,product_rule,,0.116122,0.175484,confirmado,reports/modeling/final_confirmation.json
+M5B §22,T4,product_rule,baseline,validacion_2025_h1 (ya consultada),no_shared_text,average_precision,0.120814,,,,,,reports/modeling/final_confirmation.json
+M5B §22,T4,tfidf_product,ganador M5B,validacion_2025_h1 (ya consultada),no_shared_text,average_precision,0.078128,product_rule,,-0.072660,-0.018483,no confirmado,reports/modeling/final_confirmation.json
+M9,conteo semanal por patrón,b1_rolling_13,baseline,calibracion_2024_q4,40 patrones,wis,64.882853,,,,,,reports/modeling/weekly_counts/nb_discounted_hierarchical_v1/20261005T200606.263137Z-full-0aa0a0fb-2348e548/results.json
+M9,conteo semanal por patrón,b1_rolling_4,baseline,calibracion_2024_q4,40 patrones,wis,43.056395,,,,,,reports/modeling/weekly_counts/nb_discounted_hierarchical_v1/20261005T200606.263137Z-full-0aa0a0fb-2348e548/results.json
+M9,conteo semanal por patrón,baseline,baseline,calibracion_2024_q4,40 patrones,wis,138.950112,,,,,,reports/modeling/weekly_counts/nb_discounted_hierarchical_v1/20261005T200606.263137Z-full-0aa0a0fb-2348e548/results.json
+M9,conteo semanal por patrón,Binomial negativa jerárquica con memoria que decae (C-A),candidato,calibracion_2024_q4,40 patrones,wis,30.296187,b1_rolling_4,0.296360,-15.992747,-9.503050,accepted,reports/modeling/weekly_counts/nb_discounted_hierarchical_v1/20261005T200606.263137Z-full-0aa0a0fb-2348e548/results.json
+M9,conteo semanal por patrón,b1_rolling_13,baseline,calibracion_2024_q4,40 patrones,wis,64.882853,,,,,,reports/modeling/weekly_counts/nb_rolling_4_global_v1/20260927T153922.164206Z-full-34f4684f-e1410d83/results.json
+M9,conteo semanal por patrón,b1_rolling_4,baseline,calibracion_2024_q4,40 patrones,wis,43.056395,,,,,,reports/modeling/weekly_counts/nb_rolling_4_global_v1/20260927T153922.164206Z-full-34f4684f-e1410d83/results.json
+M9,conteo semanal por patrón,baseline,baseline,calibracion_2024_q4,40 patrones,wis,138.950112,,,,,,reports/modeling/weekly_counts/nb_rolling_4_global_v1/20260927T153922.164206Z-full-34f4684f-e1410d83/results.json
+M9,conteo semanal por patrón,"Binomial negativa, participaciones de 4 semanas, global",candidato,calibracion_2024_q4,40 patrones,wis,47.718581,b1_rolling_4,-0.108281,-0.093248,9.445381,rejected_no_practical_gain,reports/modeling/weekly_counts/nb_rolling_4_global_v1/20260927T153922.164206Z-full-34f4684f-e1410d83/results.json
+M9,conteo semanal por patrón,b1_rolling_13,baseline,calibracion_2024_q4,40 patrones,wis,64.882853,,,,,,reports/modeling/weekly_counts/nb_rolling_4_hierarchical_v3/20260927T161316.494762Z-full-a3ecfab3-9105ce1f/results.json
+M9,conteo semanal por patrón,b1_rolling_4,baseline,calibracion_2024_q4,40 patrones,wis,43.056395,,,,,,reports/modeling/weekly_counts/nb_rolling_4_hierarchical_v3/20260927T161316.494762Z-full-a3ecfab3-9105ce1f/results.json
+M9,conteo semanal por patrón,baseline,baseline,calibracion_2024_q4,40 patrones,wis,138.950112,,,,,,reports/modeling/weekly_counts/nb_rolling_4_hierarchical_v3/20260927T161316.494762Z-full-a3ecfab3-9105ce1f/results.json
+M9,conteo semanal por patrón,"Binomial negativa, 4 semanas, jerárquica v3",candidato,calibracion_2024_q4,40 patrones,wis,32.418099,b1_rolling_4,0.247078,-13.648590,-7.624138,accepted,reports/modeling/weekly_counts/nb_rolling_4_hierarchical_v3/20260927T161316.494762Z-full-a3ecfab3-9105ce1f/results.json
+M9 §25.5,conteo semanal por patrón,Chronos-2 zero-shot,candidato,calibracion_2024_q4,40 patrones,wis,36.017225,M9 vigente (nb_rolling_4_hierarchical_v3),-0.111022,-0.994712,9.032097,no reemplaza,reports/modeling/weekly_counts/challenges/chronos2_zero_shot_v1.json
+M9 §25.5,conteo semanal por patrón,Binomial negativa jerárquica con memoria que decae (C-A),candidato,calibracion_2024_q4,40 patrones,wis,30.296187,M9 vigente (nb_rolling_4_hierarchical_v3),0.065455,-3.360615,-0.844506,reemplaza,reports/modeling/weekly_counts/challenges/nb_discounted_hierarchical_v1.json
+M9 §25.5,conteo semanal por patrón,Binomial negativa jerárquica con memoria que decae (C-A),candidato,validacion_2025_h1 (ya consultada),40 patrones,wis,129.609232,M9 vigente (nb_rolling_4_hierarchical_v3),0.030105,-21.065637,15.050542,,reports/modeling/weekly_counts/challenges/nb_discounted_hierarchical_v1_validation.json
+M9 §25.5,conteo semanal por patrón,"Espacio de estados, paseo aleatorio (C-B)",candidato,calibracion_2024_q4,40 patrones,wis,31.951337,M9 vigente (nb_rolling_4_hierarchical_v3),0.014398,-2.579802,1.570100,no reemplaza,reports/modeling/weekly_counts/challenges/nb_state_space_v1.json
+M9 §25.5,conteo semanal por patrón,TimesFM 3.0 zero-shot,candidato,calibracion_2024_q4,40 patrones,wis,40.701635,M9 vigente (nb_rolling_4_hierarchical_v3),0.016362,-4.773942,3.550405,no reemplaza,reports/modeling/weekly_counts/challenges/timesfm3_zero_shot_v1.json
+M9 §22,conteo semanal por patrón,"Binomial negativa, 4 semanas, jerárquica v3",ganador M9,validacion_2025_h1 (ya consultada),40 patrones,wis,133.632231,b1_rolling_4,,-49.943152,-17.068289,confirmado,reports/modeling/final_confirmation.json
+M9 §22,conteo semanal por patrón,b1_rolling_4,baseline,validacion_2025_h1 (ya consultada),40 patrones,wis,164.224821,,,,,,reports/modeling/final_confirmation.json
+M10,composición semanal,b2_rolling_4,baseline,calibracion_2024_q4,40 patrones,log_score,-460.930940,,,,,,reports/modeling/weekly_composition/dirichlet_multinomial_rolling_4_v1/20261001T015410.667626Z-full-cff27014-1fa6f95c/results.json
+M10,composición semanal,b2_static,baseline,calibracion_2024_q4,40 patrones,log_score,-1770.235168,,,,,,reports/modeling/weekly_composition/dirichlet_multinomial_rolling_4_v1/20261001T015410.667626Z-full-cff27014-1fa6f95c/results.json
+M10,composición semanal,dirichlet_multinomial_rolling_4_v1,candidato,calibracion_2024_q4,40 patrones,log_score,-210.143649,b2_rolling_4,,205.134101,295.844626,accepted,reports/modeling/weekly_composition/dirichlet_multinomial_rolling_4_v1/20261001T015410.667626Z-full-cff27014-1fa6f95c/results.json
+M10,composición semanal,b2_rolling_4,baseline,calibracion_2024_q4,40 patrones,log_score,-460.930940,,,,,,reports/modeling/weekly_composition/dirichlet_multinomial_static_v1/20261001T015447.101243Z-full-f9a73151-bc87c1f1/results.json
+M10,composición semanal,b2_static,baseline,calibracion_2024_q4,40 patrones,log_score,-1770.235168,,,,,,reports/modeling/weekly_composition/dirichlet_multinomial_static_v1/20261001T015447.101243Z-full-f9a73151-bc87c1f1/results.json
+M10,composición semanal,dirichlet_multinomial_static_v1,candidato,calibracion_2024_q4,40 patrones,log_score,-246.037768,b2_rolling_4,,166.609038,263.189595,rejected_predictive,reports/modeling/weekly_composition/dirichlet_multinomial_static_v1/20261001T015447.101243Z-full-f9a73151-bc87c1f1/results.json
+M10 §22,composición semanal,dirichlet_multinomial_rolling_4_v1,ganador M10,validacion_2025_h1 (ya consultada),40 patrones,log_score,-251.687858,b2_rolling_4,,,,confirmado,reports/modeling/final_confirmation.json
+M10 §22,composición semanal,b2_rolling_4,baseline,validacion_2025_h1 (ya consultada),40 patrones,log_score,-3337.898283,,,,,,reports/modeling/final_confirmation.json
+M11,"alertas, escenario growth_10",cusum,ganador M11,calibracion simulada,40 patrones,tasa_de_deteccion,0.422826,,,,,elegido,reports/modeling/persistent_change_c_a/results.json
+M11,"alertas, escenario growth_10",weekly,candidato,calibracion simulada,40 patrones,tasa_de_deteccion,0.319565,,,,,,reports/modeling/persistent_change_c_a/results.json
+M11,"alertas, escenario growth_20",cusum,ganador M11,calibracion simulada,40 patrones,tasa_de_deteccion,0.708967,,,,,elegido,reports/modeling/persistent_change_c_a/results.json
+M11,"alertas, escenario growth_20",weekly,candidato,calibracion simulada,40 patrones,tasa_de_deteccion,0.540217,,,,,,reports/modeling/persistent_change_c_a/results.json
+M11,"alertas, escenario step_50",cusum,ganador M11,calibracion simulada,40 patrones,tasa_de_deteccion,0.316033,,,,,elegido,reports/modeling/persistent_change_c_a/results.json
+M11,"alertas, escenario step_50",weekly,candidato,calibracion simulada,40 patrones,tasa_de_deteccion,0.360870,,,,,,reports/modeling/persistent_change_c_a/results.json
+M11,"alertas, escenario step_100",cusum,ganador M11,calibracion simulada,40 patrones,tasa_de_deteccion,0.516033,,,,,elegido,reports/modeling/persistent_change_c_a/results.json
+M11,"alertas, escenario step_100",weekly,candidato,calibracion simulada,40 patrones,tasa_de_deteccion,0.569022,,,,,,reports/modeling/persistent_change_c_a/results.json
+M11,"alertas, escenario none",cusum,ganador M11,calibracion simulada,40 patrones,tasa_de_deteccion,0.065217,,,,,elegido,reports/modeling/persistent_change_c_a/results.json
+M11,"alertas, escenario none",weekly,candidato,calibracion simulada,40 patrones,tasa_de_deteccion,0.104891,,,,,,reports/modeling/persistent_change_c_a/results.json
+M11,alertas reales,cusum,ganador M11,calibracion_2024_q4,40 patrones,alertas_por_mes,1.449405,,,,,,reports/modeling/persistent_change_c_a/results.json
+M11,alertas reales,weekly,candidato,calibracion_2024_q4,40 patrones,alertas_por_mes,1.087054,,,,,,reports/modeling/persistent_change_c_a/results.json
+M11,alertas reales,cusum,ganador M11,validacion_2025_h1 (ya consultada),40 patrones,alertas_por_mes,5.217857,,,,,,reports/modeling/persistent_change_c_a/validation_results.json
+M11,alertas reales,weekly,candidato,validacion_2025_h1 (ya consultada),40 patrones,alertas_por_mes,5.565714,,,,,,reports/modeling/persistent_change_c_a/validation_results.json
+M7S bloque A,patrones semánticos,umap15_s42/kmeans_k40,ganador M7 (referencia),muestra de ajuste,"20,000 filas",neighbour_lift,0.637448,,,,,,reports/modeling/space_sensitivity/results.json
+M7S bloque A,patrones semánticos,umap5_s42/kmeans_k40,candidato,muestra de ajuste,"20,000 filas",neighbour_lift,0.626560,umap15_s42/kmeans_k40,-0.017081,-0.014335,-0.007483,no reemplaza,reports/modeling/space_sensitivity/results.json
+M7S bloque A,patrones semánticos,umap5_s42/gmm_k80_full,candidato,muestra de ajuste,"20,000 filas",neighbour_lift,0.614082,umap15_s42/kmeans_k40,-0.036655,-0.027217,-0.019510,no reemplaza,reports/modeling/space_sensitivity/results.json
+M7S bloque A,patrones semánticos,umap10_s42/gmm_k80_full,candidato,muestra de ajuste,"20,000 filas",neighbour_lift,0.637238,umap15_s42/kmeans_k40,-0.000330,-0.003230,0.002761,no reemplaza,reports/modeling/space_sensitivity/results.json
+M7S bloque A,patrones semánticos,umap30_s42/gmm_k80_full,candidato,muestra de ajuste,"20,000 filas",neighbour_lift,0.589891,umap15_s42/kmeans_k40,-0.074606,-0.053118,-0.042502,no reemplaza,reports/modeling/space_sensitivity/results.json
+M7S bloque A,patrones semánticos,umap15_s43/gmm_k80_full,candidato,muestra de ajuste,"20,000 filas",neighbour_lift,0.626731,umap15_s42/kmeans_k40,-0.016813,-0.014642,-0.007057,no reemplaza,reports/modeling/space_sensitivity/results.json

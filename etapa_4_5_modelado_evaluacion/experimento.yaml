@@ -1,0 +1,47 @@
+# ============================================================================
+# experimento.yaml · El vocabulario de MLflow de este proyecto (PB-17).
+#
+# Adaptación del esquema del curso al modelado de Codenid/capstone-claims-
+# triage, que registra varias tareas en un solo experimento. La fuente de
+# cada valor es configs/modeling.yaml y src/evaluation/experiment.py; este
+# archivo los declara en el vocabulario del curso y no se edita por separado.
+# ============================================================================
+mlflow:
+  tracking_uri: https://dagshub.com/WinzCode/capstone-claims-triage.mlflow
+  experimento: claims-triage-modeling        # UN experimento; 51 corridas al 2026-10-07
+  modelo_registrado: claims-triage-t1        # propuesta para PB-20 (MLE), sin registrar
+  alias_campeon: campeon
+
+# Cada corrida lleva estas etiquetas (src/evaluation/experiment.py):
+#   version_datos · datos_md5 · git_commit · tipo (= experimento)
+#   y además dvc_data_hash, stage, target, split, view, execution_host.
+# Las corridas anteriores al 2026-10-07 las recibieron con
+# src/evaluation/backfill_tags.py sin cambiar ninguna etiqueta existente.
+
+tareas:                                      # una métrica primaria por tarea
+  T1: {tipo: clasificacion_multiclase, metrica_primaria: macro_f1}
+  T2: {tipo: clasificacion_binaria, metrica_primaria: average_precision}
+  T3: {tipo: clasificacion_binaria, metrica_primaria: average_precision}
+  T4: {tipo: clasificacion_binaria, metrica_primaria: average_precision}
+  M9: {tipo: pronostico_probabilistico, metrica_primaria: wis, mayor_es_mejor: false}
+  M10: {tipo: composicion, metrica_primaria: log_score}
+  M11: {tipo: deteccion_de_cambio, metrica_primaria: tasa_de_deteccion}
+mayor_es_mejor: true                          # salvo donde la tarea diga lo contrario
+
+conjuntos:
+  ajuste: 2023-01-01 a 2024-09-30            # entrena o fija priors
+  calibracion: 2024-10-01 a 2024-12-31       # elige modelos, umbrales y priors
+  validacion: 2025-01-01 a 2025-06-30        # abierta una vez (models_plan.md §22)
+  test_final: 2026 completo, sellado          # decisión del 2026-10-06
+  regla: "≥5 % de ganancia relativa y bootstrap semanal pareado 95 % a favor"
+
+datos:
+  tabla: data/processed/prepared.parquet
+  puntero_dvc: dvc.lock (etapa finalize_prepared)  # origen de datos_md5
+  version_datos: datos-v1                           # una sola versión de datos
+  datos_md5: d189a3ae6ea7a8f9041fc8210968eda6
+
+semilla: 42
+
+# Se regenera con: python -m src.evaluation.comparison_table
+tabla_comparativa: resultados/comparacion_modelos.csv
