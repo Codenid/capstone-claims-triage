@@ -8,5 +8,15 @@
     "source_status": "native_versioned_source",
     "historical_run_id": null,
     "candidate_role": "baseline_candidate"
+  },
+  "nb_daily_fourier_v1": {
+    "source_status": "native_versioned_source",
+    "historical_run_id": null,
+    "candidate_role": "candidate"
+  },
+  "zinb_daily_hierarchical_v1": {
+    "source_status": "native_versioned_source",
+    "historical_run_id": null,
+    "candidate_role": "candidate"
   }
 }

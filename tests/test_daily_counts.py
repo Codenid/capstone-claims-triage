@@ -10,7 +10,12 @@ from src.models.daily_counts.data import (
     panel_from_assignments,
     validate_daily_counts,
 )
-from src.models.daily_counts.models import nb_daily_hierarchical_v1, nb_daily_no_dow_v1
+from src.models.daily_counts.models import (
+    nb_daily_fourier_v1,
+    nb_daily_hierarchical_v1,
+    nb_daily_no_dow_v1,
+    zinb_daily_hierarchical_v1,
+)
 from src.models.daily_counts.references import (
     discounted_daily_shares,
     static_daily_shares,
@@ -60,6 +65,10 @@ def settings(discount: float = 0.8) -> dict:
             "log_alpha_global_sigma": 1.0,
             "log_alpha_sigma": 0.75,
             "beta_sigma": 0.5,
+            "cycle_sigma": 0.5,
+            "trend_sigma": 1.0,
+            "zero_alpha": 1.0,
+            "zero_beta": 19.0,
         },
     }
 
@@ -104,14 +113,23 @@ class DailyPanelTests(unittest.TestCase):
         arrays = panel_arrays(fit, CLUSTERS)
 
         self.assertEqual(arrays["counts"].shape, (11, CLUSTERS))
-        for module in (nb_daily_hierarchical_v1, nb_daily_no_dow_v1):
+        modules = (
+            nb_daily_hierarchical_v1,
+            nb_daily_no_dow_v1,
+            nb_daily_fourier_v1,
+            zinb_daily_hierarchical_v1,
+        )
+        for module in modules:
             with module.build_model(fit, settings()):
                 prior = pm.sample_prior_predictive(draws=5, random_seed=1)
             observed = prior.prior_predictive["observed"].to_numpy()
             self.assertEqual(observed.shape[-2:], (11, CLUSTERS))
             expected = prior.prior["mu"].to_numpy().reshape(-1, 11, CLUSTERS)
             totals = arrays["totals"][None, :]
-            self.assertTrue(np.allclose(expected.sum(axis=2), totals))
+            if module is zinb_daily_hierarchical_v1:
+                self.assertTrue((expected.sum(axis=2) <= totals + 1e-6).all())
+            else:
+                self.assertTrue(np.allclose(expected.sum(axis=2), totals))
 
     def test_predictions_and_rolling_baseline_align_with_rows(self):
         panel = validated_panel()
