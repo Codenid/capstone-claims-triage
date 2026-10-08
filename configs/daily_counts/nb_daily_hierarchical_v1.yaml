@@ -2,7 +2,7 @@ model_id: nb_daily_hierarchical_v1
 
 # Frozen after building the daily panel (python -m src.models.daily_counts.panel).
 source_dvc_hash: 87be2a97daa3b169bbd65850a64c89a6.dir
-daily_counts_sha256: PENDING
+daily_counts_sha256: 08f06e53ff0ee975db2d46950d7154f9d3c29eaf6e2a6999bb9d11876d8465be
 clusters: 40
 expected_days:
   fit: 639
