@@ -1,0 +1,14 @@
+body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; max-width: 1080px; margin: 0 auto; padding: 0 16px; color: #1c1c1c; background: #fff; }
+.lead { font-size: 1.05rem; }
+.muted { color: #666; font-size: 0.9rem; }
+table.overview { border-collapse: collapse; width: 100%; font-size: 0.85rem; margin: 1rem 0; }
+table.overview th, table.overview td { border-bottom: 1px solid #e3e3e3; padding: 4px 6px; text-align: left; vertical-align: top; }
+table.overview td.num { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+table.overview td.terms { color: #555; }
+.card { border-top: 2px solid #ddd; padding-top: 0.6rem; margin-top: 2rem; }
+.card h2 { font-size: 1.15rem; margin-bottom: 0.2rem; }
+.card .meta { margin: 0 0 0.3rem; }
+.card .terms { font-family: ui-monospace, Menlo, Consolas, monospace; font-size: 0.85rem; color: #333; background: #f6f6f6; padding: 6px 8px; border-radius: 4px; }
+.card img { width: 100%; height: auto; border: 1px solid #eee; margin: 0.5rem 0; }
+.card blockquote { margin: 0.5rem 0; padding: 6px 10px; border-left: 3px solid #cfd8e3; background: #fafbfd; font-size: 0.9rem; }
+@media (prefers-color-scheme: dark) { body { background: #121212; color: #e6e6e6; } .muted { color: #a3a3a3; } table.overview th, table.overview td { border-color: #333; } table.overview td.terms { color: #bbb; } .card { border-color: #333; } .card .terms { background: #1e1e1e; color: #ddd; } .card blockquote { background: #181c22; border-color: #3a4a5c; } .card img { border-color: #333; background: #fff; } }

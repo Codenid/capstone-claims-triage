@@ -1,0 +1,112 @@
+---
+title: "Catálogo de patrones semánticos"
+subtitle: "Qué trata cada uno de los 40 patrones y cómo se mueve su volumen semanal"
+lang: es
+format:
+  html:
+    minimal: true
+    embed-resources: true
+    toc: true
+    toc-depth: 2
+    css: catalogo.css
+execute:
+  echo: false
+---
+
+```{python}
+import json
+from html import escape
+from pathlib import Path
+
+report = json.loads(Path("catalog.json").read_text(encoding="utf-8"))
+patterns = report["patterns"]
+labels = {"fit": "ajuste", "calibration": "calibración", "validation": "2025-H1"}
+
+
+def pct(value: float) -> str:
+    return f"{value:.0%}"
+
+
+def weekly_cells(weekly: dict) -> str:
+    cells = []
+    for split in ("fit", "calibration", "validation"):
+        item = weekly.get(split)
+        cells.append(
+            f"<td class='num'>{item['mean_count']:.0f} · {pct(item['mean_share'])}</td>"
+            if item
+            else "<td class='num'>—</td>"
+        )
+    return "".join(cells)
+
+
+def alert_cells(alerts: dict) -> str:
+    return (
+        f"<td class='num'>{len(alerts.get('calibration', []))}</td>"
+        f"<td class='num'>{len(alerts.get('validation', []))}</td>"
+    )
+
+
+overview = "".join(
+    f"<tr><td><a href='#patron-{p['cluster_id']}'>{p['cluster_id']}</a></td>"
+    f"<td>{escape(p['main_product'])} ({pct(p['main_product_fraction'])})</td>"
+    f"<td class='num'>{p['fit_rows']:,}</td>{weekly_cells(p['weekly'])}{alert_cells(p['alert_weeks'])}"
+    f"<td class='terms'>{escape(', '.join(p['terms'][:5]))}</td></tr>"
+    for p in patterns
+)
+
+
+def card(p: dict) -> str:
+    weekly = p["weekly"]
+    volume = " · ".join(
+        f"{labels[split]}: {weekly[split]['mean_count']:.0f} reclamos/semana "
+        f"({pct(weekly[split]['mean_share'])} del total)"
+        for split in ("fit", "calibration", "validation")
+        if split in weekly
+    )
+    alerts = p["alert_weeks"]
+    alert_text = (
+        "sin alertas CUSUM en calibración"
+        if not alerts.get("calibration")
+        else f"alertas CUSUM en calibración: {', '.join(alerts['calibration'])}"
+    )
+    if alerts.get("validation"):
+        alert_text += f"; en 2025-H1 (ya consultado): {len(alerts['validation'])} semanas"
+    examples = "".join(
+        f"<blockquote><span class='muted'>{e['received']} · {escape(e['product'])}</span><br>"
+        f"{escape(e['snippet'])}</blockquote>"
+        for e in p["examples"]
+    )
+    return f"""
+<section class="card" id="patron-{p['cluster_id']}">
+<h2>Patrón {p['cluster_id']} · {escape(p['main_product'])}</h2>
+<p class="meta">{p['fit_rows']:,} reclamos en ajuste · producto dominante {pct(p['main_product_fraction'])} ·
+texto único {pct(p['unique_text_fraction'])} · plantilla dominante {pct(p['dominant_template_fraction'])}</p>
+<p class="terms">{escape(', '.join(p['terms']))}</p>
+<p>{volume}.<br>{alert_text}.</p>
+<img src="{p['image']}" alt="Serie semanal del patrón {p['cluster_id']}">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary>{examples}</details>
+</section>
+"""
+
+
+intro = f"""
+<p class="lead">Los patrones son los 40 grupos de narrativas de M7 (PCA 256 → UMAP 15 → k-means), fijados con
+las filas de ajuste. Son una partición útil del espacio semántico, no categorías del banco: los términos y los
+ejemplos dicen de qué habla cada uno, y la serie muestra su volumen semanal con la banda predictiva del modelo
+de conteos vigente ({escape(report['m9_run'].split('/')[0])}) y las alertas de M11.</p>
+<p class="muted">Términos por TF-IDF de clase; «texto único» es la fracción de narrativas distintas y «plantilla
+dominante» la fracción que repite el texto más frecuente. Volumen medio en semanas completas. Commit {report['git_commit'][:8]}.</p>
+<table class="overview"><thead><tr><th>Patrón</th><th>Producto dominante</th><th>Ajuste (filas)</th>
+<th>Ajuste</th><th>Calibración</th><th>2025-H1</th><th>Alertas cal.</th><th>Alertas 2025-H1</th><th>Términos</th></tr></thead>
+<tbody>{overview}</tbody></table>
+<p class="muted">Columnas de volumen: reclamos por semana · porcentaje del total semanal.</p>
+"""
+```
+
+```{python}
+#| output: asis
+print("```{=html}")
+print(intro)
+print("".join(card(p) for p in patterns))
+print("```")
+```

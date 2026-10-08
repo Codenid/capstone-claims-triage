@@ -269,6 +269,13 @@ foundation_series:
   chronos2_path: ~/models/chronos_2
   timesfm3_path: ~/models/timesfm_3
 
+# Pattern catalogue (asked by the advisor on 2026-10-07): what each of the 40
+# patterns is about and its weekly series with the current M9 band.
+pattern_catalog:
+  examples: 3
+  snippet_characters: 240
+  report_dir: reports/modeling/patterns
+
 # Weekly mixture signal (models_plan.md §27), pre-registered on 2026-10-07:
 # posterior predictive p-value of M10's joint log score, one per week.
 mixture_signal:

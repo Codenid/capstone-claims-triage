@@ -632,3 +632,15 @@ sbatch scripts/hpc/m10_mixture_signal.slurm
 Escribe `reports/modeling/weekly_composition/mixture_signal/results.json` y
 `weekly.csv` (a DVC). Nunca sobrescribe un resultado.
 
+## Catálogo de patrones (M8C)
+
+Qué trata cada uno de los 40 patrones y su serie semanal con la banda de M9:
+
+```bash
+sbatch scripts/hpc/m8c_pattern_catalog.slurm
+```
+
+Escribe `reports/modeling/patterns/catalog.json` y 40 PNG en
+`reports/modeling/patterns/series/`. La página `catalogo.qmd` de esa carpeta
+se renderiza en Windows con Quarto después de traer los resultados.
+
