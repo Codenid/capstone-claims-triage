@@ -93,7 +93,9 @@ def plot_series(
     title: str,
     path: Path,
 ) -> None:
-    observed = counts.loc[counts["cluster_id"] == cluster].sort_values("week")
+    # Partial weeks at the edges of each period are not comparable: skip them.
+    rows = (counts["cluster_id"] == cluster) & counts["is_complete_week"].astype(bool)
+    observed = counts.loc[rows].sort_values("week")
     expected = predictions.loc[predictions["cluster_id"] == cluster].sort_values("week")
     weeks = pd.to_datetime(observed["week"])
     figure, axis = plt.subplots(figsize=(11, 3.6), dpi=110)

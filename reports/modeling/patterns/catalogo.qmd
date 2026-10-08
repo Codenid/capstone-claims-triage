@@ -5,7 +5,7 @@ lang: es
 format:
   html:
     minimal: true
-    embed-resources: true
+    embed-resources: false
     toc: true
     toc-depth: 2
     css: catalogo.css

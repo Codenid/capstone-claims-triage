@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Catálogo de patrones semánticos</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+</style>
+
+
+
+
+<link rel="stylesheet" href="catalogo.css">
+</head>
+
+<body>
+
+
+<header id="title-block-header">
+<h1 class="title">Catálogo de patrones semánticos</h1>
+<p class="subtitle">Qué trata cada uno de los 40 patrones y cómo se mueve su volumen semanal</p>
+
+</header>
+
+
+<p class="lead">Los patrones son los 40 grupos de narrativas de M7 (PCA 256 → UMAP 15 → k-means), fijados con
+las filas de ajuste. Son una partición útil del espacio semántico, no categorías del banco: los términos y los
+ejemplos dicen de qué habla cada uno, y la serie muestra su volumen semanal con la banda predictiva del modelo
+de conteos vigente (nb_discounted_hierarchical_v1) y las alertas de M11.</p>
+<p class="muted">Términos por TF-IDF de clase; «texto único» es la fracción de narrativas distintas y «plantilla
+dominante» la fracción que repite el texto más frecuente. Volumen medio en semanas completas. Commit 847ceae3.</p>
+
+<table class="overview caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Patrón</th>
+<th data-quarto-table-cell-role="th">Producto dominante</th>
+<th data-quarto-table-cell-role="th">Ajuste (filas)</th>
+<th data-quarto-table-cell-role="th">Ajuste</th>
+<th data-quarto-table-cell-role="th">Calibración</th>
+<th data-quarto-table-cell-role="th">2025-H1</th>
+<th data-quarto-table-cell-role="th">Alertas cal.</th>
+<th data-quarto-table-cell-role="th">Alertas 2025-H1</th>
+<th data-quarto-table-cell-role="th">Términos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="#patron-0">0</a></td>
+<td>Credit reporting or other personal consumer reports (84%)</td>
+<td class="num">1,947</td>
+<td class="num">21 · 0%</td>
+<td class="num">23 · 0%</td>
+<td class="num">5 · 0%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">disputes, submitting disputes, getting inaccurate, send disputes, bureaus having</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-1">1</a></td>
+<td>Credit reporting or other personal consumer reports (86%)</td>
+<td class="num">5,995</td>
+<td class="num">66 · 1%</td>
+<td class="num">88 · 0%</td>
+<td class="num">194 · 1%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">100, credit, 100 accurate, reporting 100, credit report</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-2">2</a></td>
+<td>Credit reporting or other personal consumer reports (98%)</td>
+<td class="num">8,520</td>
+<td class="num">93 · 1%</td>
+<td class="num">281 · 2%</td>
+<td class="num">468 · 2%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">section, information, consumer, 15, reporting</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-3">3</a></td>
+<td>Credit reporting or other personal consumer reports (89%)</td>
+<td class="num">35,532</td>
+<td class="num">388 · 3%</td>
+<td class="num">1207 · 7%</td>
+<td class="num">2242 · 9%</td>
+<td class="num">0</td>
+<td class="num">3</td>
+<td class="terms">redacted, redacted redacted, account, credit, information</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-4">4</a></td>
+<td>Credit reporting or other personal consumer reports (98%)</td>
+<td class="num">13,290</td>
+<td class="num">146 · 1%</td>
+<td class="num">123 · 1%</td>
+<td class="num">131 · 1%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">redacted redacted, redacted, validate, erroneous, credit</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-5">5</a></td>
+<td>Credit reporting or other personal consumer reports (85%)</td>
+<td class="num">9,474</td>
+<td class="num">104 · 1%</td>
+<td class="num">311 · 2%</td>
+<td class="num">256 · 1%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">consumer, 15, section, states, reporting</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-6">6</a></td>
+<td>Credit reporting or other personal consumer reports (100%)</td>
+<td class="num">13,745</td>
+<td class="num">151 · 1%</td>
+<td class="num">163 · 1%</td>
+<td class="num">186 · 1%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">redacted redacted, redacted, redacted balance, 00 redacted, balance</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-7">7</a></td>
+<td>Credit reporting or other personal consumer reports (93%)</td>
+<td class="num">11,531</td>
+<td class="num">126 · 1%</td>
+<td class="num">211 · 1%</td>
+<td class="num">222 · 1%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">redacted redacted, redacted, report, credit, disputes</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-8">8</a></td>
+<td>Checking or savings account (39%)</td>
+<td class="num">119,770</td>
+<td class="num">1313 · 12%</td>
+<td class="num">1544 · 9%</td>
+<td class="num">4165 · 12%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">bank, card, account, redacted, 00</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-9">9</a></td>
+<td>Credit reporting or other personal consumer reports (85%)</td>
+<td class="num">2,670</td>
+<td class="num">29 · 0%</td>
+<td class="num">21 · 0%</td>
+<td class="num">15 · 0%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">complaint, party, complaint error, party involved, involved</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-10">10</a></td>
+<td>Credit reporting or other personal consumer reports (97%)</td>
+<td class="num">9,158</td>
+<td class="num">101 · 1%</td>
+<td class="num">253 · 1%</td>
+<td class="num">206 · 1%</td>
+<td class="num">1</td>
+<td class="num">0</td>
+<td class="terms">redacted redacted, redacted, report, credit, credit report</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-11">11</a></td>
+<td>Credit reporting or other personal consumer reports (97%)</td>
+<td class="num">97,126</td>
+<td class="num">1065 · 9%</td>
+<td class="num">1373 · 8%</td>
+<td class="num">1549 · 6%</td>
+<td class="num">0</td>
+<td class="num">3</td>
+<td class="terms">redacted redacted, redacted, 00, 00 redacted, redacted balance</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-12">12</a></td>
+<td>Debt collection (55%)</td>
+<td class="num">86,363</td>
+<td class="num">946 · 8%</td>
+<td class="num">1324 · 7%</td>
+<td class="num">1809 · 7%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">debt, collection, redacted, redacted redacted, account</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-13">13</a></td>
+<td>Credit reporting or other personal consumer reports (37%)</td>
+<td class="num">97,382</td>
+<td class="num">1067 · 10%</td>
+<td class="num">1302 · 7%</td>
+<td class="num">2055 · 8%</td>
+<td class="num">0</td>
+<td class="num">2</td>
+<td class="terms">loan, redacted, mortgage, payment, redacted redacted</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-14">14</a></td>
+<td>Credit reporting or other personal consumer reports (94%)</td>
+<td class="num">176,716</td>
+<td class="num">1936 · 17%</td>
+<td class="num">4042 · 23%</td>
+<td class="num">7844 · 30%</td>
+<td class="num">1</td>
+<td class="num">3</td>
+<td class="terms">redacted, redacted redacted, account, credit, report</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-15">15</a></td>
+<td>Credit reporting or other personal consumer reports (98%)</td>
+<td class="num">7,597</td>
+<td class="num">83 · 1%</td>
+<td class="num">56 · 0%</td>
+<td class="num">36 · 0%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">letters, bureaus continuously, far gotten, happened mailed, continuously far</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-16">16</a></td>
+<td>Credit reporting or other personal consumer reports (96%)</td>
+<td class="num">9,342</td>
+<td class="num">102 · 1%</td>
+<td class="num">261 · 1%</td>
+<td class="num">190 · 1%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">consumer, 15, section, reporting agency, 1681</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-17">17</a></td>
+<td>Credit reporting or other personal consumer reports (94%)</td>
+<td class="num">71,113</td>
+<td class="num">779 · 7%</td>
+<td class="num">605 · 3%</td>
+<td class="num">503 · 2%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">redacted account, account, account redacted, section, redacted</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-18">18</a></td>
+<td>Credit reporting or other personal consumer reports (88%)</td>
+<td class="num">10,792</td>
+<td class="num">118 · 1%</td>
+<td class="num">124 · 1%</td>
+<td class="num">74 · 0%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">redacted redacted, redacted, permitted, legitimate activity, report</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-19">19</a></td>
+<td>Credit reporting or other personal consumer reports (91%)</td>
+<td class="num">63,214</td>
+<td class="num">693 · 6%</td>
+<td class="num">1378 · 8%</td>
+<td class="num">1627 · 6%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">credit, credit report, report, redacted redacted, redacted</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-20">20</a></td>
+<td>Credit reporting or other personal consumer reports (99%)</td>
+<td class="num">3,371</td>
+<td class="num">37 · 0%</td>
+<td class="num">32 · 0%</td>
+<td class="num">13 · 0%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">consumer reports, consent, reports, consumer, consent fraud</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-21">21</a></td>
+<td>Credit reporting or other personal consumer reports (57%)</td>
+<td class="num">4,109</td>
+<td class="num">45 · 0%</td>
+<td class="num">50 · 0%</td>
+<td class="num">71 · 0%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">start investigation, bureau start, documents want, want bureau, start</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-22">22</a></td>
+<td>Credit reporting or other personal consumer reports (96%)</td>
+<td class="num">12,879</td>
+<td class="num">141 · 1%</td>
+<td class="num">190 · 1%</td>
+<td class="num">201 · 1%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">redacted redacted, redacted, law, written requests, violation federal</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-23">23</a></td>
+<td>Credit reporting or other personal consumer reports (96%)</td>
+<td class="num">6,407</td>
+<td class="num">70 · 1%</td>
+<td class="num">108 · 1%</td>
+<td class="num">137 · 1%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">15, consumer, agency, section, reporting</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-24">24</a></td>
+<td>Credit reporting or other personal consumer reports (84%)</td>
+<td class="num">9,733</td>
+<td class="num">106 · 1%</td>
+<td class="num">167 · 1%</td>
+<td class="num">134 · 1%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">redacted redacted, items, redacted, stress, accounts</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-25">25</a></td>
+<td>Credit reporting or other personal consumer reports (97%)</td>
+<td class="num">14,204</td>
+<td class="num">156 · 1%</td>
+<td class="num">164 · 1%</td>
+<td class="num">188 · 1%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">sections 609, sections, 609 611, 609, redacted</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-26">26</a></td>
+<td>Credit reporting or other personal consumer reports (91%)</td>
+<td class="num">11,256</td>
+<td class="num">123 · 1%</td>
+<td class="num">126 · 1%</td>
+<td class="num">133 · 1%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">accounts, credit, report, credit report, information</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-27">27</a></td>
+<td>Credit reporting or other personal consumer reports (99%)</td>
+<td class="num">8,018</td>
+<td class="num">88 · 1%</td>
+<td class="num">63 · 0%</td>
+<td class="num">30 · 0%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">redacted redacted, redacted, report, credit report, inquiry credit</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-28">28</a></td>
+<td>Credit reporting or other personal consumer reports (80%)</td>
+<td class="num">6,960</td>
+<td class="num">76 · 1%</td>
+<td class="num">208 · 1%</td>
+<td class="num">150 · 1%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">accounts, report, debt, credit, 15</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-29">29</a></td>
+<td>Credit reporting or other personal consumer reports (98%)</td>
+<td class="num">9,166</td>
+<td class="num">100 · 1%</td>
+<td class="num">115 · 1%</td>
+<td class="num">246 · 1%</td>
+<td class="num">1</td>
+<td class="num">1</td>
+<td class="terms">identity, theft, identity theft, redacted redacted, redacted</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-30">30</a></td>
+<td>Credit reporting or other personal consumer reports (87%)</td>
+<td class="num">21,597</td>
+<td class="num">236 · 2%</td>
+<td class="num">406 · 2%</td>
+<td class="num">369 · 1%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">payment, late, payments, creditor, mailed delivered</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-31">31</a></td>
+<td>Credit reporting or other personal consumer reports (78%)</td>
+<td class="num">8,060</td>
+<td class="num">88 · 1%</td>
+<td class="num">250 · 1%</td>
+<td class="num">313 · 1%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">need reporting, reporting correction, correction company, identified inaccurate, inaccurate accounts</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-32">32</a></td>
+<td>Credit reporting or other personal consumer reports (95%)</td>
+<td class="num">9,040</td>
+<td class="num">99 · 1%</td>
+<td class="num">108 · 1%</td>
+<td class="num">86 · 0%</td>
+<td class="num">1</td>
+<td class="num">1</td>
+<td class="terms">redacted redacted, redacted, credit, late payment, section</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-33">33</a></td>
+<td>Credit reporting or other personal consumer reports (88%)</td>
+<td class="num">7,051</td>
+<td class="num">77 · 1%</td>
+<td class="num">15 · 0%</td>
+<td class="num">14 · 0%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">payments, updated records, consistently maintained, precise updated, seeking precise</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-34">34</a></td>
+<td>Credit reporting or other personal consumer reports (99%)</td>
+<td class="num">6,530</td>
+<td class="num">72 · 1%</td>
+<td class="num">35 · 0%</td>
+<td class="num">32 · 0%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">letters, bureaus continuously, happened mailed, really sure, far gotten</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-35">35</a></td>
+<td>Credit reporting or other personal consumer reports (100%)</td>
+<td class="num">2,888</td>
+<td class="num">32 · 0%</td>
+<td class="num">28 · 0%</td>
+<td class="num">11 · 0%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">dispute incorrect, invalid items, referenced issues, incorrect invalid, letter referenced</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-36">36</a></td>
+<td>Credit reporting or other personal consumer reports (96%)</td>
+<td class="num">53,587</td>
+<td class="num">587 · 5%</td>
+<td class="num">633 · 4%</td>
+<td class="num">826 · 3%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">consumer, information, redacted, reporting, 15</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-37">37</a></td>
+<td>Credit reporting or other personal consumer reports (85%)</td>
+<td class="num">6,255</td>
+<td class="num">69 · 0%</td>
+<td class="num">88 · 1%</td>
+<td class="num">76 · 0%</td>
+<td class="num">0</td>
+<td class="num">1</td>
+<td class="terms">letters, reporting, inaccurate date, date, written</td>
+</tr>
+<tr class="odd">
+<td><a href="#patron-38">38</a></td>
+<td>Credit reporting or other personal consumer reports (97%)</td>
+<td class="num">6,321</td>
+<td class="num">69 · 1%</td>
+<td class="num">245 · 1%</td>
+<td class="num">196 · 1%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">payment, late, complaint, error, creditor</td>
+</tr>
+<tr class="even">
+<td><a href="#patron-39">39</a></td>
+<td>Credit reporting or other personal consumer reports (95%)</td>
+<td class="num">8,485</td>
+<td class="num">93 · 1%</td>
+<td class="num">166 · 1%</td>
+<td class="num">147 · 1%</td>
+<td class="num">0</td>
+<td class="num">0</td>
+<td class="terms">section, consumer, 15, information, 1681</td>
+</tr>
+</tbody>
+</table>
+
+<p class="muted">Columnas de volumen: reclamos por semana · porcentaje del total semanal.</p>
+
+
+<section class="card" id="patron-0">
+<h2>Patrón 0 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">1,947 reclamos en ajuste · producto dominante 84% ·
+texto único 2% · plantilla dominante 59%</p>
+<p class="terms">disputes, submitting disputes, getting inaccurate, send disputes, bureaus having, disputes getting, tried send, information corrected, corrected credit, difficulties submitting</p>
+<p>ajuste: 21 reclamos/semana (0% del total) · calibración: 23 reclamos/semana (0% del total) · 2025-H1: 5 reclamos/semana (0% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_00.png" alt="Serie semanal del patrón 0">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-03-02 · Credit reporting or other personal consumer reports</span><br>i submitted numerous of disputes and called the reporting agencies to resolve issues on my credit report and all i received was refusal to send me to the right departments and even calls hung up in my face</blockquote><blockquote><span class="muted">2024-09-30 · Credit reporting or other personal consumer reports</span><br>I was attempting to sign up for credit reporting agencies and kept hitting road blocks meanwhile it was difficult to get a hold of customer service.</blockquote><blockquote><span class="muted">2024-08-12 · Credit reporting or other personal consumer reports</span><br>I have tried to send my disputes to the major credit bureaus but are having difficulties in submitting my disputes and getting the inaccurate information corrected on my credit report.</blockquote></details>
+</section>
+
+<section class="card" id="patron-1">
+<h2>Patrón 1 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">5,995 reclamos en ajuste · producto dominante 86% ·
+texto único 9% · plantilla dominante 16%</p>
+<p class="terms">100, credit, 100 accurate, reporting 100, credit report, accurate, report, accounts, did, reporting</p>
+<p>ajuste: 66 reclamos/semana (1% del total) · calibración: 88 reclamos/semana (0% del total) · 2025-H1: 194 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_01.png" alt="Serie semanal del patrón 1">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-02-22 · Credit reporting or other personal consumer reports</span><br>Recently I did an investigation on my credit report which caused anxiety beyond belief. I found information that was unverifiable, invalidated, inaccurate, and highly questionable that the agencies didn't make sure it was reporting 100 % c…</blockquote><blockquote><span class="muted">2024-07-11 · Credit reporting or other personal consumer reports</span><br>The credit reporting agencies stated that these accounts were properly investigated and came back as verified. However, how is this true when there are several inaccuracies showing on my report? As a consumer, I request to know all the ste…</blockquote><blockquote><span class="muted">2024-06-21 · Credit reporting or other personal consumer reports</span><br>The credit reporting agencies stated that these accounts were properly investigated and came back as verified. However, how is this true when there are several inaccuracies showing on my report? As a consumer, I request to know all the ste…</blockquote></details>
+</section>
+
+<section class="card" id="patron-2">
+<h2>Patrón 2 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">8,520 reclamos en ajuste · producto dominante 98% ·
+texto único 9% · plantilla dominante 22%</p>
+<p class="terms">section, information, consumer, 15, reporting, items, agency, reporting agency, 1681, states</p>
+<p>ajuste: 93 reclamos/semana (1% del total) · calibración: 281 reclamos/semana (2% del total) · 2025-H1: 468 reclamos/semana (2% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_02.png" alt="Serie semanal del patrón 2">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-07-05 · Credit reporting or other personal consumer reports</span><br>-- -- -- -- -- -- -- -- In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States …</blockquote><blockquote><span class="muted">2024-09-20 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit Reporting Act, the list of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C. 1681, section 602 ( A ), states that I have the ri…</blockquote><blockquote><span class="muted">2024-09-30 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under XXXX5 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to p…</blockquote></details>
+</section>
+
+<section class="card" id="patron-3">
+<h2>Patrón 3 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">35,532 reclamos en ajuste · producto dominante 89% ·
+texto único 53% · plantilla dominante 2%</p>
+<p class="terms">redacted, redacted redacted, account, credit, information, consumer, reporting, report, fcra, credit report</p>
+<p>ajuste: 388 reclamos/semana (3% del total) · calibración: 1207 reclamos/semana (7% del total) · 2025-H1: 2242 reclamos/semana (9% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 3 semanas.</p>
+<img src="series/cluster_03.png" alt="Serie semanal del patrón 3">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-05-20 · Debt collection</span><br>United revenue corporation, has failed to provide all proper documents to validate and verify the alleged debts. Which is a clear violation of my rights according to 15 U.S.C 1692g validation of debts. I am disputing three accounts. Accoun…</blockquote><blockquote><span class="muted">2023-11-06 · Debt collection</span><br>IN ACCORDANCE WITH THE FAIR DEBT COLLECTION PRACTICE ACT. I DISPUTED THE DEBT AND COLLECTION ALSO REQUEST DEBT VALIDATION. I SEEK COPY OF NAME AND ADDRESS OF THE ORIGINAL CREDITOR AND / OR SUPPORTING EVIDENCE OF ALLEGE DEBT. AMERICAN PROFI…</blockquote><blockquote><span class="muted">2023-11-16 · Credit reporting or other personal consumer reports</span><br>Upon looking on my credit report i noticed these companies on my report that i have n knowledge of and have never directly done business with. Ive mailed multiple letters asking the credit bureaus to verify that all information is correct …</blockquote></details>
+</section>
+
+<section class="card" id="patron-4">
+<h2>Patrón 4 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">13,290 reclamos en ajuste · producto dominante 98% ·
+texto único 31% · plantilla dominante 6%</p>
+<p class="terms">redacted redacted, redacted, validate, erroneous, credit, authorized fail, proof period, period allowed, allowed law, file listed</p>
+<p>ajuste: 146 reclamos/semana (1% del total) · calibración: 123 reclamos/semana (1% del total) · 2025-H1: 131 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_04.png" alt="Serie semanal del patrón 4">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-09-27 · Credit reporting or other personal consumer reports</span><br>When I reviewed my credit report, I discovered that some of the information was erroneous. The 3 credit bureaus must validate these accounts in line with Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ) ( A ). It is not authorized to fai…</blockquote><blockquote><span class="muted">2023-10-03 · Credit reporting or other personal consumer reports</span><br>When I reviewed my credit report, I discovered that this account was erroneous. The 3 credit bureaus must validate this account in line with Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ) ( A ). It is not authorized to fail to validate…</blockquote><blockquote><span class="muted">2023-05-03 · Credit reporting or other personal consumer reports</span><br>When I reviewed my credit report, I discovered that some of the information was erroneous. The PORTFOLIO must validate this account in line with Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ) ( A ). It is not authorized to fail to vali…</blockquote></details>
+</section>
+
+<section class="card" id="patron-5">
+<h2>Patrón 5 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">9,474 reclamos en ajuste · producto dominante 85% ·
+texto único 6% · plantilla dominante 20%</p>
+<p class="terms">consumer, 15, section, states, reporting, report, reporting agency, 1681, consumer reporting, credit</p>
+<p>ajuste: 104 reclamos/semana (1% del total) · calibración: 311 reclamos/semana (2% del total) · 2025-H1: 256 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_05.png" alt="Serie semanal del patrón 5">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-09-02 · Credit reporting or other personal consumer reports</span><br>After reviewing my consumer report I've noticed that. there is a collection account reporting. I asked the creditor that's reporting this account to send me all documents that verifies the alleged debt. They failed to respond to me with an…</blockquote><blockquote><span class="muted">2024-05-21 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to priv…</blockquote><blockquote><span class="muted">2023-08-19 · Credit reporting or other personal consumer reports</span><br>I n accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to pri…</blockquote></details>
+</section>
+
+<section class="card" id="patron-6">
+<h2>Patrón 6 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">13,745 reclamos en ajuste · producto dominante 100% ·
+texto único 41% · plantilla dominante 9%</p>
+<p class="terms">redacted redacted, redacted, redacted balance, 00 redacted, balance, 00, records, complain question, question specific, coming wrongdoing</p>
+<p>ajuste: 151 reclamos/semana (1% del total) · calibración: 163 reclamos/semana (1% del total) · 2025-H1: 186 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_06.png" alt="Serie semanal del patrón 6">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-03-18 · Credit reporting or other personal consumer reports</span><br>This is my Follow-up endeavor to tell you that I am a victim of identity theft and I complain to question specific items in my document coming about because of the wrongdoing. The items I am questioning connect with no exchanges acquiring …</blockquote><blockquote><span class="muted">2023-03-29 · Credit reporting or other personal consumer reports</span><br>This is my second endeavor to tell you that I am a victim of identity theft and I complain to question specific records in my document coming about because of the wrongdoing. The records I am questioning connect with no exchanges acquiring…</blockquote><blockquote><span class="muted">2023-03-10 · Credit reporting or other personal consumer reports</span><br>This is my second endeavor to tell you that I am a victim of identity theft and I complain to question specific records in my document coming about because of the wrongdoing. The records I am questioning connect with no exchanges acquiring…</blockquote></details>
+</section>
+
+<section class="card" id="patron-7">
+<h2>Patrón 7 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">11,531 reclamos en ajuste · producto dominante 93% ·
+texto único 15% · plantilla dominante 10%</p>
+<p class="terms">redacted redacted, redacted, report, credit, disputes, accounts, credit report, verify, 3rd party, information</p>
+<p>ajuste: 126 reclamos/semana (1% del total) · calibración: 211 reclamos/semana (1% del total) · 2025-H1: 222 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_07.png" alt="Serie semanal del patrón 7">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-07-26 · Credit reporting or other personal consumer reports</span><br>Your efficiency and prompt attention to correcting some of the adverse information previously stated on my credit file is appreciated, yet there are still items that need to be addressed again and to be corrected immediately. The three cre…</blockquote><blockquote><span class="muted">2023-09-29 · Credit reporting or other personal consumer reports</span><br>Your efficiency and prompt attention to correcting some of the adverse information previously stated on my credit file is appreciated, yet there are still items that need to be addressed again and to be corrected immediately. The three cre…</blockquote><blockquote><span class="muted">2023-10-05 · Credit reporting or other personal consumer reports</span><br>Your efficiency and prompt attention to correcting some of the adverse information previously stated on my credit file is appreciated, yet there are still items that need to be addressed again and to be corrected immediately. The three cre…</blockquote></details>
+</section>
+
+<section class="card" id="patron-8">
+<h2>Patrón 8 · Checking or savings account</h2>
+<p class="meta">119,770 reclamos en ajuste · producto dominante 39% ·
+texto único 95% · plantilla dominante 1%</p>
+<p class="terms">bank, card, account, redacted, 00, told, money, called, funds, check</p>
+<p>ajuste: 1313 reclamos/semana (12% del total) · calibración: 1544 reclamos/semana (9% del total) · 2025-H1: 4165 reclamos/semana (12% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_08.png" alt="Serie semanal del patrón 8">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-05-22 · Checking or savings account</span><br>I have been a XXXX XXXX and I received a wisely card with my direct deposits in XXXX. I worked through XXXX and got direct deposits on the wisely card. I have some direct deposit set up on my card but it is not my main card. On XX/XX/XXXX,…</blockquote><blockquote><span class="muted">2023-03-28 · Credit card or prepaid card</span><br>This makes the 3rd complaint I have made about setting up the direct deposit on my way2go card. I am unable to do that. I file a complaint a person calls me back and tells me that she ( XXXX ) is not able to assist me. That she has to file…</blockquote><blockquote><span class="muted">2024-01-26 · Credit card</span><br>This new complaint is related to the previous complaint case XXXX against Commerce Bank for their illegal activities which was filed on XX/XX/2024. In this new complaint dated XX/XX/XXXX, XXXX is complaining about a second un-authorized ba…</blockquote></details>
+</section>
+
+<section class="card" id="patron-9">
+<h2>Patrón 9 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">2,670 reclamos en ajuste · producto dominante 85% ·
+texto único 5% · plantilla dominante 17%</p>
+<p class="terms">complaint, party, complaint error, party involved, involved, reported, error, involved filing, complaint complaint, redacted party</p>
+<p>ajuste: 29 reclamos/semana (0% del total) · calibración: 21 reclamos/semana (0% del total) · 2025-H1: 15 reclamos/semana (0% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_09.png" alt="Serie semanal del patrón 9">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-01-15 · Credit reporting or other personal consumer reports</span><br>This is my XXXX nd time submitting a dispute to the company. Each time they keep sending me a letter saying they are not going to investigate. This is extremely inappropriate as I am trying to get my credit report to report accurately.</blockquote><blockquote><span class="muted">2023-08-21 · Credit reporting or other personal consumer reports</span><br>The Credit Reporting Agency XXXX had access to and knowingly stole my non-public information and furnished a credit report. They are a non-affiliated third party as I have them no written permission to do so</blockquote><blockquote><span class="muted">2024-09-13 · Credit reporting or other personal consumer reports</span><br>I am writing this letter as my third attempt to dispute and rectify the inaccurate negative items listed on my credit report with XXXX and Experian. Despite my previous disputes, these errors remain unresolved, and it is unacceptable that …</blockquote></details>
+</section>
+
+<section class="card" id="patron-10">
+<h2>Patrón 10 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">9,158 reclamos en ajuste · producto dominante 97% ·
+texto único 19% · plantilla dominante 10%</p>
+<p class="terms">redacted redacted, redacted, report, credit, credit report, consent, complaint, erroneous information, reports, written consent</p>
+<p>ajuste: 101 reclamos/semana (1% del total) · calibración: 253 reclamos/semana (1% del total) · 2025-H1: 206 reclamos/semana (1% del total).<br>alertas CUSUM en calibración: 2024-12-02.</p>
+<img src="series/cluster_10.png" alt="Serie semanal del patrón 10">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-03-18 · Credit reporting or other personal consumer reports</span><br>I am sending you this complaint to inform you that this company made an unauthorized inquiry on my personal credit report. I have listed the company 's name below, and the dates the inquiry was made. Since I did not authorize this company …</blockquote><blockquote><span class="muted">2024-03-04 · Credit reporting or other personal consumer reports</span><br>I am sending you this complaint to inform you that this company made an unauthorized inquiry on my personal credit report. I have listed the company 's name below, and the dates the inquiry was made. Since I did not authorize this company …</blockquote><blockquote><span class="muted">2023-10-19 · Credit reporting or other personal consumer reports</span><br>This company keeps sending unsolicited marketing services for credit repair that I do not need and they will not stop. The email is : XXXX XXXX</blockquote></details>
+</section>
+
+<section class="card" id="patron-11">
+<h2>Patrón 11 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">97,126 reclamos en ajuste · producto dominante 97% ·
+texto único 67% · plantilla dominante 0%</p>
+<p class="terms">redacted redacted, redacted, 00, 00 redacted, redacted balance, balance, credit, inquiries, items, remove</p>
+<p>ajuste: 1065 reclamos/semana (9% del total) · calibración: 1373 reclamos/semana (8% del total) · 2025-H1: 1549 reclamos/semana (6% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 3 semanas.</p>
+<img src="series/cluster_11.png" alt="Serie semanal del patrón 11">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-04-15 · Credit reporting or other personal consumer reports</span><br>Consider This Complaint as a Follow-up to my previous complaint. My previous Complaint contains these fraudulent items XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX …</blockquote><blockquote><span class="muted">2024-04-05 · Credit reporting or other personal consumer reports</span><br>I have send ftc report to XXXX and XXXX violation under the section 1681I I NEED ALL THIS ACCOUNT OF MY CREDIT XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXX…</blockquote><blockquote><span class="muted">2023-03-03 · Credit reporting or other personal consumer reports</span><br>Im submitting a complaint to you today to inform you I was the victim of identity theft. I need the items to be removed ASAP for their erroneous status. Please find the ATTACHED documents to assist in blocking the erroneous information whi…</blockquote></details>
+</section>
+
+<section class="card" id="patron-12">
+<h2>Patrón 12 · Debt collection</h2>
+<p class="meta">86,363 reclamos en ajuste · producto dominante 55% ·
+texto único 88% · plantilla dominante 0%</p>
+<p class="terms">debt, collection, redacted, redacted redacted, account, company, alleged, credit, collect, validation</p>
+<p>ajuste: 946 reclamos/semana (8% del total) · calibración: 1324 reclamos/semana (7% del total) · 2025-H1: 1809 reclamos/semana (7% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_12.png" alt="Serie semanal del patrón 12">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-03-08 · Debt collection</span><br>This is my 3rd attempt to remove this debt collection from my credit report. XXXX XXXX XXXX has sold my XXXX collection to re-collectors, again and again. As stated on my credit report, my vehicle was repossessed in XX/XX/XXXX, and do not …</blockquote><blockquote><span class="muted">2023-04-19 · Credit reporting or other personal consumer reports</span><br>COMPANY AT FAULT : ZION DEBT HOLDINGS LLC THIS COMPANY HAS REPORTED NEGATIVE INACCURATE INFORMATION ON MY CREDIT REPORTS. IT HAS CAUSE SEVERE HARM TO MY CREDIT SCORE AND IMAGE. I HAVE SPOKEN TO THIS COMPANY PREVIOUSLY AND EXPLAIN TO THEM T…</blockquote><blockquote><span class="muted">2023-02-18 · Credit reporting or other personal consumer reports</span><br>I suspect that a debt collector has intentionally re-aged my debt. This is a 5 year old debt, from XXXX, that was closed and written off by the original company. Following this, it was deleted off all my credit reports. Now, years later it…</blockquote></details>
+</section>
+
+<section class="card" id="patron-13">
+<h2>Patrón 13 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">97,382 reclamos en ajuste · producto dominante 37% ·
+texto único 88% · plantilla dominante 1%</p>
+<p class="terms">loan, redacted, mortgage, payment, redacted redacted, told, payments, 00, paid, account</p>
+<p>ajuste: 1067 reclamos/semana (10% del total) · calibración: 1302 reclamos/semana (7% del total) · 2025-H1: 2055 reclamos/semana (8% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 2 semanas.</p>
+<img src="series/cluster_13.png" alt="Serie semanal del patrón 13">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-03-09 · Payday loan, title loan, or personal loan</span><br>Loan origination date was on or about XX/XX/XXXX for the amount of XXXX dollars. Contacted them in XX/XX/XXXX when the payment amount went up from XXXX dollars to XXXX dollars. During this conversation asked about the loan documents and wh…</blockquote><blockquote><span class="muted">2023-10-18 · Mortgage</span><br>I had a HELOC agreement with Truist dated XX/XX/XXXX ( which will be attached ). On XXXX, XXXX we entered a new agreement and this previous loan/lien was paid off. The other file attached will show an Internal Payoff-HELCOC for {$110000.00…</blockquote><blockquote><span class="muted">2023-06-30 · Vehicle loan or lease</span><br>We paid off our Ally Financial loan XX/XX/2023. Its now XX/XX/2023 and still no pick slip. They are refusing to waive the late fees that fall during Covid that is covered under the CARES act</blockquote></details>
+</section>
+
+<section class="card" id="patron-14">
+<h2>Patrón 14 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">176,716 reclamos en ajuste · producto dominante 94% ·
+texto único 80% · plantilla dominante 0%</p>
+<p class="terms">redacted, redacted redacted, account, credit, report, information, credit report, reporting, fcra, consumer</p>
+<p>ajuste: 1936 reclamos/semana (17% del total) · calibración: 4042 reclamos/semana (23% del total) · 2025-H1: 7844 reclamos/semana (30% del total).<br>alertas CUSUM en calibración: 2024-11-11; en 2025-H1 (ya consultado): 3 semanas.</p>
+<img src="series/cluster_14.png" alt="Serie semanal del patrón 14">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-08-16 · Credit reporting or other personal consumer reports</span><br>I have called and asked about why my personal information is being furnished without my written permission, which is a violation against my rights and is a crime and i need these credit reporting agencies to do what I am requesting and i d…</blockquote><blockquote><span class="muted">2024-05-09 · Credit reporting or other personal consumer reports</span><br>Dear Consumer Financial Protection Bureau, I am writing to file a complaint regarding the non-compliance of XXXX, TransUnion, and XXXX with regards to inaccurate reporting of my personal information. Despite my repeated attempts to address…</blockquote><blockquote><span class="muted">2023-08-17 · Credit reporting or other personal consumer reports</span><br>Good day! I recently wrote to XXXX and Equifax showing my concerns with the fraudulent information that they have been reporting on my credit report. I wrote to them on the XXXX of XX/XX/2023 and also in August 30 days after the previous l…</blockquote></details>
+</section>
+
+<section class="card" id="patron-15">
+<h2>Patrón 15 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">7,597 reclamos en ajuste · producto dominante 98% ·
+texto único 1% · plantilla dominante 61%</p>
+<p class="terms">letters, bureaus continuously, far gotten, happened mailed, continuously far, really sure, sure happened, involved review, gotten response, mailed letters</p>
+<p>ajuste: 83 reclamos/semana (1% del total) · calibración: 56 reclamos/semana (0% del total) · 2025-H1: 36 reclamos/semana (0% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_15.png" alt="Serie semanal del patrón 15">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-06-28 · Credit reporting or other personal consumer reports</span><br>I have never applied for credit. They are fraudulently reporting on my credit report. I filed FTC report with report number XXXX and now requesting CFPB to investigate as well.</blockquote><blockquote><span class="muted">2024-03-06 · Credit reporting or other personal consumer reports</span><br>I'm really not sure what happened. I have mailed off letters to the credit bureaus continuously and thus far I have not gotten a response. My name is XXXX XXXX XXXX and I am filing this complaint for falsely reporting misleading informatio…</blockquote><blockquote><span class="muted">2023-01-26 · Credit reporting or other personal consumer reports</span><br>I'm really not sure what happened. I have mailed off letters to the credit bureaus continuously and thus far I have not gotten a response.My name is XXXX XXXX XXXX and I am filing this complaint for falsely reporting misleading information…</blockquote></details>
+</section>
+
+<section class="card" id="patron-16">
+<h2>Patrón 16 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">9,342 reclamos en ajuste · producto dominante 96% ·
+texto único 3% · plantilla dominante 27%</p>
+<p class="terms">consumer, 15, section, reporting agency, 1681, reporting, states, consumer reporting, agency, information</p>
+<p>ajuste: 102 reclamos/semana (1% del total) · calibración: 261 reclamos/semana (1% del total) · 2025-H1: 190 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_16.png" alt="Serie semanal del patrón 16">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-09-27 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to priv…</blockquote><blockquote><span class="muted">2024-09-30 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit Reporting Act, the list of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C. 1681, section 602 ( A ), states that I have the ri…</blockquote><blockquote><span class="muted">2023-03-21 · Credit reporting or other personal consumer reports</span><br>In accordance with the fair credit reporting act. The account list below has violated my federally protected consumer rights to privacy and confidentialty under 15 USC 1681. Account name XXXX XXXX Account number XXXX Account name XXXX XXXX…</blockquote></details>
+</section>
+
+<section class="card" id="patron-17">
+<h2>Patrón 17 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">71,113 reclamos en ajuste · producto dominante 94% ·
+texto único 56% · plantilla dominante 2%</p>
+<p class="terms">redacted account, account, account redacted, section, redacted, redacted redacted, 15, 1681, states, consumer</p>
+<p>ajuste: 779 reclamos/semana (7% del total) · calibración: 605 reclamos/semana (3% del total) · 2025-H1: 503 reclamos/semana (2% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_17.png" alt="Serie semanal del patrón 17">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-12-27 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit reporting act the following creditors violated my rights under the 15 USC 1681 section 6 o 2 states " I have a right to privacy ( 15 USC 1681 section 604 states a consumer can not furnish an account witho…</blockquote><blockquote><span class="muted">2024-05-06 · Debt collection</span><br>Good day to whoever is resolving my issue. I just wanted to report my credit card companies that violated my rights by giving third party accounts my information. They also violated my privacy under the Fair Credit Reporting Act, which is …</blockquote><blockquote><span class="muted">2023-12-19 · Credit reporting or other personal consumer reports</span><br>According to the Fair Credit Reporting act 15 USC 1681 I have the right to privacy. Also according to 15 USC 6802 No financial institution is supposed to share my information to third party people, much of this information was also mistake…</blockquote></details>
+</section>
+
+<section class="card" id="patron-18">
+<h2>Patrón 18 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">10,792 reclamos en ajuste · producto dominante 88% ·
+texto único 24% · plantilla dominante 6%</p>
+<p class="terms">redacted redacted, redacted, permitted, legitimate activity, report, legitimate, activity, credit report, credit, redacted balance</p>
+<p>ajuste: 118 reclamos/semana (1% del total) · calibración: 124 reclamos/semana (1% del total) · 2025-H1: 74 reclamos/semana (0% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_18.png" alt="Serie semanal del patrón 18">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-04-30 · Debt collection</span><br>Failed to implement adequate procedures to ensure the highest level of accuracy in the credit reports you publish. According to credit reporting laws, it is essential that bureaus only report credit information that is 100 % accurate, and …</blockquote><blockquote><span class="muted">2023-06-15 · Credit reporting or other personal consumer reports</span><br>As I look out my credit report, I had found out that there are some account that need to be corrected on my credit file. The fact is, this account seems to be inaccurate as well as the accuracy. So in this way, I am complaining for you to …</blockquote><blockquote><span class="muted">2023-09-04 · Credit reporting or other personal consumer reports</span><br>By the provisions of the Fair Credit Reporting Act, I am submitting this complaint to request that the listed account which I believe appears to be inaccurate and incomplete be immediately investigated and corrected on my credit file. XXXX…</blockquote></details>
+</section>
+
+<section class="card" id="patron-19">
+<h2>Patrón 19 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">63,214 reclamos en ajuste · producto dominante 91% ·
+texto único 37% · plantilla dominante 1%</p>
+<p class="terms">credit, credit report, report, redacted redacted, redacted, identity, accounts, inquiries, theft, identity theft</p>
+<p>ajuste: 693 reclamos/semana (6% del total) · calibración: 1378 reclamos/semana (8% del total) · 2025-H1: 1627 reclamos/semana (6% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_19.png" alt="Serie semanal del patrón 19">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-08-07 · Credit reporting or other personal consumer reports</span><br>Fraudulent information being reported to my file and needs to be blocked.</blockquote><blockquote><span class="muted">2023-01-20 · Credit reporting or other personal consumer reports</span><br>I WAS LOOKING AT MY CREDIT AT I SEE THAT I HAVE FRAUD ACCOUNTS ON MY FILE AND I CONTACT THE CREDIT COMPANYS AND ITS STILL NOT UPDATE YET</blockquote><blockquote><span class="muted">2024-06-25 · Credit reporting or other personal consumer reports</span><br>There is illegal activity on my report. I would value if you would please submit a complaint against against the companies that are reporting.</blockquote></details>
+</section>
+
+<section class="card" id="patron-20">
+<h2>Patrón 20 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">3,371 reclamos en ajuste · producto dominante 99% ·
+texto único 3% · plantilla dominante 48%</p>
+<p class="terms">consumer reports, consent, reports, consumer, consent fraud, reports consent, reports gave, gave written, consent report, purposes consumer</p>
+<p>ajuste: 37 reclamos/semana (0% del total) · calibración: 32 reclamos/semana (0% del total) · 2025-H1: 13 reclamos/semana (0% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_20.png" alt="Serie semanal del patrón 20">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-04-24 · Credit reporting or other personal consumer reports</span><br>Please take a look at the attached letters and ID docs for verification that it is I XXXX XXXX filing this complaint. The stuff on my credit report is wrong and Under 15 U.S. Code 1681b Permissible purposes of consumer reports I never gave…</blockquote><blockquote><span class="muted">2024-09-30 · Credit reporting or other personal consumer reports</span><br>Please take a look at the attached letters and ID docs for verification that it is I XXXX T XXXX filing this complaint. The stuff on my credit report is wrong and Under 15 U.S. Code 1681b Permissible purposes of consumer reports I never ga…</blockquote><blockquote><span class="muted">2024-02-27 · Credit reporting or other personal consumer reports</span><br>Please take a look at the attached letters and ID docs for verification that it is I XXXX XXXX is complaint. The stuff on my credit report is wrong and Under 15 U.S. Code 1681b Permissible purposes of consumer reports i never gave any writ…</blockquote></details>
+</section>
+
+<section class="card" id="patron-21">
+<h2>Patrón 21 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">4,109 reclamos en ajuste · producto dominante 57% ·
+texto único 2% · plantilla dominante 56%</p>
+<p class="terms">start investigation, bureau start, documents want, want bureau, start, investigation accounts, accounts late, reporting late, late, attached documents</p>
+<p>ajuste: 45 reclamos/semana (0% del total) · calibración: 50 reclamos/semana (0% del total) · 2025-H1: 71 reclamos/semana (0% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_21.png" alt="Serie semanal del patrón 21">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-12-15 · Credit card</span><br>See the attached documents. I want the bureau to start the investigation on these accounts that I am never late for but they're reporting me as late.</blockquote><blockquote><span class="muted">2023-10-11 · Credit reporting or other personal consumer reports</span><br>My name is XXXX XXXX, this complaint is not made in error neither is it being made by a third party. I declare under penalty of perjury I am alleging that a person or company- without my authorization- from unauthorized use of my social se…</blockquote><blockquote><span class="muted">2023-05-12 · Credit reporting or other personal consumer reports</span><br>My name is XXXX XXXX this complaint is not made in error neither is it being made by a third party.I declare under penalty of perjury I am alleging that a person or company- without my authorization- from unauthorized use of my social secu…</blockquote></details>
+</section>
+
+<section class="card" id="patron-22">
+<h2>Patrón 22 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">12,879 reclamos en ajuste · producto dominante 96% ·
+texto único 21% · plantilla dominante 16%</p>
+<p class="terms">redacted redacted, redacted, law, written requests, violation federal, requests, items, federal law, consumer, accounts</p>
+<p>ajuste: 141 reclamos/semana (1% del total) · calibración: 190 reclamos/semana (1% del total) · 2025-H1: 201 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_22.png" alt="Serie semanal del patrón 22">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-08-03 · Credit reporting or other personal consumer reports</span><br>The following items continue to report on my credit report without my permission, in violation of federal law, despite numerous written requests. As required by Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ), these items must be verifi…</blockquote><blockquote><span class="muted">2023-09-27 · Credit reporting or other personal consumer reports</span><br>Despite multiple written requests, the unverified accounts listed below continue to report on my credit report, in violation of federal law. These accounts must be validated under Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ). ( A ). …</blockquote><blockquote><span class="muted">2023-07-31 · Credit reporting or other personal consumer reports</span><br>The following items continue to report on my credit report without my permission, in violation of federal law, despite numerous written requests. As required by Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ), these items must be verifi…</blockquote></details>
+</section>
+
+<section class="card" id="patron-23">
+<h2>Patrón 23 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">6,407 reclamos en ajuste · producto dominante 96% ·
+texto único 5% · plantilla dominante 14%</p>
+<p class="terms">15, consumer, agency, section, reporting, reporting agency, 1681, states, consumer reporting, information</p>
+<p>ajuste: 70 reclamos/semana (1% del total) · calibración: 108 reclamos/semana (1% del total) · 2025-H1: 137 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_23.png" alt="Serie semanal del patrón 23">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-07-13 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit Reporting Act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. XXXX XXXX XXXXXXXX 15 U.S.C 1681 section 602 A. States I hav…</blockquote><blockquote><span class="muted">2023-01-12 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. Account name : 1. Bank of America has violated my rights. 15…</blockquote><blockquote><span class="muted">2023-03-27 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit Reporting Act. The List of Accounts in my letter has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 Section 602 A. States I have the right …</blockquote></details>
+</section>
+
+<section class="card" id="patron-24">
+<h2>Patrón 24 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">9,733 reclamos en ajuste · producto dominante 84% ·
+texto único 14% · plantilla dominante 10%</p>
+<p class="terms">redacted redacted, items, redacted, stress, accounts, unseen, identity, disputed items, remove, stolen</p>
+<p>ajuste: 106 reclamos/semana (1% del total) · calibración: 167 reclamos/semana (1% del total) · 2025-H1: 134 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_24.png" alt="Serie semanal del patrón 24">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-06-21 · Credit reporting or other personal consumer reports</span><br>I disputed incorrect negative items on my credit report with Transition, XXXX, and XXXX. The items came back verified by all XXXX credit bureaus, so I responded with a verification letter asking for methods used when investigating my dispu…</blockquote><blockquote><span class="muted">2024-05-29 · Credit reporting or other personal consumer reports</span><br>According to my research about FCRA 605, Credit Bureaus are required by law to remove any items which are found to be opened due to identity theft. Again, it appears that my credit with you has been compromised, these items being reported …</blockquote><blockquote><span class="muted">2024-07-10 · Credit reporting or other personal consumer reports</span><br>According to my research about FCRA 605, Credit Bureaus are required by law to remove any items which are found to be opened due to identity theft. Again, it appears that my credit with you has been compromised, these items being reported …</blockquote></details>
+</section>
+
+<section class="card" id="patron-25">
+<h2>Patrón 25 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">14,204 reclamos en ajuste · producto dominante 97% ·
+texto único 33% · plantilla dominante 8%</p>
+<p class="terms">sections 609, sections, 609 611, 609, redacted, 611, redacted redacted, redacted balance, balance, 00</p>
+<p>ajuste: 156 reclamos/semana (1% del total) · calibración: 164 reclamos/semana (1% del total) · 2025-H1: 188 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_25.png" alt="Serie semanal del patrón 25">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-04-11 · Credit reporting or other personal consumer reports</span><br>Upon examining my credit report, I identified inaccuracies in certain information. According to Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ) ( A ), it is imperative for the Equifax and XXXX credit bureaus to authenticate these accoun…</blockquote><blockquote><span class="muted">2023-03-27 · Credit reporting or other personal consumer reports</span><br>I checked my credit report and found that some of the data were incorrect. Equifax is required by Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ) to verify this item ( A ). It is not permitted to report this item as unverified informati…</blockquote><blockquote><span class="muted">2023-07-26 · Credit reporting or other personal consumer reports</span><br>When I investigated my credit report, I realized that some of the information was erroneous. The Equifax and XXXX credit bureaus are required to authenticate the account under Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ). ( A ). It i…</blockquote></details>
+</section>
+
+<section class="card" id="patron-26">
+<h2>Patrón 26 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">11,256 reclamos en ajuste · producto dominante 91% ·
+texto único 16% · plantilla dominante 16%</p>
+<p class="terms">accounts, credit, report, credit report, information, 15, consumer, accounts credit, reporting, fcra 605b</p>
+<p>ajuste: 123 reclamos/semana (1% del total) · calibración: 126 reclamos/semana (1% del total) · 2025-H1: 133 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_26.png" alt="Serie semanal del patrón 26">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-05-30 · Credit reporting or other personal consumer reports</span><br>I'm disputing and investigating these wrongly reported accounts on my credit file. According to the Fair Credit Report Act, I should get XXXX} for each mistake. The FCRA 605B says we must report any incorrect accounts on a consumer 's repo…</blockquote><blockquote><span class="muted">2024-03-28 · Credit reporting or other personal consumer reports</span><br>I believe FCRA 605B necessitates the elimination of any erroneous accounts from my credit report. Could you kindly review the paperwork? Several of the mentioned accounts exhibit inaccuracies in terms of reporting</blockquote><blockquote><span class="muted">2024-05-11 · Credit reporting or other personal consumer reports</span><br>FCRA 605B mandates the removal of any erroneous accounts from my credit report. Could you review the documents? Some accounts listed have inaccuracies regarding reporting, amounts, and dates.</blockquote></details>
+</section>
+
+<section class="card" id="patron-27">
+<h2>Patrón 27 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">8,018 reclamos en ajuste · producto dominante 99% ·
+texto único 13% · plantilla dominante 23%</p>
+<p class="terms">redacted redacted, redacted, report, credit report, inquiry credit, fraud inquiry, remove fraud, theft remove, theft, information</p>
+<p>ajuste: 88 reclamos/semana (1% del total) · calibración: 63 reclamos/semana (0% del total) · 2025-H1: 30 reclamos/semana (0% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_27.png" alt="Serie semanal del patrón 27">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-09-23 · Credit reporting or other personal consumer reports</span><br>IM A VICTIM OF IDENTITY THEFT PURSUANT TO FEDERAL LAW SECTION 605B YOU MUST REMOVE THE FRAUDULENT INFORMATION FROM MY NAME. I HAVE ATTACHED PAPERWORK SHOWING THE FRAUDULENT INFORMATION.</blockquote><blockquote><span class="muted">2023-11-25 · Debt collection</span><br>This company is damaging my credit in an abusive way, I have called those people to tell them to show me that it is mine and they have no way to prove it, I have never used their services or anything like that, I ask for help to remove thi…</blockquote><blockquote><span class="muted">2023-11-16 · Credit reporting or other personal consumer reports</span><br>I already told them this info is not mines and im victim of identity theft. I need this info removed please.</blockquote></details>
+</section>
+
+<section class="card" id="patron-28">
+<h2>Patrón 28 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">6,960 reclamos en ajuste · producto dominante 80% ·
+texto único 10% · plantilla dominante 12%</p>
+<p class="terms">accounts, report, debt, credit, 15, code, credit report, consumer, 15 code, inaccurate</p>
+<p>ajuste: 76 reclamos/semana (1% del total) · calibración: 208 reclamos/semana (1% del total) · 2025-H1: 150 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_28.png" alt="Serie semanal del patrón 28">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-06-27 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit Reporting Act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. has violated my rights. Or a list of inquiries : 15 U.S.C 16…</blockquote><blockquote><span class="muted">2023-07-26 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to priv…</blockquote><blockquote><span class="muted">2023-06-12 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. The letters are stated with items and issues. 15 U.S.C 1681 …</blockquote></details>
+</section>
+
+<section class="card" id="patron-29">
+<h2>Patrón 29 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">9,166 reclamos en ajuste · producto dominante 98% ·
+texto único 19% · plantilla dominante 12%</p>
+<p class="terms">identity, theft, identity theft, redacted redacted, redacted, items, federal, federal trade, trade, report</p>
+<p>ajuste: 100 reclamos/semana (1% del total) · calibración: 115 reclamos/semana (1% del total) · 2025-H1: 246 reclamos/semana (1% del total).<br>alertas CUSUM en calibración: 2024-12-09; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_29.png" alt="Serie semanal del patrón 29">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-01-18 · Credit reporting or other personal consumer reports</span><br>This is the several time I've complained about being a victim of identity theft. The XXXX Credit Bureaus must remove any item that was opened without my knowledge, consent, or authority within XXXX business days with ( 1 ) appropriate proo…</blockquote><blockquote><span class="muted">2023-08-23 · Credit reporting or other personal consumer reports</span><br>This is the several times I've complained about being a victim of identity theft. You must remove/block any account that was opened without my knowledge, consent, or authority within 4 business days with ( 1 ) appropriate proof of the iden…</blockquote><blockquote><span class="muted">2023-10-24 · Credit reporting or other personal consumer reports</span><br>This is the several times I've complained about being a victim of identity theft. You must remove/block any items that was opened without my knowledge, consent, or authority within 4 business days with ( 1 ) appropriate proof of the identi…</blockquote></details>
+</section>
+
+<section class="card" id="patron-30">
+<h2>Patrón 30 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">21,597 reclamos en ajuste · producto dominante 87% ·
+texto único 32% · plantilla dominante 3%</p>
+<p class="terms">payment, late, payments, creditor, mailed delivered, periodic, delivered, periodic statement, 1637, 21 days</p>
+<p>ajuste: 236 reclamos/semana (2% del total) · calibración: 406 reclamos/semana (2% del total) · 2025-H1: 369 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_30.png" alt="Serie semanal del patrón 30">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2023-08-18 · Credit reporting or other personal consumer reports</span><br>I reviewed my Consumer Reports and noticed that I had two late payments on an account that I was never late for. Consumer Reporting Agencies have assumed a vital role and have a responsibility to report Consumer Information to the best of …</blockquote><blockquote><span class="muted">2024-02-16 · Credit reporting or other personal consumer reports</span><br>I reviewed my Consumer Reports and noticed that I had two late payments on an account that I was never late for. Consumer Reporting Agencies have assumed a vital role and have a responsibility to report Consumer information to the best of …</blockquote><blockquote><span class="muted">2024-07-15 · Credit reporting or other personal consumer reports</span><br>I reviewed my Consumer Reports and noticed that I had two late payments on an account that I was never late for Consumer Reporting Agencies have assumed a vital role and have a responsibility to report Consumer information to the best of t…</blockquote></details>
+</section>
+
+<section class="card" id="patron-31">
+<h2>Patrón 31 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">8,060 reclamos en ajuste · producto dominante 78% ·
+texto único 3% · plantilla dominante 43%</p>
+<p class="terms">need reporting, reporting correction, correction company, identified inaccurate, inaccurate accounts, reviewing credit, report identified, accounts need, reviewing, identified</p>
+<p>ajuste: 88 reclamos/semana (1% del total) · calibración: 250 reclamos/semana (1% del total) · 2025-H1: 313 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_31.png" alt="Serie semanal del patrón 31">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-07-26 · Credit reporting or other personal consumer reports</span><br>Upon reviewing my credit report, I have identified inaccurate accounts that need reporting and correction through your company.</blockquote><blockquote><span class="muted">2024-08-07 · Credit reporting or other personal consumer reports</span><br>I value my credit a lot and the inaccuracy in my report has negatively affected my financial opportunities as well as my XXXX XXXX</blockquote><blockquote><span class="muted">2024-07-12 · Credit reporting or other personal consumer reports</span><br>I value my credit a lot and the inaccuracy in my report has negatively affected my financial opportunities as well as my XXXX XXXX.</blockquote></details>
+</section>
+
+<section class="card" id="patron-32">
+<h2>Patrón 32 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">9,040 reclamos en ajuste · producto dominante 95% ·
+texto único 16% · plantilla dominante 14%</p>
+<p class="terms">redacted redacted, redacted, credit, late payment, section, consumer, 15, verify, information, 1681</p>
+<p>ajuste: 99 reclamos/semana (1% del total) · calibración: 108 reclamos/semana (1% del total) · 2025-H1: 86 reclamos/semana (0% del total).<br>alertas CUSUM en calibración: 2024-12-23; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_32.png" alt="Serie semanal del patrón 32">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-08-14 · Credit reporting or other personal consumer reports</span><br>I filed a dispute for incorrect information on my credit report. I received an email from the credit bureau stating that they are assuming the disputes are coming from a 3rd party. They in fact did not come from a 3rd party. l even called …</blockquote><blockquote><span class="muted">2023-09-20 · Debt collection</span><br>This letter is a formal complaint that you are reporting inaccurate incomplete Credit information. According to the fair credit reporting act section 609A1A who are required by law to verify through physical verification of the original si…</blockquote><blockquote><span class="muted">2024-01-06 · Credit reporting or other personal consumer reports</span><br>XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX…</blockquote></details>
+</section>
+
+<section class="card" id="patron-33">
+<h2>Patrón 33 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">7,051 reclamos en ajuste · producto dominante 88% ·
+texto único 2% · plantilla dominante 43%</p>
+<p class="terms">payments, updated records, consistently maintained, precise updated, seeking precise, reflect timely, perplexing discover, maintained time, records accurately, payments perplexing</p>
+<p>ajuste: 77 reclamos/semana (1% del total) · calibración: 15 reclamos/semana (0% del total) · 2025-H1: 14 reclamos/semana (0% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_33.png" alt="Serie semanal del patrón 33">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-03-20 · Credit card</span><br>I have consistently made on-time payments, and it is unjust to be penalized with this erroneous entry. I urge you to update my account without delay.</blockquote><blockquote><span class="muted">2024-02-07 · Credit card</span><br>It's unfair that I've consistently made on-time payments for this account and have never been late. Please correct my account to accurately reflect this.</blockquote><blockquote><span class="muted">2024-04-22 · Credit reporting or other personal consumer reports</span><br>I have consistently maintained on-time payments, so I find it perplexing to discover an error in my credit report. I am seeking precise and updated records that accurately reflect my timely payments for those accounts. I sincerely hope that</blockquote></details>
+</section>
+
+<section class="card" id="patron-34">
+<h2>Patrón 34 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">6,530 reclamos en ajuste · producto dominante 99% ·
+texto único 0% · plantilla dominante 71%</p>
+<p class="terms">letters, bureaus continuously, happened mailed, really sure, far gotten, continuously far, sure happened, involved review, gotten response, mailed letters</p>
+<p>ajuste: 72 reclamos/semana (1% del total) · calibración: 35 reclamos/semana (0% del total) · 2025-H1: 32 reclamos/semana (0% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_34.png" alt="Serie semanal del patrón 34">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-05-20 · Credit reporting or other personal consumer reports</span><br>I'm really not sure what happened. I have mailed off letters to the credit bureaus continuously and thus far I have not gotten a response. My name is XXXX XXXX and I am filing this complaint for falsely reporting misleading information. Th…</blockquote><blockquote><span class="muted">2023-03-13 · Credit reporting or other personal consumer reports</span><br>I'm really not sure what happened. I have mailed off letters to the credit bureaus continuously and thus far I have not gotten a response.My name is XXXX XXXX and I am filing this complaint for falsely reporting misleading information.Ther…</blockquote><blockquote><span class="muted">2023-11-10 · Credit card</span><br>I was contacted by phone on XX/XX/XXXX, about being late in making payments on a credit card. After talking to this customer service person, I realized that this was fraud as I had never personally applied for a XXXX credit card from Ollo/…</blockquote></details>
+</section>
+
+<section class="card" id="patron-35">
+<h2>Patrón 35 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">2,888 reclamos en ajuste · producto dominante 100% ·
+texto único 0% · plantilla dominante 68%</p>
+<p class="terms">dispute incorrect, invalid items, referenced issues, incorrect invalid, letter referenced, assistance creditors, gotten assistance, report gotten, documents letter, matter attached</p>
+<p>ajuste: 32 reclamos/semana (0% del total) · calibración: 28 reclamos/semana (0% del total) · 2025-H1: 11 reclamos/semana (0% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_35.png" alt="Serie semanal del patrón 35">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-01-30 · Credit reporting or other personal consumer reports</span><br>I have been trying to dispute incorrect and/or invalid items listed on my credit report and have gotten no assistance from the creditors or the credit bureaus regarding this matter. Please see attached documents and letter for referenced i…</blockquote><blockquote><span class="muted">2024-03-20 · Credit reporting or other personal consumer reports</span><br>I filed a dispute for incorrect information on my credit report. I received an email from the credit bureau stating that they are assuming the disputes are coming from a 3rd party. They in fact did not come from a 3rd party. l even called …</blockquote><blockquote><span class="muted">2024-05-22 · Credit reporting or other personal consumer reports</span><br>Remove these inquiries, as I have no knowledge of them, and the company executed this without my approval.</blockquote></details>
+</section>
+
+<section class="card" id="patron-36">
+<h2>Patrón 36 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">53,587 reclamos en ajuste · producto dominante 96% ·
+texto único 73% · plantilla dominante 1%</p>
+<p class="terms">consumer, information, redacted, reporting, 15, redacted redacted, usc, 15 usc, consumer reporting, account</p>
+<p>ajuste: 587 reclamos/semana (5% del total) · calibración: 633 reclamos/semana (4% del total) · 2025-H1: 826 reclamos/semana (3% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_36.png" alt="Serie semanal del patrón 36">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-08-21 · Credit reporting or other personal consumer reports</span><br>15 usc 1692 design to eliminate abusive, deceptive, and unfair debt collection practices 15 usc 1681s-2 Responsibility of furnishers of information to consumer reporting agencies 15 usc 1681 ( n ) Civil liability for wilful non compliance …</blockquote><blockquote><span class="muted">2024-07-27 · Credit reporting or other personal consumer reports</span><br>XXXX XXXXXXXX XXXX / self lender, has reported on my account that I had a late payment on a closed out account it was closed out on XX/XX/XXXX with a XXXX balance and it was reported late on the XX/XX/XXXX And XX/XX/XXXX showing a XXXX bal…</blockquote><blockquote><span class="muted">2024-09-03 · Vehicle loan or lease</span><br>15 U.S. Code 1681a - Definitions ; rules of construction U.S. Code Notes prev ( XXXX XXXX XXXX ) | next ( XXXX XXXX XXXX ) ( a ) Definitions and rules of construction set forth in this section are applicable for the purposes of this subcha…</blockquote></details>
+</section>
+
+<section class="card" id="patron-37">
+<h2>Patrón 37 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">6,255 reclamos en ajuste · producto dominante 85% ·
+texto único 5% · plantilla dominante 22%</p>
+<p class="terms">letters, reporting, inaccurate date, date, written, 15, credit, report, section, 1681</p>
+<p>ajuste: 69 reclamos/semana (0% del total) · calibración: 88 reclamos/semana (1% del total) · 2025-H1: 76 reclamos/semana (0% del total).<br>sin alertas CUSUM en calibración; en 2025-H1 (ya consultado): 1 semanas.</p>
+<img src="series/cluster_37.png" alt="Serie semanal del patrón 37">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-09-20 · Credit reporting or other personal consumer reports</span><br>I'm really not sure what happened. I have mailed off letters to the credit bureaus continuously and thus far I have not gotten a response. My name is XXXX XXXX and I am filing this complaint for falsely reporting misleading information. Th…</blockquote><blockquote><span class="muted">2024-09-23 · Credit reporting or other personal consumer reports</span><br>I'm really not sure what happened. I have mailed off letters to the credit bureaus continuously and thus far I have not gotten a response. My name is XXXX XXXX and I am filing this complaint for falsely reporting misleading information. Th…</blockquote><blockquote><span class="muted">2023-11-16 · Credit reporting or other personal consumer reports</span><br>Good evening, The accounts listed in the report attached do not belong to me. Please help me remove them and rectify this as soon as possible. Thank you.</blockquote></details>
+</section>
+
+<section class="card" id="patron-38">
+<h2>Patrón 38 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">6,321 reclamos en ajuste · producto dominante 97% ·
+texto único 8% · plantilla dominante 17%</p>
+<p class="terms">payment, late, complaint, error, creditor, complaint bureaus, payment late, days payment, mailed delivered, payment date</p>
+<p>ajuste: 69 reclamos/semana (1% del total) · calibración: 245 reclamos/semana (1% del total) · 2025-H1: 196 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_38.png" alt="Serie semanal del patrón 38">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-08-21 · Credit reporting or other personal consumer reports</span><br>My account with ALLY FINCL was never late! I have had exceptional payment history witH XXXX XXXX and all payments were placed on Autopay. This late payment that is reporting is a result on a systematic error on their end processing my paym…</blockquote><blockquote><span class="muted">2024-07-19 · Credit reporting or other personal consumer reports</span><br>My account with MERCEDES BENZ FINANCIAL was never late! I have had exceptional payment history witH XXXX XXXX and all payments were placed on Autopay. This late payment that is reporting is a result on a systematic error on their end proce…</blockquote><blockquote><span class="muted">2024-07-08 · Credit reporting or other personal consumer reports</span><br>My accounts was never late! I have had exceptional payment history with capital one and all payments were placed on Autopay. This late payment that is reporting is a result on a systematic error on their end processing my payment. This was…</blockquote></details>
+</section>
+
+<section class="card" id="patron-39">
+<h2>Patrón 39 · Credit reporting or other personal consumer reports</h2>
+<p class="meta">8,485 reclamos en ajuste · producto dominante 95% ·
+texto único 12% · plantilla dominante 13%</p>
+<p class="terms">section, consumer, 15, information, 1681, states, reporting agency, consumer reporting, agency, reporting</p>
+<p>ajuste: 93 reclamos/semana (1% del total) · calibración: 166 reclamos/semana (1% del total) · 2025-H1: 147 reclamos/semana (1% del total).<br>sin alertas CUSUM en calibración.</p>
+<img src="series/cluster_39.png" alt="Serie semanal del patrón 39">
+<details><summary>Tres reclamos cercanos al centro del patrón (texto público de la CFPB, en inglés)</summary><blockquote><span class="muted">2024-07-04 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to priv…</blockquote><blockquote><span class="muted">2024-06-05 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under XXXX5 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to p…</blockquote><blockquote><span class="muted">2024-04-24 · Credit reporting or other personal consumer reports</span><br>In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to priv…</blockquote></details>
+</section>
+
+
+
+
+
+</body></html>
