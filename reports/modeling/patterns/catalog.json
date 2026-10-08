@@ -1,0 +1,2761 @@
+{
+  "stage": "M8C",
+  "git_commit": "847ceae3e2e2719c39cd9c8cdd0ea56867295ffd",
+  "m9_run": "nb_discounted_hierarchical_v1/20261005T200606.263137Z-full-0aa0a0fb-2348e548",
+  "examples_per_pattern": 3,
+  "snippet_characters": 240,
+  "patterns": [
+    {
+      "cluster_id": 0,
+      "fit_rows": 1947,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.8418079096045198,
+      "unique_text_fraction": 0.0210580380071905,
+      "dominant_template_fraction": 0.5850025680534156,
+      "p95_distance": 11.443771362304688,
+      "terms": [
+        "disputes",
+        "submitting disputes",
+        "getting inaccurate",
+        "send disputes",
+        "bureaus having",
+        "disputes getting",
+        "tried send",
+        "information corrected",
+        "corrected credit",
+        "difficulties submitting"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 21.384615384615383,
+          "mean_share": 0.0018514479506863309,
+          "novel_fraction": 0.0025693730729701952
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 22.666666666666668,
+          "mean_share": 0.0012695664991944002,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 5.0,
+          "mean_share": 0.00018872167555765228,
+          "novel_fraction": 0.0
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-12-25"
+        ],
+        "validation": [
+          "2025-06-23"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "6639394",
+          "received": "2023-03-02",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "i submitted numerous of disputes and called the reporting agencies to resolve issues on my credit report and all i received was refusal to send me to the right departments and even calls hung up in my face"
+        },
+        {
+          "complaint_id": "10279385",
+          "received": "2024-09-30",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I was attempting to sign up for credit reporting agencies and kept hitting road blocks meanwhile it was difficult to get a hold of customer service."
+        },
+        {
+          "complaint_id": "9777460",
+          "received": "2024-08-12",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I have tried to send my disputes to the major credit bureaus but are having difficulties in submitting my disputes and getting the inaccurate information corrected on my credit report."
+        }
+      ],
+      "image": "series/cluster_00.png"
+    },
+    {
+      "cluster_id": 1,
+      "fit_rows": 5995,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.857881567973311,
+      "unique_text_fraction": 0.0867389491242702,
+      "dominant_template_fraction": 0.1567973311092577,
+      "p95_distance": 12.392471313476562,
+      "terms": [
+        "100",
+        "credit",
+        "100 accurate",
+        "reporting 100",
+        "credit report",
+        "accurate",
+        "report",
+        "accounts",
+        "did",
+        "reporting"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 65.8021978021978,
+          "mean_share": 0.0052000741707404746,
+          "novel_fraction": 0.00918503674014696
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 87.91666666666667,
+          "mean_share": 0.0049857224344185755,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 194.48,
+          "mean_share": 0.007473711238854889,
+          "novel_fraction": 0.0
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-05-08"
+        ],
+        "validation": [
+          "2025-01-06"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "6603345",
+          "received": "2023-02-22",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Recently I did an investigation on my credit report which caused anxiety beyond belief. I found information that was unverifiable, invalidated, inaccurate, and highly questionable that the agencies didn't make sure it was reporting 100 % c…"
+        },
+        {
+          "complaint_id": "9477751",
+          "received": "2024-07-11",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "The credit reporting agencies stated that these accounts were properly investigated and came back as verified. However, how is this true when there are several inaccuracies showing on my report? As a consumer, I request to know all the ste…"
+        },
+        {
+          "complaint_id": "9316732",
+          "received": "2024-06-21",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "The credit reporting agencies stated that these accounts were properly investigated and came back as verified. However, how is this true when there are several inaccuracies showing on my report? As a consumer, I request to know all the ste…"
+        }
+      ],
+      "image": "series/cluster_01.png"
+    },
+    {
+      "cluster_id": 2,
+      "fit_rows": 8520,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.983450704225352,
+      "unique_text_fraction": 0.0862676056338028,
+      "dominant_template_fraction": 0.2221830985915493,
+      "p95_distance": 13.072067260742188,
+      "terms": [
+        "section",
+        "information",
+        "consumer",
+        "15",
+        "reporting",
+        "items",
+        "agency",
+        "reporting agency",
+        "1681",
+        "states"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 93.08791208791209,
+          "mean_share": 0.006995300970094231,
+          "novel_fraction": 0.008617636642663204
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 281.3333333333333,
+          "mean_share": 0.0157803041882621,
+          "novel_fraction": 0.017476303317535545
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 468.04,
+          "mean_share": 0.018324338112137475,
+          "novel_fraction": 0.0011110161524656012
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-07-10",
+          "2024-01-22"
+        ],
+        "validation": [
+          "2025-03-17"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "9428485",
+          "received": "2024-07-05",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "-- -- -- -- -- -- -- -- In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States …"
+        },
+        {
+          "complaint_id": "10188891",
+          "received": "2024-09-20",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit Reporting Act, the list of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C. 1681, section 602 ( A ), states that I have the ri…"
+        },
+        {
+          "complaint_id": "10300296",
+          "received": "2024-09-30",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under XXXX5 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to p…"
+        }
+      ],
+      "image": "series/cluster_02.png"
+    },
+    {
+      "cluster_id": 3,
+      "fit_rows": 35532,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.8856523696949229,
+      "unique_text_fraction": 0.5305077113587752,
+      "dominant_template_fraction": 0.015450861195542,
+      "p95_distance": 12.898558616638184,
+      "terms": [
+        "redacted",
+        "redacted redacted",
+        "account",
+        "credit",
+        "information",
+        "consumer",
+        "reporting",
+        "report",
+        "fcra",
+        "credit report"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 388.46153846153845,
+          "mean_share": 0.03174910494472733,
+          "novel_fraction": 0.008826025459688826
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 1206.5833333333333,
+          "mean_share": 0.06727467666972704,
+          "novel_fraction": 6.906554320049727e-05
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 2242.28,
+          "mean_share": 0.08887900591170983,
+          "novel_fraction": 0.00017838985318515083
+        }
+      },
+      "alert_weeks": {
+        "validation": [
+          "2025-01-27",
+          "2025-02-10",
+          "2025-03-03"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "7005197",
+          "received": "2023-05-20",
+          "product": "Debt collection",
+          "snippet": "United revenue corporation, has failed to provide all proper documents to validate and verify the alleged debts. Which is a clear violation of my rights according to 15 U.S.C 1692g validation of debts. I am disputing three accounts. Accoun…"
+        },
+        {
+          "complaint_id": "7809628",
+          "received": "2023-11-06",
+          "product": "Debt collection",
+          "snippet": "IN ACCORDANCE WITH THE FAIR DEBT COLLECTION PRACTICE ACT. I DISPUTED THE DEBT AND COLLECTION ALSO REQUEST DEBT VALIDATION. I SEEK COPY OF NAME AND ADDRESS OF THE ORIGINAL CREDITOR AND / OR SUPPORTING EVIDENCE OF ALLEGE DEBT. AMERICAN PROFI…"
+        },
+        {
+          "complaint_id": "7858216",
+          "received": "2023-11-16",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Upon looking on my credit report i noticed these companies on my report that i have n knowledge of and have never directly done business with. Ive mailed multiple letters asking the credit bureaus to verify that all information is correct …"
+        }
+      ],
+      "image": "series/cluster_03.png"
+    },
+    {
+      "cluster_id": 4,
+      "fit_rows": 13290,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9790067720090292,
+      "unique_text_fraction": 0.3133182844243792,
+      "dominant_template_fraction": 0.064635063957863,
+      "p95_distance": 13.40846061706543,
+      "terms": [
+        "redacted redacted",
+        "redacted",
+        "validate",
+        "erroneous",
+        "credit",
+        "authorized fail",
+        "proof period",
+        "period allowed",
+        "allowed law",
+        "file listed"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 145.74725274725276,
+          "mean_share": 0.012403398450275419,
+          "novel_fraction": 0.008972329035663123
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 122.91666666666667,
+          "mean_share": 0.00687727612117905,
+          "novel_fraction": 0.008135593220338983
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 130.72,
+          "mean_share": 0.005069388754595704,
+          "novel_fraction": 0.0003059975520195838
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2024-03-11"
+        ],
+        "validation": [
+          "2025-02-03"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "7615893",
+          "received": "2023-09-27",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "When I reviewed my credit report, I discovered that some of the information was erroneous. The 3 credit bureaus must validate these accounts in line with Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ) ( A ). It is not authorized to fai…"
+        },
+        {
+          "complaint_id": "7620453",
+          "received": "2023-10-03",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "When I reviewed my credit report, I discovered that this account was erroneous. The 3 credit bureaus must validate this account in line with Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ) ( A ). It is not authorized to fail to validate…"
+        },
+        {
+          "complaint_id": "6919406",
+          "received": "2023-05-03",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "When I reviewed my credit report, I discovered that some of the information was erroneous. The PORTFOLIO must validate this account in line with Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ) ( A ). It is not authorized to fail to vali…"
+        }
+      ],
+      "image": "series/cluster_04.png"
+    },
+    {
+      "cluster_id": 5,
+      "fit_rows": 9474,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.850538315389487,
+      "unique_text_fraction": 0.0620645978467384,
+      "dominant_template_fraction": 0.2009710787418197,
+      "p95_distance": 13.245357513427734,
+      "terms": [
+        "consumer",
+        "15",
+        "section",
+        "states",
+        "reporting",
+        "report",
+        "reporting agency",
+        "1681",
+        "consumer reporting",
+        "credit"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 103.76923076923077,
+          "mean_share": 0.008329328759581596,
+          "novel_fraction": 0.0007412898443291327
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 311.0,
+          "mean_share": 0.01742102001186893,
+          "novel_fraction": 0.0005359056806002144
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 256.0,
+          "mean_share": 0.00987765612078488,
+          "novel_fraction": 0.0
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-04-17",
+          "2023-05-22"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "9980651",
+          "received": "2024-09-02",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "After reviewing my consumer report I've noticed that. there is a collection account reporting. I asked the creditor that's reporting this account to send me all documents that verifies the alleged debt. They failed to respond to me with an…"
+        },
+        {
+          "complaint_id": "9067560",
+          "received": "2024-05-21",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to priv…"
+        },
+        {
+          "complaint_id": "7424324",
+          "received": "2023-08-19",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I n accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to pri…"
+        }
+      ],
+      "image": "series/cluster_05.png"
+    },
+    {
+      "cluster_id": 6,
+      "fit_rows": 13745,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9965805747544562,
+      "unique_text_fraction": 0.4069116042197163,
+      "dominant_template_fraction": 0.0918152055292833,
+      "p95_distance": 13.137636184692385,
+      "terms": [
+        "redacted redacted",
+        "redacted",
+        "redacted balance",
+        "00 redacted",
+        "balance",
+        "00",
+        "records",
+        "complain question",
+        "question specific",
+        "coming wrongdoing"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 150.7912087912088,
+          "mean_share": 0.013736982021943758,
+          "novel_fraction": 0.009182334936598164
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 163.41666666666666,
+          "mean_share": 0.00914953179924736,
+          "novel_fraction": 0.0015298317185109638
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 186.2,
+          "mean_share": 0.007369596308328657,
+          "novel_fraction": 0.0004296455424274973
+        }
+      },
+      "alert_weeks": {
+        "validation": [
+          "2025-02-24"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "6716896",
+          "received": "2023-03-18",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "This is my Follow-up endeavor to tell you that I am a victim of identity theft and I complain to question specific items in my document coming about because of the wrongdoing. The items I am questioning connect with no exchanges acquiring …"
+        },
+        {
+          "complaint_id": "6763211",
+          "received": "2023-03-29",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "This is my second endeavor to tell you that I am a victim of identity theft and I complain to question specific records in my document coming about because of the wrongdoing. The records I am questioning connect with no exchanges acquiring…"
+        },
+        {
+          "complaint_id": "6679113",
+          "received": "2023-03-10",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "This is my second endeavor to tell you that I am a victim of identity theft and I complain to question specific records in my document coming about because of the wrongdoing. The records I am questioning connect with no exchanges acquiring…"
+        }
+      ],
+      "image": "series/cluster_06.png"
+    },
+    {
+      "cluster_id": 7,
+      "fit_rows": 11531,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9327898707831064,
+      "unique_text_fraction": 0.1498569074668285,
+      "dominant_template_fraction": 0.104847801578354,
+      "p95_distance": 13.641352653503418,
+      "terms": [
+        "redacted redacted",
+        "redacted",
+        "report",
+        "credit",
+        "disputes",
+        "accounts",
+        "credit report",
+        "verify",
+        "3rd party",
+        "information"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 126.35164835164835,
+          "mean_share": 0.010552699094660055,
+          "novel_fraction": 0.0
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 210.83333333333334,
+          "mean_share": 0.011745295912536417,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 221.52,
+          "mean_share": 0.008660809757419945,
+          "novel_fraction": 0.0
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-03-20",
+          "2023-04-03"
+        ],
+        "validation": [
+          "2025-02-17"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "7305677",
+          "received": "2023-07-26",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Your efficiency and prompt attention to correcting some of the adverse information previously stated on my credit file is appreciated, yet there are still items that need to be addressed again and to be corrected immediately. The three cre…"
+        },
+        {
+          "complaint_id": "7631158",
+          "received": "2023-09-29",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Your efficiency and prompt attention to correcting some of the adverse information previously stated on my credit file is appreciated, yet there are still items that need to be addressed again and to be corrected immediately. The three cre…"
+        },
+        {
+          "complaint_id": "7648200",
+          "received": "2023-10-05",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Your efficiency and prompt attention to correcting some of the adverse information previously stated on my credit file is appreciated, yet there are still items that need to be addressed again and to be corrected immediately. The three cre…"
+        }
+      ],
+      "image": "series/cluster_07.png"
+    },
+    {
+      "cluster_id": 8,
+      "fit_rows": 119770,
+      "main_product": "Checking or savings account",
+      "main_product_fraction": 0.388277531936211,
+      "unique_text_fraction": 0.9522083994322452,
+      "dominant_template_fraction": 0.0134257326542539,
+      "p95_distance": 1.980591946840284,
+      "terms": [
+        "bank",
+        "card",
+        "account",
+        "redacted",
+        "00",
+        "told",
+        "money",
+        "called",
+        "funds",
+        "check"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 1313.2747252747254,
+          "mean_share": 0.11770823238554737,
+          "novel_fraction": 0.009857080697526525
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 1543.9166666666667,
+          "mean_share": 0.08633151425202029,
+          "novel_fraction": 0.005829330166783613
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 4164.52,
+          "mean_share": 0.11857809003974079,
+          "novel_fraction": 0.0004418276295947672
+        }
+      },
+      "alert_weeks": {
+        "validation": [
+          "2025-01-13"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "7007829",
+          "received": "2023-05-22",
+          "product": "Checking or savings account",
+          "snippet": "I have been a XXXX XXXX and I received a wisely card with my direct deposits in XXXX. I worked through XXXX and got direct deposits on the wisely card. I have some direct deposit set up on my card but it is not my main card. On XX/XX/XXXX,…"
+        },
+        {
+          "complaint_id": "6764051",
+          "received": "2023-03-28",
+          "product": "Credit card or prepaid card",
+          "snippet": "This makes the 3rd complaint I have made about setting up the direct deposit on my way2go card. I am unable to do that. I file a complaint a person calls me back and tells me that she ( XXXX ) is not able to assist me. That she has to file…"
+        },
+        {
+          "complaint_id": "8232622",
+          "received": "2024-01-26",
+          "product": "Credit card",
+          "snippet": "This new complaint is related to the previous complaint case XXXX against Commerce Bank for their illegal activities which was filed on XX/XX/2024. In this new complaint dated XX/XX/XXXX, XXXX is complaining about a second un-authorized ba…"
+        }
+      ],
+      "image": "series/cluster_08.png"
+    },
+    {
+      "cluster_id": 9,
+      "fit_rows": 2670,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.851310861423221,
+      "unique_text_fraction": 0.0501872659176029,
+      "dominant_template_fraction": 0.1719101123595505,
+      "p95_distance": 12.564420700073242,
+      "terms": [
+        "complaint",
+        "party",
+        "complaint error",
+        "party involved",
+        "involved",
+        "reported",
+        "error",
+        "involved filing",
+        "complaint complaint",
+        "redacted party"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 29.274725274725274,
+          "mean_share": 0.002430740405978879,
+          "novel_fraction": 0.0
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 20.583333333333332,
+          "mean_share": 0.0011485825132529584,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 15.12,
+          "mean_share": 0.0005810210876682002,
+          "novel_fraction": 0.0
+        }
+      },
+      "alert_weeks": {},
+      "examples": [
+        {
+          "complaint_id": "6435652",
+          "received": "2023-01-15",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "This is my XXXX nd time submitting a dispute to the company. Each time they keep sending me a letter saying they are not going to investigate. This is extremely inappropriate as I am trying to get my credit report to report accurately."
+        },
+        {
+          "complaint_id": "7434820",
+          "received": "2023-08-21",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "The Credit Reporting Agency XXXX had access to and knowingly stole my non-public information and furnished a credit report. They are a non-affiliated third party as I have them no written permission to do so"
+        },
+        {
+          "complaint_id": "10114657",
+          "received": "2024-09-13",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I am writing this letter as my third attempt to dispute and rectify the inaccurate negative items listed on my credit report with XXXX and Experian. Despite my previous disputes, these errors remain unresolved, and it is unacceptable that …"
+        }
+      ],
+      "image": "series/cluster_09.png"
+    },
+    {
+      "cluster_id": 10,
+      "fit_rows": 9158,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9710635509936668,
+      "unique_text_fraction": 0.1866127975540511,
+      "dominant_template_fraction": 0.1049355754531557,
+      "p95_distance": 13.07721996307373,
+      "terms": [
+        "redacted redacted",
+        "redacted",
+        "report",
+        "credit",
+        "credit report",
+        "consent",
+        "complaint",
+        "erroneous information",
+        "reports",
+        "written consent"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 100.50549450549451,
+          "mean_share": 0.00842409113774341,
+          "novel_fraction": 0.006997594576864203
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 252.66666666666666,
+          "mean_share": 0.01391322599773929,
+          "novel_fraction": 0.005277044854881266
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 205.84,
+          "mean_share": 0.008067609707582328,
+          "novel_fraction": 0.004663816556548776
+        }
+      },
+      "alert_weeks": {
+        "calibration": [
+          "2024-12-02"
+        ],
+        "fit": [
+          "2023-02-13"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "8564407",
+          "received": "2024-03-18",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I am sending you this complaint to inform you that this company made an unauthorized inquiry on my personal credit report. I have listed the company 's name below, and the dates the inquiry was made. Since I did not authorize this company …"
+        },
+        {
+          "complaint_id": "8466529",
+          "received": "2024-03-04",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I am sending you this complaint to inform you that this company made an unauthorized inquiry on my personal credit report. I have listed the company 's name below, and the dates the inquiry was made. Since I did not authorize this company …"
+        },
+        {
+          "complaint_id": "7727776",
+          "received": "2023-10-19",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "This company keeps sending unsolicited marketing services for credit repair that I do not need and they will not stop. The email is : XXXX XXXX"
+        }
+      ],
+      "image": "series/cluster_10.png"
+    },
+    {
+      "cluster_id": 11,
+      "fit_rows": 97126,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9697609291024032,
+      "unique_text_fraction": 0.6705413586475301,
+      "dominant_template_fraction": 0.0031505467125177,
+      "p95_distance": 7.21506404876709,
+      "terms": [
+        "redacted redacted",
+        "redacted",
+        "00",
+        "00 redacted",
+        "redacted balance",
+        "balance",
+        "credit",
+        "inquiries",
+        "items",
+        "remove"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 1065.2747252747254,
+          "mean_share": 0.09379889192932478,
+          "novel_fraction": 0.009933979781308026
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 1372.9166666666667,
+          "mean_share": 0.07659372509192057,
+          "novel_fraction": 0.0027921092564491654
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 1549.4,
+          "mean_share": 0.05947940053207625,
+          "novel_fraction": 0.0015748031496062992
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-02-27"
+        ],
+        "validation": [
+          "2025-01-27",
+          "2025-02-17",
+          "2025-06-02"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "6839109",
+          "received": "2023-04-15",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Consider This Complaint as a Follow-up to my previous complaint. My previous Complaint contains these fraudulent items XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX …"
+        },
+        {
+          "complaint_id": "8707947",
+          "received": "2024-04-05",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I have send ftc report to XXXX and XXXX violation under the section 1681I I NEED ALL THIS ACCOUNT OF MY CREDIT XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXX…"
+        },
+        {
+          "complaint_id": "6645090",
+          "received": "2023-03-03",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Im submitting a complaint to you today to inform you I was the victim of identity theft. I need the items to be removed ASAP for their erroneous status. Please find the ATTACHED documents to assist in blocking the erroneous information whi…"
+        }
+      ],
+      "image": "series/cluster_11.png"
+    },
+    {
+      "cluster_id": 12,
+      "fit_rows": 86363,
+      "main_product": "Debt collection",
+      "main_product_fraction": 0.5520072253163971,
+      "unique_text_fraction": 0.8797054294084272,
+      "dominant_template_fraction": 0.0033231823813438,
+      "p95_distance": 1.9072715640068048,
+      "terms": [
+        "debt",
+        "collection",
+        "redacted",
+        "redacted redacted",
+        "account",
+        "company",
+        "alleged",
+        "credit",
+        "collect",
+        "validation"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 946.4615384615385,
+          "mean_share": 0.08299452590729495,
+          "novel_fraction": 0.009996749024707412
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 1324.25,
+          "mean_share": 0.0742133203854706,
+          "novel_fraction": 0.015543389339877919
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 1809.32,
+          "mean_share": 0.06900705886021491,
+          "novel_fraction": 0.007162912033250061
+        }
+      },
+      "alert_weeks": {
+        "validation": [
+          "2025-01-27"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "6659562",
+          "received": "2023-03-08",
+          "product": "Debt collection",
+          "snippet": "This is my 3rd attempt to remove this debt collection from my credit report. XXXX XXXX XXXX has sold my XXXX collection to re-collectors, again and again. As stated on my credit report, my vehicle was repossessed in XX/XX/XXXX, and do not …"
+        },
+        {
+          "complaint_id": "6862611",
+          "received": "2023-04-19",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "COMPANY AT FAULT : ZION DEBT HOLDINGS LLC THIS COMPANY HAS REPORTED NEGATIVE INACCURATE INFORMATION ON MY CREDIT REPORTS. IT HAS CAUSE SEVERE HARM TO MY CREDIT SCORE AND IMAGE. I HAVE SPOKEN TO THIS COMPANY PREVIOUSLY AND EXPLAIN TO THEM T…"
+        },
+        {
+          "complaint_id": "6589772",
+          "received": "2023-02-18",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I suspect that a debt collector has intentionally re-aged my debt. This is a 5 year old debt, from XXXX, that was closed and written off by the original company. Following this, it was deleted off all my credit reports. Now, years later it…"
+        }
+      ],
+      "image": "series/cluster_12.png"
+    },
+    {
+      "cluster_id": 13,
+      "fit_rows": 97382,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.3731285042410301,
+      "unique_text_fraction": 0.8807685198496642,
+      "dominant_template_fraction": 0.0084923291778768,
+      "p95_distance": 2.81130051612854,
+      "terms": [
+        "loan",
+        "redacted",
+        "mortgage",
+        "payment",
+        "redacted redacted",
+        "told",
+        "payments",
+        "00",
+        "paid",
+        "account"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 1067.131868131868,
+          "mean_share": 0.09559203633643623,
+          "novel_fraction": 0.00984460760588617
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 1302.0,
+          "mean_share": 0.07280412014411021,
+          "novel_fraction": 0.015104966717869943
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 2055.16,
+          "mean_share": 0.07961712518935035,
+          "novel_fraction": 0.014986667704704257
+        }
+      },
+      "alert_weeks": {
+        "validation": [
+          "2025-01-27",
+          "2025-02-10"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "6669721",
+          "received": "2023-03-09",
+          "product": "Payday loan, title loan, or personal loan",
+          "snippet": "Loan origination date was on or about XX/XX/XXXX for the amount of XXXX dollars. Contacted them in XX/XX/XXXX when the payment amount went up from XXXX dollars to XXXX dollars. During this conversation asked about the loan documents and wh…"
+        },
+        {
+          "complaint_id": "7722828",
+          "received": "2023-10-18",
+          "product": "Mortgage",
+          "snippet": "I had a HELOC agreement with Truist dated XX/XX/XXXX ( which will be attached ). On XXXX, XXXX we entered a new agreement and this previous loan/lien was paid off. The other file attached will show an Internal Payoff-HELCOC for {$110000.00…"
+        },
+        {
+          "complaint_id": "7187801",
+          "received": "2023-06-30",
+          "product": "Vehicle loan or lease",
+          "snippet": "We paid off our Ally Financial loan XX/XX/2023. Its now XX/XX/2023 and still no pick slip. They are refusing to waive the late fees that fall during Covid that is covered under the CARES act"
+        }
+      ],
+      "image": "series/cluster_13.png"
+    },
+    {
+      "cluster_id": 14,
+      "fit_rows": 176716,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.93913963647887,
+      "unique_text_fraction": 0.8049921908599108,
+      "dominant_template_fraction": 0.0020371669797867,
+      "p95_distance": 2.8860865235328674,
+      "terms": [
+        "redacted",
+        "redacted redacted",
+        "account",
+        "credit",
+        "report",
+        "information",
+        "credit report",
+        "reporting",
+        "fcra",
+        "consumer"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 1936.1208791208792,
+          "mean_share": 0.1670467905380113,
+          "novel_fraction": 0.010023441003025196
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 4042.0,
+          "mean_share": 0.2255460238813012,
+          "novel_fraction": 0.005422233217878938
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 7844.36,
+          "mean_share": 0.2950174050545905,
+          "novel_fraction": 0.007200077507916516
+        }
+      },
+      "alert_weeks": {
+        "calibration": [
+          "2024-11-11"
+        ],
+        "validation": [
+          "2025-01-20",
+          "2025-02-03",
+          "2025-05-26"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "7404034",
+          "received": "2023-08-16",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I have called and asked about why my personal information is being furnished without my written permission, which is a violation against my rights and is a crime and i need these credit reporting agencies to do what I am requesting and i d…"
+        },
+        {
+          "complaint_id": "8971803",
+          "received": "2024-05-09",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Dear Consumer Financial Protection Bureau, I am writing to file a complaint regarding the non-compliance of XXXX, TransUnion, and XXXX with regards to inaccurate reporting of my personal information. Despite my repeated attempts to address…"
+        },
+        {
+          "complaint_id": "7410222",
+          "received": "2023-08-17",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Good day! I recently wrote to XXXX and Equifax showing my concerns with the fraudulent information that they have been reporting on my credit report. I wrote to them on the XXXX of XX/XX/2023 and also in August 30 days after the previous l…"
+        }
+      ],
+      "image": "series/cluster_14.png"
+    },
+    {
+      "cluster_id": 15,
+      "fit_rows": 7597,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9752533894958536,
+      "unique_text_fraction": 0.005001974463604,
+      "dominant_template_fraction": 0.6134000263261814,
+      "p95_distance": 12.545068740844728,
+      "terms": [
+        "letters",
+        "bureaus continuously",
+        "far gotten",
+        "happened mailed",
+        "continuously far",
+        "really sure",
+        "sure happened",
+        "involved review",
+        "gotten response",
+        "mailed letters"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 83.15384615384616,
+          "mean_share": 0.007381128199081486,
+          "novel_fraction": 0.008325624421831638
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 56.083333333333336,
+          "mean_share": 0.0031852520926732666,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 36.12,
+          "mean_share": 0.0014157790837380202,
+          "novel_fraction": 0.0
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-05-08"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "7179404",
+          "received": "2023-06-28",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I have never applied for credit. They are fraudulently reporting on my credit report. I filed FTC report with report number XXXX and now requesting CFPB to investigate as well."
+        },
+        {
+          "complaint_id": "8473815",
+          "received": "2024-03-06",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I'm really not sure what happened. I have mailed off letters to the credit bureaus continuously and thus far I have not gotten a response. My name is XXXX XXXX XXXX and I am filing this complaint for falsely reporting misleading informatio…"
+        },
+        {
+          "complaint_id": "6486270",
+          "received": "2023-01-26",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I'm really not sure what happened. I have mailed off letters to the credit bureaus continuously and thus far I have not gotten a response.My name is XXXX XXXX XXXX and I am filing this complaint for falsely reporting misleading information…"
+        }
+      ],
+      "image": "series/cluster_15.png"
+    },
+    {
+      "cluster_id": 16,
+      "fit_rows": 9342,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9613573110682936,
+      "unique_text_fraction": 0.0329693855705416,
+      "dominant_template_fraction": 0.2729608220937701,
+      "p95_distance": 13.44932746887207,
+      "terms": [
+        "consumer",
+        "15",
+        "section",
+        "reporting agency",
+        "1681",
+        "reporting",
+        "states",
+        "consumer reporting",
+        "agency",
+        "information"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 101.68131868131869,
+          "mean_share": 0.007413350826621459,
+          "novel_fraction": 0.0
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 260.8333333333333,
+          "mean_share": 0.014676837714014792,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 190.16,
+          "mean_share": 0.007497807088854657,
+          "novel_fraction": 0.0
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-02-20",
+          "2023-07-03",
+          "2024-02-05"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "7607765",
+          "received": "2023-09-27",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to priv…"
+        },
+        {
+          "complaint_id": "10297601",
+          "received": "2024-09-30",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit Reporting Act, the list of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C. 1681, section 602 ( A ), states that I have the ri…"
+        },
+        {
+          "complaint_id": "6724564",
+          "received": "2023-03-21",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the fair credit reporting act. The account list below has violated my federally protected consumer rights to privacy and confidentialty under 15 USC 1681. Account name XXXX XXXX Account number XXXX Account name XXXX XXXX…"
+        }
+      ],
+      "image": "series/cluster_16.png"
+    },
+    {
+      "cluster_id": 17,
+      "fit_rows": 71113,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9367485551165048,
+      "unique_text_fraction": 0.5565086552388452,
+      "dominant_template_fraction": 0.0156652088928887,
+      "p95_distance": 12.874988555908203,
+      "terms": [
+        "redacted account",
+        "account",
+        "account redacted",
+        "section",
+        "redacted",
+        "redacted redacted",
+        "15",
+        "1681",
+        "states",
+        "consumer"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 779.1208791208791,
+          "mean_share": 0.07118234828564221,
+          "novel_fraction": 0.009449929478138223
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 605.1666666666666,
+          "mean_share": 0.033751013719549715,
+          "novel_fraction": 0.16014871936105757
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 502.68,
+          "mean_share": 0.019426142316474132,
+          "novel_fraction": 0.14267526060316701
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-02-27"
+        ],
+        "validation": [
+          "2025-02-03"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "8065335",
+          "received": "2023-12-27",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit reporting act the following creditors violated my rights under the 15 USC 1681 section 6 o 2 states \" I have a right to privacy ( 15 USC 1681 section 604 states a consumer can not furnish an account witho…"
+        },
+        {
+          "complaint_id": "8944328",
+          "received": "2024-05-06",
+          "product": "Debt collection",
+          "snippet": "Good day to whoever is resolving my issue. I just wanted to report my credit card companies that violated my rights by giving third party accounts my information. They also violated my privacy under the Fair Credit Reporting Act, which is …"
+        },
+        {
+          "complaint_id": "8028323",
+          "received": "2023-12-19",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "According to the Fair Credit Reporting act 15 USC 1681 I have the right to privacy. Also according to 15 USC 6802 No financial institution is supposed to share my information to third party people, much of this information was also mistake…"
+        }
+      ],
+      "image": "series/cluster_17.png"
+    },
+    {
+      "cluster_id": 18,
+      "fit_rows": 10792,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.8844514455151964,
+      "unique_text_fraction": 0.235637509266123,
+      "dominant_template_fraction": 0.0555967383246849,
+      "p95_distance": 13.133777618408203,
+      "terms": [
+        "redacted redacted",
+        "redacted",
+        "permitted",
+        "legitimate activity",
+        "report",
+        "legitimate",
+        "activity",
+        "credit report",
+        "credit",
+        "redacted balance"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 118.24175824175825,
+          "mean_share": 0.009670151494974235,
+          "novel_fraction": 0.009851301115241635
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 124.41666666666667,
+          "mean_share": 0.006839756702659842,
+          "novel_fraction": 0.0053583389149363695
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 73.88,
+          "mean_share": 0.0028063900143695474,
+          "novel_fraction": 0.008662696264212236
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-02-20",
+          "2024-05-20"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "8889596",
+          "received": "2024-04-30",
+          "product": "Debt collection",
+          "snippet": "Failed to implement adequate procedures to ensure the highest level of accuracy in the credit reports you publish. According to credit reporting laws, it is essential that bureaus only report credit information that is 100 % accurate, and …"
+        },
+        {
+          "complaint_id": "7120540",
+          "received": "2023-06-15",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "As I look out my credit report, I had found out that there are some account that need to be corrected on my credit file. The fact is, this account seems to be inaccurate as well as the accuracy. So in this way, I am complaining for you to …"
+        },
+        {
+          "complaint_id": "7492940",
+          "received": "2023-09-04",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "By the provisions of the Fair Credit Reporting Act, I am submitting this complaint to request that the listed account which I believe appears to be inaccurate and incomplete be immediately investigated and corrected on my credit file. XXXX…"
+        }
+      ],
+      "image": "series/cluster_18.png"
+    },
+    {
+      "cluster_id": 19,
+      "fit_rows": 63214,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.910889992723131,
+      "unique_text_fraction": 0.3690479956971557,
+      "dominant_template_fraction": 0.014632834498687,
+      "p95_distance": 11.566595077514648,
+      "terms": [
+        "credit",
+        "credit report",
+        "report",
+        "redacted redacted",
+        "redacted",
+        "identity",
+        "accounts",
+        "inquiries",
+        "theft",
+        "identity theft"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 692.8351648351648,
+          "mean_share": 0.05616810284553668,
+          "novel_fraction": 0.00826354523537622
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 1378.0,
+          "mean_share": 0.07739126038255402,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 1626.6,
+          "mean_share": 0.06187669240182763,
+          "novel_fraction": 0.00019672937415467846
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2024-01-01"
+        ],
+        "validation": [
+          "2025-01-27"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "7362976",
+          "received": "2023-08-07",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Fraudulent information being reported to my file and needs to be blocked."
+        },
+        {
+          "complaint_id": "6464529",
+          "received": "2023-01-20",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I WAS LOOKING AT MY CREDIT AT I SEE THAT I HAVE FRAUD ACCOUNTS ON MY FILE AND I CONTACT THE CREDIT COMPANYS AND ITS STILL NOT UPDATE YET"
+        },
+        {
+          "complaint_id": "9371998",
+          "received": "2024-06-25",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "There is illegal activity on my report. I would value if you would please submit a complaint against against the companies that are reporting."
+        }
+      ],
+      "image": "series/cluster_19.png"
+    },
+    {
+      "cluster_id": 20,
+      "fit_rows": 3371,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9899139721150992,
+      "unique_text_fraction": 0.0278849006229605,
+      "dominant_template_fraction": 0.4752299021061999,
+      "p95_distance": 13.266651153564451,
+      "terms": [
+        "consumer reports",
+        "consent",
+        "reports",
+        "consumer",
+        "consent fraud",
+        "reports consent",
+        "reports gave",
+        "gave written",
+        "consent report",
+        "purposes consumer"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 36.857142857142854,
+          "mean_share": 0.0029084625100748046,
+          "novel_fraction": 0.0014907573047107932
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 31.833333333333332,
+          "mean_share": 0.001791553849018775,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 13.16,
+          "mean_share": 0.000494012162068916,
+          "novel_fraction": 0.0
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-03-27",
+          "2024-01-29"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "8837023",
+          "received": "2024-04-24",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Please take a look at the attached letters and ID docs for verification that it is I XXXX XXXX filing this complaint. The stuff on my credit report is wrong and Under 15 U.S. Code 1681b Permissible purposes of consumer reports I never gave…"
+        },
+        {
+          "complaint_id": "10278018",
+          "received": "2024-09-30",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Please take a look at the attached letters and ID docs for verification that it is I XXXX T XXXX filing this complaint. The stuff on my credit report is wrong and Under 15 U.S. Code 1681b Permissible purposes of consumer reports I never ga…"
+        },
+        {
+          "complaint_id": "8427334",
+          "received": "2024-02-27",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Please take a look at the attached letters and ID docs for verification that it is I XXXX XXXX is complaint. The stuff on my credit report is wrong and Under 15 U.S. Code 1681b Permissible purposes of consumer reports i never gave any writ…"
+        }
+      ],
+      "image": "series/cluster_20.png"
+    },
+    {
+      "cluster_id": 21,
+      "fit_rows": 4109,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.56607447067413,
+      "unique_text_fraction": 0.0182526162083231,
+      "dominant_template_fraction": 0.5616938427841324,
+      "p95_distance": 12.45432472229004,
+      "terms": [
+        "start investigation",
+        "bureau start",
+        "documents want",
+        "want bureau",
+        "start",
+        "investigation accounts",
+        "accounts late",
+        "reporting late",
+        "late",
+        "attached documents"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 45.032967032967036,
+          "mean_share": 0.004177282675129627,
+          "novel_fraction": 0.0
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 49.5,
+          "mean_share": 0.0027640216410704,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 70.88,
+          "mean_share": 0.002842202002857944,
+          "novel_fraction": 0.0
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-02-20"
+        ],
+        "validation": [
+          "2025-02-17"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "8003705",
+          "received": "2023-12-15",
+          "product": "Credit card",
+          "snippet": "See the attached documents. I want the bureau to start the investigation on these accounts that I am never late for but they're reporting me as late."
+        },
+        {
+          "complaint_id": "7682315",
+          "received": "2023-10-11",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "My name is XXXX XXXX, this complaint is not made in error neither is it being made by a third party. I declare under penalty of perjury I am alleging that a person or company- without my authorization- from unauthorized use of my social se…"
+        },
+        {
+          "complaint_id": "6963468",
+          "received": "2023-05-12",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "My name is XXXX XXXX this complaint is not made in error neither is it being made by a third party.I declare under penalty of perjury I am alleging that a person or company- without my authorization- from unauthorized use of my social secu…"
+        }
+      ],
+      "image": "series/cluster_21.png"
+    },
+    {
+      "cluster_id": 22,
+      "fit_rows": 12879,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9597018402049848,
+      "unique_text_fraction": 0.2074695240313689,
+      "dominant_template_fraction": 0.163133783678857,
+      "p95_distance": 13.68035888671875,
+      "terms": [
+        "redacted redacted",
+        "redacted",
+        "law",
+        "written requests",
+        "violation federal",
+        "requests",
+        "items",
+        "federal law",
+        "consumer",
+        "accounts"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 141.12087912087912,
+          "mean_share": 0.011735294949722242,
+          "novel_fraction": 0.00903286092508955
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 189.75,
+          "mean_share": 0.01067096165810781,
+          "novel_fraction": 0.00966183574879227
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 201.24,
+          "mean_share": 0.007993891650997264,
+          "novel_fraction": 0.00655933214072749
+        }
+      },
+      "alert_weeks": {
+        "validation": [
+          "2025-02-10"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "7344476",
+          "received": "2023-08-03",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "The following items continue to report on my credit report without my permission, in violation of federal law, despite numerous written requests. As required by Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ), these items must be verifi…"
+        },
+        {
+          "complaint_id": "7610789",
+          "received": "2023-09-27",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Despite multiple written requests, the unverified accounts listed below continue to report on my credit report, in violation of federal law. These accounts must be validated under Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ). ( A ). …"
+        },
+        {
+          "complaint_id": "7325474",
+          "received": "2023-07-31",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "The following items continue to report on my credit report without my permission, in violation of federal law, despite numerous written requests. As required by Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ), these items must be verifi…"
+        }
+      ],
+      "image": "series/cluster_22.png"
+    },
+    {
+      "cluster_id": 23,
+      "fit_rows": 6407,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9578585921648196,
+      "unique_text_fraction": 0.0507257686904947,
+      "dominant_template_fraction": 0.1431247073513344,
+      "p95_distance": 13.578248977661133,
+      "terms": [
+        "15",
+        "consumer",
+        "agency",
+        "section",
+        "reporting",
+        "reporting agency",
+        "1681",
+        "states",
+        "consumer reporting",
+        "information"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 70.18681318681318,
+          "mean_share": 0.00548684906649956,
+          "novel_fraction": 0.007515265382808831
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 107.91666666666667,
+          "mean_share": 0.005990414959513801,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 136.64,
+          "mean_share": 0.005410974307922584,
+          "novel_fraction": 0.0008782201405152225
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-05-29"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "9493967",
+          "received": "2024-07-13",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit Reporting Act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. XXXX XXXX XXXXXXXX 15 U.S.C 1681 section 602 A. States I hav…"
+        },
+        {
+          "complaint_id": "6431918",
+          "received": "2023-01-12",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. Account name : 1. Bank of America has violated my rights. 15…"
+        },
+        {
+          "complaint_id": "6758253",
+          "received": "2023-03-27",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit Reporting Act. The List of Accounts in my letter has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 Section 602 A. States I have the right …"
+        }
+      ],
+      "image": "series/cluster_23.png"
+    },
+    {
+      "cluster_id": 24,
+      "fit_rows": 9733,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.8436247816706052,
+      "unique_text_fraction": 0.140347272166855,
+      "dominant_template_fraction": 0.0970923661769238,
+      "p95_distance": 13.98192310333252,
+      "terms": [
+        "redacted redacted",
+        "items",
+        "redacted",
+        "stress",
+        "accounts",
+        "unseen",
+        "identity",
+        "disputed items",
+        "remove",
+        "stolen"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 106.18681318681318,
+          "mean_share": 0.008021139570810108,
+          "novel_fraction": 0.008692952499223843
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 166.66666666666666,
+          "mean_share": 0.009334135729647393,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 134.28,
+          "mean_share": 0.005122736433757821,
+          "novel_fraction": 0.0
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2024-04-22"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "9319486",
+          "received": "2024-06-21",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I disputed incorrect negative items on my credit report with Transition, XXXX, and XXXX. The items came back verified by all XXXX credit bureaus, so I responded with a verification letter asking for methods used when investigating my dispu…"
+        },
+        {
+          "complaint_id": "9130852",
+          "received": "2024-05-29",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "According to my research about FCRA 605, Credit Bureaus are required by law to remove any items which are found to be opened due to identity theft. Again, it appears that my credit with you has been compromised, these items being reported …"
+        },
+        {
+          "complaint_id": "9468715",
+          "received": "2024-07-10",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "According to my research about FCRA 605, Credit Bureaus are required by law to remove any items which are found to be opened due to identity theft. Again, it appears that my credit with you has been compromised, these items being reported …"
+        }
+      ],
+      "image": "series/cluster_24.png"
+    },
+    {
+      "cluster_id": 25,
+      "fit_rows": 14204,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9741622078287806,
+      "unique_text_fraction": 0.3276541819205857,
+      "dominant_template_fraction": 0.0834976063080822,
+      "p95_distance": 12.478822422027587,
+      "terms": [
+        "sections 609",
+        "sections",
+        "609 611",
+        "609",
+        "redacted",
+        "611",
+        "redacted redacted",
+        "redacted balance",
+        "balance",
+        "00"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 155.84615384615384,
+          "mean_share": 0.01368315727717344,
+          "novel_fraction": 0.003737131575236215
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 163.58333333333334,
+          "mean_share": 0.009141314922453686,
+          "novel_fraction": 0.003565970453387672
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 188.16,
+          "mean_share": 0.007362140903671992,
+          "novel_fraction": 0.0006377551020408163
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2024-05-20"
+        ],
+        "validation": [
+          "2025-02-03"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "8742835",
+          "received": "2024-04-11",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Upon examining my credit report, I identified inaccuracies in certain information. According to Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ) ( A ), it is imperative for the Equifax and XXXX credit bureaus to authenticate these accoun…"
+        },
+        {
+          "complaint_id": "6751142",
+          "received": "2023-03-27",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I checked my credit report and found that some of the data were incorrect. Equifax is required by Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ) to verify this item ( A ). It is not permitted to report this item as unverified informati…"
+        },
+        {
+          "complaint_id": "7299729",
+          "received": "2023-07-26",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "When I investigated my credit report, I realized that some of the information was erroneous. The Equifax and XXXX credit bureaus are required to authenticate the account under Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ). ( A ). It i…"
+        }
+      ],
+      "image": "series/cluster_25.png"
+    },
+    {
+      "cluster_id": 26,
+      "fit_rows": 11256,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.912046908315565,
+      "unique_text_fraction": 0.1572494669509594,
+      "dominant_template_fraction": 0.1566275764036958,
+      "p95_distance": 13.91528034210205,
+      "terms": [
+        "accounts",
+        "credit",
+        "report",
+        "credit report",
+        "information",
+        "15",
+        "consumer",
+        "accounts credit",
+        "reporting",
+        "fcra 605b"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 123.45054945054945,
+          "mean_share": 0.009514300033751168,
+          "novel_fraction": 0.008723517892113227
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 126.0,
+          "mean_share": 0.007048439221564301,
+          "novel_fraction": 0.021825396825396824
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 133.12,
+          "mean_share": 0.005207071288341964,
+          "novel_fraction": 0.008713942307692308
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-12-18"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "9135593",
+          "received": "2024-05-30",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I'm disputing and investigating these wrongly reported accounts on my credit file. According to the Fair Credit Report Act, I should get XXXX} for each mistake. The FCRA 605B says we must report any incorrect accounts on a consumer 's repo…"
+        },
+        {
+          "complaint_id": "8646624",
+          "received": "2024-03-28",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I believe FCRA 605B necessitates the elimination of any erroneous accounts from my credit report. Could you kindly review the paperwork? Several of the mentioned accounts exhibit inaccuracies in terms of reporting"
+        },
+        {
+          "complaint_id": "8976592",
+          "received": "2024-05-11",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "FCRA 605B mandates the removal of any erroneous accounts from my credit report. Could you review the documents? Some accounts listed have inaccuracies regarding reporting, amounts, and dates."
+        }
+      ],
+      "image": "series/cluster_26.png"
+    },
+    {
+      "cluster_id": 27,
+      "fit_rows": 8018,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9920179595909204,
+      "unique_text_fraction": 0.1319531055125966,
+      "dominant_template_fraction": 0.2311050137191319,
+      "p95_distance": 12.992684364318848,
+      "terms": [
+        "redacted redacted",
+        "redacted",
+        "report",
+        "credit report",
+        "inquiry credit",
+        "fraud inquiry",
+        "remove fraud",
+        "theft remove",
+        "theft",
+        "information"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 87.84615384615384,
+          "mean_share": 0.007058076315017359,
+          "novel_fraction": 0.009131848886664998
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 63.166666666666664,
+          "mean_share": 0.0035501012689453343,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 30.12,
+          "mean_share": 0.001177295861728652,
+          "novel_fraction": 0.0
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-02-06"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "10221498",
+          "received": "2024-09-23",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "IM A VICTIM OF IDENTITY THEFT PURSUANT TO FEDERAL LAW SECTION 605B YOU MUST REMOVE THE FRAUDULENT INFORMATION FROM MY NAME. I HAVE ATTACHED PAPERWORK SHOWING THE FRAUDULENT INFORMATION."
+        },
+        {
+          "complaint_id": "7903270",
+          "received": "2023-11-25",
+          "product": "Debt collection",
+          "snippet": "This company is damaging my credit in an abusive way, I have called those people to tell them to show me that it is mine and they have no way to prove it, I have never used their services or anything like that, I ask for help to remove thi…"
+        },
+        {
+          "complaint_id": "7857744",
+          "received": "2023-11-16",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I already told them this info is not mines and im victim of identity theft. I need this info removed please."
+        }
+      ],
+      "image": "series/cluster_27.png"
+    },
+    {
+      "cluster_id": 28,
+      "fit_rows": 6960,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.7964080459770115,
+      "unique_text_fraction": 0.1027298850574712,
+      "dominant_template_fraction": 0.1212643678160919,
+      "p95_distance": 13.296957969665527,
+      "terms": [
+        "accounts",
+        "report",
+        "debt",
+        "credit",
+        "15",
+        "code",
+        "credit report",
+        "consumer",
+        "15 code",
+        "inaccurate"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 76.12087912087912,
+          "mean_share": 0.005544681363244625,
+          "novel_fraction": 0.0010105384726432798
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 208.25,
+          "mean_share": 0.011653322807206051,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 150.0,
+          "mean_share": 0.005893784993614887,
+          "novel_fraction": 0.0005333333333333334
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2024-04-15"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "9356747",
+          "received": "2024-06-27",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit Reporting Act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. has violated my rights. Or a list of inquiries : 15 U.S.C 16…"
+        },
+        {
+          "complaint_id": "7308001",
+          "received": "2023-07-26",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to priv…"
+        },
+        {
+          "complaint_id": "7105554",
+          "received": "2023-06-12",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. The letters are stated with items and issues. 15 U.S.C 1681 …"
+        }
+      ],
+      "image": "series/cluster_28.png"
+    },
+    {
+      "cluster_id": 29,
+      "fit_rows": 9166,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9765437486362644,
+      "unique_text_fraction": 0.192559458869736,
+      "dominant_template_fraction": 0.1195723325332751,
+      "p95_distance": 13.285523414611816,
+      "terms": [
+        "identity",
+        "theft",
+        "identity theft",
+        "redacted redacted",
+        "redacted",
+        "items",
+        "federal",
+        "federal trade",
+        "trade",
+        "report"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 100.02197802197803,
+          "mean_share": 0.007701464509670931,
+          "novel_fraction": 0.006701823774994507
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 115.16666666666667,
+          "mean_share": 0.006346909085387657,
+          "novel_fraction": 0.03400868306801737
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 245.92,
+          "mean_share": 0.009779967646090883,
+          "novel_fraction": 0.09027325959661679
+        }
+      },
+      "alert_weeks": {
+        "calibration": [
+          "2024-12-09"
+        ],
+        "fit": [
+          "2023-07-31"
+        ],
+        "validation": [
+          "2025-02-24"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "6447416",
+          "received": "2023-01-18",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "This is the several time I've complained about being a victim of identity theft. The XXXX Credit Bureaus must remove any item that was opened without my knowledge, consent, or authority within XXXX business days with ( 1 ) appropriate proo…"
+        },
+        {
+          "complaint_id": "7438092",
+          "received": "2023-08-23",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "This is the several times I've complained about being a victim of identity theft. You must remove/block any account that was opened without my knowledge, consent, or authority within 4 business days with ( 1 ) appropriate proof of the iden…"
+        },
+        {
+          "complaint_id": "7742869",
+          "received": "2023-10-24",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "This is the several times I've complained about being a victim of identity theft. You must remove/block any items that was opened without my knowledge, consent, or authority within 4 business days with ( 1 ) appropriate proof of the identi…"
+        }
+      ],
+      "image": "series/cluster_29.png"
+    },
+    {
+      "cluster_id": 30,
+      "fit_rows": 21597,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.8657220910311617,
+      "unique_text_fraction": 0.3155993888040005,
+      "dominant_template_fraction": 0.0326897254248275,
+      "p95_distance": 13.56324863433838,
+      "terms": [
+        "payment",
+        "late",
+        "payments",
+        "creditor",
+        "mailed delivered",
+        "periodic",
+        "delivered",
+        "periodic statement",
+        "1637",
+        "21 days"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 236.2967032967033,
+          "mean_share": 0.017591896159005867,
+          "novel_fraction": 0.010045109984653305
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 406.5,
+          "mean_share": 0.022749420662945677,
+          "novel_fraction": 0.0002050020500205002
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 369.08,
+          "mean_share": 0.014387023894429772,
+          "novel_fraction": 0.00010837758751490192
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-05-29",
+          "2024-01-22",
+          "2024-06-17"
+        ],
+        "validation": [
+          "2025-02-24"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "7415307",
+          "received": "2023-08-18",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I reviewed my Consumer Reports and noticed that I had two late payments on an account that I was never late for. Consumer Reporting Agencies have assumed a vital role and have a responsibility to report Consumer Information to the best of …"
+        },
+        {
+          "complaint_id": "8350116",
+          "received": "2024-02-16",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I reviewed my Consumer Reports and noticed that I had two late payments on an account that I was never late for. Consumer Reporting Agencies have assumed a vital role and have a responsibility to report Consumer information to the best of …"
+        },
+        {
+          "complaint_id": "9516992",
+          "received": "2024-07-15",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I reviewed my Consumer Reports and noticed that I had two late payments on an account that I was never late for Consumer Reporting Agencies have assumed a vital role and have a responsibility to report Consumer information to the best of t…"
+        }
+      ],
+      "image": "series/cluster_30.png"
+    },
+    {
+      "cluster_id": 31,
+      "fit_rows": 8060,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.7771712158808933,
+      "unique_text_fraction": 0.0279156327543424,
+      "dominant_template_fraction": 0.4349875930521091,
+      "p95_distance": 13.234893798828123,
+      "terms": [
+        "need reporting",
+        "reporting correction",
+        "correction company",
+        "identified inaccurate",
+        "inaccurate accounts",
+        "reviewing credit",
+        "report identified",
+        "accounts need",
+        "reviewing",
+        "identified"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 87.97802197802197,
+          "mean_share": 0.005873609867954277,
+          "novel_fraction": 0.0
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 249.75,
+          "mean_share": 0.014014065500302134,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 313.2,
+          "mean_share": 0.01221134390805088,
+          "novel_fraction": 0.0
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-03-27",
+          "2024-03-04"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "9618436",
+          "received": "2024-07-26",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Upon reviewing my credit report, I have identified inaccurate accounts that need reporting and correction through your company."
+        },
+        {
+          "complaint_id": "9737103",
+          "received": "2024-08-07",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I value my credit a lot and the inaccuracy in my report has negatively affected my financial opportunities as well as my XXXX XXXX"
+        },
+        {
+          "complaint_id": "9479891",
+          "received": "2024-07-12",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I value my credit a lot and the inaccuracy in my report has negatively affected my financial opportunities as well as my XXXX XXXX."
+        }
+      ],
+      "image": "series/cluster_31.png"
+    },
+    {
+      "cluster_id": 32,
+      "fit_rows": 9040,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9545353982300884,
+      "unique_text_fraction": 0.1586283185840708,
+      "dominant_template_fraction": 0.1413716814159292,
+      "p95_distance": 13.19579029083252,
+      "terms": [
+        "redacted redacted",
+        "redacted",
+        "credit",
+        "late payment",
+        "section",
+        "consumer",
+        "15",
+        "verify",
+        "information",
+        "1681"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 99.23076923076923,
+          "mean_share": 0.007472616656721525,
+          "novel_fraction": 0.008305647840531562
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 107.58333333333333,
+          "mean_share": 0.006113437558456867,
+          "novel_fraction": 0.017041053446940357
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 86.28,
+          "mean_share": 0.0029456471794921924,
+          "novel_fraction": 0.006954102920723227
+        }
+      },
+      "alert_weeks": {
+        "calibration": [
+          "2024-12-23"
+        ],
+        "fit": [
+          "2023-06-05",
+          "2024-03-18"
+        ],
+        "validation": [
+          "2025-06-23"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "9800318",
+          "received": "2024-08-14",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I filed a dispute for incorrect information on my credit report. I received an email from the credit bureau stating that they are assuming the disputes are coming from a 3rd party. They in fact did not come from a 3rd party. l even called …"
+        },
+        {
+          "complaint_id": "7580113",
+          "received": "2023-09-20",
+          "product": "Debt collection",
+          "snippet": "This letter is a formal complaint that you are reporting inaccurate incomplete Credit information. According to the fair credit reporting act section 609A1A who are required by law to verify through physical verification of the original si…"
+        },
+        {
+          "complaint_id": "8117854",
+          "received": "2024-01-06",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX…"
+        }
+      ],
+      "image": "series/cluster_32.png"
+    },
+    {
+      "cluster_id": 33,
+      "fit_rows": 7051,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.884697206070061,
+      "unique_text_fraction": 0.018295277265636,
+      "dominant_template_fraction": 0.4314281662175578,
+      "p95_distance": 12.812517166137695,
+      "terms": [
+        "payments",
+        "updated records",
+        "consistently maintained",
+        "precise updated",
+        "seeking precise",
+        "reflect timely",
+        "perplexing discover",
+        "maintained time",
+        "records accurately",
+        "payments perplexing"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 77.4065934065934,
+          "mean_share": 0.0063196405283483855,
+          "novel_fraction": 0.005252697331061896
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 14.583333333333334,
+          "mean_share": 0.0008216292885018251,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 13.92,
+          "mean_share": 0.0005424592742629911,
+          "novel_fraction": 0.0
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-06-05",
+          "2024-03-11"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "8592458",
+          "received": "2024-03-20",
+          "product": "Credit card",
+          "snippet": "I have consistently made on-time payments, and it is unjust to be penalized with this erroneous entry. I urge you to update my account without delay."
+        },
+        {
+          "complaint_id": "8304638",
+          "received": "2024-02-07",
+          "product": "Credit card",
+          "snippet": "It's unfair that I've consistently made on-time payments for this account and have never been late. Please correct my account to accurately reflect this."
+        },
+        {
+          "complaint_id": "8829774",
+          "received": "2024-04-22",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I have consistently maintained on-time payments, so I find it perplexing to discover an error in my credit report. I am seeking precise and updated records that accurately reflect my timely payments for those accounts. I sincerely hope that"
+        }
+      ],
+      "image": "series/cluster_33.png"
+    },
+    {
+      "cluster_id": 34,
+      "fit_rows": 6530,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9917304747320062,
+      "unique_text_fraction": 0.0039816232771822,
+      "dominant_template_fraction": 0.7108728943338438,
+      "p95_distance": 12.504405975341797,
+      "terms": [
+        "letters",
+        "bureaus continuously",
+        "happened mailed",
+        "really sure",
+        "far gotten",
+        "continuously far",
+        "sure happened",
+        "involved review",
+        "gotten response",
+        "mailed letters"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 71.52747252747253,
+          "mean_share": 0.006256156032763627,
+          "novel_fraction": 0.0
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 34.583333333333336,
+          "mean_share": 0.0019379589102629172,
+          "novel_fraction": 0.0024096385542168677
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 31.92,
+          "mean_share": 0.0012745923768586155,
+          "novel_fraction": 0.0012531328320802004
+        }
+      },
+      "alert_weeks": {
+        "validation": [
+          "2025-06-16"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "9058654",
+          "received": "2024-05-20",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I'm really not sure what happened. I have mailed off letters to the credit bureaus continuously and thus far I have not gotten a response. My name is XXXX XXXX and I am filing this complaint for falsely reporting misleading information. Th…"
+        },
+        {
+          "complaint_id": "6684102",
+          "received": "2023-03-13",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I'm really not sure what happened. I have mailed off letters to the credit bureaus continuously and thus far I have not gotten a response.My name is XXXX XXXX and I am filing this complaint for falsely reporting misleading information.Ther…"
+        },
+        {
+          "complaint_id": "7833016",
+          "received": "2023-11-10",
+          "product": "Credit card",
+          "snippet": "I was contacted by phone on XX/XX/XXXX, about being late in making payments on a credit card. After talking to this customer service person, I realized that this was fraud as I had never personally applied for a XXXX credit card from Ollo/…"
+        }
+      ],
+      "image": "series/cluster_34.png"
+    },
+    {
+      "cluster_id": 35,
+      "fit_rows": 2888,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9996537396121884,
+      "unique_text_fraction": 0.0020775623268698,
+      "dominant_template_fraction": 0.6835180055401662,
+      "p95_distance": 10.701017379760742,
+      "terms": [
+        "dispute incorrect",
+        "invalid items",
+        "referenced issues",
+        "incorrect invalid",
+        "letter referenced",
+        "assistance creditors",
+        "gotten assistance",
+        "report gotten",
+        "documents letter",
+        "matter attached"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 31.736263736263737,
+          "mean_share": 0.002635845247362982,
+          "novel_fraction": 0.0
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 28.25,
+          "mean_share": 0.0015735751376655836,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 11.2,
+          "mean_share": 0.00041827969569012267,
+          "novel_fraction": 0.0
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-02-13",
+          "2023-06-26",
+          "2023-07-31"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "8254616",
+          "received": "2024-01-30",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I have been trying to dispute incorrect and/or invalid items listed on my credit report and have gotten no assistance from the creditors or the credit bureaus regarding this matter. Please see attached documents and letter for referenced i…"
+        },
+        {
+          "complaint_id": "8590865",
+          "received": "2024-03-20",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I filed a dispute for incorrect information on my credit report. I received an email from the credit bureau stating that they are assuming the disputes are coming from a 3rd party. They in fact did not come from a 3rd party. l even called …"
+        },
+        {
+          "complaint_id": "9060630",
+          "received": "2024-05-22",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Remove these inquiries, as I have no knowledge of them, and the company executed this without my approval."
+        }
+      ],
+      "image": "series/cluster_35.png"
+    },
+    {
+      "cluster_id": 36,
+      "fit_rows": 53587,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.960382182245694,
+      "unique_text_fraction": 0.725549107059548,
+      "dominant_template_fraction": 0.011234067964245,
+      "p95_distance": 8.190593719482422,
+      "terms": [
+        "consumer",
+        "information",
+        "redacted",
+        "reporting",
+        "15",
+        "redacted redacted",
+        "usc",
+        "15 usc",
+        "consumer reporting",
+        "account"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 587.0769230769231,
+          "mean_share": 0.05020866948593249,
+          "novel_fraction": 0.009677298592392932
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 633.1666666666666,
+          "mean_share": 0.035652987020700695,
+          "novel_fraction": 0.0
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 826.28,
+          "mean_share": 0.03222186866444635,
+          "novel_fraction": 0.0003872779203175679
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-12-18"
+        ],
+        "validation": [
+          "2025-02-03"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "9858245",
+          "received": "2024-08-21",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "15 usc 1692 design to eliminate abusive, deceptive, and unfair debt collection practices 15 usc 1681s-2 Responsibility of furnishers of information to consumer reporting agencies 15 usc 1681 ( n ) Civil liability for wilful non compliance …"
+        },
+        {
+          "complaint_id": "9635687",
+          "received": "2024-07-27",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "XXXX XXXXXXXX XXXX / self lender, has reported on my account that I had a late payment on a closed out account it was closed out on XX/XX/XXXX with a XXXX balance and it was reported late on the XX/XX/XXXX And XX/XX/XXXX showing a XXXX bal…"
+        },
+        {
+          "complaint_id": "10008342",
+          "received": "2024-09-03",
+          "product": "Vehicle loan or lease",
+          "snippet": "15 U.S. Code 1681a - Definitions ; rules of construction U.S. Code Notes prev ( XXXX XXXX XXXX ) | next ( XXXX XXXX XXXX ) ( a ) Definitions and rules of construction set forth in this section are applicable for the purposes of this subcha…"
+        }
+      ],
+      "image": "series/cluster_36.png"
+    },
+    {
+      "cluster_id": 37,
+      "fit_rows": 6255,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.8537170263788969,
+      "unique_text_fraction": 0.048441247002398,
+      "dominant_template_fraction": 0.2241406874500399,
+      "p95_distance": 12.668935775756836,
+      "terms": [
+        "letters",
+        "reporting",
+        "inaccurate date",
+        "date",
+        "written",
+        "15",
+        "credit",
+        "report",
+        "section",
+        "1681"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 68.57142857142857,
+          "mean_share": 0.004840308332988287,
+          "novel_fraction": 0.000641025641025641
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 88.5,
+          "mean_share": 0.005010159185459692,
+          "novel_fraction": 0.0009416195856873823
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 76.44,
+          "mean_share": 0.002525944193754396,
+          "novel_fraction": 0.007849293563579277
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2024-01-08"
+        ],
+        "validation": [
+          "2025-01-06"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "10178808",
+          "received": "2024-09-20",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I'm really not sure what happened. I have mailed off letters to the credit bureaus continuously and thus far I have not gotten a response. My name is XXXX XXXX and I am filing this complaint for falsely reporting misleading information. Th…"
+        },
+        {
+          "complaint_id": "10209236",
+          "received": "2024-09-23",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "I'm really not sure what happened. I have mailed off letters to the credit bureaus continuously and thus far I have not gotten a response. My name is XXXX XXXX and I am filing this complaint for falsely reporting misleading information. Th…"
+        },
+        {
+          "complaint_id": "7856349",
+          "received": "2023-11-16",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "Good evening, The accounts listed in the report attached do not belong to me. Please help me remove them and rectify this as soon as possible. Thank you."
+        }
+      ],
+      "image": "series/cluster_37.png"
+    },
+    {
+      "cluster_id": 38,
+      "fit_rows": 6321,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9659863945578232,
+      "unique_text_fraction": 0.0776775826609713,
+      "dominant_template_fraction": 0.1743395032431577,
+      "p95_distance": 12.43832778930664,
+      "terms": [
+        "payment",
+        "late",
+        "complaint",
+        "error",
+        "creditor",
+        "complaint bureaus",
+        "payment late",
+        "days payment",
+        "mailed delivered",
+        "payment date"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 69.15384615384616,
+          "mean_share": 0.005105698630061186,
+          "novel_fraction": 0.009852216748768473
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 245.41666666666666,
+          "mean_share": 0.013630530753173732,
+          "novel_fraction": 0.01765704584040747
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 196.2,
+          "mean_share": 0.007512842049061632,
+          "novel_fraction": 0.0050968399592252805
+        }
+      },
+      "alert_weeks": {},
+      "examples": [
+        {
+          "complaint_id": "9874560",
+          "received": "2024-08-21",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "My account with ALLY FINCL was never late! I have had exceptional payment history witH XXXX XXXX and all payments were placed on Autopay. This late payment that is reporting is a result on a systematic error on their end processing my paym…"
+        },
+        {
+          "complaint_id": "9562556",
+          "received": "2024-07-19",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "My account with MERCEDES BENZ FINANCIAL was never late! I have had exceptional payment history witH XXXX XXXX and all payments were placed on Autopay. This late payment that is reporting is a result on a systematic error on their end proce…"
+        },
+        {
+          "complaint_id": "9456762",
+          "received": "2024-07-08",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "My accounts was never late! I have had exceptional payment history with capital one and all payments were placed on Autopay. This late payment that is reporting is a result on a systematic error on their end processing my payment. This was…"
+        }
+      ],
+      "image": "series/cluster_38.png"
+    },
+    {
+      "cluster_id": 39,
+      "fit_rows": 8485,
+      "main_product": "Credit reporting or other personal consumer reports",
+      "main_product_fraction": 0.9499116087212728,
+      "unique_text_fraction": 0.1217442545668827,
+      "dominant_template_fraction": 0.1295226870948733,
+      "p95_distance": 13.571118354797363,
+      "terms": [
+        "section",
+        "consumer",
+        "15",
+        "information",
+        "1681",
+        "states",
+        "reporting agency",
+        "consumer reporting",
+        "agency",
+        "reporting"
+      ],
+      "weekly": {
+        "fit": {
+          "weeks": 91,
+          "mean_count": 92.89010989010988,
+          "mean_share": 0.0072361241328634685,
+          "novel_fraction": 0.006624866911155803
+        },
+        "calibration": {
+          "weeks": 12,
+          "mean_count": 165.91666666666666,
+          "mean_share": 0.009307034325913158,
+          "novel_fraction": 0.0005022601707684581
+        },
+        "validation": {
+          "weeks": 25,
+          "mean_count": 146.8,
+          "mean_share": 0.005462172257021767,
+          "novel_fraction": 0.0008174386920980927
+        }
+      },
+      "alert_weeks": {
+        "fit": [
+          "2023-07-03",
+          "2024-04-29"
+        ]
+      },
+      "examples": [
+        {
+          "complaint_id": "9424182",
+          "received": "2024-07-04",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to priv…"
+        },
+        {
+          "complaint_id": "9177962",
+          "received": "2024-06-05",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under XXXX5 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to p…"
+        },
+        {
+          "complaint_id": "8849671",
+          "received": "2024-04-24",
+          "product": "Credit reporting or other personal consumer reports",
+          "snippet": "In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to priv…"
+        }
+      ],
+      "image": "series/cluster_39.png"
+    }
+  ],
+  "elapsed_seconds": 12.219404557952657
+}
