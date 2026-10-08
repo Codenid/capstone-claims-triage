@@ -1,6 +1,6 @@
 {
   "stage": "M8C",
-  "git_commit": "847ceae3e2e2719c39cd9c8cdd0ea56867295ffd",
+  "git_commit": "e6c1b03a1ed8bd5077b5350f8639851bb96caf08",
   "m9_run": "nb_discounted_hierarchical_v1/20261005T200606.263137Z-full-0aa0a0fb-2348e548",
   "examples_per_pattern": 3,
   "snippet_characters": 240,
@@ -2757,5 +2757,5 @@
       "image": "series/cluster_39.png"
     }
   ],
-  "elapsed_seconds": 12.219404557952657
+  "elapsed_seconds": 10.15882420213893
 }
