@@ -2161,3 +2161,6 @@ Resultado del 2026-10-07 (SLURM 54842, 33 s; humo 54841; detalle en
   pre-registrado, y la ficha de evidencia muestra el p-valor de la semana. Su
   tasa en ajuste queda anotada como límite de M10, no se recalibra el umbral.
   Una κ por semana o por patrón sería la mejora natural si se retoma M10.
+- MLflow `2e6d9a23cbf24ab7be73a6b9c355e133` (corrida 52 de 100); tabla semanal
+  en DVC. El crudo `68f4560a…` quedó en el remoto DagsHub ese mismo día:
+  no estaba, aunque la importación del EDA lo daba por sincronizado.

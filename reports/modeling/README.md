@@ -117,4 +117,5 @@ Un run por decisión (DagsHub, experimento `claims-triage-modeling`). Los
 | `5ca3b797784d4a968fac0a95d7904cff` | M7S, bloque A |
 | `b29a0b2a36b047e0a37a17d6217bc1e4` | M5F, bloque B |
 | `d07b98c6fa3644269b69254021b87552` | M5F, ablación de entrada de TabPFN (§26) |
+| `2e6d9a23cbf24ab7be73a6b9c355e133` | M10S, señal semanal de mezcla rara (§27) |
 | `21ec486b702948fd9969e8b80e5357e2` | Bloque C, los 4 candidatos contra v3 |
