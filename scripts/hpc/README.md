@@ -691,3 +691,12 @@ uv run --no-sync python -m src.models.daily_counts.challenge reports/modeling/da
 uv run --no-sync python -m src.models.daily_counts.challenge --validation reports/modeling/daily_counts/<modelo>/<run_key> ...
 ```
 
+D-11 (§28.3) corre sobre el ganador fijado en `daily_change.m9d_model` y
+`daily_change.m9d_run_key`; `--validation` solo después de registrar la
+decisión, una vez:
+
+```bash
+sbatch scripts/hpc/m11d_daily_change.slurm
+sbatch scripts/hpc/m11d_daily_change.slurm --validation
+```
+

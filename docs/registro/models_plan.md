@@ -2274,6 +2274,16 @@ correctivas sobre aumentos persistentes.
     hiperparámetros) o el full proyectado (4 × 2000 iteraciones más 14
     refits de bloque) supera 8 h, D-B queda registrado como **no evaluado
     en full** y la elección sigue con D-A, D-C, D-D.
+  - Piloto no centrado de D-B (54930, 2 cadenas × 400, 7 días de
+    calibración, 1 refit): 2 h 45 min; el muestreador sigue saturado
+    (profundidad de árbol 12 en las 400 iteraciones, 7–11 s por iteración),
+    R-hat máximo 1.68, ESS mínimo 3.3, BFMI 0.007. WIS 7.82 frente a 8.99 del
+    baseline rodante en esos 7 días, solo como referencia (`pilot_only`). Se
+    aplica la regla anterior: **D-B no se evalúa en full**; el full de
+    4 × 2000 más 14 refits superaría con holgura las 8 h, y el piloto no
+    converge. Queda como limitación registrada: un paseo aleatorio diario de
+    39 contrastes × 639 días necesita otra inferencia (por ejemplo, filtro de
+    Kalman sobre una aproximación gaussiana) que no entra en esta ronda.
 
 Resultados de los fulls de conteo del 2026-10-08 (calibración, 92 días × 40
 patrones, WIS diario; referencia D-B1 Poisson de 7 días 9.263, Poisson fijo
@@ -2293,6 +2303,18 @@ patrones, WIS diario; referencia D-B1 Poisson de 7 días 9.263, Poisson fijo
   calibración. La regla "si varios ganan, el de mejor WIS" elige a D-D; la
   decisión final espera a D-B y D-E y se acompaña del bootstrap pareado D-D
   contra D-A, que previsiblemente incluirá el 0.
+- **Decisión del 2026-10-08** (`challenge/20261008T210325.124400Z-calibration.json`,
+  con D-B fuera del full por la regla anterior): **ganador de conteo diario
+  D-D** (`zinb_daily_hierarchical_v1`, run
+  `20261008T040100.226680Z-full-2e0a6b9e-2eb7afd9`). Bootstrap pareado por
+  día del ganador contra cada aceptado (diferencia de WIS, IC 95 %): contra
+  D-A −0.013 [−0.028, +0.001], incluye el 0 como se anticipó; contra D-C
+  −0.227 [−0.356, −0.106]; contra D-B2 −0.750 [−0.947, −0.543]. Lectura
+  honesta: D-D y D-A son intercambiables en calibración; D-D gana por la
+  regla pre-registrada, y D-A queda como alternativa más simple si la
+  inflación de ceros estorbara en producción. D-D alimenta D-11 (§28.3) con
+  su CDF inflada en cero. D-E es el modelo de composición diaria (señal de
+  mezcla rara), sin competir por WIS.
 - MLflow: `bd71bb91` (D-A), `60c6c456` (D-B2), `ff8450aa` (D-C), `a76cf32a`
   (D-D).
 - D-E (Dirichlet-multinomial, malla exacta, SLURM 54928, 4 min): κ 261

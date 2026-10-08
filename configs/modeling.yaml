@@ -336,8 +336,9 @@ daily_challenge:
 # the 40 patterns; bursts injected in calibration; the weekly CUSUM of M11 is
 # run on the same bursts aggregated to weeks.
 daily_change:
-  m9d_model: nb_daily_hierarchical_v1
-  m9d_run_key: PENDING
+  # Winner of the daily challenge of 2026-10-08 (§28.2): D-D.
+  m9d_model: zinb_daily_hierarchical_v1
+  m9d_run_key: 20261008T040100.226680Z-full-2e0a6b9e-2eb7afd9
   report_dir: reports/modeling/daily_change
   run_name: m11d-daily-change
   prediction_draws: 2000
