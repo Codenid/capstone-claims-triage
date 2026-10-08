@@ -1,0 +1,59 @@
+{
+  "run_name": "m9d-nb_daily_state_space_v1-pilot",
+  "experiment_name": "claims-triage-modeling",
+  "created_at_utc": "2026-10-08T21:01:39.680480+00:00",
+  "tags": {
+    "run_contract_version": "modeling_run_v1",
+    "evaluation_split_version": "temporal_v1",
+    "git_commit": "687af58ee9524904c8baea6fdc2613b4154d1f3b",
+    "dvc_data_hash": "d189a3ae6ea7a8f9041fc8210968eda6",
+    "version_datos": "datos-v1",
+    "datos_md5": "d189a3ae6ea7a8f9041fc8210968eda6",
+    "tipo": "experimento",
+    "stage": "M9D",
+    "target": "A1",
+    "split": "calibration",
+    "view": "40 patterns, daily",
+    "execution_host": "khipu",
+    "execution_mode": "slurm",
+    "slurm_job_id": "54930"
+  },
+  "parameters": {
+    "seed": 42,
+    "input_data": "data/processed/prepared.parquet",
+    "features": "[\"daily_total\", \"latent random walk\", \"day_of_week\"]",
+    "plan": "models_plan.md §28.2",
+    "run_key": "20261008T181630.222214Z-pilot",
+    "run_mode": "pilot",
+    "block_days": 7,
+    "candidate_status": "pilot_only"
+  },
+  "metrics": {
+    "calibration_wis": 7.815731505102041,
+    "calibration_mae": 14.2875,
+    "calibration_rmse": 23.01744291991247,
+    "calibration_wape": 0.22093665433257856,
+    "calibration_relative_bias": -0.078892141160877,
+    "calibration_coverage_50": 0.6142857142857143,
+    "calibration_coverage_80": 0.8714285714285714,
+    "calibration_coverage_95": 0.9785714285714285,
+    "calibration_width_50": 28.40625,
+    "calibration_width_80": 56.77928571428573,
+    "calibration_width_95": 102.79776785714277,
+    "calibration_upper_95_excess_fraction": 0.010714285714285714,
+    "calibration_impossible_probability": 0.0002380952380952381,
+    "calibration_wis_skill": 0.5412032598462653,
+    "calibration_wape_skill": 0.34855886663409863,
+    "calibration_wis_gain": 0.13048302663190703,
+    "diagnostic_rhat_max": 1.6835178655195553,
+    "diagnostic_ess_bulk_min": 3.2613084886398975,
+    "diagnostic_ess_tail_min": 11.362162621239362,
+    "diagnostic_divergences": 0.0,
+    "diagnostic_bfmi_min": 0.007317653290461959,
+    "diagnostic_tree_depth_max": 12.0,
+    "diagnostic_tree_depth_limit_hits": 400.0
+  },
+  "artifacts": [
+    "reports/modeling/daily_counts/nb_daily_state_space_v1/20261008T181630.222214Z-pilot"
+  ]
+}
