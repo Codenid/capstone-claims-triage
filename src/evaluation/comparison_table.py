@@ -54,6 +54,16 @@ CHALLENGES = "reports/modeling/weekly_counts/challenges"
 PERSISTENT = "reports/modeling/persistent_change_c_a/results.json"
 PERSISTENT_VALIDATION = "reports/modeling/persistent_change_c_a/validation_results.json"
 SPACE = "reports/modeling/space_sensitivity/results.json"
+DAILY = "reports/modeling/daily_counts"
+DAILY_CHALLENGE = "reports/modeling/daily_counts/challenge"
+DAILY_FAMILIES = {
+    "nb_daily_hierarchical_v1": "D-A: binomial negativa diaria con día de semana",
+    "nb_daily_no_dow_v1": "D-B2: binomial negativa diaria sin día de semana",
+    "nb_daily_fourier_v1": "D-C: binomial negativa diaria, Fourier y tendencia",
+    "zinb_daily_hierarchical_v1": "D-D: binomial negativa diaria, inflación de ceros",
+    "nb_daily_state_space_v1": "D-B: espacio de estados diario",
+    "dirichlet_multinomial_daily_v1": "D-E: Dirichlet-multinomial diaria",
+}
 VALIDATION = "validacion_2025_h1 (ya consultada)"
 CALIBRATION = "calibracion_2024_q4"
 # Models whose record names a stage; the rest of the catalogue is in modelos.md.
@@ -238,7 +248,7 @@ def foundation_rows() -> list[dict[str, Any]]:
 
 def full_runs(directory: str) -> list[Path]:
     """The results.json of every full run, one per model, newest first."""
-    runs = sorted((PROJECT_ROOT / directory).glob("*/*-full-*/results.json"))
+    runs = sorted((PROJECT_ROOT / directory).glob("*/*-full*/results.json"))
     latest: dict[str, Path] = {}
     for path in runs:
         latest[path.parents[1].name] = path
@@ -368,6 +378,80 @@ def composition_rows() -> list[dict[str, Any]]:
     return rows
 
 
+def daily_rows() -> list[dict[str, Any]]:
+    """M9D (§28.2): daily fulls against their baselines, then the daily winner."""
+    rows = []
+    for path in full_runs(DAILY):
+        report = json.loads(path.read_text(encoding="utf-8"))
+        comparison = report["comparison"]
+        composition = "log_score" in comparison
+        metric = "log_score" if composition else "wis"
+        scores = comparison["log_score"] if composition else comparison["metrics"]
+        difference = (
+            comparison["difference"] if composition else comparison["difference"]["wis"]
+        )
+        for name, value in scores.items():
+            is_model = name == "model"
+            rows.append(
+                row(
+                    etapa="M9D",
+                    tarea="composición diaria" if composition else "conteo diario",
+                    modelo=DAILY_FAMILIES.get(report["model_id"], report["model_id"])
+                    if is_model
+                    else name,
+                    rol="candidato" if is_model else "baseline",
+                    conjunto=CALIBRATION,
+                    vista="40 patrones, diario",
+                    metrica=metric,
+                    valor=value if composition else value["wis"],
+                    referencia=comparison["best_baseline"] if is_model else "",
+                    ganancia_relativa=(
+                        comparison.get("wis_gain", "") if is_model else ""
+                    ),
+                    ic95_inferior=interval(difference, "p025", is_model),
+                    ic95_superior=interval(difference, "p975", is_model),
+                    decision=report.get("candidate_status", "") if is_model else "",
+                    fuente=str(path.relative_to(PROJECT_ROOT)).replace("\\", "/"),
+                )
+            )
+    for path in sorted((PROJECT_ROOT / DAILY_CHALLENGE).glob("*.json")):
+        if path.name.endswith(".run.json"):
+            continue
+        report = json.loads(path.read_text(encoding="utf-8"))
+        winner_id = report["winner"]["model_id"]
+        winner = next(c for c in report["candidates"] if c["model_id"] == winner_id)
+        validation = report["split"] == "validation"
+        if validation:
+            comparison = report["validation"]["comparison"]
+            value = report["validation"]["metrics"]["model"]["wis"]
+            difference = comparison["difference"]["wis"]
+        else:
+            value, difference = winner["wis"], {
+                "p025": winner["wis_difference_p025"],
+                "p975": winner["wis_difference_p975"],
+            }
+            comparison = {"wis_gain": winner["wis_gain"]}
+        rows.append(
+            row(
+                etapa="M9D §28.2",
+                tarea="conteo diario",
+                modelo=DAILY_FAMILIES.get(winner["model_id"], winner["model_id"]),
+                rol="ganador M9D",
+                conjunto=VALIDATION if validation else CALIBRATION,
+                vista="40 patrones, diario",
+                metrica="wis",
+                valor=value,
+                referencia=winner["best_baseline"],
+                ganancia_relativa=comparison["wis_gain"],
+                ic95_inferior=difference["p025"],
+                ic95_superior=difference["p975"],
+                decision="" if validation else "elegido",
+                fuente=str(path.relative_to(PROJECT_ROOT)).replace("\\", "/"),
+            )
+        )
+    return rows
+
+
 def alert_rows() -> list[dict[str, Any]]:
     """M11: the two alert rules on injected growth, and the real alert counts."""
     rows = []
@@ -455,6 +539,7 @@ def build() -> list[dict[str, Any]]:
         classifier_rows()
         + count_rows()
         + composition_rows()
+        + daily_rows()
         + alert_rows()
         + space_rows()
     )

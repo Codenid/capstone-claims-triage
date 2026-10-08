@@ -23,6 +23,15 @@ class ComparisonTableTests(unittest.TestCase):
         self.assertEqual(verdict(None), "")
         self.assertEqual(verdict(False), "no reemplaza")
 
+    def test_daily_fulls_are_listed_with_their_baselines(self):
+        rows = [r for r in build() if r["etapa"].startswith("M9D")]
+
+        models = {r["modelo"] for r in rows if r["rol"] == "candidato"}
+        self.assertIn("D-A: binomial negativa diaria con día de semana", models)
+        self.assertIn("D-E: Dirichlet-multinomial diaria", models)
+        self.assertTrue(any(r["rol"] == "baseline" for r in rows))
+        self.assertTrue(all(r["vista"] == "40 patrones, diario" for r in rows))
+
 
 if __name__ == "__main__":
     unittest.main()

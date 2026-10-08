@@ -8,7 +8,7 @@
 # ============================================================================
 mlflow:
   tracking_uri: https://dagshub.com/WinzCode/capstone-claims-triage.mlflow
-  experimento: claims-triage-modeling        # UN experimento; 51 corridas al 2026-10-07
+  experimento: claims-triage-modeling        # UN experimento; 57 corridas al 2026-10-08
   modelo_registrado: claims-triage-t1        # propuesta para PB-20 (MLE), sin registrar
   alias_campeon: campeon
 
@@ -26,6 +26,8 @@ tareas:                                      # una métrica primaria por tarea
   M9: {tipo: pronostico_probabilistico, metrica_primaria: wis, mayor_es_mejor: false}
   M10: {tipo: composicion, metrica_primaria: log_score}
   M11: {tipo: deteccion_de_cambio, metrica_primaria: tasa_de_deteccion}
+  M9D: {tipo: pronostico_probabilistico, metrica_primaria: wis, mayor_es_mejor: false}
+  M11D: {tipo: deteccion_de_cambio, metrica_primaria: tasa_de_deteccion}
 mayor_es_mejor: true                          # salvo donde la tarea diga lo contrario
 
 conjuntos:
