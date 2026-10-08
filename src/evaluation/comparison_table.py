@@ -56,6 +56,7 @@ PERSISTENT_VALIDATION = "reports/modeling/persistent_change_c_a/validation_resul
 SPACE = "reports/modeling/space_sensitivity/results.json"
 DAILY = "reports/modeling/daily_counts"
 DAILY_CHALLENGE = "reports/modeling/daily_counts/challenge"
+DAILY_ALERTS = "reports/modeling/daily_change/results.json"
 DAILY_FAMILIES = {
     "nb_daily_hierarchical_v1": "D-A: binomial negativa diaria con día de semana",
     "nb_daily_no_dow_v1": "D-B2: binomial negativa diaria sin día de semana",
@@ -452,6 +453,51 @@ def daily_rows() -> list[dict[str, Any]]:
     return rows
 
 
+def daily_alert_rows() -> list[dict[str, Any]]:
+    """D-11 (§28.3): each daily rule on the injected bursts, and its verdict."""
+    if not (PROJECT_ROOT / DAILY_ALERTS).is_file():
+        return []
+    report = load(DAILY_ALERTS)
+    adopted = report["decision"]["adopted"]
+    rows = []
+    for scenario, result in report["detection"].items():
+        for rule in ("cusum", "daily", "weekly_cusum"):
+            rows.append(
+                row(
+                    etapa="M11D",
+                    tarea=f"alertas diarias, escenario {scenario}",
+                    modelo=rule,
+                    rol="referencia M11" if rule == "weekly_cusum" else "candidato",
+                    conjunto="calibracion simulada",
+                    vista="40 patrones, diario",
+                    metrica="tasa_de_deteccion",
+                    valor=result[rule]["detected"],
+                    decision="" if rule == "weekly_cusum" or adopted else "no adoptada",
+                    fuente=DAILY_ALERTS,
+                )
+            )
+    for split, label in (("fit", "ajuste"), ("calibration", CALIBRATION)):
+        alarms = report["real_alarms"].get(split)
+        if not alarms:
+            continue
+        for rule in ("cusum", "daily"):
+            rows.append(
+                row(
+                    etapa="M11D",
+                    tarea="alertas diarias reales",
+                    modelo=rule,
+                    rol="candidato",
+                    conjunto=label,
+                    vista="40 patrones, diario",
+                    metrica="alertas_por_mes",
+                    valor=alarms[f"{rule}_per_month"],
+                    decision="" if adopted else "no adoptada",
+                    fuente=DAILY_ALERTS,
+                )
+            )
+    return rows
+
+
 def alert_rows() -> list[dict[str, Any]]:
     """M11: the two alert rules on injected growth, and the real alert counts."""
     rows = []
@@ -540,6 +586,7 @@ def build() -> list[dict[str, Any]]:
         + count_rows()
         + composition_rows()
         + daily_rows()
+        + daily_alert_rows()
         + alert_rows()
         + space_rows()
     )

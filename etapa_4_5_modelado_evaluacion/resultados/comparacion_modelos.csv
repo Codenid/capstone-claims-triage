@@ -81,6 +81,24 @@ M9D,conteo diario,D-B2: binomial negativa diaria sin día de semana,candidato,ca
 M9D,conteo diario,b1_rolling_7,baseline,calibracion_2024_q4,"40 patrones, diario",wis,9.262670,,,,,,reports/modeling/daily_counts/zinb_daily_hierarchical_v1/20261008T040100.226680Z-full-2e0a6b9e-2eb7afd9/results.json
 M9D,conteo diario,baseline,baseline,calibracion_2024_q4,"40 patrones, diario",wis,19.617099,,,,,,reports/modeling/daily_counts/zinb_daily_hierarchical_v1/20261008T040100.226680Z-full-2e0a6b9e-2eb7afd9/results.json
 M9D,conteo diario,"D-D: binomial negativa diaria, inflación de ceros",candidato,calibracion_2024_q4,"40 patrones, diario",wis,6.946122,b1_rolling_7,0.250095,-2.701901,-1.935867,accepted,reports/modeling/daily_counts/zinb_daily_hierarchical_v1/20261008T040100.226680Z-full-2e0a6b9e-2eb7afd9/results.json
+M9D §28.2,conteo diario,"D-D: binomial negativa diaria, inflación de ceros",ganador M9D,calibracion_2024_q4,"40 patrones, diario",wis,6.946122,b1_rolling_7,0.250095,-2.701901,-1.935867,elegido,reports/modeling/daily_counts/challenge/20261008T210325.124400Z-calibration.json
+M9D §28.2,conteo diario,"D-D: binomial negativa diaria, inflación de ceros",ganador M9D,validacion_2025_h1 (ya consultada),"40 patrones, diario",wis,14.556274,b1_rolling_7,0.246146,-6.744846,-3.057226,,reports/modeling/daily_counts/challenge/20261008T210603.586924Z-validation.json
+M11D,"alertas diarias, escenario burst_x2_3d",cusum,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.282000,,,,,no adoptada,reports/modeling/daily_change/results.json
+M11D,"alertas diarias, escenario burst_x2_3d",daily,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.352000,,,,,no adoptada,reports/modeling/daily_change/results.json
+M11D,"alertas diarias, escenario burst_x2_3d",weekly_cusum,referencia M11,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.304000,,,,,,reports/modeling/daily_change/results.json
+M11D,"alertas diarias, escenario burst_x3_1d",cusum,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.248000,,,,,no adoptada,reports/modeling/daily_change/results.json
+M11D,"alertas diarias, escenario burst_x3_1d",daily,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.442000,,,,,no adoptada,reports/modeling/daily_change/results.json
+M11D,"alertas diarias, escenario burst_x3_1d",weekly_cusum,referencia M11,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.291000,,,,,,reports/modeling/daily_change/results.json
+M11D,"alertas diarias, escenario rise_x1_5_7d",cusum,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.249000,,,,,no adoptada,reports/modeling/daily_change/results.json
+M11D,"alertas diarias, escenario rise_x1_5_7d",daily,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.267000,,,,,no adoptada,reports/modeling/daily_change/results.json
+M11D,"alertas diarias, escenario rise_x1_5_7d",weekly_cusum,referencia M11,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.307000,,,,,,reports/modeling/daily_change/results.json
+M11D,"alertas diarias, escenario none",cusum,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.065000,,,,,no adoptada,reports/modeling/daily_change/results.json
+M11D,"alertas diarias, escenario none",daily,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.106000,,,,,no adoptada,reports/modeling/daily_change/results.json
+M11D,"alertas diarias, escenario none",weekly_cusum,referencia M11,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.000000,,,,,,reports/modeling/daily_change/results.json
+M11D,alertas diarias reales,cusum,candidato,ajuste,"40 patrones, diario",alertas_por_mes,8.090981,,,,,no adoptada,reports/modeling/daily_change/results.json
+M11D,alertas diarias reales,daily,candidato,ajuste,"40 patrones, diario",alertas_por_mes,13.244165,,,,,no adoptada,reports/modeling/daily_change/results.json
+M11D,alertas diarias reales,cusum,candidato,calibracion_2024_q4,"40 patrones, diario",alertas_por_mes,8.271060,,,,,no adoptada,reports/modeling/daily_change/results.json
+M11D,alertas diarias reales,daily,candidato,calibracion_2024_q4,"40 patrones, diario",alertas_por_mes,12.902853,,,,,no adoptada,reports/modeling/daily_change/results.json
 M11,"alertas, escenario growth_10",cusum,ganador M11,calibracion simulada,40 patrones,tasa_de_deteccion,0.422826,,,,,elegido,reports/modeling/persistent_change_c_a/results.json
 M11,"alertas, escenario growth_10",weekly,candidato,calibracion simulada,40 patrones,tasa_de_deteccion,0.319565,,,,,,reports/modeling/persistent_change_c_a/results.json
 M11,"alertas, escenario growth_20",cusum,ganador M11,calibracion simulada,40 patrones,tasa_de_deteccion,0.708967,,,,,elegido,reports/modeling/persistent_change_c_a/results.json

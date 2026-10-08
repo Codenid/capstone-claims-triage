@@ -180,9 +180,13 @@ a 9.26 de la Poisson de 7 días (25% menos); el efecto de día de semana aporta
 la mayor parte de la mejora. Un modelo de espacio de estados diario no se pudo
 muestrear dentro del presupuesto del clúster y quedó fuera. La composición
 diaria usa una Dirichlet-multinomial con participaciones de 7 días (κ = 261) y
-da el p-valor diario de mezcla rara. La regla de alerta diaria (D-11) sigue el
-diseño de M11 con un presupuesto de 4 falsas alarmas al mes aprobado por el
-usuario.
+da el p-valor diario de mezcla rara. La regla de alerta diaria (D-11) siguió
+el diseño de M11 con un presupuesto de 4 falsas alarmas al mes aprobado por el
+usuario, pero no se adopta: detecta como máximo 44% de las ráfagas inyectadas
+(se exigía 50%) y, con esos umbrales, avisa 8 a 13 veces al mes en los datos
+reales. A escala diaria una ráfaga de ×2 queda dentro del ruido del conteo. El
+modelo diario sirve para la expectativa del día; las alertas siguen siendo
+semanales (M11).
 
 ## 5. Flujo de un reclamo nuevo
 
@@ -196,7 +200,8 @@ usuario.
    M11: las alertas van a revisión humana con los reclamos y palabras del
    patrón.
 7. Cada día maduro, actualizar los conteos diarios y correr el modelo diario
-   con su regla D-11, para decisiones rápidas del día a día.
+   para la expectativa del día (intervalos por patrón y composición); las
+   alertas automáticas siguen siendo semanales.
 
 ## 6. Resultados
 
@@ -210,6 +215,7 @@ usuario.
 | Alertas CUSUM | 1.4 alertas al mes en calibración | 30 alertas en 25 semanas (ya consultado) |
 | Conteo diario, NB con inflación de ceros vs Poisson de 7 días | WIS 6.95 vs 9.26 | 14.56 vs 19.31 (ya consultado) |
 | Composición diaria, Dirichlet-multinomial vs multinomial de 7 días | log score −152 vs −230 | — |
+| Alertas diarias D-11 | no adoptada: detección máxima 44% (se exigía 50%) | no consultado |
 
 La validación de 2025-H1 es más difícil que la calibración en los conteos:
 contiene una ráfaga del 13 de enero en la que un patrón recibió 58% de los
@@ -229,6 +235,8 @@ una limitación conocida; la memoria corta la atenúa pero no la corrige.
 - El eco de ráfagas en M9 y M11.
 - La escala diaria vale para días maduros: los últimos días de la CFPB llegan
   incompletos y no hay calendario de feriados en el modelo.
+- La alerta diaria D-11 no se adoptó; una versión con umbrales empíricos y
+  ráfagas mayores requeriría pre-registrarse de nuevo.
 - El paso de las sugerencias a acciones de triaje (M12) está pendiente y
   requiere definiciones del banco: equipos, mapeo de motivos a equipos,
   presupuesto de alertas revisables al mes.

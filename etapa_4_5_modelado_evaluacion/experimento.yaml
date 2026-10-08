@@ -8,7 +8,7 @@
 # ============================================================================
 mlflow:
   tracking_uri: https://dagshub.com/WinzCode/capstone-claims-triage.mlflow
-  experimento: claims-triage-modeling        # UN experimento; 57 corridas al 2026-10-08
+  experimento: claims-triage-modeling        # UN experimento; 59 corridas al 2026-10-08
   modelo_registrado: claims-triage-t1        # propuesta para PB-20 (MLE), sin registrar
   alias_campeon: campeon
 

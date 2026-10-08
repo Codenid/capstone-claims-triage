@@ -2357,6 +2357,34 @@ patrones, WIS diario; referencia D-B1 Poisson de 7 días 9.263, Poisson fijo
   del presupuesto. En la misma tabla se reporta qué fracción de esas mismas
   ráfagas, agregadas a semanas, ve el CUSUM semanal de M11: es la evidencia de
   que cada escala cubre un frente. Ninguna regla diaria reemplaza a M11.
+- **Resultado del 2026-10-08** (SLURM 54940, 50 min, sobre D-D; `reports/
+  modeling/daily_change/`): umbrales por simulación h = 3.90 (CUSUM) y
+  z* = 2.72 (día único) para 1/304 por decisión. Detección en calibración,
+  1,000 ráfagas inyectadas por escenario (25 inicios × 40 patrones), horizonte
+  14 días:
+
+  | Escenario | CUSUM diario | Regla de un día | CUSUM semanal de M11 |
+  |---|---|---|---|
+  | ×2 durante 3 días | 28.2 % (mediana 2 d) | 35.2 % (1 d) | 30.4 % |
+  | ×3 durante 1 día | 24.8 % (1 d) | 44.2 % (1 d) | 29.1 % |
+  | ×1.5 durante 7 días | 24.9 % (3 d) | 26.7 % (2 d) | 30.7 % |
+  | Sin aumento | 6.5 % | 10.6 % | 0.0 % |
+
+  Ninguna regla alcanza el 50 % exigido: **D-11 no se adopta**; M11 sigue
+  siendo la única regla de alerta. Las alarmas reales con esos umbrales son
+  8.1 (CUSUM) y 13.2 (día único) al mes en ajuste, y 8.3 y 12.9 en
+  calibración, frente al presupuesto de 4: los excesos de D-D tienen colas
+  más pesadas que la N(0, 1) supuesta por la simulación, igual que el 10.6 %
+  del escenario sin aumento (esperado ≈ 4.6 % en 14 días). Lectura: a escala
+  diaria, duplicar un patrón de 20 a 40 reclamos queda dentro del ruido de una
+  binomial negativa con dispersión ~10 (z ≈ 2.6, justo bajo z*); el CUSUM
+  semanal ve una fracción parecida (29–31 %) con 4 semanas de retraso
+  mediano. No se ajustan umbrales ni escenarios después de ver esto; queda
+  como pendiente, para una ronda futura y pre-registrada: umbrales
+  empíricos sobre los excesos de ajuste y ráfagas mayores (×3 durante 3
+  días). No se consulta 2025-H1 para D-11 porque no hay regla adoptada que
+  confirmar. MLflow `m11d-daily-change`: `c3bd8c4a`. Corridas usadas: 59 de
+  100.
 
 ### 28.4 Límites declarados
 

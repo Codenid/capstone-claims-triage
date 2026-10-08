@@ -127,6 +127,16 @@ de 7 días = 9.263. Las tablas CSV de cada run están en DVC; los posteriores en
 pareado del ganador contra cada aceptado) y su único reporte de 2025-H1
 (`*-validation.json`, ya consultado: WIS 14.56 vs 19.31).
 
+## Alertas diarias D-11 en `daily_change/`
+
+| Archivo | Qué contiene |
+|---|---|
+| `results.json` | Umbrales (h = 3.90, z* = 2.72), detección por escenario, alarmas reales, decisión: **no adoptada** (detección máxima 44%, se exigía 50%) |
+| `alerts.csv` (DVC) | Exceso, CUSUM y alarmas de cada día y patrón en `fit` y calibración |
+| `detection.csv` (DVC) | Retraso de cada regla en cada ráfaga inyectada |
+
+No hay `validation_*`: sin regla adoptada no se consulta 2025-H1.
+
 ## Publicado en MLflow
 
 Un run por decisión (DagsHub, experimento `claims-triage-modeling`). Los
@@ -142,3 +152,4 @@ Un run por decisión (DagsHub, experimento `claims-triage-modeling`). Los
 | `bd71bb91`, `60c6c456`, `ff8450aa`, `a76cf32a` | M9D, fulls de D-A, D-B2, D-C y D-D (§28.2) |
 | `8c4b1cd5a80b46f09be1cdcc4e24f636` | M10D, full de D-E (§28.2) |
 | `2fedeefaf2d446d5a46e78f954f5a051` | M9D, challenge diario: ganador D-D (§28.2) |
+| `c3bd8c4ad23c4f59b3caa965acfd5210` | M11D, regla diaria D-11 sobre D-D: no adoptada (§28.3) |

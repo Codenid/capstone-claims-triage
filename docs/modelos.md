@@ -42,6 +42,7 @@ peruano.
 | Alertas persistentes (M11) | CUSUM (k = 0.5, h = 3.37) sobre los excesos de C-A | 1.4 alertas al mes | 30 alertas en 25 semanas (ya consultado) | `reports/modeling/persistent_change_c_a/` |
 | Conteo diario por patrón (M9D, §28) | **D-D**: binomial negativa con inflación de ceros, memoria que decae (δ = 0.8) y efecto de día de semana | WIS 6.95 | WIS 14.56 (ya consultado) | `reports/modeling/daily_counts/zinb_daily_hierarchical_v1/` |
 | Composición diaria (M10D, §28) | D-E: Dirichlet-multinomial con participaciones de 7 días, κ = 261 | log score −152 | — | `reports/modeling/daily_counts/dirichlet_multinomial_daily_v1/` |
+| Alertas diarias (D-11, §28.3) | **No adoptada**: ninguna regla diaria detecta ≥ 50 % de las ráfagas inyectadas | 44 % como máximo; 8–13 alarmas reales al mes | no consultado | `reports/modeling/daily_change/` |
 
 TabPFN-3.5 tiene licencia no comercial: sirve para esta evaluación académica,
 pero usarlo con el banco requiere una licencia de Prior Labs. Un experto debe
@@ -166,9 +167,29 @@ de la semana. Referencias: Poisson con la participación de los 7 días previos
 D-D y D-A son intercambiables en calibración: la inflación de ceros no cambia
 la calibración y D-A queda como alternativa más simple. En 2025-H1 (ya
 consultado, reporte único) D-D da WIS 14.56 frente a 19.31 de D-B1 (−24.6%),
-cobertura 83% / 94%, y la diferencia con D-A es −0.04, IC [−0.07, −0.01]. La
-regla diaria de alerta D-11 corre sobre D-D con su predictiva inflada en cero
-(ver `models_plan.md` §28.3).
+cobertura 83% / 94%, y la diferencia con D-A es −0.04, IC [−0.07, −0.01].
+
+**Alertas diarias (D-11).** Sobre los excesos de D-D (score normal de la
+mid-PIT con la CDF inflada en cero) se probaron las dos reglas de M11 con un
+presupuesto de 4 falsas alarmas al mes (1/304 por decisión; h = 3.90,
+z* = 2.72 por simulación). Con 1,000 ráfagas inyectadas por escenario en
+calibración:
+
+| Escenario | CUSUM diario | Regla de un día | CUSUM semanal (M11) |
+|---|---|---|---|
+| ×2 durante 3 días | 28% (retraso mediano 2 d) | 35% (1 d) | 30% |
+| ×3 durante 1 día | 25% (1 d) | 44% (1 d) | 29% |
+| ×1.5 durante 7 días | 25% (3 d) | 27% (2 d) | 31% |
+| Sin aumento (falsas) | 6.5% | 10.6% | 0% |
+
+Ninguna regla llega al 50% exigido antes de correr, así que **D-11 no se
+adopta** y M11 sigue siendo la única regla de alerta. Además, con esos
+umbrales las alarmas reales son 8 (CUSUM) y 13 (un día) al mes, el doble o el
+triple del presupuesto: los excesos diarios tienen colas más pesadas que la
+normal supuesta. A escala diaria, pasar de 20 a 40 reclamos en un patrón
+queda dentro del ruido de una binomial negativa. El modelo diario D-D sigue
+siendo útil para la expectativa del día (intervalos y composición); la alerta
+diaria queda como pendiente con umbrales empíricos y ráfagas mayores.
 
 ## Descartados sin correr
 
@@ -203,6 +224,6 @@ regla diaria de alerta D-11 corre sobre D-D con su predictiva inflada en cero
 
 ## Publicado en MLflow
 
-Un run por decisión en DagsHub (`claims-triage-modeling`, 51 de 100 runs).
+Un run por decisión en DagsHub (`claims-triage-modeling`, 59 de 100 runs).
 Los identificadores de la ronda §25 están en
 [`reports/modeling/README.md`](../reports/modeling/README.md).
