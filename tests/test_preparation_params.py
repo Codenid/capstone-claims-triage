@@ -40,7 +40,8 @@ class PreparationParamsTests(unittest.TestCase):
         self.assertEqual(normalizer["version"], versions["text_normalizer"])
         self.assertEqual(taxonomy["version"], versions["taxonomy_version"])
         self.assertEqual(taxonomy["estado"], versions["taxonomy_status"])
-        self.assertEqual(taxonomy["fecha_congelamiento"], versions["taxonomy_freeze_date"])
+        freeze = taxonomy["fecha_congelamiento"]
+        self.assertEqual(freeze, versions["taxonomy_freeze_date"])
         self.assertEqual(targets["version"], versions["targets_periods_version"])
         periods = set(targets["inicio_de_periodo"]) | {"context_2015_2022"}
         self.assertEqual(periods, set(contract["period_rows"]))

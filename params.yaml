@@ -45,7 +45,7 @@ preparacion:
     salida: data/interim/taxonomy.parquet
     version: taxonomy_v1_proposed
     estado: proposed_no_business_review    # sin revisión de negocio
-    fecha_congelamiento: "2025-06-30"      # pares conocidos hasta aquí (texto: DVC no admite fechas)
+    fecha_congelamiento: "2025-06-30"      # texto: DVC no admite fechas en params
     categoria_desconocida: "__UNKNOWN__"
     productos: configs/product_taxonomy_v1.csv
     motivos: configs/issue_taxonomy_v1.csv

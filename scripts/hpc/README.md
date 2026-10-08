@@ -619,3 +619,16 @@ El trabajo reejecuta `type_data` → `finalize_prepared` y `document_prepared`,
 compara el MD5 de `data/processed/prepared.parquet` con el del contrato
 (`d189a3ae…`) y falla si cambió: en ese caso no se confirma `dvc.lock`.
 
+## Señal semanal de mezcla rara (M10, §27)
+
+Un p-valor predictivo posterior del log score conjunto de M10 por semana, con
+el posterior congelado de DM-R4; aviso si p < 0.01. Solo CPU.
+
+```bash
+sbatch scripts/hpc/m10_mixture_signal.slurm --smoke
+sbatch scripts/hpc/m10_mixture_signal.slurm
+```
+
+Escribe `reports/modeling/weekly_composition/mixture_signal/results.json` y
+`weekly.csv` (a DVC). Nunca sobrescribe un resultado.
+

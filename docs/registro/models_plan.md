@@ -2106,3 +2106,35 @@ reprodujo su Macro-F1 publicado (0.2706) antes de comparar.
   y la A100 completa.
 - MLflow `d07b98c6fa3644269b69254021b87552`; predicciones de ambas variantes
   en `artifacts/models/foundation_t1_ablation` (DVC).
+
+## 27. Señal semanal de mezcla rara (rol operativo de M10)
+
+Pre-registrada el 2026-10-07, aprobada por el usuario ("señal semanal de mezcla
+rara"), antes de correr nada. M10 (DM-R4) está validado desde §22 pero ningún
+componente lo consume; M11 solo usa las marginales de M9.
+
+- Pregunta por semana: ¿la composición observada de los 40 patrones es rara
+  bajo la predictiva de M10? Es la pregunta que M11 no responde: M11 mira un
+  patrón a la vez; aquí se mira la mezcla entera.
+- Estadístico: el log score conjunto de la semana, s_t = log p(y_t | N_t, κ·r_t)
+  promediado sobre los draws de κ del posterior congelado de DM-R4 (la misma
+  función `joint_log_score` de §12.3).
+- Calibración del estadístico: p-valor predictivo posterior. Para cada semana
+  se simulan composiciones y* de la misma predictiva (100 draws de κ × 20
+  simulaciones, semilla 42) y se calcula p_t = (1 + #{s(y*) ≤ s_t}) / (1 + 2000).
+  Así la escala no depende del total semanal N_t ni de la memoria de 4 semanas.
+- Regla: aviso de mezcla rara si p_t < 0.01. Umbral fijado a priori, no
+  ajustado en ningún periodo: equivale a 0.5 falsas alarmas al año si M10 es
+  correcto.
+- Se calcula para ajuste y calibración; 2025-H1 se reporta marcado como ya
+  consultado (§25.1). Se espera que la semana del 2025-01-13 (58 % de los
+  reclamos en un patrón) quede marcada.
+- Salida: `reports/modeling/weekly_composition/mixture_signal/results.json`
+  (semanas marcadas por periodo, p-valor y patrón con mayor exceso de cada
+  semana marcada) y `weekly.csv` (DVC). La ficha de evidencia muestra el
+  p-valor de la semana de cada reclamo junto a la alerta de M11.
+- Código: `src/models/weekly_composition/mixture_signal.py`, configuración
+  `mixture_signal`, SLURM `scripts/hpc/m10_mixture_signal.slurm`.
+- Sin decisión de reemplazo: no compite con nada. Si el número de semanas
+  marcadas en ajuste supera con claridad el 1 % esperado, se anota como
+  evidencia de que la predictiva de M10 es más estrecha que los datos.

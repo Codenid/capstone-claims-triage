@@ -269,6 +269,17 @@ foundation_series:
   chronos2_path: ~/models/chronos_2
   timesfm3_path: ~/models/timesfm_3
 
+# Weekly mixture signal (models_plan.md §27), pre-registered on 2026-10-07:
+# posterior predictive p-value of M10's joint log score, one per week.
+mixture_signal:
+  m10_model: dirichlet_multinomial_rolling_4_v1
+  m10_run_key: 20261001T015410.667626Z-full-cff27014-1fa6f95c
+  kappa_draws: 100
+  simulations_per_draw: 20
+  alert_p_value: 0.01
+  report_dir: reports/modeling/weekly_composition/mixture_signal
+  run_name: m10-mixture-signal
+
 # Evidence card (docs/registro/models_plan.md §25, decision of 2026-10-06):
 # a few real calibration complaints with the five frozen signals, no action.
 evidence_card:
