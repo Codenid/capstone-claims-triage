@@ -270,6 +270,30 @@ foundation_series:
   chronos2_path: ~/models/chronos_2
   timesfm3_path: ~/models/timesfm_3
 
+# Daily discount grid (models_plan.md §28.2): the discount of the daily memory
+# is chosen in fit by plug-in WIS with the dispersion of the D-A pilot.
+daily_discount_grid:
+  reference_config: configs/daily_counts/nb_daily_hierarchical_v1.yaml
+  reference_run: reports/modeling/daily_counts/nb_daily_hierarchical_v1/PENDING
+  report: reports/modeling/daily_counts/nb_daily_hierarchical_v1/share_selection.json
+  discounts: [0.7, 0.8, 0.9]
+  warmup_days: 7
+  window_days: 7
+
+# Daily composition D-E (models_plan.md §28.2): Dirichlet-multinomial of the
+# day's vector with a 7-day decaying memory, scored by joint log score.
+daily_composition:
+  reference_config: configs/daily_counts/nb_daily_hierarchical_v1.yaml
+  report_dir: reports/modeling/daily_counts/dirichlet_multinomial_daily_v1
+  artifact_dir: artifacts/models/daily_counts/dirichlet_multinomial_daily_v1
+  share_concentration: 1.0
+  priors: {log_kappa_mean: 4.605170186, log_kappa_sigma: 1.0}
+  sampling: {chains: 4, draws: 2000, tune: 2000, target_accept: 0.9, prediction_draws: 2000}
+  pilot_sampling: {chains: 2, draws: 250, tune: 250, prediction_draws: 500}
+  alert_p_value: 0.01
+  kappa_draws: 100
+  simulations_per_draw: 20
+
 # Pattern catalogue (asked by the advisor on 2026-10-07): what each of the 40
 # patterns is about and its weekly series with the current M9 band.
 pattern_catalog:

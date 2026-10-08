@@ -145,6 +145,40 @@ class DailyPanelTests(unittest.TestCase):
         self.assertIn(f"{ROLLING_NAME}_p975", rolling.columns)
         self.assertEqual(flatten(np.zeros((2, 4, 3))).shape, (2, 12))
 
+    def test_daily_composition_scores_every_day(self):
+        import pymc as pm
+
+        from src.models.daily_counts.composition import (
+            build_model,
+            day_scores,
+            split_arrays,
+            static_concentration,
+            windowed_shares,
+        )
+        from src.models.daily_counts.references import windowed_daily_shares
+
+        panel = validated_panel()
+        frame = panel.assign(
+            recent_share=discounted_daily_shares(panel, CLUSTERS, 0.8),
+            window_share=windowed_daily_shares(panel, CLUSTERS, 7),
+        )
+        frame = frame.loc[warm_rows(frame, 3)].reset_index(drop=True)
+        arrays = split_arrays(frame, CLUSTERS)
+        priors = {"log_kappa_mean": 4.6, "log_kappa_sigma": 1.0}
+        with build_model(arrays["fit"], priors):
+            prior = pm.sample_prior_predictive(draws=3, random_seed=1)
+        static = static_concentration(arrays["fit"]["counts"], 1.0)
+        kappa = np.full(4, 100.0)
+
+        window = windowed_shares(frame, "calibration", CLUSTERS)
+        scores = day_scores(arrays["calibration"], kappa, static, window)
+
+        drawn = prior.prior_predictive["observed"]
+        self.assertEqual(drawn.shape[-2:], (11, CLUSTERS))
+        for name, values in scores.items():
+            self.assertEqual(values.shape, (4,), name)
+            self.assertTrue(np.isfinite(values).all(), name)
+
 
 if __name__ == "__main__":
     unittest.main()

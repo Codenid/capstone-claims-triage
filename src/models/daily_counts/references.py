@@ -8,8 +8,9 @@
 - `static_daily_shares`: the share of each pattern over the whole fit period,
   used by the fixed Poisson reference.
 
-Shares are computed per split in day order; the first day of a split has no
-memory and is dropped by the models through `warmup_days`.
+Shares run over the whole panel in day order, so the memory carries from fit
+into calibration and validation (the periods are consecutive); only the first
+day has none, and the models drop the first `warmup_days` through `warm_rows`.
 """
 
 from __future__ import annotations
@@ -34,14 +35,11 @@ def discounted_daily_shares(
     clusters: int,
     discount: float,
 ) -> np.ndarray:
-    """Share of each row's pattern from the previous days of its split."""
-    shares = np.full(len(frame), np.nan)
-    for split, rows in frame.groupby("split", observed=True):
-        counts = _pivot(rows, clusters)
-        values = shares_from_counts(counts.to_numpy(dtype=float), discount, None)
-        position = counts.index.get_indexer(rows[DAY_COLUMN])
-        shares[rows.index] = values[position, rows["cluster_id"].to_numpy()]
-    return shares
+    """Share of each row's pattern from the previous days of the whole panel."""
+    counts = _pivot(frame, clusters)
+    values = shares_from_counts(counts.to_numpy(dtype=float), discount, None)
+    position = counts.index.get_indexer(frame[DAY_COLUMN])
+    return values[position, frame["cluster_id"].to_numpy()]
 
 
 def windowed_daily_shares(
@@ -49,17 +47,15 @@ def windowed_daily_shares(
     clusters: int,
     window: int,
 ) -> np.ndarray:
-    """Share of the previous `window` days (+1 / +C smoothing), NaN before day 2."""
-    shares = np.full(len(frame), np.nan)
-    for split, rows in frame.groupby("split", observed=True):
-        counts = _pivot(rows, clusters).to_numpy(dtype=float)
-        values = np.full(counts.shape, np.nan)
-        for day in range(1, len(counts)):
-            recent = counts[max(0, day - window) : day]
-            values[day] = (recent.sum(axis=0) + 1) / (recent.sum() + clusters)
-        position = _pivot(rows, clusters).index.get_indexer(rows[DAY_COLUMN])
-        shares[rows.index] = values[position, rows["cluster_id"].to_numpy()]
-    return shares
+    """Share of the previous `window` days (+1 / +C smoothing), NaN on day 1."""
+    pivot = _pivot(frame, clusters)
+    counts = pivot.to_numpy(dtype=float)
+    values = np.full(counts.shape, np.nan)
+    for day in range(1, len(counts)):
+        recent = counts[max(0, day - window) : day]
+        values[day] = (recent.sum(axis=0) + 1) / (recent.sum() + clusters)
+    position = pivot.index.get_indexer(frame[DAY_COLUMN])
+    return values[position, frame["cluster_id"].to_numpy()]
 
 
 def static_daily_shares(fit: pd.DataFrame, clusters: int) -> np.ndarray:
@@ -70,9 +66,8 @@ def static_daily_shares(fit: pd.DataFrame, clusters: int) -> np.ndarray:
 
 
 def warm_rows(frame: pd.DataFrame, warmup_days: int) -> pd.Series:
-    """Rows after the first `warmup_days` of their split, where shares exist."""
-    first = frame.groupby("split", observed=True)[DAY_COLUMN].transform("min")
-    return (frame[DAY_COLUMN] - first).dt.days >= warmup_days
+    """Rows after the first `warmup_days` of the panel, where the memory exists."""
+    return (frame[DAY_COLUMN] - frame[DAY_COLUMN].min()).dt.days >= warmup_days
 
 
 def expected_from_shares(frame: pd.DataFrame, shares: np.ndarray) -> np.ndarray:
