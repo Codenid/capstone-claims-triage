@@ -329,6 +329,33 @@ daily_state_space:
   pilot_sampling: {chains: 2, draws: 200, tune: 200, prediction_draws: 300}
   state_sampling: {chains: 2, draws: 300, tune: 300}
 
+# Daily alert rule D-11 (models_plan.md §28.3): 4 false alarms a month over
+# the 40 patterns; bursts injected in calibration; the weekly CUSUM of M11 is
+# run on the same bursts aggregated to weeks.
+daily_change:
+  m9d_model: nb_daily_hierarchical_v1
+  m9d_run_key: PENDING
+  report_dir: reports/modeling/daily_change
+  run_name: m11d-daily-change
+  prediction_draws: 2000
+  expected_tolerance: 0.001
+  warmup_days: 7
+  cusum_k: 0.5
+  false_alarms_per_month: 4
+  simulation_series: 2000
+  simulation_days: 5000
+  horizon_days: 14
+  starts_per_pattern: 25
+  compare_weekly: true
+  minimum_detection: 0.5
+  maximum_median_delay: 2
+  deciding_scenarios: [burst_x2_3d, burst_x3_1d]
+  scenarios:
+    burst_x2_3d: {kind: burst, size: 2.0, days: 3}
+    burst_x3_1d: {kind: burst, size: 3.0, days: 1}
+    rise_x1_5_7d: {kind: burst, size: 1.5, days: 7}
+    none: {kind: none, size: 1.0, days: 0}
+
 # Pattern catalogue (asked by the advisor on 2026-10-07): what each of the 40
 # patterns is about and its weekly series with the current M9 band.
 pattern_catalog:
