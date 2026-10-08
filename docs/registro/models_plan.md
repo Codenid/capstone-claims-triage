@@ -2197,10 +2197,32 @@ correctivas sobre aumentos persistentes.
   efecto multiplicativo por día de la semana y patrón con contracción
   jerárquica (β_{c,·} ~ Normal(0, σ_β), σ_β ~ HalfNormal). Dispersión α_c
   jerárquica como en NB-R4-H v3.
-- **D-B1, baseline**: Poisson con la participación de los 7 días previos, sin
-  efecto de día de semana.
-- **D-B2, baseline**: la misma binomial negativa sin β, para medir cuánto
-  aporta el día de semana.
+- Candidatos añadidos el 2026-10-07 por decisión del usuario, todos en PyMC,
+  sobre el mismo panel y con un run de MLflow por full:
+  - **D-B** (`nb_daily_state_space_v1`): binomial negativa con nivel latente
+    por patrón como paseo aleatorio diario sobre el logit de la participación
+    (análogo diario de C-B), pasos Student-t, efecto de día de semana
+    compartido. Hiperparámetros desde ajuste; estados reestimados por día de
+    calibración como en 25.5.
+  - **D-C** (`nb_daily_fourier_v1`): binomial negativa con ciclo semanal por
+    dos armónicos de Fourier (periodo 7) y tendencia lineal local sobre la
+    participación de 7 días. Forma paramétrica del ciclo, barata de leer.
+  - **D-D** (`zinb_daily_hierarchical_v1`): D-A con inflación de ceros por
+    patrón (probabilidad de cero extra con prior Beta), para los patrones con
+    muchos días en cero.
+  - **D-E** (`dirichlet_multinomial_daily_v1`): Dirichlet-multinomial del
+    vector diario condicionado al total del día, con concentración global y
+    participaciones de 7 días (análogo diario de M10). Se evalúa por log
+    score conjunto y da la señal diaria de mezcla rara con el p-valor de §27.
+- **Baselines**: Poisson con la participación de los 7 días previos sin día
+  de semana (D-B1) y la binomial negativa sin β (D-B2).
+- Comparación: todos los candidatos de conteo (D-A, D-B, D-C, D-D) contra el
+  mejor baseline por WIS diario en calibración con la regla de 25.2; si
+  varios ganan, el de mejor WIS. D-E se compara con una multinomial de 7 días
+  por log score, como M10. Cobertura marginal 80 % y 95 % en los rangos de
+  §12.1. El ganador de conteo alimenta D-11.
+- Registro: un experimento, corridas `m9d-<modelo>-full` y una corrida de
+  comparación `m9d-daily-challenge`; quedan 48 de 100 corridas.
 - Prior predictive, piloto (14 días de calibración) y full, con los gates de
   §10 y §12.1. Regla de aceptación: la de 25.2 (≥ 5 % de WIS y bootstrap por
   día al 95 %) contra el mejor baseline, en calibración.
@@ -2246,3 +2268,53 @@ correctivas sobre aumentos persistentes.
    MLflow por bloque (quedan 48 de 100).
 4. Orden: panel y baselines → prior predictive → piloto → full D-A → D-11 →
    escenarios → reporte único en validación marcado como ya consultado.
+
+## 29. Rama `pipeline/pipaber`: pipeline de ajuste y de puntuación
+
+Planificado el 2026-10-07 por pedido del usuario; se construye después del
+bloque diario. Sale de `Modeling/pipaber`.
+
+- **Contrato de entrada**: una tabla con, como mínimo, `Complaint ID`,
+  `Date received`, `Product` y `Consumer complaint narrative`; las demás
+  columnas de la CFPB son opcionales. Se valida con el esquema de P1 y la
+  taxonomía congelada (producto desconocido → `__UNKNOWN__`, como P3).
+- **Modo `fit`** (una vez): P1–P6, TF-IDF y lineales T2/T3, embeddings BGE,
+  PCA/UMAP/k-means, FAISS, contexto de TabPFN, M9 y M10 en ajuste, umbrales
+  de M11 (y D-11 si el bloque diario se adopta). Es lo que ya existe; el
+  pipeline solo lo encadena y lo deja en DVC.
+- **Modo `score`** (cada vez que llegan datos): embedding BGE con el modelo
+  congelado → PCA y asignación al centroide más cercano → TF-IDF y lineales
+  → TabPFN con el mismo contexto (o el T1 lineal si no hay licencia) →
+  vecinos FAISS, con el índice ampliado → agregación semanal (y diaria) →
+  predictiva de M9/M10 y reglas de M11/D-11 con parámetros congelados. No
+  reajusta nada.
+- **Señales de reentrenamiento**, medidas en cada `score` y escritas en el
+  reporte de corrida: fracción de reclamos novedosos (aviso si supera 3 %
+  sostenido), cobertura 80 % de M9 en las últimas 12 semanas (aviso bajo
+  70 %), semanas marcadas por §27, y Macro-F1 de T1 cuando llegan etiquetas
+  (aviso si cae más de 5 % relativo). Regla por defecto: M9, M10 y umbrales
+  cada trimestre con ventana móvil; clasificadores y patrones solo cuando una
+  señal lo pida.
+- **Forma**: `python -m src.pipeline fit --config …` y
+  `python -m src.pipeline score --input tabla.parquet --output carpeta/`;
+  salida por reclamo (motivo top-3 con probabilidad, T2/T3, patrón, novedad,
+  vecinos) y por periodo (conteos, alertas, p-valor), más la ficha de
+  evidencia por reclamo. Pruebas con una tabla sintética de 200 filas.
+
+## 30. Rama `report/pipaber`: informe en Quarto (HTML y PDF por Typst)
+
+Planificado el 2026-10-07. Español, para asesor y jurado, 25–35 páginas.
+
+- Estructura: resumen; objetivo general y específicos; problema y decisión
+  que mejora; datos y preparación; metodología (protocolo de evaluación,
+  cada componente y por qué); resultados por componente con la tabla
+  comparativa; discusión (qué se eligió y por qué, qué no funcionó);
+  expectativas y limitaciones (licencias, deriva, taxonomía sin revisión,
+  validación consultada); conclusiones y trabajo futuro.
+- Toda cifra se lee de `reports/modeling/*.json`, de
+  `etapa_4_5_modelado_evaluacion/resultados/comparacion_modelos.csv` y del
+  catálogo de patrones; ninguna se escribe a mano. Figuras: series de
+  patrones, bandas de M9, escenarios de M11, ablaciones.
+- Proyecto Quarto en `reports/informe/` con `_quarto.yml`, capítulos por
+  sección, bibliografía y las dos salidas desde la misma fuente.
+
