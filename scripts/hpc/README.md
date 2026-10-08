@@ -682,3 +682,12 @@ dispersión de referencia (`daily_discount_grid.reference_run`):
 uv run --no-sync python -m src.models.daily_counts.discount_grid
 ```
 
+El ganador diario (§28.2: menor WIS de calibración entre los fulls aceptados)
+se elige en el nodo de login con los directorios de los fulls; `--validation`
+da el único reporte del ganador en 2025-H1 y no decide nada:
+
+```bash
+uv run --no-sync python -m src.models.daily_counts.challenge reports/modeling/daily_counts/<modelo>/<run_key> ...
+uv run --no-sync python -m src.models.daily_counts.challenge --validation reports/modeling/daily_counts/<modelo>/<run_key> ...
+```
+

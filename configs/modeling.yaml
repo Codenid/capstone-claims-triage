@@ -327,6 +327,11 @@ daily_state_space:
   pilot_sampling: {chains: 2, draws: 200, tune: 200, prediction_draws: 300}
   state_sampling: {chains: 2, draws: 300, tune: 300}
 
+# Daily winner (models_plan.md §28.2): the lowest calibration WIS among the
+# accepted full runs; the pairwise bootstrap among them is reported only.
+daily_challenge:
+  report_dir: reports/modeling/daily_counts/challenge
+
 # Daily alert rule D-11 (models_plan.md §28.3): 4 false alarms a month over
 # the 40 patterns; bursts injected in calibration; the weekly CUSUM of M11 is
 # run on the same bursts aggregated to weeks.
