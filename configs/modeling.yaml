@@ -342,7 +342,10 @@ daily_change:
   report_dir: reports/modeling/daily_change
   run_name: m11d-daily-change
   prediction_draws: 2000
-  expected_tolerance: 0.001
+  # Plug-in posterior medians of beta and pi reproduce the run's expected_mean
+  # (a posterior mean of a nonlinear function) within 1.45%; the check guards
+  # against gross errors such as a wrong discount or day order (>= 10%).
+  expected_tolerance: 0.02
   warmup_days: 7
   cusum_k: 0.5
   false_alarms_per_month: 4

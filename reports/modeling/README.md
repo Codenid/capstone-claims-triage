@@ -107,6 +107,26 @@ Log score conjunto de calibración (mayor es mejor); referencia B2-R4 = −460.9
 | `persistent_change/` | NB-R4-H v3 | 3.368 | 3.9 y 2.2 | Histórico; incluye `decision.md` y el reporte de 2025-H1 |
 | `persistent_change_c_a/` | C-A | 3.368 | 2.2 y 1.4 | **Vigente**; `validation_*` es su reporte de 2025-H1 |
 
+## Bloque diario en `daily_counts/`
+
+Panel `daily_counts.csv` (DVC; 912 días × 40 patrones, SHA-256 fijado en cada
+config). WIS diario de calibración (menor es mejor); referencia D-B1 Poisson
+de 7 días = 9.263. Las tablas CSV de cada run están en DVC; los posteriores en
+`artifacts/models/daily_counts/` (una carpeta DVC).
+
+| Carpeta | Modelo | Run que decide | WIS | Estado |
+|---|---|---|---:|---|
+| `nb_daily_hierarchical_v1` | D-A, binomial negativa con memoria (δ = 0.8) y día de semana | `20261008T031603…-full` | 6.959 | Aceptado; `share_selection.json` es la búsqueda de δ en ajuste |
+| `nb_daily_no_dow_v1` | D-B2, D-A sin día de semana | `20261008T031603…-full` | 7.696 | Aceptado |
+| `nb_daily_fourier_v1` | D-C, Fourier (2 armónicos) y tendencia local | `20261008T034814…-full` | 7.173 | Aceptado |
+| `zinb_daily_hierarchical_v1` | D-D, D-A con inflación de ceros | `20261008T040100…-full` | **6.946** | **Ganador diario** (§28.2) |
+| `nb_daily_state_space_v1` | D-B, paseo aleatorio t de Student diario | solo pilotos | 7.82 (7 días) | No evaluado en full: el muestreador no converge en 8 h |
+| `dirichlet_multinomial_daily_v1` | D-E, Dirichlet-multinomial diaria, κ = 261 | `20261008T180858…-full` | log score −151.6 | Aceptado (+78 vs multinomial de 7 días); `daily_surprise.csv` es la señal diaria |
+
+`challenge/` guarda la elección del ganador (`*-calibration.json`, bootstrap
+pareado del ganador contra cada aceptado) y su único reporte de 2025-H1
+(`*-validation.json`, ya consultado: WIS 14.56 vs 19.31).
+
 ## Publicado en MLflow
 
 Un run por decisión (DagsHub, experimento `claims-triage-modeling`). Los
@@ -119,3 +139,6 @@ Un run por decisión (DagsHub, experimento `claims-triage-modeling`). Los
 | `d07b98c6fa3644269b69254021b87552` | M5F, ablación de entrada de TabPFN (§26) |
 | `2e6d9a23cbf24ab7be73a6b9c355e133` | M10S, señal semanal de mezcla rara (§27) |
 | `21ec486b702948fd9969e8b80e5357e2` | Bloque C, los 4 candidatos contra v3 |
+| `bd71bb91`, `60c6c456`, `ff8450aa`, `a76cf32a` | M9D, fulls de D-A, D-B2, D-C y D-D (§28.2) |
+| `8c4b1cd5a80b46f09be1cdcc4e24f636` | M10D, full de D-E (§28.2) |
+| `2fedeefaf2d446d5a46e78f954f5a051` | M9D, challenge diario: ganador D-D (§28.2) |

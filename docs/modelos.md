@@ -40,6 +40,8 @@ peruano.
 | Composición semanal (M10) | DM-R4: Dirichlet-multinomial con participaciones de 4 semanas, κ = 826 | log score −210.1 | −251.7 | `reports/modeling/weekly_composition/dirichlet_multinomial_rolling_4_v1/` |
 | Mezcla rara semanal (M10, §27) | p-valor predictivo posterior del log score de DM-R4; aviso si p < 0.01 | 0 de 12 semanas | 7 de 25 (ya consultado; incluye la ráfaga del 13 de enero) | `reports/modeling/weekly_composition/mixture_signal/` |
 | Alertas persistentes (M11) | CUSUM (k = 0.5, h = 3.37) sobre los excesos de C-A | 1.4 alertas al mes | 30 alertas en 25 semanas (ya consultado) | `reports/modeling/persistent_change_c_a/` |
+| Conteo diario por patrón (M9D, §28) | **D-D**: binomial negativa con inflación de ceros, memoria que decae (δ = 0.8) y efecto de día de semana | WIS 6.95 | WIS 14.56 (ya consultado) | `reports/modeling/daily_counts/zinb_daily_hierarchical_v1/` |
+| Composición diaria (M10D, §28) | D-E: Dirichlet-multinomial con participaciones de 7 días, κ = 261 | log score −152 | — | `reports/modeling/daily_counts/dirichlet_multinomial_daily_v1/` |
 
 TabPFN-3.5 tiene licencia no comercial: sirve para esta evaluación académica,
 pero usarlo con el banco requiere una licencia de Prior Labs. Un experto debe
@@ -142,6 +144,32 @@ regla semanal en los dos crecimientos. Con C-A hay menos alertas y menos falsas,
 pero también menos detección: su memoria corta alcanza antes a un patrón que
 crece.
 
+## Bloque diario (§28): conteo y composición por día
+
+Prueba aparte del bloque semanal, pre-registrada el 2026-10-07, con el mismo
+panel de 40 patrones a resolución de día (912 días, 2023-01-01 a 2025-06-30,
+sin huecos) y las mismas tres ventanas. El bloque semanal sigue vigente: el
+diario sirve para el día a día y el semanal para acciones preventivas o
+correctivas. Todos los modelos condicionan en el total del día, como M9 en el
+de la semana. Referencias: Poisson con la participación de los 7 días previos
+(D-B1, WIS 9.26 en calibración) y Poisson con participación fija (19.6).
+
+| Candidato | Idea | WIS | Cobertura 80 / 95 | Resultado |
+|---|---|---:|---|---|
+| D-A | Binomial negativa jerárquica, memoria que decae (δ = 0.8, elegido en ajuste) y efecto de día de semana | 6.959 | 86% / 97% | Aceptado (−24.9% vs D-B1) |
+| D-B2 | D-A sin día de semana | 7.696 | — | Aceptado (−16.9%); mide lo que vale el día de semana: 0.74 de WIS |
+| D-C | Ciclo semanal por dos armónicos de Fourier y tendencia local | 7.173 | — | Aceptado (−22.6%); la forma paramétrica queda 0.21 detrás de D-A |
+| **D-D** | D-A con inflación de ceros por patrón | **6.946** | 86% / 97% | **Ganador** por la regla "el de mejor WIS"; contra D-A −0.013, IC [−0.028, +0.001] |
+| D-B | Espacio de estados: paseo aleatorio t de Student diario sobre las log-participaciones | 7.82 (piloto, 7 días) | — | **No evaluado en full**: el muestreador satura la profundidad de árbol en las dos parametrizaciones (R-hat 1.68) y el full no cabe en las 8 h del clúster |
+| D-E | Dirichlet-multinomial diaria con participaciones de 7 días, κ = 261 (posterior exacto en malla) | log score −152 vs −230 de la multinomial de 7 días | — | Aceptado (+78, IC [69, 87]); da la señal diaria de mezcla rara |
+
+D-D y D-A son intercambiables en calibración: la inflación de ceros no cambia
+la calibración y D-A queda como alternativa más simple. En 2025-H1 (ya
+consultado, reporte único) D-D da WIS 14.56 frente a 19.31 de D-B1 (−24.6%),
+cobertura 83% / 94%, y la diferencia con D-A es −0.04, IC [−0.07, −0.01]. La
+regla diaria de alerta D-11 corre sobre D-D con su predictiva inflada en cero
+(ver `models_plan.md` §28.3).
+
 ## Descartados sin correr
 
 | Modelo | Por qué |
@@ -164,6 +192,12 @@ crece.
   con `fit` + calibración; sus cifras de 2025-H1 son informativas, no evidencia
   limpia.
 - **Licencias.** TabPFN-3.5 y TimesFM 3.0 son de uso no comercial.
+- **Escala diaria.** En estos datos históricos los días están completos; en
+  producción los últimos días de la CFPB llegan incompletos, así que la regla
+  diaria solo vale para días maduros o para datos propios sin rezago. No hay
+  calendario de feriados: un feriado se ve como un día de bajo volumen. El
+  paseo aleatorio diario (D-B) necesita otra inferencia que no entró en esta
+  ronda.
 - **Etiquetas.** T2–T4 son aproximaciones de la CFPB, no resultados bancarios;
   ninguna detecta fraude.
 

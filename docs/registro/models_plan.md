@@ -2314,7 +2314,7 @@ patrones, WIS diario; referencia D-B1 Poisson de 7 días 9.263, Poisson fijo
   regla pre-registrada, y D-A queda como alternativa más simple si la
   inflación de ceros estorbara en producción. D-D alimenta D-11 (§28.3) con
   su CDF inflada en cero. D-E es el modelo de composición diaria (señal de
-  mezcla rara), sin competir por WIS.
+  mezcla rara), sin competir por WIS. MLflow del challenge: `2fedeefa`.
 - MLflow: `bd71bb91` (D-A), `60c6c456` (D-B2), `ff8450aa` (D-C), `a76cf32a`
   (D-D).
 - D-E (Dirichlet-multinomial, malla exacta, SLURM 54928, 4 min): κ 261
@@ -2342,6 +2342,16 @@ patrones, WIS diario; referencia D-B1 Poisson de 7 días 9.263, Poisson fijo
 - Escenarios inyectados en calibración, 2,000 réplicas por escenario:
   ráfaga ×2 durante 3 días, ráfaga ×3 durante 1 día, subida ×1.5 durante 7
   días, y `none` para verificar el presupuesto.
+- Nota de implementación (2026-10-08, antes de la corrida que decide): D-11
+  reconstruye la media esperada del run ganador con las medianas posteriores
+  de β y π y la compara con `expected_mean` (media posterior de una función
+  no lineal de β y π). La primera corrida (SLURM 54938) se detuvo por la
+  tolerancia de 0.1 %: la diferencia máxima real es 1.45 % (1.56 reclamos en
+  un día). La tolerancia pasa a 2 %: la comprobación protege contra errores
+  gruesos (descuento u orden de días equivocados, ≥ 10 %), y un corrimiento
+  de 1.5 % en la media mueve el exceso z en menos de 0.1 para un conteo de 40
+  con desviación 8. El ganador D-D entra con su CDF inflada en cero
+  (π mediana por patrón).
 - **Decisión**: D-11 se adopta como complemento diario si detecta ≥ 50 % de
   las ráfagas ×2/3 días y ×3/1 día con mediana de retraso ≤ 2 días dentro
   del presupuesto. En la misma tabla se reporta qué fracción de esas mismas

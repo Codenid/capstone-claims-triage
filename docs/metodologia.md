@@ -166,6 +166,24 @@ falsa alarma al mes fijado por simulación. CUSUM detecta crecimientos
 sostenidos de 10% y 20% semanal en 42% y 71% de los casos simulados, 10 y 17
 puntos más que la regla semanal, y avisa sin aumento solo 6.5% de las veces.
 
+### Conteo y composición diarios (bloque §28)
+
+Para el día a día se añadió una versión diaria de M9 y M10, pre-registrada
+como prueba aparte: el bloque semanal sigue vigente para las acciones
+preventivas o correctivas. El conteo diario de cada patrón se modela como
+*total del día × participación esperada*, con memoria que decae (cada día
+pesa 0.8 veces el siguiente, unos 5 días de memoria efectiva, elegido en
+ajuste), un efecto de día de semana por patrón y una binomial negativa con
+inflación de ceros, porque muchos patrones tienen días en cero. Ganó por la
+regla fijada entre cuatro candidatos aceptados: WIS 6.95 en calibración frente
+a 9.26 de la Poisson de 7 días (25% menos); el efecto de día de semana aporta
+la mayor parte de la mejora. Un modelo de espacio de estados diario no se pudo
+muestrear dentro del presupuesto del clúster y quedó fuera. La composición
+diaria usa una Dirichlet-multinomial con participaciones de 7 días (κ = 261) y
+da el p-valor diario de mezcla rara. La regla de alerta diaria (D-11) sigue el
+diseño de M11 con un presupuesto de 4 falsas alarmas al mes aprobado por el
+usuario.
+
 ## 5. Flujo de un reclamo nuevo
 
 1. Normalizar el texto y calcular su embedding BGE.
@@ -177,6 +195,8 @@ puntos más que la regla semanal, y avisa sin aumento solo 6.5% de las veces.
 6. Al cierre de la semana, actualizar los conteos por patrón y correr M9 y
    M11: las alertas van a revisión humana con los reclamos y palabras del
    patrón.
+7. Cada día maduro, actualizar los conteos diarios y correr el modelo diario
+   con su regla D-11, para decisiones rápidas del día a día.
 
 ## 6. Resultados
 
@@ -188,6 +208,8 @@ puntos más que la regla semanal, y avisa sin aumento solo 6.5% de las veces.
 | Conteo semanal, NB memoria corta vs Poisson de 4 semanas | WIS 30.3 vs 43.1 | 129.6 vs 164.2 (ya consultado) |
 | Composición, Dirichlet-multinomial vs multinomial | log score −210 vs −461 | −252 vs −3,338 |
 | Alertas CUSUM | 1.4 alertas al mes en calibración | 30 alertas en 25 semanas (ya consultado) |
+| Conteo diario, NB con inflación de ceros vs Poisson de 7 días | WIS 6.95 vs 9.26 | 14.56 vs 19.31 (ya consultado) |
+| Composición diaria, Dirichlet-multinomial vs multinomial de 7 días | log score −152 vs −230 | — |
 
 La validación de 2025-H1 es más difícil que la calibración en los conteos:
 contiene una ráfaga del 13 de enero en la que un patrón recibió 58% de los
@@ -205,6 +227,8 @@ una limitación conocida; la memoria corta la atenúa pero no la corrige.
 - TabPFN-3.5 y TimesFM 3.0 tienen licencias no comerciales. Un experto debe
   validar esa lectura antes de proponerlos al banco.
 - El eco de ráfagas en M9 y M11.
+- La escala diaria vale para días maduros: los últimos días de la CFPB llegan
+  incompletos y no hay calendario de feriados en el modelo.
 - El paso de las sugerencias a acciones de triaje (M12) está pendiente y
   requiere definiciones del banco: equipos, mapeo de motivos a equipos,
   presupuesto de alertas revisables al mes.
