@@ -2164,3 +2164,85 @@ Resultado del 2026-10-07 (SLURM 54842, 33 s; humo 54841; detalle en
 - MLflow `2e6d9a23cbf24ab7be73a6b9c355e133` (corrida 52 de 100); tabla semanal
   en DVC. El crudo `68f4560a…` quedó en el remoto DagsHub ese mismo día:
   no estaba, aunque la importación del EDA lo daba por sincronizado.
+
+## 28. Bloque diario: conteos y alertas por día (prueba aparte)
+
+Pre-registrado el 2026-10-07 con las decisiones del usuario, antes de correr
+nada. El sistema semanal (M9, M10, M11) se mantiene en cualquier caso: cada
+escala ataca un frente distinto. El diario sirve para decisiones rápidas del
+día a día (qué revisar hoy); el semanal, para acciones preventivas o
+correctivas sobre aumentos persistentes.
+
+### 28.1 Datos
+
+- Conteo diario por patrón a partir de las asignaciones congeladas de M8B
+  (`artifacts/models/weekly_patterns/{fit,calibration,validation}_assignments.parquet`,
+  columnas `Date received` y `cluster_id`), con la misma regla que los conteos
+  semanales para los reclamos novedosos. Total diario N_d como exposición
+  observada, igual que M9 condiciona en el total semanal.
+- Periodos de 25.1 en días: ajuste 639 (2023-01-01 a 2024-09-30), calibración
+  92, validación 181 reportada una vez y marcada como ya consultada. No falta
+  ningún día en esos periodos.
+- Los 40 patrones, también los chicos (< 10 reclamos/día): la calibración
+  dirá cuáles tienen intervalos útiles.
+- Ciclo semanal medido en 2023–2024: mediana lunes a viernes 1,700–1,900
+  reclamos, sábado 968, domingo 722.
+
+### 28.2 Modelos
+
+- **D-A, candidato** (`nb_daily_hierarchical_v1`, PyMC): binomial negativa
+  por patrón y día. Media = N_d · r_{c,d} · exp(β_{c,dow(d)}), donde r_{c,d}
+  es la participación con memoria que decae sobre los 7 días previos (δ
+  elegido en ajuste por WIS entre {0.7, 0.8, 0.9}, como en 25.5) y β es un
+  efecto multiplicativo por día de la semana y patrón con contracción
+  jerárquica (β_{c,·} ~ Normal(0, σ_β), σ_β ~ HalfNormal). Dispersión α_c
+  jerárquica como en NB-R4-H v3.
+- **D-B1, baseline**: Poisson con la participación de los 7 días previos, sin
+  efecto de día de semana.
+- **D-B2, baseline**: la misma binomial negativa sin β, para medir cuánto
+  aporta el día de semana.
+- Prior predictive, piloto (14 días de calibración) y full, con los gates de
+  §10 y §12.1. Regla de aceptación: la de 25.2 (≥ 5 % de WIS y bootstrap por
+  día al 95 %) contra el mejor baseline, en calibración.
+
+### 28.3 Regla diaria de alerta (D-11)
+
+- Exceso diario z_{c,d}: score normal de la mid-PIT del conteo observado en
+  la predictiva de D-A, como en §24.
+- Dos reglas, umbrales por simulación con series N(0,1): un solo día con
+  z > z* y CUSUM diario (k = 0.5, h por bisección). Presupuesto aprobado por el
+  usuario: **4 falsas alarmas al mes en total** (1 a la semana) sobre 40 × 30
+  = 1,200 decisiones: tasa 1/300 por decisión, z* = Φ⁻¹(1 − 1/300) ≈ 2.71.
+  Comparado con el semanal (1 al mes, 173 decisiones, z* = 2.53).
+- Escenarios inyectados en calibración, 2,000 réplicas por escenario:
+  ráfaga ×2 durante 3 días, ráfaga ×3 durante 1 día, subida ×1.5 durante 7
+  días, y `none` para verificar el presupuesto.
+- **Decisión**: D-11 se adopta como complemento diario si detecta ≥ 50 % de
+  las ráfagas ×2/3 días y ×3/1 día con mediana de retraso ≤ 2 días dentro
+  del presupuesto. En la misma tabla se reporta qué fracción de esas mismas
+  ráfagas, agregadas a semanas, ve el CUSUM semanal de M11: es la evidencia de
+  que cada escala cubre un frente. Ninguna regla diaria reemplaza a M11.
+
+### 28.4 Límites declarados
+
+- Rezago de publicación de la CFPB: en estos datos históricos los días están
+  completos; en producción los últimos días llegan incompletos y la regla
+  diaria solo debe aplicarse a días maduros o a datos propios del banco sin
+  rezago. Se anota, no se modela.
+- Feriados: no hay calendario de EE. UU. en el modelo; un feriado se verá como
+  un día de bajo volumen y, por condicionar en N_d, afecta poco a las
+  participaciones.
+- Cómputo: 40 × 639 = 25,560 filas de ajuste; un full de D-A debería caber en
+  la cola `standard` de Khipu en menos de 2 horas.
+
+### 28.5 Código y orden
+
+1. Paquete `src/models/daily_counts/` espejo de `weekly_counts` (panel diario,
+   baselines, modelo D-A, run con prior/pilot/full, comparación) y
+   `configs/daily_counts/`.
+2. `src/models/daily_change.py` para D-11, reutilizando `excess_scores`,
+   `cusum` y `cusum_threshold` de `persistent_change.py`.
+3. SLURM `m9d_daily_counts.slurm` y `m11d_daily_change.slurm`; un run de
+   MLflow por bloque (quedan 48 de 100).
+4. Orden: panel y baselines → prior predictive → piloto → full D-A → D-11 →
+   escenarios → reporte único en validación marcado como ya consultado.
