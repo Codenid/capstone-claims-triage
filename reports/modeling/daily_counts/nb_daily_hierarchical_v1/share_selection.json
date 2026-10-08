@@ -1,0 +1,37 @@
+{
+  "stage": "M9D",
+  "plan": "models_plan.md §28.2",
+  "git_commit": "11fd6d7747b2375f637411e91d24e3973363d827",
+  "daily_counts_sha256": "08f06e53ff0ee975db2d46950d7154f9d3c29eaf6e2a6999bb9d11876d8465be",
+  "source_dvc_hash": "87be2a97daa3b169bbd65850a64c89a6.dir",
+  "reference_run": "reports/modeling/daily_counts/nb_daily_hierarchical_v1/20261008T024420.718441Z-pilot-35d86adc-24306eed",
+  "dispersion": "posterior mean of alpha[c] in the reference run",
+  "scored_split": "fit",
+  "validation_used": false,
+  "window_wis": {
+    "window_days": 7,
+    "wis": 5.316524920886076
+  },
+  "scores": [
+    {
+      "discount": 0.7,
+      "memory_days": 3.333333333333333,
+      "wis": 5.351430831826401
+    },
+    {
+      "discount": 0.8,
+      "memory_days": 5.000000000000001,
+      "wis": 5.272434448462929
+    },
+    {
+      "discount": 0.9,
+      "memory_days": 10.000000000000002,
+      "wis": 5.273275881555153
+    }
+  ],
+  "chosen": {
+    "discount": 0.8,
+    "memory_days": 5.000000000000001,
+    "wis": 5.272434448462929
+  }
+}
