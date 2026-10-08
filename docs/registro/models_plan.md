@@ -2257,6 +2257,23 @@ correctivas sobre aumentos persistentes.
     exacto en una malla de 2,001 puntos (±6σ del prior) y se muestrea de ella;
     sin diagnósticos de convergencia que fallar. D-B esperó horas por el
     límite de 12 h del QOS: se reenvía con 6 h.
+  - Relanzamiento de D-E (54928): el full 54902 cayó a los 4 s por una
+    carrera en el archivo de caché de ArviZ al arrancar dos jobs en el mismo
+    segundo; sin cambio de código.
+  - Piloto de D-B (54904, parametrización centrada, 2 cadenas × 400):
+    muestreador saturado (profundidad de árbol 12 de 12 en todas las
+    iteraciones, paso 0.003, 17 s por iteración, 1 h 28 min), R-hat 1.87 en
+    τ (ESS 2.9) y 1.49 en ν; τ ≈ 0.02, ν ≈ 1.4. Al final cayó por un bug
+    propio: evaluaba el primer día del panel, para el que el baseline rodante
+    no tiene participación. Correcciones antes de cualquier full de D-B: (i)
+    paseo aleatorio **no centrado** (innovaciones Student-t estándar,
+    estados = suma acumulada × τ; el mismo modelo, otra parametrización);
+    (ii) los días de calentamiento no se puntúan, como en los demás
+    candidatos. Prior y piloto se repiten. Regla fijada ahora: el QOS
+    permite 8 h por job; si el nuevo piloto no converge (R-hat > 1.01 en los
+    hiperparámetros) o el full proyectado (4 × 2000 iteraciones más 14
+    refits de bloque) supera 8 h, D-B queda registrado como **no evaluado
+    en full** y la elección sigue con D-A, D-C, D-D.
 
 Resultados de los fulls de conteo del 2026-10-08 (calibración, 92 días × 40
 patrones, WIS diario; referencia D-B1 Poisson de 7 días 9.263, Poisson fijo

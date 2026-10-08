@@ -6,6 +6,7 @@ import pandas as pd
 from src.models.daily_counts.baselines import ROLLING_NAME, rolling_columns
 from src.models.daily_counts.data import (
     as_weekly_view,
+    fit_rows,
     panel_arrays,
     panel_from_assignments,
     validate_daily_counts,
@@ -148,6 +149,45 @@ class DailyPanelTests(unittest.TestCase):
         self.assertIn("model_p50", predictions.columns)
         self.assertIn(f"{ROLLING_NAME}_p975", rolling.columns)
         self.assertEqual(flatten(np.zeros((2, 4, 3))).shape, (2, 12))
+
+    def test_state_space_walk_is_non_centered_and_scores_after_warm_up(self):
+        import pymc as pm
+
+        from src.models.daily_counts.state_space import build_model
+
+        panel = validated_panel()
+        fit = panel_arrays(fit_rows(panel), CLUSTERS)
+        priors = {
+            "initial_sigma": 2.0,
+            "tau_sigma": 0.1,
+            "nu_alpha": 2.0,
+            "nu_beta": 0.1,
+            "log_alpha_global_mean": 2.3,
+            "log_alpha_global_sigma": 1.0,
+            "log_alpha_sigma": 0.75,
+            "beta_sigma": 0.5,
+        }
+        fixed = {
+            "tau": 0.05,
+            "nu": 5.0,
+            "alpha": np.full(CLUSTERS, 10.0),
+            "beta": np.zeros((CLUSTERS, 7)),
+        }
+        for hyper in (None, fixed):
+            with build_model(
+                fit["counts"], fit["totals"], fit["day_of_week"], priors, hyper
+            ) as model:
+                prior = pm.sample_prior_predictive(draws=4, random_seed=1)
+            free = {variable.name for variable in model.free_RVs}
+            self.assertIn("innovation", free)
+            self.assertNotIn("z", free)
+            z = prior.prior["z"].to_numpy()
+            self.assertEqual(z.shape[-2:], (CLUSTERS - 1, 14))
+            self.assertEqual(prior.prior["innovation"].shape[-2:], (CLUSTERS - 1, 13))
+            self.assertTrue(np.allclose(z[..., 0], prior.prior["z0"].to_numpy()))
+        scored = warm_rows(panel, 3).to_numpy()
+        self.assertEqual(int((~scored).sum()), 3 * CLUSTERS)
+        self.assertTrue(scored[3 * CLUSTERS :].all())
 
     def test_daily_composition_scores_every_day(self):
         import pymc as pm

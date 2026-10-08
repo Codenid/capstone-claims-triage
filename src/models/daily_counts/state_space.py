@@ -5,7 +5,14 @@
     z[:,d] = z[:,d-1] + e[:,d],  e ~ StudentT(nu, 0, tau)   (K-1 contrasts)
     beta: day-of-week effect per pattern, zero-sum across patterns
 
+The walk is non-centered: the sampler sees standard Student-t innovations and
+z is their cumulative sum scaled by tau. The centered pilot of 2026-10-08
+(SLURM 54904) saturated the tree depth (12 of 12 on every iteration, 17 s per
+iteration) with R-hat 1.87 for tau; see models_plan.md §28.2.
+
 Fit: hyperparameters (tau, nu, alpha, beta) and the states on the fit days.
+The first warm-up days of the panel are not scored, as in every daily
+candidate, so the rolling baseline always has a share.
 Calibration and validation: the hyperparameters stay fixed at their posterior
 medians and the states are re-estimated in blocks of `block_days` (7 by
 default, pre-registered): each block refits the walk on every day up to the
@@ -42,6 +49,7 @@ from src.evaluation.experiment import (
 from src.models.daily_counts import baselines
 from src.models.daily_counts.contracts import DAY_COLUMN, DAYS_PER_WEEK
 from src.models.daily_counts.data import as_weekly_view, load_frozen_panel, panel_arrays
+from src.models.daily_counts.references import warm_rows
 from src.models.daily_counts.run import build_predictions, flatten
 from src.models.semantic_space import maximum_rss_gib
 from src.models.weekly_counts.comparison import compare_with_baselines
@@ -61,6 +69,7 @@ PLAN = "models_plan.md §28.2"
 RUN_MODES = ("prior", "pilot", "full")
 EVALUATED_SPLITS = ("fit", "calibration")
 HYPERPARAMETERS = ("tau", "nu", "log_alpha_global", "log_alpha_sigma", "beta_sigma")
+STATE_VARIABLES = ("z0", "innovation", "z", "mu")
 BASELINE_NAMES = ("baseline", baselines.ROLLING_NAME)
 
 
@@ -83,6 +92,7 @@ def build_model(
     coords = {
         "contrast": np.arange(clusters - 1),
         "day": np.arange(days),
+        "step": np.arange(days - 1),
         "cluster": np.arange(clusters),
         "weekday": np.arange(DAYS_PER_WEEK),
     }
@@ -117,13 +127,14 @@ def build_model(
             tau, nu = fixed["tau"], fixed["nu"]
             alpha = pt.as_tensor_variable(fixed["alpha"])
             beta = pt.as_tensor_variable(fixed["beta"])
-        z = pm.RandomWalk(
+        z0 = pm.Normal("z0", mu=0, sigma=priors["initial_sigma"], dims="contrast")
+        innovation = pm.StudentT(
+            "innovation", nu=nu, mu=0, sigma=1, dims=("contrast", "step")
+        )
+        steps = pt.cumsum(tau * innovation, axis=1)
+        z = pm.Deterministic(
             "z",
-            init_dist=pm.Normal.dist(0, priors["initial_sigma"], shape=(clusters - 1,)),
-            innovation_dist=pm.StudentT.dist(
-                nu=nu, mu=0, sigma=tau, shape=(clusters - 1,)
-            ),
-            steps=days - 1,
+            pt.concatenate([z0[:, None], z0[:, None] + steps], axis=1),
             dims=("contrast", "day"),
         )
         pm.Deterministic("z_last", z[:, -1], dims="contrast")
@@ -256,8 +267,6 @@ def main() -> None:
 
     model = build_model(fit["counts"], fit["totals"], fit["day_of_week"], priors)
     idata, versions = sample_posterior(model, sampling, seed)
-    idata.posterior = idata.posterior.drop_vars(["z", "mu"])
-    idata.to_netcdf(artifact_dir / "posterior.nc")
     summary, diagnostics = posterior_diagnostics(
         idata, HYPERPARAMETERS, HYPERPARAMETERS + ("alpha",), sampling["max_treedepth"]
     )
@@ -272,6 +281,9 @@ def main() -> None:
         fitted = pm.sample_posterior_predictive(
             idata, var_names=["mu", "observed"], random_seed=seed, predictions=True
         )
+    # The states are needed for the fit predictions above; stored without them.
+    idata.posterior = idata.posterior.drop_vars(list(STATE_VARIABLES))
+    idata.to_netcdf(artifact_dir / "posterior.nc")
     shape = (-1, *fit["counts"].shape)
     fit_expected = flatten(fitted.predictions["mu"].to_numpy().reshape(shape))
     fit_predictive = flatten(fitted.predictions["observed"].to_numpy().reshape(shape))
@@ -331,6 +343,9 @@ def main() -> None:
         days_kept = pd.to_datetime(calibration["days"])
         keep_rows = (frame["split"] == "fit") | frame[DAY_COLUMN].isin(days_kept)
         frame = frame.loc[keep_rows].reset_index(drop=True)
+    scored = warm_rows(frame, model_settings["share"]["warmup_days"]).to_numpy()
+    frame = frame.loc[scored].reset_index(drop=True)
+    expected_all, predictive_all = expected_all[:, scored], predictive_all[:, scored]
     fit_frame = frame.loc[frame["split"] == "fit"]
     reference = baselines.fixed_reference_draws(
         frame, fit_frame, clusters, len(expected_all), seed + 1

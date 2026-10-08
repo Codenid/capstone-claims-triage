@@ -4,7 +4,7 @@
 #SBATCH --qos=a-postgrado
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=48G
-#SBATCH --time=06:00:00
+#SBATCH --time=08:00:00
 #SBATCH --output=reports/modeling/slurm-%x-%j.out
 
 set -euo pipefail
