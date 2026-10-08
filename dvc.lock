@@ -7,10 +7,40 @@ stages:
       hash: md5
       md5: 68f4560aca0967779f118e8225e72c26
       size: 1616005038
+    - path: src/data/params.py
+      hash: md5
+      md5: 1ca7e1932c50cbb6a11b16a59f1716b8
+      size: 1122
     - path: src/data/type_data.py
       hash: md5
-      md5: cffb2ebdd380e6442573acb6af894073
-      size: 2695
+      md5: 4fb0743a8090acd9acbd2714370b336c
+      size: 2473
+    params:
+      params.yaml:
+        preparacion.type_data:
+          entrada: data/raw/cfpb_reclamos_narrativa.parquet
+          salida: data/interim/typed.parquet
+          columnas_esperadas:
+          - Date received
+          - Product
+          - Sub-product
+          - Issue
+          - Sub-issue
+          - Consumer complaint narrative
+          - Company public response
+          - Company
+          - State
+          - ZIP code
+          - Tags
+          - Submitted via
+          - Date sent to company
+          - Company response to consumer
+          - Timely response?
+          - Complaint ID
+          columnas_fecha:
+          - Date received
+          - Date sent to company
+          formato_fecha: '%Y-%m-%d'
     outs:
     - path: data/interim/typed.parquet
       hash: md5
@@ -25,8 +55,21 @@ stages:
       size: 908544467
     - path: src/data/normalize_text.py
       hash: md5
-      md5: aede41c667ba6539d52e95fd5f13696b
-      size: 3227
+      md5: 653407812a3b59d9ffc62af053f7346e
+      size: 3401
+    - path: src/data/params.py
+      hash: md5
+      md5: 1ca7e1932c50cbb6a11b16a59f1716b8
+      size: 1122
+    params:
+      params.yaml:
+        preparacion.normalize_text:
+          entrada: data/interim/typed.parquet
+          salida: data/interim/normalized.parquet
+          version: text_normalizer_v1
+          forma_unicode: NFKC
+          patron_anonimizacion: \bx{2,}\b
+          reemplazo_anonimizacion: <redacted>
     outs:
     - path: data/interim/normalized.parquet
       hash: md5
@@ -53,8 +96,24 @@ stages:
       size: 1829100354
     - path: src/data/apply_taxonomy.py
       hash: md5
-      md5: 8009249839fd5c7b441195db4030e0fb
-      size: 6242
+      md5: 98e2f41105c5f6cf0059af26300a10c9
+      size: 6218
+    - path: src/data/params.py
+      hash: md5
+      md5: 1ca7e1932c50cbb6a11b16a59f1716b8
+      size: 1122
+    params:
+      params.yaml:
+        preparacion.apply_taxonomy:
+          entrada: data/interim/normalized.parquet
+          salida: data/interim/taxonomy.parquet
+          version: taxonomy_v1_proposed
+          estado: proposed_no_business_review
+          fecha_congelamiento: '2025-06-30'
+          categoria_desconocida: __UNKNOWN__
+          productos: configs/product_taxonomy_v1.csv
+          motivos: configs/issue_taxonomy_v1.csv
+          pares: configs/valid_product_issue_pairs_v1.csv
     outs:
     - path: data/interim/taxonomy.parquet
       hash: md5
@@ -65,16 +124,43 @@ stages:
     deps:
     - path: configs/holdout_review_status.json
       hash: md5
-      md5: 0a2b307bd9b61f6703dbb6f4a0fb04e8
-      size: 365
+      md5: e978888286400b9c7ca99d85b6c9752d
+      size: 357
     - path: data/interim/taxonomy.parquet
       hash: md5
       md5: 8222473644f1b729dce3c62f4eb38830
       size: 1832663530
     - path: src/data/build_targets.py
       hash: md5
-      md5: 21470cd285dd18442b7274398e15158d
-      size: 10849
+      md5: 4c7cb2af613f8cb2133152c0236aad9a
+      size: 11405
+    - path: src/data/params.py
+      hash: md5
+      md5: 1ca7e1932c50cbb6a11b16a59f1716b8
+      size: 1122
+    params:
+      params.yaml:
+        preparacion.build_targets:
+          entrada: data/interim/taxonomy.parquet
+          salida: data/interim/targets_periods.parquet
+          estado_holdout: configs/holdout_review_status.json
+          version: targets_periods_v1
+          inicio_de_periodo:
+            train_2023_2024: '2023-01-01'
+            validation_2025_h1: '2025-01-01'
+            holdout_2025_h2: '2025-07-01'
+            ood_2026_partial: '2026-01-01'
+          respuestas:
+            con_solucion:
+            - Closed with monetary relief
+            - Closed with non-monetary relief
+            sin_solucion:
+            - Closed with explanation
+            monetaria:
+            - Closed with monetary relief
+          respuesta_no_oportuna:
+            positivo: No
+            negativo: Yes
     outs:
     - path: data/interim/targets_periods.parquet
       hash: md5
@@ -89,8 +175,18 @@ stages:
       size: 1836831076
     - path: src/data/finalize_prepared.py
       hash: md5
-      md5: 291b3b90aca2c469787175c0e5ef1900
-      size: 5000
+      md5: 39ec36d6cd5289559e500ed193bbe759
+      size: 4982
+    - path: src/data/params.py
+      hash: md5
+      md5: 1ca7e1932c50cbb6a11b16a59f1716b8
+      size: 1122
+    params:
+      params.yaml:
+        preparacion.finalize_prepared:
+          entrada: data/interim/targets_periods.parquet
+          salida: data/processed/prepared.parquet
+          filas_esperadas: 3837184
     outs:
     - path: data/processed/prepared.parquet
       hash: md5
