@@ -288,13 +288,11 @@ daily_composition:
   artifact_dir: artifacts/models/daily_counts/dirichlet_multinomial_daily_v1
   share_concentration: 1.0
   priors: {log_kappa_mean: 4.605170186, log_kappa_sigma: 1.0}
-  sampling:
-    chains: 4
-    draws: 2000
-    tune: 2000
-    target_accept: 0.9
-    prediction_draws: 2000
-  pilot_sampling: {chains: 2, draws: 250, tune: 250, prediction_draws: 500}
+  # Exact 1-D grid posterior of log kappa (the MCMC timed out, SLURM 54866).
+  grid_points: 2001
+  grid_width: 6.0
+  sampling: {prediction_draws: 2000}
+  pilot_sampling: {prediction_draws: 500}
   alert_p_value: 0.01
   kappa_draws: 100
   simulations_per_draw: 20

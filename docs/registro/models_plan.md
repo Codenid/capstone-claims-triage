@@ -2251,6 +2251,12 @@ correctivas sobre aumentos persistentes.
     una prueba que lo fija, antes de cualquier full.
   - Fulls lanzados el 2026-10-08: D-A 54862, D-B2 54863, D-C 54864, D-D 54865,
     D-E 54866; D-B prior 54859 y piloto 54867.
+  - Cambio de método en D-E antes de ver resultados: el MCMC de un solo
+    parámetro avanzaba a 17 s por iteración y agotó las 4 horas (54866). Como
+    el modelo tiene un único parámetro libre (log κ), su posterior se calcula
+    exacto en una malla de 2,001 puntos (±6σ del prior) y se muestrea de ella;
+    sin diagnósticos de convergencia que fallar. D-B esperó horas por el
+    límite de 12 h del QOS: se reenvía con 6 h.
 - Prior predictive, piloto (14 días de calibración) y full, con los gates de
   §10 y §12.1. Regla de aceptación: la de 25.2 (≥ 5 % de WIS y bootstrap por
   día al 95 %) contra el mejor baseline, en calibración.

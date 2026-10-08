@@ -9,6 +9,12 @@ Scored like M10: joint log score per day against two multinomial references
 with the paired bootstrap of §12.3. It also yields the daily "rare mixture"
 signal of §27: a posterior predictive p-value per day.
 
+Inference: the model has one free parameter, so the posterior of log kappa is
+computed exactly on a fine grid (likelihood times prior, normalized) and
+sampled from it. The MCMC run of 2026-10-08 (SLURM 54866) advanced at 17 s
+per iteration and hit the 4-hour limit; the grid takes seconds and has no
+convergence diagnostics to fail.
+
     python -m src.models.daily_counts.composition --run-mode prior|pilot|full
 """
 
@@ -50,8 +56,7 @@ from src.models.weekly_composition.scores import (
     joint_log_score,
     multinomial_logpmf,
 )
-from src.models.weekly_counts.diagnostics import posterior_diagnostics
-from src.models.weekly_counts.sampling import sample_posterior
+from scipy.stats import norm
 
 MODEL_ID = "dirichlet_multinomial_daily_v1"
 STAGE = "M10D"
@@ -97,6 +102,69 @@ def build_model(arrays: dict[str, np.ndarray], priors: dict[str, float]) -> pm.M
             dims=("day", "cluster"),
         )
     return model
+
+
+def grid_posterior(
+    arrays: dict[str, np.ndarray],
+    priors: dict[str, float],
+    points: int,
+    width: float,
+) -> pd.DataFrame:
+    """Exact posterior of log kappa on a grid of `points` within +-width sigma."""
+    grid = np.linspace(
+        priors["log_kappa_mean"] - width * priors["log_kappa_sigma"],
+        priors["log_kappa_mean"] + width * priors["log_kappa_sigma"],
+        points,
+    )
+    counts = arrays["counts"]
+    log_likelihood = np.array(
+        [
+            dirichlet_multinomial_logpmf(
+                counts, np.exp(value) * arrays["recent_share"]
+            ).sum()
+            for value in grid
+        ]
+    )
+    log_prior = norm.logpdf(grid, priors["log_kappa_mean"], priors["log_kappa_sigma"])
+    log_posterior = log_likelihood + log_prior
+    probability = np.exp(log_posterior - log_posterior.max())
+    probability /= probability.sum()
+    return pd.DataFrame(
+        {
+            "log_kappa": grid,
+            "kappa": np.exp(grid),
+            "log_likelihood": log_likelihood,
+            "posterior_probability": probability,
+        }
+    )
+
+
+def grid_draws(
+    posterior: pd.DataFrame,
+    draws: int,
+    rng: np.random.Generator,
+) -> np.ndarray:
+    """Draws of kappa from the grid posterior, jittered within the grid step."""
+    step = float(posterior["log_kappa"].iloc[1] - posterior["log_kappa"].iloc[0])
+    weights = posterior["posterior_probability"].to_numpy()
+    index = rng.choice(len(posterior), size=draws, p=weights)
+    jitter = rng.uniform(-0.5, 0.5, draws) * step
+    log_kappa = posterior["log_kappa"].to_numpy()[index] + jitter
+    return np.exp(log_kappa)
+
+
+def grid_summary(posterior: pd.DataFrame) -> dict[str, float]:
+    weights = posterior["posterior_probability"].to_numpy()
+    cumulative = np.cumsum(weights)
+    kappa = posterior["kappa"].to_numpy()
+    quantile = lambda q: float(kappa[np.searchsorted(cumulative, q)])  # noqa: E731
+    return {
+        "kappa_mean": float((kappa * weights).sum()),
+        "kappa_p025": quantile(0.025),
+        "kappa_p50": quantile(0.5),
+        "kappa_p975": quantile(0.975),
+        "edge_mass": float(weights[[0, -1]].sum()),
+    }
 
 
 def static_concentration(
@@ -229,19 +297,26 @@ def main() -> None:
     artifact_dir = PROJECT_ROOT / settings["artifact_dir"] / run_key
     run_dir.mkdir(parents=True)
     artifact_dir.mkdir(parents=True)
-    model = build_model(arrays["fit"], settings["priors"])
-    idata, versions = sample_posterior(model, sampling, seed)
-    idata.to_netcdf(artifact_dir / "posterior.nc")
-    summary, diagnostics = posterior_diagnostics(
-        idata, ("log_kappa",), ("log_kappa", "kappa", "rho"), sampling["max_treedepth"]
+    posterior = grid_posterior(
+        arrays["fit"],
+        settings["priors"],
+        settings["grid_points"],
+        settings["grid_width"],
     )
-    summary.reset_index().rename(columns={"index": "parameter"}).to_csv(
-        run_dir / "posterior_summary.csv", index=False
-    )
-    kappa_all = np.asarray(idata.posterior["kappa"]).reshape(-1)
+    posterior.to_csv(artifact_dir / "posterior_grid.csv", index=False)
+    summary = grid_summary(posterior)
+    if summary["edge_mass"] > 1e-6:
+        raise ValueError(f"The kappa grid is too narrow: {summary}")
+    pd.DataFrame([summary]).to_csv(run_dir / "posterior_summary.csv", index=False)
+    diagnostics = {
+        "inference": "exact grid posterior of log kappa",
+        "grid_points": settings["grid_points"],
+        "grid_width_sigma": settings["grid_width"],
+        "edge_mass": summary["edge_mass"],
+    }
+    versions = {"numpy": np.__version__, "pandas": pd.__version__}
     rng = np.random.default_rng(seed)
-    size = min(sampling["prediction_draws"], len(kappa_all))
-    kappa = kappa_all[rng.choice(len(kappa_all), size=size, replace=False)]
+    kappa = grid_draws(posterior, sampling["prediction_draws"], rng)
     static = static_concentration(
         arrays["fit"]["counts"], settings["share_concentration"]
     )
@@ -297,14 +372,13 @@ def main() -> None:
         for split in SPLITS
         if (surprise["split"] == split).any()
     }
-    accepted = (
-        comparison["difference"]["p025"] > 0 and diagnostics["rhat_max"] <= 1.01
-    )
+    accepted = comparison["difference"]["p025"] > 0
     report = {
         **metadata,
         "sampling": sampling,
         "versions": versions,
         "diagnostics": diagnostics,
+        "posterior": summary,
         "evaluated_splits": list(EVALUATED_SPLITS),
         "log_score_means": means,
         "comparison": comparison,
@@ -349,7 +423,7 @@ def main() -> None:
             ),
             "bootstrap_difference_p025": float(comparison["difference"]["p025"]),
             "bootstrap_difference_p975": float(comparison["difference"]["p975"]),
-            **{f"diagnostic_{k}": float(v) for k, v in diagnostics.items()},
+            **{f"posterior_{k}": float(v) for k, v in summary.items()},
             **{
                 f"signal_{s}_flagged": float(v["flagged"]) for s, v in signal.items()
             },
@@ -358,7 +432,7 @@ def main() -> None:
     )
     save_run_record(record, run_dir / "run.json")
     print(f"Run key: {run_key}")
-    print(f"Diagnostics: {json.dumps(diagnostics, sort_keys=True)}")
+    print(f"Posterior: {json.dumps(summary, sort_keys=True)}")
     print(f"Calibration log score: {json.dumps(means['calibration'], sort_keys=True)}")
     print(f"Difference vs best baseline: {json.dumps(comparison['difference'])}")
     print(f"Signal: {json.dumps(signal)}\nStatus: {report['candidate_status']}")
