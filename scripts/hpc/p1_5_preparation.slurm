@@ -10,6 +10,9 @@ set -euo pipefail
 
 export CLAIMS_EXECUTION_HOST=khipu
 export OMP_NUM_THREADS=4
+# The historical stage commands call `uv run python …`; the SLURM nodes have
+# no internet, so uv must not try to sync the environment.
+export UV_NO_SYNC=1
 
 # Re-run the whole preparation chain after moving its decisions to params.yaml
 # (PB-11). The raw parquet must be pulled first; every stage is re-executed
