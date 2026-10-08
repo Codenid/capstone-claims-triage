@@ -2237,7 +2237,20 @@ correctivas sobre aumentos persistentes.
   - El prior predictive de D-A reproduce la participación máxima diaria
     (mediana 0.196 frente a 0.167 observada) pero genera menos ceros que los
     datos (mediana 4.8 % frente a 12.3 % por patrón): es la motivación
-    registrada de D-D.
+    registrada de D-D. Priors de D-C (participación máxima 0.254, ceros
+    13.4 %), D-D (0.192, ceros 9.4 %) y D-E (κ mediana 108, participación
+    máxima 0.176) también dentro de lo razonable.
+  - Descuento elegido en ajuste el 2026-10-08 (`share_selection.json`, plug-in
+    con la dispersión del piloto de D-A): **δ = 0.8**, WIS 5.272; 0.9 da 5.273,
+    0.7 da 5.351 y la ventana plana de 7 días 5.317. Memoria media de 5 días.
+  - Piloto de D-A (SLURM 54860, 15 minutos, 2 cadenas de 250+250): sin
+    divergencias, R-hat máximo 1.03 por cadenas cortas; WIS de calibración
+    6.97 contra 9.28 del Poisson de 7 días (+24.9 %). El primer piloto (54855)
+    dio WIS 36 por un error de alineación entre el orden del panel (por nombre
+    de periodo) y el de las predicciones (por día); corregido en `11fd6d7` con
+    una prueba que lo fija, antes de cualquier full.
+  - Fulls lanzados el 2026-10-08: D-A 54862, D-B2 54863, D-C 54864, D-D 54865,
+    D-E 54866; D-B prior 54859 y piloto 54867.
 - Prior predictive, piloto (14 días de calibración) y full, con los gates de
   §10 y §12.1. Regla de aceptación: la de 25.2 (≥ 5 % de WIS y bootstrap por
   día al 95 %) contra el mejor baseline, en calibración.
