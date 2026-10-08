@@ -2223,6 +2223,21 @@ correctivas sobre aumentos persistentes.
   §12.1. El ganador de conteo alimenta D-11.
 - Registro: un experimento, corridas `m9d-<modelo>-full` y una corrida de
   comparación `m9d-daily-challenge`; quedan 48 de 100 corridas.
+- Detalles fijados al implementar (2026-10-08, antes de cualquier full):
+  - La memoria con descuento y la ventana de 7 días corren sobre el panel
+    completo (ajuste → calibración → validación son consecutivos), como en
+    C-A; se descartan los primeros 7 días del panel como calentamiento.
+  - El descuento δ se elige en ajuste con un plug-in: binomial negativa con
+    la dispersión posterior media del **piloto** de D-A (corrida técnica, no
+    promueve nada), igual que C-A usó la dispersión de v3.
+  - D-B reestima los estados en **bloques de 7 días** durante la calibración
+    (13 refits, hiperparámetros fijos en sus medianas posteriores) y predice
+    cada día del bloque desde el último estado con h innovaciones; refitar
+    cada día (92 refits) excede el presupuesto de cómputo.
+  - El prior predictive de D-A reproduce la participación máxima diaria
+    (mediana 0.196 frente a 0.167 observada) pero genera menos ceros que los
+    datos (mediana 4.8 % frente a 12.3 % por patrón): es la motivación
+    registrada de D-D.
 - Prior predictive, piloto (14 días de calibración) y full, con los gates de
   §10 y §12.1. Regla de aceptación: la de 25.2 (≥ 5 % de WIS y bootstrap por
   día al 95 %) contra el mejor baseline, en calibración.

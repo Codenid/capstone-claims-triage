@@ -664,3 +664,21 @@ MODEL_CONFIG=configs/daily_counts/nb_daily_hierarchical_v1.yaml sbatch scripts/h
 Resultados en `reports/modeling/daily_counts/<modelo>/<run_key>/` (las tablas
 CSV a DVC) y posterior en `artifacts/models/daily_counts/`.
 
+D-B (espacio de estados diario) y D-E (Dirichlet-multinomial diario) tienen
+sus propios runners, con los mismos modos:
+
+```bash
+RUN_MODE=prior sbatch scripts/hpc/m9d_daily_state_space.slurm
+RUN_MODE=pilot sbatch scripts/hpc/m9d_daily_state_space.slurm
+sbatch scripts/hpc/m9d_daily_state_space.slurm
+RUN_MODE=prior sbatch scripts/hpc/m10d_daily_composition.slurm
+sbatch scripts/hpc/m10d_daily_composition.slurm
+```
+
+El descuento de la memoria diaria se elige en ajuste con el piloto de D-A como
+dispersión de referencia (`daily_discount_grid.reference_run`):
+
+```bash
+uv run --no-sync python -m src.models.daily_counts.discount_grid
+```
+
