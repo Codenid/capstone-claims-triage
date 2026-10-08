@@ -1,0 +1,27 @@
+{
+  "stage": "M10D",
+  "plan": "models_plan.md \u00a728.2",
+  "model_id": "dirichlet_multinomial_daily_v1",
+  "run_key": "20261008T025907.437525Z-prior",
+  "run_mode": "prior",
+  "git_commit": "0433b35783c32fcd101da409e98abdd6cb064529",
+  "daily_counts_sha256": "08f06e53ff0ee975db2d46950d7154f9d3c29eaf6e2a6999bb9d11876d8465be",
+  "source_dvc_hash": "87be2a97daa3b169bbd65850a64c89a6.dir",
+  "seed": 42,
+  "discount": 0.8,
+  "priors": {
+    "log_kappa_mean": 4.605170186,
+    "log_kappa_sigma": 1.0
+  },
+  "fit_days": 632,
+  "validation_used_for_selection": false,
+  "prior_check": {
+    "kappa": {
+      "p025": 18.74977098314745,
+      "p50": 108.18646098809813,
+      "p975": 641.0967835231535
+    },
+    "max_share_prior_p50": 0.17615658362989323,
+    "max_share_fit_p50": 0.16679075235109717
+  }
+}

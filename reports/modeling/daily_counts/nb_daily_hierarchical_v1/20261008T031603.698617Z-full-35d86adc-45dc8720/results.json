@@ -1,0 +1,299 @@
+{
+  "backtest": {
+    "calibration": {
+      "baseline": {
+        "coverage_50": 0.13777173913043478,
+        "coverage_80": 0.2510869565217391,
+        "coverage_95": 0.3785326086956522,
+        "impossible_probability": 0.0,
+        "mae": 24.65461956521739,
+        "relative_bias": -0.0025831202046035806,
+        "rmse": 44.705136000046,
+        "upper_95_excess_fraction": 0.21739130434782608,
+        "wape": 0.3867391304347826,
+        "width_50": 8.729959239130435,
+        "width_80": 16.593695652173917,
+        "width_95": 25.330658967391297,
+        "wis": 19.617099233307453
+      },
+      "model": {
+        "coverage_50": 0.6230978260869565,
+        "coverage_80": 0.8638586956521739,
+        "coverage_95": 0.9581521739130435,
+        "impossible_probability": 0.0,
+        "mae": 12.160597826086956,
+        "relative_bias": -0.04798380221653879,
+        "rmse": 20.666391273293687,
+        "upper_95_excess_fraction": 0.028804347826086957,
+        "wape": 0.19075447570332482,
+        "wape_skill": 0.5067618953146182,
+        "width_50": 24.732880434782608,
+        "width_80": 47.775570652173926,
+        "width_95": 75.02869565217388,
+        "wis": 6.95939052795031,
+        "wis_skill": 0.6452385520824552
+      }
+    },
+    "fit": {
+      "baseline": {
+        "coverage_50": 0.18975474683544305,
+        "coverage_80": 0.33761867088607594,
+        "coverage_95": 0.4986946202531646,
+        "impossible_probability": 0.0,
+        "mae": 12.95051424050633,
+        "relative_bias": -0.004066084736223848,
+        "rmse": 21.811037590162776,
+        "upper_95_excess_fraction": 0.18496835443037973,
+        "wape": 0.30914802965805604,
+        "width_50": 7.044333465189873,
+        "width_80": 13.37446598101266,
+        "width_95": 20.387289359177206,
+        "wis": 9.267445234798826
+      },
+      "model": {
+        "coverage_50": 0.6111550632911392,
+        "coverage_80": 0.8636471518987342,
+        "coverage_95": 0.9613924050632912,
+        "impossible_probability": 0.0,
+        "mae": 8.562776898734176,
+        "relative_bias": -0.04855222454306122,
+        "rmse": 14.603075771688335,
+        "upper_95_excess_fraction": 0.028283227848101267,
+        "wape": 0.20440621565168782,
+        "wape_skill": 0.33880796239336075,
+        "width_50": 16.487025316455696,
+        "width_80": 31.78412579113925,
+        "width_95": 49.8848012262658,
+        "wis": 4.816021014636076,
+        "wis_skill": 0.48032916379671275
+      }
+    }
+  },
+  "calibration_acceptance": {
+    "accepted": true,
+    "checks": {
+      "coverage_80": true,
+      "coverage_95": true,
+      "divergences": true,
+      "ess_bulk": true,
+      "ess_tail": true,
+      "mae": true,
+      "rhat": true,
+      "wape": true,
+      "wis_bootstrap": true,
+      "wis_gain": true
+    }
+  },
+  "candidate_role": "candidate",
+  "candidate_status": "accepted",
+  "comparison": {
+    "best_baseline": "b1_rolling_7",
+    "bootstrap_draws": 2000,
+    "candidate": "model",
+    "days": 92,
+    "difference": {
+      "mae": {
+        "estimate": -1.2796195652173914,
+        "p025": -1.7735903532608692,
+        "p50": -1.2783288043478258,
+        "p975": -0.8002649456521747
+      },
+      "wape": {
+        "estimate": -0.020072463768115917,
+        "p025": -0.029412889262488813,
+        "p50": -0.019977781651867005,
+        "p975": -0.01210255324815023
+      },
+      "wis": {
+        "estimate": -2.3032796001552853,
+        "p025": -2.688763067740686,
+        "p50": -2.29690173718944,
+        "p975": -1.9191473505434797
+      }
+    },
+    "metrics": {
+      "b1_rolling_7": {
+        "mae": 13.440217391304348,
+        "wape": 0.21082693947144074,
+        "wis": 9.262670128105594
+      },
+      "baseline": {
+        "mae": 24.65461956521739,
+        "wape": 0.3867391304347826,
+        "wis": 19.61709923330746
+      },
+      "model": {
+        "mae": 12.160597826086956,
+        "wape": 0.19075447570332482,
+        "wis": 6.959390527950308
+      }
+    },
+    "split": "calibration",
+    "wis_gain": 0.24866259602255247
+  },
+  "config_sha256": "35d86adca46aaf5ee8215de6b50687a28d8c576d44cd2748152eb5b52b6df56e",
+  "daily_counts_sha256": "08f06e53ff0ee975db2d46950d7154f9d3c29eaf6e2a6999bb9d11876d8465be",
+  "days": {
+    "calibration": 92,
+    "fit": 632,
+    "validation": 181
+  },
+  "diagnostics": {
+    "bfmi_min": 0.9594214537401538,
+    "divergences": 0,
+    "ess_bulk_min": 2652.185339729529,
+    "ess_tail_min": 3943.014043386297,
+    "rhat_max": 1.0027206992219613,
+    "tree_depth_limit_hits": 0,
+    "tree_depth_max": 4
+  },
+  "evaluated_splits": [
+    "fit",
+    "calibration"
+  ],
+  "fit_days": 632,
+  "fit_only": true,
+  "formula": "count[c,d] ~ NegativeBinomial(mu[c,d], alpha[c]); mu[c,d] = daily_total[d] * r[c,d] * exp(beta[c,dow(d)]) / sum_c'(r[c',d] * exp(beta[c',dow(d)])); r[c,d] = (sum_k discount**(k-1) * count[c,d-k] + 1) / (sum_k discount**(k-1) * daily_total[d-k] + clusters); beta = zero_sum_basis @ beta_contrast; beta_contrast ~ Normal(0, beta_sigma); alpha[c] = exp(log_alpha_global + (zero_sum_basis @ log_alpha_contrast)[c])",
+  "git_commit": "10aacf314f29675019b8ae4721bff343a584fc5a",
+  "model_id": "nb_daily_hierarchical_v1",
+  "model_spec": {
+    "cluster_interpretation": "operational partition, not natural categories",
+    "clusters": 40,
+    "daily_total_usage": "observed exposure; this is a conditional forecast",
+    "day_of_week_effect": true,
+    "diagnostic_variables": [
+      "log_alpha_global",
+      "log_alpha_sigma",
+      "log_alpha_contrast",
+      "beta_sigma",
+      "beta_contrast"
+    ],
+    "dispersion": "hierarchical_by_cluster",
+    "expected_days": {
+      "calibration": 92,
+      "fit": 639,
+      "validation": 181
+    },
+    "expected_variable": "mu",
+    "family": "negative_binomial",
+    "formula": "count[c,d] ~ NegativeBinomial(mu[c,d], alpha[c]); mu[c,d] = daily_total[d] * r[c,d] * exp(beta[c,dow(d)]) / sum_c'(r[c',d] * exp(beta[c',dow(d)])); r[c,d] = (sum_k discount**(k-1) * count[c,d-k] + 1) / (sum_k discount**(k-1) * daily_total[d-k] + clusters); beta = zero_sum_basis @ beta_contrast; beta_contrast ~ Normal(0, beta_sigma); alpha[c] = exp(log_alpha_global + (zero_sum_basis @ log_alpha_contrast)[c])",
+    "granularity": "day",
+    "historical_run_id": null,
+    "mean_link": "discounted_share_with_day_of_week_renormalized",
+    "mean_sum_constrained": true,
+    "model_id": "nb_daily_hierarchical_v1",
+    "negative_binomial_variance": "mu + mu**2 / alpha[c]",
+    "observed_variable": "observed",
+    "predictive_draw_sum_constrained": false,
+    "priors": {
+      "beta_sigma": 0.5,
+      "log_alpha_global_mean": 2.302585093,
+      "log_alpha_global_sigma": 1.0,
+      "log_alpha_sigma": 0.75
+    },
+    "sampling": {
+      "backend": "numpyro",
+      "chain_method": "parallel",
+      "chains": 4,
+      "draws": 2000,
+      "max_treedepth": 12,
+      "prediction_draws": 2000,
+      "prior_draws": 500,
+      "target_accept": 0.9,
+      "tune": 2000
+    },
+    "share": {
+      "discount": 0.8,
+      "warmup_days": 7
+    },
+    "source_status": "native_versioned_source",
+    "summary_variables": [
+      "log_alpha_global",
+      "log_alpha_sigma",
+      "log_alpha_contrast",
+      "beta_sigma",
+      "beta_contrast",
+      "alpha"
+    ],
+    "trace_variables": [
+      "log_alpha_global",
+      "log_alpha_sigma",
+      "beta_sigma"
+    ],
+    "zero_sum_parameterization": "centered scaled Helmert contrasts, K-1 dimensions"
+  },
+  "plan": "models_plan.md §28",
+  "prior_predictive": {
+    "impossible_fraction": 5.2136075949367086e-05,
+    "maximum": 21641.0,
+    "median": 11.0,
+    "p99": 407.0
+  },
+  "priors": {
+    "beta_sigma": 0.5,
+    "log_alpha_global_mean": 2.302585093,
+    "log_alpha_global_sigma": 1.0,
+    "log_alpha_sigma": 0.75
+  },
+  "rejection_reason": "none",
+  "resources": {
+    "cpu_count": 64,
+    "elapsed_seconds": 2690.985176480841,
+    "maximum_rss_gib": 3.9412269592285156
+  },
+  "run_key": "20261008T031603.698617Z-full-35d86adc-45dc8720",
+  "run_mode": "full",
+  "sampling": {
+    "backend": "numpyro",
+    "chain_method": "parallel",
+    "chains": 4,
+    "draws": 2000,
+    "max_treedepth": 12,
+    "prediction_draws": 2000,
+    "prior_draws": 500,
+    "target_accept": 0.9,
+    "tune": 2000
+  },
+  "seed": 42,
+  "share": {
+    "discount": 0.8,
+    "warmup_days": 7
+  },
+  "source_dvc_hash": "87be2a97daa3b169bbd65850a64c89a6.dir",
+  "source_manifest": {
+    "configs/daily_counts/nb_daily_hierarchical_v1.yaml": "35d86adca46aaf5ee8215de6b50687a28d8c576d44cd2748152eb5b52b6df56e",
+    "configs/daily_counts/releases.json": "32a562c5a360611fc2e4e978e7837db91d78eca1f22f93749e8438c485079345",
+    "configs/modeling.yaml": "535e685aee85adb8af419aaffd039ad7fcb8952bf4a66fa2dd542631bcf9dad4",
+    "pyproject.toml": "a67e2763f6563f24f756cfcc1e91851f59216252d5a989927994b9b973cad9c1",
+    "src/models/daily_counts/baselines.py": "e6ea5a689783ff109e1334a4bbe2cc5a66b593472cfabab84f2f601535161345",
+    "src/models/daily_counts/contracts.py": "1b643c45a75df64fa9812235c478f41945b68a89ce0dc61920da2204fda15959",
+    "src/models/daily_counts/data.py": "40edbd1135580e74e0dc2886f1c11a05cdf2ab7141e03d18fd7e2b303304113f",
+    "src/models/daily_counts/models/nb_daily_hierarchical_v1.py": "7aeede06e619cfc06c12995ef28ff7bd816e7067fda9f1852a62331357e57b8a",
+    "src/models/daily_counts/references.py": "4159617bc58d82172559c194b6ce76bff9708fc5938650a324e5460d0393f27c",
+    "src/models/daily_counts/run.py": "6261c81e59cf2df0623a035c95581d3c2b4ad806d30ad66f2300c87a6f3a8b57",
+    "src/models/weekly_counts/comparison.py": "0cd8441e3ffb43c7f307c5cf775a5ef842eff64e36306b9ae2b10058cfe8218d",
+    "src/models/weekly_counts/diagnostics.py": "b4d8fa03e3497c6f6dfdd507b6d65c8ac824dc6b03b4907e4c83edbfc39776ab",
+    "src/models/weekly_counts/discounted_reference.py": "00c2c07c0663bf04104fb006f5350917ac6d2ceceb2bc01d253645010b335ed7",
+    "src/models/weekly_counts/metrics.py": "36ee3a40eb2aacdc8c2f74a9eb94383aaa1b7859dde051044c080428261404ef",
+    "src/models/weekly_counts/negative_binomial.py": "c57be82c2c21edacd7cf5660e00b39daf417694a6fca2f4c354681262c34b043",
+    "src/models/weekly_counts/prediction.py": "b813b9c9dc928d020daf84a51dd46feaf02867dc07f5299a38f099cdb002b90f",
+    "src/models/weekly_counts/sampling.py": "7a946ba428c871bfd4ea2912e18fb08e94753fb9e7ebdba5962106f47094145d",
+    "uv.lock": "23d06c6b1699df4149fe58cbc352781109f052f17a413d6b03b9c51818f79a46"
+  },
+  "source_manifest_sha256": "45dc8720d320b04dcce9de6a6304fa05c16241ee826597122db71fb2005a7769",
+  "stage": "M9D",
+  "validation_used_for_selection": false,
+  "versions": {
+    "arviz": "0.23.4",
+    "jax": "0.11.2",
+    "jax_device_count": "4",
+    "jax_devices": "cpu:0,cpu:1,cpu:2,cpu:3",
+    "jaxlib": "0.11.2",
+    "numpy": "2.5.2",
+    "numpyro": "0.22.0",
+    "pandas": "3.0.5",
+    "pymc": "5.28.5",
+    "python": "3.12.13",
+    "sampling_backend": "numpyro"
+  }
+}

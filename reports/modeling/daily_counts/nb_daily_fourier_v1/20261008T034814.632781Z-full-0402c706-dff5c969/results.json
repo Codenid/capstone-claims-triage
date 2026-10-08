@@ -1,0 +1,307 @@
+{
+  "backtest": {
+    "calibration": {
+      "baseline": {
+        "coverage_50": 0.13777173913043478,
+        "coverage_80": 0.2510869565217391,
+        "coverage_95": 0.3785326086956522,
+        "impossible_probability": 0.0,
+        "mae": 24.65461956521739,
+        "relative_bias": -0.0025831202046035806,
+        "rmse": 44.705136000046,
+        "upper_95_excess_fraction": 0.21739130434782608,
+        "wape": 0.3867391304347826,
+        "width_50": 8.729959239130435,
+        "width_80": 16.593695652173917,
+        "width_95": 25.330658967391297,
+        "wis": 19.617099233307453
+      },
+      "model": {
+        "coverage_50": 0.6078804347826087,
+        "coverage_80": 0.8584239130434783,
+        "coverage_95": 0.9589673913043478,
+        "impossible_probability": 0.0,
+        "mae": 12.716847826086957,
+        "relative_bias": -0.048107416879795396,
+        "rmse": 22.100557611497734,
+        "upper_95_excess_fraction": 0.02826086956521739,
+        "wape": 0.19947996589940323,
+        "wape_skill": 0.48420020059738345,
+        "width_50": 24.925611413043477,
+        "width_80": 48.10269021739131,
+        "width_95": 75.47255434782606,
+        "wis": 7.173303765527951,
+        "wis_skill": 0.6343341245198704
+      }
+    },
+    "fit": {
+      "baseline": {
+        "coverage_50": 0.18975474683544305,
+        "coverage_80": 0.33761867088607594,
+        "coverage_95": 0.4986946202531646,
+        "impossible_probability": 0.0,
+        "mae": 12.95051424050633,
+        "relative_bias": -0.004066084736223848,
+        "rmse": 21.811037590162776,
+        "upper_95_excess_fraction": 0.18496835443037973,
+        "wape": 0.30914802965805604,
+        "width_50": 7.044333465189873,
+        "width_80": 13.37446598101266,
+        "width_95": 20.387289359177206,
+        "wis": 9.267445234798826
+      },
+      "model": {
+        "coverage_50": 0.6061313291139241,
+        "coverage_80": 0.8626977848101266,
+        "coverage_95": 0.9624604430379747,
+        "impossible_probability": 0.0,
+        "mae": 8.832871835443038,
+        "relative_bias": -0.05056921409173148,
+        "rmse": 15.123594845284101,
+        "upper_95_excess_fraction": 0.02721518987341772,
+        "wape": 0.21085378336625735,
+        "wape_skill": 0.31795203870624855,
+        "width_50": 16.978006329113924,
+        "width_80": 32.7373299050633,
+        "width_95": 51.34525118670883,
+        "wis": 4.95915934391953,
+        "wis_skill": 0.46488387918408014
+      }
+    }
+  },
+  "calibration_acceptance": {
+    "accepted": true,
+    "checks": {
+      "coverage_80": true,
+      "coverage_95": true,
+      "divergences": true,
+      "ess_bulk": true,
+      "ess_tail": true,
+      "mae": true,
+      "rhat": true,
+      "wape": true,
+      "wis_bootstrap": true,
+      "wis_gain": true
+    }
+  },
+  "candidate_role": "candidate",
+  "candidate_status": "accepted",
+  "comparison": {
+    "best_baseline": "b1_rolling_7",
+    "bootstrap_draws": 2000,
+    "candidate": "model",
+    "days": 92,
+    "difference": {
+      "mae": {
+        "estimate": -0.723369565217391,
+        "p025": -1.3080264945652167,
+        "p50": -0.7207201086956516,
+        "p975": -0.13996263586956578
+      },
+      "wape": {
+        "estimate": -0.011346973572037511,
+        "p025": -0.021625179177450313,
+        "p50": -0.011314459497779122,
+        "p975": -0.0020284951856014716
+      },
+      "wis": {
+        "estimate": -2.0893663625776435,
+        "p025": -2.5045250436723614,
+        "p50": -2.086704968944099,
+        "p975": -1.6732440811820652
+      }
+    },
+    "metrics": {
+      "b1_rolling_7": {
+        "mae": 13.440217391304348,
+        "wape": 0.21082693947144074,
+        "wis": 9.262670128105594
+      },
+      "baseline": {
+        "mae": 24.65461956521739,
+        "wape": 0.3867391304347826,
+        "wis": 19.61709923330746
+      },
+      "model": {
+        "mae": 12.716847826086957,
+        "wape": 0.19947996589940323,
+        "wis": 7.17330376552795
+      }
+    },
+    "split": "calibration",
+    "wis_gain": 0.22556847363460641
+  },
+  "config_sha256": "0402c706cf95660a691779e6b12a81b7ef766e7430850ce216c20970b7d50f22",
+  "daily_counts_sha256": "08f06e53ff0ee975db2d46950d7154f9d3c29eaf6e2a6999bb9d11876d8465be",
+  "days": {
+    "calibration": 92,
+    "fit": 632,
+    "validation": 181
+  },
+  "diagnostics": {
+    "bfmi_min": 1.015721090023005,
+    "divergences": 0,
+    "ess_bulk_min": 2786.2137876504175,
+    "ess_tail_min": 3961.763689449358,
+    "rhat_max": 1.0026683513146097,
+    "tree_depth_limit_hits": 0,
+    "tree_depth_max": 4
+  },
+  "evaluated_splits": [
+    "fit",
+    "calibration"
+  ],
+  "fit_days": 632,
+  "fit_only": true,
+  "formula": "count[c,d] ~ NegativeBinomial(mu[c,d], alpha[c]); mu[c,d] = daily_total[d] * r[c,d] * exp(f[c,d]) / sum_c'(r[c',d] * exp(f[c',d])); f[c,d] = sum_k (a[c,k] cos(2 pi k d/7) + b[c,k] sin(2 pi k d/7)) + g[c] t[d]; a, b, g = zero_sum_basis @ contrasts ~ Normal(0, sigma); alpha[c] = exp(log_alpha_global + (zero_sum_basis @ log_alpha_contrast)[c])",
+  "git_commit": "58f2bddd1c20e59d4e9ba6da52a0efcef1f3fd91",
+  "model_id": "nb_daily_fourier_v1",
+  "model_spec": {
+    "cluster_interpretation": "operational partition, not natural categories",
+    "clusters": 40,
+    "daily_total_usage": "observed exposure; this is a conditional forecast",
+    "day_of_week_effect": "fourier",
+    "diagnostic_variables": [
+      "log_alpha_global",
+      "log_alpha_sigma",
+      "log_alpha_contrast",
+      "cycle_sigma",
+      "cycle_contrast",
+      "trend_sigma",
+      "trend_contrast"
+    ],
+    "dispersion": "hierarchical_by_cluster",
+    "expected_days": {
+      "calibration": 92,
+      "fit": 639,
+      "validation": 181
+    },
+    "expected_variable": "mu",
+    "family": "negative_binomial",
+    "formula": "count[c,d] ~ NegativeBinomial(mu[c,d], alpha[c]); mu[c,d] = daily_total[d] * r[c,d] * exp(f[c,d]) / sum_c'(r[c',d] * exp(f[c',d])); f[c,d] = sum_k (a[c,k] cos(2 pi k d/7) + b[c,k] sin(2 pi k d/7)) + g[c] t[d]; a, b, g = zero_sum_basis @ contrasts ~ Normal(0, sigma); alpha[c] = exp(log_alpha_global + (zero_sum_basis @ log_alpha_contrast)[c])",
+    "granularity": "day",
+    "harmonics": 2,
+    "historical_run_id": null,
+    "mean_link": "discounted_share_with_fourier_cycle_and_local_trend",
+    "mean_sum_constrained": true,
+    "model_id": "nb_daily_fourier_v1",
+    "negative_binomial_variance": "mu + mu**2 / alpha[c]",
+    "observed_variable": "observed",
+    "predictive_draw_sum_constrained": false,
+    "priors": {
+      "cycle_sigma": 0.5,
+      "log_alpha_global_mean": 2.302585093,
+      "log_alpha_global_sigma": 1.0,
+      "log_alpha_sigma": 0.75,
+      "trend_sigma": 1.0
+    },
+    "sampling": {
+      "backend": "numpyro",
+      "chain_method": "parallel",
+      "chains": 4,
+      "draws": 2000,
+      "max_treedepth": 12,
+      "prediction_draws": 2000,
+      "prior_draws": 500,
+      "target_accept": 0.9,
+      "tune": 2000
+    },
+    "share": {
+      "discount": 0.8,
+      "warmup_days": 7
+    },
+    "source_status": "native_versioned_source",
+    "summary_variables": [
+      "log_alpha_global",
+      "log_alpha_sigma",
+      "log_alpha_contrast",
+      "cycle_sigma",
+      "cycle_contrast",
+      "trend_sigma",
+      "trend_contrast",
+      "alpha"
+    ],
+    "trace_variables": [
+      "log_alpha_global",
+      "cycle_sigma",
+      "trend_sigma"
+    ],
+    "zero_sum_parameterization": "centered scaled Helmert contrasts, K-1 dimensions"
+  },
+  "plan": "models_plan.md §28",
+  "prior_predictive": {
+    "impossible_fraction": 0.0003018196202531646,
+    "maximum": 11902.0,
+    "median": 7.0,
+    "p99": 533.0
+  },
+  "priors": {
+    "cycle_sigma": 0.5,
+    "log_alpha_global_mean": 2.302585093,
+    "log_alpha_global_sigma": 1.0,
+    "log_alpha_sigma": 0.75,
+    "trend_sigma": 1.0
+  },
+  "rejection_reason": "none",
+  "resources": {
+    "cpu_count": 64,
+    "elapsed_seconds": 2759.3346391669475,
+    "maximum_rss_gib": 3.8951988220214844
+  },
+  "run_key": "20261008T034814.632781Z-full-0402c706-dff5c969",
+  "run_mode": "full",
+  "sampling": {
+    "backend": "numpyro",
+    "chain_method": "parallel",
+    "chains": 4,
+    "draws": 2000,
+    "max_treedepth": 12,
+    "prediction_draws": 2000,
+    "prior_draws": 500,
+    "target_accept": 0.9,
+    "tune": 2000
+  },
+  "seed": 42,
+  "share": {
+    "discount": 0.8,
+    "warmup_days": 7
+  },
+  "source_dvc_hash": "87be2a97daa3b169bbd65850a64c89a6.dir",
+  "source_manifest": {
+    "configs/daily_counts/nb_daily_fourier_v1.yaml": "0402c706cf95660a691779e6b12a81b7ef766e7430850ce216c20970b7d50f22",
+    "configs/daily_counts/releases.json": "32a562c5a360611fc2e4e978e7837db91d78eca1f22f93749e8438c485079345",
+    "configs/modeling.yaml": "535e685aee85adb8af419aaffd039ad7fcb8952bf4a66fa2dd542631bcf9dad4",
+    "pyproject.toml": "a67e2763f6563f24f756cfcc1e91851f59216252d5a989927994b9b973cad9c1",
+    "src/models/daily_counts/baselines.py": "e6ea5a689783ff109e1334a4bbe2cc5a66b593472cfabab84f2f601535161345",
+    "src/models/daily_counts/contracts.py": "1b643c45a75df64fa9812235c478f41945b68a89ce0dc61920da2204fda15959",
+    "src/models/daily_counts/data.py": "40edbd1135580e74e0dc2886f1c11a05cdf2ab7141e03d18fd7e2b303304113f",
+    "src/models/daily_counts/models/nb_daily_fourier_v1.py": "862f191f1ea8e03a026cfe052c2940c3d2a40ceeea33399118e505284ed24ac9",
+    "src/models/daily_counts/models/nb_daily_hierarchical_v1.py": "7aeede06e619cfc06c12995ef28ff7bd816e7067fda9f1852a62331357e57b8a",
+    "src/models/daily_counts/references.py": "4159617bc58d82172559c194b6ce76bff9708fc5938650a324e5460d0393f27c",
+    "src/models/daily_counts/run.py": "6261c81e59cf2df0623a035c95581d3c2b4ad806d30ad66f2300c87a6f3a8b57",
+    "src/models/weekly_counts/comparison.py": "0cd8441e3ffb43c7f307c5cf775a5ef842eff64e36306b9ae2b10058cfe8218d",
+    "src/models/weekly_counts/diagnostics.py": "b4d8fa03e3497c6f6dfdd507b6d65c8ac824dc6b03b4907e4c83edbfc39776ab",
+    "src/models/weekly_counts/discounted_reference.py": "00c2c07c0663bf04104fb006f5350917ac6d2ceceb2bc01d253645010b335ed7",
+    "src/models/weekly_counts/metrics.py": "36ee3a40eb2aacdc8c2f74a9eb94383aaa1b7859dde051044c080428261404ef",
+    "src/models/weekly_counts/negative_binomial.py": "c57be82c2c21edacd7cf5660e00b39daf417694a6fca2f4c354681262c34b043",
+    "src/models/weekly_counts/prediction.py": "b813b9c9dc928d020daf84a51dd46feaf02867dc07f5299a38f099cdb002b90f",
+    "src/models/weekly_counts/sampling.py": "7a946ba428c871bfd4ea2912e18fb08e94753fb9e7ebdba5962106f47094145d",
+    "uv.lock": "23d06c6b1699df4149fe58cbc352781109f052f17a413d6b03b9c51818f79a46"
+  },
+  "source_manifest_sha256": "dff5c9697f168d4ccb9e342f7f0d0cf9ebc5a6e0fa492981cf0f22aeb14c51e6",
+  "stage": "M9D",
+  "validation_used_for_selection": false,
+  "versions": {
+    "arviz": "0.23.4",
+    "jax": "0.11.2",
+    "jax_device_count": "4",
+    "jax_devices": "cpu:0,cpu:1,cpu:2,cpu:3",
+    "jaxlib": "0.11.2",
+    "numpy": "2.5.2",
+    "numpyro": "0.22.0",
+    "pandas": "3.0.5",
+    "pymc": "5.28.5",
+    "python": "3.12.13",
+    "sampling_backend": "numpyro"
+  }
+}
