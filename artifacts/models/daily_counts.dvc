@@ -1,0 +1,6 @@
+outs:
+- md5: b07e1eb5eaa58d058ce35644fb82f003.dir
+  size: 119581372
+  nfiles: 143
+  hash: md5
+  path: daily_counts

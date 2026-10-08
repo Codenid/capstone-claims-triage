@@ -1,0 +1,95 @@
+{
+  "candidate_status": "accepted",
+  "comparison": {
+    "best_baseline": "mn_rolling_7",
+    "bootstrap_draws": 2000,
+    "candidate": "model",
+    "days": 92,
+    "difference": {
+      "estimate": 78.03217972036315,
+      "p025": 69.08214094386717,
+      "p50": 77.99861256205527,
+      "p975": 87.04257231734165
+    },
+    "log_score": {
+      "dm_static": -424.80372582536546,
+      "mn_rolling_7": -229.64662963493723,
+      "model": -151.6144499145741
+    }
+  },
+  "daily_counts_sha256": "08f06e53ff0ee975db2d46950d7154f9d3c29eaf6e2a6999bb9d11876d8465be",
+  "diagnostics": {
+    "edge_mass": 0.0,
+    "grid_points": 2001,
+    "grid_width_sigma": 6.0,
+    "inference": "exact grid posterior of log kappa"
+  },
+  "discount": 0.8,
+  "evaluated_splits": [
+    "fit",
+    "calibration"
+  ],
+  "fit_days": 632,
+  "git_commit": "efd0e6aff9142b96706cec6ef899eedbc0c8bd9c",
+  "log_score_means": {
+    "calibration": {
+      "dm_static": -424.80372582536546,
+      "mn_rolling_7": -229.64662963493723,
+      "model": -151.6144499145741
+    },
+    "fit": {
+      "dm_static": -263.27571289045574,
+      "mn_rolling_7": -190.63141233940277,
+      "model": -134.35918515495473
+    }
+  },
+  "model_id": "dirichlet_multinomial_daily_v1",
+  "plan": "models_plan.md §28.2",
+  "posterior": {
+    "edge_mass": 0.0,
+    "kappa_mean": 260.8702463468142,
+    "kappa_p025": 254.97619452584803,
+    "kappa_p50": 261.1696473454218,
+    "kappa_p975": 267.51354110282364
+  },
+  "priors": {
+    "log_kappa_mean": 4.605170186,
+    "log_kappa_sigma": 1.0
+  },
+  "resources": {
+    "cpu_count": 64,
+    "elapsed_seconds": 243.35344894602895,
+    "maximum_rss_gib": 1.5522193908691406
+  },
+  "run_key": "20261008T180858.142285Z-full",
+  "run_mode": "full",
+  "sampling": {
+    "backend": "numpyro",
+    "chain_method": "parallel",
+    "max_treedepth": 12,
+    "prediction_draws": 2000
+  },
+  "seed": 42,
+  "signal": {
+    "alert_p_value": 0.01,
+    "calibration": {
+      "days": 92,
+      "flagged": 6
+    },
+    "fit": {
+      "days": 632,
+      "flagged": 73
+    },
+    "validation": {
+      "days": 181,
+      "flagged": 35
+    }
+  },
+  "source_dvc_hash": "87be2a97daa3b169bbd65850a64c89a6.dir",
+  "stage": "M10D",
+  "validation_used_for_selection": false,
+  "versions": {
+    "numpy": "2.5.2",
+    "pandas": "3.0.5"
+  }
+}
