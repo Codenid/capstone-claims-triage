@@ -1,0 +1,43 @@
+{
+  "run_name": "m9d-daily-challenge-validation",
+  "experiment_name": "claims-triage-modeling",
+  "created_at_utc": "2026-10-08T21:06:03.589970+00:00",
+  "tags": {
+    "run_contract_version": "modeling_run_v1",
+    "evaluation_split_version": "temporal_v1",
+    "git_commit": "9ff9331988438f6d30b0fcfcb550854db28cf6dc",
+    "dvc_data_hash": "d189a3ae6ea7a8f9041fc8210968eda6",
+    "version_datos": "datos-v1",
+    "datos_md5": "d189a3ae6ea7a8f9041fc8210968eda6",
+    "tipo": "experimento",
+    "stage": "M9D",
+    "target": "A1",
+    "split": "validation",
+    "view": "40 patterns, daily",
+    "execution_host": "local",
+    "execution_mode": "interactive"
+  },
+  "parameters": {
+    "seed": 42,
+    "input_data": "data/processed/prepared.parquet",
+    "features": "[\"daily_total\", \"recent_share\", \"day_of_week\"]",
+    "plan": "models_plan.md §28.2",
+    "rule": "lowest calibration WIS among the accepted full runs",
+    "candidates": "nb_daily_hierarchical_v1,nb_daily_no_dow_v1,nb_daily_fourier_v1,zinb_daily_hierarchical_v1",
+    "winner": "zinb_daily_hierarchical_v1",
+    "winner_run_key": "20261008T040100.226680Z-full-2e0a6b9e-2eb7afd9"
+  },
+  "metrics": {
+    "nb_daily_hierarchical_v1_calibration_wis": 6.95939052795031,
+    "nb_daily_no_dow_v1_calibration_wis": 7.696379998059006,
+    "nb_daily_fourier_v1_calibration_wis": 7.173303765527951,
+    "zinb_daily_hierarchical_v1_calibration_wis": 6.946122476708075,
+    "winner_calibration_wis": 6.946122476708075,
+    "winner_calibration_wis_gain": 0.25009501788997635,
+    "winner_validation_wis": 14.556273677979481,
+    "winner_validation_wis_gain": 0.24614628741912692
+  },
+  "artifacts": [
+    "reports/modeling/daily_counts/challenge/20261008T210603.586924Z-validation.json"
+  ]
+}
