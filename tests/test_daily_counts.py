@@ -84,6 +84,10 @@ class DailyPanelTests(unittest.TestCase):
         sums = grouped["complaint_count"].sum()
         self.assertTrue((sums == grouped["daily_total"].first()).all())
         self.assertTrue(set(validated["day_of_week"].unique()) <= set(range(7)))
+        # Rows run in day order across the splits, as the model arrays do.
+        self.assertTrue(validated["day"].is_monotonic_increasing)
+        self.assertEqual(validated["split"].iloc[0], "fit")
+        self.assertEqual(validated["split"].iloc[-1], "validation")
         self.assertIn("week", as_weekly_view(validated).columns)
 
     def test_shares_use_previous_days_only(self):

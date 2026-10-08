@@ -66,7 +66,9 @@ def panel_from_assignments(
         "complaint_count"
     ].transform("sum")
     result["day_of_week"] = result[DAY_COLUMN].dt.dayofweek.astype(np.int64)
-    ordered = result.sort_values(["split", DAY_COLUMN, "cluster_id"])
+    # Day order, not split order: the splits are consecutive periods and the
+    # models flatten their (day, pattern) draws in this same order.
+    ordered = result.sort_values([DAY_COLUMN, "cluster_id"])
     return ordered.reset_index(drop=True)
 
 
@@ -101,7 +103,9 @@ def validate_daily_counts(
         if actual != expected_days:
             raise ValueError(f"Days per split do not match the contract: {actual}")
     result["day_of_week"] = result[DAY_COLUMN].dt.dayofweek.astype(np.int64)
-    ordered = result.sort_values(["split", DAY_COLUMN, "cluster_id"])
+    # Day order, not split order: the splits are consecutive periods and the
+    # models flatten their (day, pattern) draws in this same order.
+    ordered = result.sort_values([DAY_COLUMN, "cluster_id"])
     return ordered.reset_index(drop=True)
 
 

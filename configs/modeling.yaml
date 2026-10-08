@@ -274,7 +274,7 @@ foundation_series:
 # is chosen in fit by plug-in WIS with the dispersion of the D-A pilot.
 daily_discount_grid:
   reference_config: configs/daily_counts/nb_daily_hierarchical_v1.yaml
-  reference_run: reports/modeling/daily_counts/nb_daily_hierarchical_v1/PENDING
+  reference_run: reports/modeling/daily_counts/nb_daily_hierarchical_v1/20261008T024420.718441Z-pilot-35d86adc-24306eed
   report: reports/modeling/daily_counts/nb_daily_hierarchical_v1/share_selection.json
   discounts: [0.7, 0.8, 0.9]
   warmup_days: 7
