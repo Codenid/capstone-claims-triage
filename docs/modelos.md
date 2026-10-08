@@ -38,6 +38,7 @@ peruano.
 | Patrones semánticos | PCA 256 → UMAP 15 → k-means `k=40`; novedad si distancia > p99 | 0.88% novedosos en `fit` | 0.77% | `artifacts/models/weekly_patterns/` |
 | Conteo semanal por patrón (M9) | **C-A**: binomial negativa jerárquica con memoria que decae (δ = 0.5) | WIS 30.30 | WIS 129.6 (ya consultado) | `reports/modeling/weekly_counts/nb_discounted_hierarchical_v1/` |
 | Composición semanal (M10) | DM-R4: Dirichlet-multinomial con participaciones de 4 semanas, κ = 826 | log score −210.1 | −251.7 | `reports/modeling/weekly_composition/dirichlet_multinomial_rolling_4_v1/` |
+| Mezcla rara semanal (M10, §27) | p-valor predictivo posterior del log score de DM-R4; aviso si p < 0.01 | 0 de 12 semanas | 7 de 25 (ya consultado; incluye la ráfaga del 13 de enero) | `reports/modeling/weekly_composition/mixture_signal/` |
 | Alertas persistentes (M11) | CUSUM (k = 0.5, h = 3.37) sobre los excesos de C-A | 1.4 alertas al mes | 30 alertas en 25 semanas (ya consultado) | `reports/modeling/persistent_change_c_a/` |
 
 TabPFN-3.5 tiene licencia no comercial: sirve para esta evaluación académica,

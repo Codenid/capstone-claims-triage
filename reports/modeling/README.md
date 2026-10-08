@@ -30,6 +30,7 @@ Los archivos no se movieron: muchas rutas están fijadas en
 | M5B | `representation_results.json`, `representation_decision.md` | Cinco representaciones de T1–T4 con todo `fit`; elige T1 = BGE + producto, T2 y T3 = TF-IDF solo texto | Confirmado |
 | M5F (bloque B) | `foundation_t1/results.json` | TabPFN-3.5 contra el T1 congelado | **Vigente para T1** |
 | M5F (ablación §26) | `foundation_t1/ablation_results.json` | TabPFN con 256 componentes y con BGE 1,024 contra TabPFN-100 | Ninguna gana; 100 componentes bastan |
+| M10S (§27) | `weekly_composition/mixture_signal/results.json` | p-valor predictivo posterior de la mezcla semanal de M10 | Señal semanal junto a M11; 0 de 12 en calibración |
 | M6 | `semantic_space_results.json`, `semantic_pca_variance.png`, `semantic_umap_2d.png` | PCA 1,024→256, UMAP 2D para visualizar, índice FAISS exacto | **Vigente** |
 | M7 | `clustering_results.json`, `clustering_candidates.csv`, `clustering_*.png` | 12 configuraciones de clustering sobre UMAP 15D; gana k-means `k=40` | **Vigente** |
 | M7S (bloque A) | `space_sensitivity/results.json`, `space_sensitivity/candidates.csv` | 9 espacios × 15 candidatos; ninguno supera a M7 | Sensibilidad |

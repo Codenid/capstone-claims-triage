@@ -19,6 +19,9 @@ from html import escape
 from pathlib import Path
 
 facts = json.loads(Path("facts.json").read_text(encoding="utf-8"))
+# Weekly mixture signal of M10 (models_plan.md §27): one p-value per week.
+signal_path = Path("../modeling/weekly_composition/mixture_signal/results.json")
+signal = json.loads(signal_path.read_text(encoding="utf-8")) if signal_path.exists() else None
 
 
 def pct(value: float) -> str:
@@ -59,6 +62,12 @@ def card(c: dict) -> str:
             f"<strong>alerta {' y '.join(rules)}</strong>: {alert['observed']} reclamos "
             f"frente a {alert['expected']:.0f} esperados"
         )
+    mixture = ""
+    if signal and p["week"] in signal["weeks"]:
+        p_value = signal["weeks"][p["week"]]["p_value"]
+        rare = p_value < signal["alert_p_value"]
+        label = "<strong>mezcla rara</strong>" if rare else "mezcla dentro de lo esperado"
+        mixture = f" Composición de la semana: {label} (p = {p_value:.3f})."
     novelty = "<strong>novedoso</strong>" if p["is_novel"] else "dentro de lo conocido"
     if p["is_novel"] and max(s["similarity"] for s in c["similar"]) > 0.98:
         novelty += (
@@ -108,7 +117,7 @@ def card(c: dict) -> str:
 <p>Patrón <strong>{p['cluster_id']}</strong> ({escape(p['main_product'])}): {novelty}.<br>
 <span class="muted">Distancia {p['distance']:.1f}; el 95% de los reclamos del patrón en ajuste está bajo {p['p95_distance_fit']:.1f}.</span></p>
 <p class="terms">{escape(p['terms'])}</p>
-<p>Semana del {p['week']}: {status}.</p>
+<p>Semana del {p['week']}: {status}.{mixture}</p>
 </div>
 
 <div class="box">

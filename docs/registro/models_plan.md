@@ -2138,3 +2138,26 @@ componente lo consume; M11 solo usa las marginales de M9.
 - Sin decisión de reemplazo: no compite con nada. Si el número de semanas
   marcadas en ajuste supera con claridad el 1 % esperado, se anota como
   evidencia de que la predictiva de M10 es más estrecha que los datos.
+
+Resultado del 2026-10-07 (SLURM 54842, 33 s; humo 54841; detalle en
+`reports/modeling/weekly_composition/mixture_signal/results.json`).
+
+| Periodo | Semanas | Marcadas (p < 0.01) | Esperadas si M10 fuera exacto | Mediana de p |
+|---|---:|---:|---:|---:|
+| Ajuste | 87 | 19 | 0.9 | 0.29 |
+| Calibración | 12 | 0 | 0.1 | 0.79 |
+| 2025-H1 (ya consultado) | 25 | 7 | 0.25 | 0.10 |
+
+- **En ajuste la señal dispara 20 veces más de lo esperado.** Es la evidencia
+  anticipada arriba: la predictiva de M10 es más estrecha que los datos de
+  2023–2024 (κ = 826 fija toda la dispersión extra en un solo número y las
+  semanas de 2023 traen cambios de composición que un κ global no cubre). En
+  calibración no marca ninguna semana.
+- En 2025-H1 marca lo que debía: la ráfaga del 2025-01-13 (patrón 8 con
+  58.2 % de los reclamos frente a 8.5 % esperado, p = 0.0005) y las cuatro
+  semanas siguientes, donde la memoria de 4 semanas espera de más para ese
+  patrón (eco). Más dos semanas de mayo (patrones 3 y 14).
+- Decisión: la señal se publica como complemento semanal de M11 con el umbral
+  pre-registrado, y la ficha de evidencia muestra el p-valor de la semana. Su
+  tasa en ajuste queda anotada como límite de M10, no se recalibra el umbral.
+  Una κ por semana o por patrón sería la mejora natural si se retoma M10.

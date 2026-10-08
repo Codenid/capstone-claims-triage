@@ -147,6 +147,15 @@ pregunta "¿este patrón trajo más de lo esperado?", M10 pregunta "¿la mezcla
 de la semana es rara?". Mejoró el log score de la referencia multinomial de
 −461 a −210.
 
+Esa pregunta se responde cada semana con un p-valor predictivo posterior: se
+simulan composiciones desde la propia predictiva de M10 y se mide qué fracción
+queda tan lejos como la observada; aviso si p < 0.01 (umbral fijado antes de
+mirar). En calibración no marcó ninguna semana; en 2025-H1 marcó la ráfaga del
+13 de enero (58 % de los reclamos en un patrón) y su eco. En ajuste marcó 19 de
+87 semanas, 20 veces más de lo esperado: la dispersión única κ no cubre los
+cambios de composición de 2023. Es un límite declarado de M10, no se
+recalibró el umbral.
+
 ### Alertas de aumento persistente (M11)
 
 Cada semana, para cada patrón, calculamos cuánto se desvió el conteo de lo
