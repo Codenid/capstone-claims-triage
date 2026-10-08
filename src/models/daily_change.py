@@ -86,19 +86,48 @@ def artifact_dir(settings: dict[str, Any]) -> Path:
 
 
 class DailyExpectation:
-    """Expected counts of the frozen D-A: decaying shares and day-of-week effect."""
+    """Expected counts of the frozen daily winner (D-A family, §28.2).
 
-    def __init__(self, discount: float, beta: np.ndarray) -> None:
+    Decaying shares and the day-of-week effect give the Negative Binomial
+    mean; a zero-inflated winner (D-D) also carries `zero`, the posterior
+    median probability of an extra zero per pattern, which deflates the
+    expected count and enters the predictive CDF of the excess score.
+    """
+
+    def __init__(
+        self,
+        discount: float,
+        beta: np.ndarray,
+        zero: np.ndarray | None = None,
+    ) -> None:
         self.discount = discount
         self.beta = beta  # (clusters, 7), posterior median
+        self.zero = zero  # (clusters,), posterior median, or None
 
     def shares(self, counts: np.ndarray, day_of_week: np.ndarray) -> np.ndarray:
         memory = shares_from_counts(counts.astype(float), self.discount, None)
         weight = memory * np.exp(self.beta[:, day_of_week].T)
         return weight / np.nansum(weight, axis=1, keepdims=True)
 
-    def expected(self, counts: np.ndarray, day_of_week: np.ndarray) -> np.ndarray:
+    def nb_mean(self, counts: np.ndarray, day_of_week: np.ndarray) -> np.ndarray:
+        """Mean of the Negative Binomial part: total times share."""
         return counts.sum(axis=1, keepdims=True) * self.shares(counts, day_of_week)
+
+    def expected(self, counts: np.ndarray, day_of_week: np.ndarray) -> np.ndarray:
+        """Expected count, as the run's `expected_mean` reports it."""
+        mean = self.nb_mean(counts, day_of_week)
+        return mean if self.zero is None else mean * (1.0 - self.zero)[None, :]
+
+    def excess(
+        self,
+        observed: np.ndarray,
+        nb_mean: np.ndarray,
+        alpha: np.ndarray,
+        clusters: np.ndarray,
+    ) -> np.ndarray:
+        """Excess scores of rows whose pattern ids are `clusters`."""
+        zero = None if self.zero is None else self.zero[clusters]
+        return excess_scores(observed, nb_mean, alpha[:, clusters], zero)
 
 
 def load_model(
@@ -111,7 +140,10 @@ def load_model(
     posterior = subsample_posterior(idata, settings["prediction_draws"], seed)
     alpha = posterior["alpha"].transpose("sample", "cluster").to_numpy()
     beta = idata.posterior["beta"].median(dim=("chain", "draw")).to_numpy()
-    return alpha, DailyExpectation(spec["share"]["discount"], beta)
+    zero = None
+    if "pi" in idata.posterior:
+        zero = idata.posterior["pi"].median(dim=("chain", "draw")).to_numpy()
+    return alpha, DailyExpectation(spec["share"]["discount"], beta, zero)
 
 
 def warm_rows(
@@ -123,6 +155,7 @@ def warm_rows(
 ) -> pd.DataFrame:
     """Observed, expected and excess score of every day after the warm-up."""
     counts = arrays["counts"]
+    nb_mean = model.nb_mean(counts, arrays["day_of_week"])
     expected = model.expected(counts, arrays["day_of_week"])
     days, clusters = np.meshgrid(
         np.arange(warmup, len(counts)), np.arange(counts.shape[1]), indexing="ij"
@@ -136,10 +169,11 @@ def warm_rows(
             "expected": expected[days, clusters].ravel(),
         }
     )
-    rows["z"] = excess_scores(
+    rows["z"] = model.excess(
         rows["observed"].to_numpy(),
-        rows["expected"].to_numpy(),
-        alpha[:, rows["cluster_id"].to_numpy()],
+        nb_mean[days, clusters].ravel(),
+        alpha,
+        rows["cluster_id"].to_numpy(),
     )
     return rows
 
@@ -211,8 +245,9 @@ def injected_daily_scores(
     window = slice(start, start + len(factors))
     increased = counts.copy()
     increased[window, cluster] = np.rint(counts[window, cluster] * factors)
-    expected = model.expected(increased, day_of_week)[window, cluster]
-    z = excess_scores(increased[window, cluster], expected, alpha[:, [cluster]])
+    nb_mean = model.nb_mean(increased, day_of_week)[window, cluster]
+    ids = np.full(len(nb_mean), cluster)
+    z = model.excess(increased[window, cluster], nb_mean, alpha, ids)
     return z, increased
 
 
@@ -460,6 +495,7 @@ def main() -> None:
         "seed": seed,
         "m9d_model": settings["m9d_model"],
         "m9d_run_key": settings["m9d_run_key"],
+        "zero_inflated": model.zero is not None,
         "daily_counts_sha256": input_sha256,
         "source_dvc_hash": source_dvc_hash,
         "settings": {k: v for k, v in settings.items() if k != "scenarios"},

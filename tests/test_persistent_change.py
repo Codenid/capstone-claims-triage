@@ -93,6 +93,21 @@ class PersistentChangeTests(unittest.TestCase):
         expected = norm.ppf(np.mean(cdf))
         self.assertAlmostEqual(excess_scores(observed, mu, alpha)[0], expected)
 
+    def test_zero_inflated_cdf_starts_at_the_extra_zero_mass(self):
+        from src.models.persistent_change import predictive_cdf
+
+        mu = np.array([5.0, 5.0])
+        alpha = np.array([[10.0, 10.0]])
+        zero = np.array([0.3, 0.0])
+
+        below = predictive_cdf(np.array([-1, -1]), mu, alpha, zero)
+        at_zero = predictive_cdf(np.array([0, 0]), mu, alpha, zero)
+        plain = predictive_cdf(np.array([0, 0]), mu, alpha)
+
+        self.assertEqual(below.tolist(), [0.0, 0.0])
+        self.assertAlmostEqual(at_zero[0], 0.3 + 0.7 * plain[0])
+        self.assertAlmostEqual(at_zero[1], plain[1])
+
     def test_excess_scores_are_standard_normal_under_the_model(self):
         alpha, mu = 5.0, 50.0
         observed = np.random.default_rng(3).negative_binomial(

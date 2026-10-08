@@ -31,6 +31,34 @@ class DailyChangeTests(unittest.TestCase):
         self.assertTrue(np.isnan(expected[0]).all())
         self.assertTrue(np.allclose(expected[1:].sum(axis=1), counts[1:].sum(axis=1)))
 
+    def test_zero_inflation_deflates_the_mean_and_enters_the_excess(self):
+        rng = np.random.default_rng(2)
+        counts = rng.multinomial(300, [0.5, 0.3, 0.2], size=6)
+        dow = np.arange(6) % 7
+        beta = np.zeros((3, 7))
+        zero = np.array([0.0, 0.2, 0.0])
+        plain = DailyExpectation(0.8, beta)
+        inflated = DailyExpectation(0.8, beta, zero)
+        alpha = np.full((4, 3), 10.0)
+
+        nb_mean = inflated.nb_mean(counts, dow)
+        expected = inflated.expected(counts, dow)
+        ids = np.array([1, 1])
+        observed = np.array([0, 40])
+        means = nb_mean[[2, 3], 1]
+        z_plain = plain.excess(observed, means, alpha, ids)
+        z_inflated = inflated.excess(observed, means, alpha, ids)
+
+        same = np.allclose(nb_mean, plain.nb_mean(counts, dow), equal_nan=True)
+        self.assertTrue(same)
+        self.assertTrue(np.allclose(expected[1:, 1], 0.8 * nb_mean[1:, 1]))
+        self.assertTrue(np.allclose(expected[1:, 0], nb_mean[1:, 0]))
+        # The zero-inflated CDF is pi + (1 - pi) F_NB, above F_NB for every
+        # count: each score moves up, the observed zero by the most.
+        self.assertTrue((z_inflated > z_plain).all())
+        gain = z_inflated - z_plain
+        self.assertGreater(gain[0], gain[1])
+
     def test_weekly_view_keeps_complete_weeks(self):
         days = np.array(pd.date_range("2024-01-03", periods=19, freq="D"))
         counts = np.ones((19, 2), dtype=int)

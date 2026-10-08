@@ -109,22 +109,34 @@ def m9_run(settings: dict[str, Any], kind: str) -> Path:
     )
 
 
-def predictive_cdf(values: np.ndarray, mu: np.ndarray, alpha: np.ndarray) -> np.ndarray:
-    """P(Y <= value) under M9's Negative Binomial, averaged over posterior draws.
+def predictive_cdf(
+    values: np.ndarray,
+    mu: np.ndarray,
+    alpha: np.ndarray,
+    zero: np.ndarray | None = None,
+) -> np.ndarray:
+    """P(Y <= value) under the Negative Binomial, averaged over posterior draws.
 
     `values` and `mu` have one entry per row; `alpha` has one row per draw.
+    With `zero` (extra-zero probability per row, D-D of §28.2) the count is
+    zero-inflated: P(Y <= y) = zero + (1 - zero) P_NB(Y <= y) for y >= 0.
     """
-    return nbinom.cdf(values, alpha, alpha / (alpha + mu)).mean(axis=0)
+    cdf = nbinom.cdf(values, alpha, alpha / (alpha + mu))
+    if zero is not None:
+        cdf = np.where(values < 0, 0.0, zero + (1.0 - zero) * cdf)
+    return cdf.mean(axis=0)
 
 
 def excess_scores(
     observed: np.ndarray,
     mu: np.ndarray,
     alpha: np.ndarray,
+    zero: np.ndarray | None = None,
 ) -> np.ndarray:
-    """Normal score of the mid-PIT: about N(0, 1) when M9 is calibrated."""
+    """Normal score of the mid-PIT: about N(0, 1) when the model is calibrated."""
     mid_pit = (
-        predictive_cdf(observed - 1, mu, alpha) + predictive_cdf(observed, mu, alpha)
+        predictive_cdf(observed - 1, mu, alpha, zero)
+        + predictive_cdf(observed, mu, alpha, zero)
     ) / 2
     return norm.ppf(np.clip(mid_pit, PIT_CLIP, 1 - PIT_CLIP))
 

@@ -2295,6 +2295,15 @@ patrones, WIS diario; referencia D-B1 Poisson de 7 días 9.263, Poisson fijo
   contra D-A, que previsiblemente incluirá el 0.
 - MLflow: `bd71bb91` (D-A), `60c6c456` (D-B2), `ff8450aa` (D-C), `a76cf32a`
   (D-D).
+- D-E (Dirichlet-multinomial, malla exacta, SLURM 54928, 4 min): κ 261
+  [255, 268] (el prior tenía mediana 100); log score conjunto de calibración
+  78.0 por encima de la multinomial de 7 días, bootstrap pareado por día
+  [69.1, 87.0], y 273 por encima de la Dirichlet-multinomial estática.
+  **Acepta la regla.** Señal diaria de mezcla rara (p < 0.01): 73 de 632 días
+  de ajuste (11.5 %), 6 de 92 de calibración (6.5 %) y 35 de 181 de
+  validación (19.3 %, ya consultada); como en §27, el p-valor es más
+  liberal que su nominal y se usa como ordenación, no como prueba.
+  MLflow `8c4b1cd5`.
 - Prior predictive, piloto (14 días de calibración) y full, con los gates de
   §10 y §12.1. Regla de aceptación: la de 25.2 (≥ 5 % de WIS y bootstrap por
   día al 95 %) contra el mejor baseline, en calibración.
