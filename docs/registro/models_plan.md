@@ -2257,6 +2257,27 @@ correctivas sobre aumentos persistentes.
     exacto en una malla de 2,001 puntos (±6σ del prior) y se muestrea de ella;
     sin diagnósticos de convergencia que fallar. D-B esperó horas por el
     límite de 12 h del QOS: se reenvía con 6 h.
+
+Resultados de los fulls de conteo del 2026-10-08 (calibración, 92 días × 40
+patrones, WIS diario; referencia D-B1 Poisson de 7 días 9.263, Poisson fijo
+19.617). Todos convergen (R-hat ≤ 1.004, sin divergencias, ESS > 2,600).
+
+| Candidato | SLURM | Tiempo | WIS | Ganancia vs D-B1 | Estado |
+|---|---|---:|---:|---:|---|
+| D-A NB con día de semana | 54862 | 45 min | 6.959 | +24.9 % | acepta la regla |
+| D-B2 NB sin día de semana | 54863 | 32 min | 7.696 | +16.9 % | acepta la regla |
+| D-C NB Fourier + tendencia | 54864 | 46 min | 7.173 | +22.6 % | acepta la regla |
+| D-D ZINB con día de semana | 54865 | 71 min | 6.946 | +25.0 % | acepta la regla |
+
+- El efecto de día de semana vale 0.74 de WIS (D-A contra D-B2): es la pieza
+  que más aporta. La forma paramétrica de Fourier (D-C) queda 0.21 por detrás
+  de los 7 niveles libres de D-A.
+- D-D y D-A están a 0.013 de WIS (0.2 %): la inflación de ceros no cambia la
+  calibración. La regla "si varios ganan, el de mejor WIS" elige a D-D; la
+  decisión final espera a D-B y D-E y se acompaña del bootstrap pareado D-D
+  contra D-A, que previsiblemente incluirá el 0.
+- MLflow: `bd71bb91` (D-A), `60c6c456` (D-B2), `ff8450aa` (D-C), `a76cf32a`
+  (D-D).
 - Prior predictive, piloto (14 días de calibración) y full, con los gates de
   §10 y §12.1. Regla de aceptación: la de 25.2 (≥ 5 % de WIS y bootstrap por
   día al 95 %) contra el mejor baseline, en calibración.
