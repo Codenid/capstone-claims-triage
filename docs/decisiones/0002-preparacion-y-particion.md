@@ -59,9 +59,10 @@ reglas del normalizador, versión, estado y fecha de congelamiento de la
 taxonomía, inicio de cada periodo, respuestas que definen T2–T4 y filas
 esperadas. Cada script las lee al cargarse (`src/data/params.py`), cada
 etapa las declara en `dvc.yaml` y `dvc.lock` las anota. El pipeline se
-reejecuta en Khipu con `scripts/hpc/p1_5_preparation.slurm`, que falla si la
-tabla preparada no conserva el MD5 `d189a3ae…`; el resultado de esa corrida se
-anota aquí al terminar. El diccionario y el informe de limpieza son salidas del
+reejecutó en Khipu el 2026-10-07 (SLURM 54844, 13 minutos) con
+`scripts/hpc/p1_5_preparation.slurm`: las seis salidas conservaron su hash y
+la tabla preparada su MD5 `d189a3ae…`; `dvc.lock` registra ahora los
+parámetros de cada etapa (commit `a05eebf`). El diccionario y el informe de limpieza son salidas del
 pipeline desde esa fecha. Queda pendiente la reproducción independiente
 desde un clon limpio (PB-15).
 
