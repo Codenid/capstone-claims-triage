@@ -39,6 +39,7 @@ paths:
   bge_full_staging: artifacts/models/.bge_full.inprogress
   weekly_patterns_report: reports/modeling/weekly_patterns_results.json
   weekly_counts: reports/modeling/weekly_counts.csv
+  daily_counts: reports/modeling/daily_counts.csv
   cluster_summary: reports/modeling/cluster_summary.csv
   weekly_cluster_size_plot: reports/modeling/weekly_cluster_sizes.png
   weekly_patterns_plot: reports/modeling/weekly_patterns.png

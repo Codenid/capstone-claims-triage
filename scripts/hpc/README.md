@@ -644,3 +644,23 @@ Escribe `reports/modeling/patterns/catalog.json` y 40 PNG en
 `reports/modeling/patterns/series/`. La página `catalogo.qmd` de esa carpeta
 se renderiza en Windows con Quarto después de traer los resultados.
 
+## Bloque diario (M9D, §28)
+
+El panel diario se construye una vez desde las asignaciones congeladas de M8B y
+su SHA-256 se fija en cada config de `configs/daily_counts/`:
+
+```bash
+uv run --no-sync python -m src.models.daily_counts.panel
+```
+
+Cada modelo corre prior predictive, piloto y full, como el semanal:
+
+```bash
+MODEL_CONFIG=configs/daily_counts/nb_daily_hierarchical_v1.yaml RUN_MODE=prior sbatch scripts/hpc/m9d_daily_counts.slurm
+MODEL_CONFIG=configs/daily_counts/nb_daily_hierarchical_v1.yaml RUN_MODE=pilot sbatch scripts/hpc/m9d_daily_counts.slurm
+MODEL_CONFIG=configs/daily_counts/nb_daily_hierarchical_v1.yaml sbatch scripts/hpc/m9d_daily_counts.slurm
+```
+
+Resultados en `reports/modeling/daily_counts/<modelo>/<run_key>/` (las tablas
+CSV a DVC) y posterior en `artifacts/models/daily_counts/`.
+
