@@ -1,0 +1,100 @@
+# Datos y preparación {#sec-datos}
+
+## Fuente
+
+Los datos son la base pública de reclamos de la CFPB [@cfpb2026], que publica
+cada reclamo con narrativa cuando el consumidor lo autoriza: fecha de
+recepción, producto, motivo, empresa, estado, respuesta de la empresa y si la
+respuesta fue oportuna. La tabla preparada tiene `{python} i(DATOS["rows"])`
+filas y `{python} DATOS["columns"]` columnas
+(`{python} n(DATOS["size_gib"], 2)` GiB), con hash MD5
+`{python} DATOS["md5"][:12]`… fijado en DVC; ese hash acompaña cada corrida
+registrada en MLflow.
+
+```{python}
+#| label: tbl-periodos
+#| tbl-cap: "Filas por periodo temporal. Solo 2023–2024 y 2025-H1 entran en el modelado; 2015–2022 es contexto, 2025-H2 quedó bloqueado por un experimento anterior y 2026 es parcial."
+rows = [
+    [facts.PERIOD_LABELS[key], i(DATOS["period_rows"][key])]
+    for key in facts.PERIOD_LABELS
+]
+Markdown(md_table(["Periodo", "Filas"], rows, "lr"))
+```
+
+```{python}
+#| label: fig-periodos
+#| fig-cap: "Reclamos con narrativa por periodo. El volumen crece con los años: 2025-H1 tiene casi tantos reclamos como los dos años de ajuste."
+keys = list(facts.PERIOD_LABELS)
+values = [DATOS["period_rows"][k] / 1e6 for k in keys]
+fig, ax = plt.subplots(figsize=(6.3, 2.6))
+bars = ax.barh(
+    [facts.PERIOD_LABELS[k] for k in keys][::-1],
+    values[::-1],
+    color=[AZUL if k in ("train_2023_2024", "validation_2025_h1") else GRIS for k in keys][::-1],
+    height=0.6,
+)
+for bar, value in zip(bars, values[::-1]):
+    ax.text(value + 0.02, bar.get_y() + bar.get_height() / 2, f"{value:.2f} M", va="center", fontsize=8)
+ax.set_xlabel("millones de reclamos")
+ax.set_xlim(0, max(values) * 1.18)
+ax.grid(axis="y", visible=False)
+plt.show()
+```
+
+## Dos rasgos que condicionan el diseño
+
+**Reutilización de texto.** `{python} n(DATOS["shared_pct"], 1)` % de las
+filas comparten su narrativa normalizada con otra; hay
+`{python} i(DATOS["distinct_texts"])` textos distintos en
+`{python} i(DATOS["rows"])` reclamos. Muchas narrativas son plantillas de
+gestores de reclamos de crédito. Un modelo que memorice plantillas parece mejor
+de lo que es, así que toda decisión se toma en la vista **sin texto
+compartido**, que excluye de calibración y validación las narrativas ya vistas
+en ajuste.
+
+**Deriva temporal.** Lo que se reclama y cómo responden las empresas cambia de
+un año a otro: la fracción de reclamos con alguna solución registrada pasó de
+`{python} n(DATOS["drift"]["pct_T2_entrenamiento"], 1)` % en ajuste a
+`{python} n(DATOS["drift"]["pct_T2_validacion"], 1)` % en validación. Evaluar con datos del mismo periodo engaña; por eso los periodos
+se cortan por fecha y se evalúa hacia adelante.
+
+## Preparación
+
+La preparación corre como cinco etapas de DVC con parámetros en
+`params.yaml`, cada una con su hash de salida, y termina en un diccionario de
+datos con `{python} DATOS["dictionary"]["columnas"]` columnas descritas
+(cobertura `{python} n(DATOS["dictionary"]["cobertura_pct"], 0)` %).
+
+```{python}
+#| label: tbl-etapas
+#| tbl-cap: "Etapas de preparación (P1–P5) tal como las registra el informe de limpieza."
+rows = [[stage["etapa"], stage["descripcion"]] for stage in DATOS["stages"]]
+Markdown(md_table(["Etapa", "Qué hace"], rows))
+```
+
+La taxonomía de productos y motivos cambió de nombres entre periodos:
+`{python} DATOS["taxonomy"]["productos_originales"]` productos y
+`{python} DATOS["taxonomy"]["motivos_originales"]` motivos originales se
+mapean a `{python} DATOS["taxonomy"]["productos_canonicos"]` productos y
+`{python} DATOS["taxonomy"]["motivos_canonicos"]` motivos canónicos con un
+mapa congelado al `{python} DATOS["versions"]["taxonomy_freeze_date"]`. Ese
+mapa es una propuesta sin revisión del negocio
+(`{python} DATOS["versions"]["taxonomy_status"]`). En ajuste aparecen
+`{python} DATOS["t1_motives"]` motivos, muchos raros, lo que justifica Macro-F1 como métrica de T1.
+
+Los cuatro objetivos se derivan de columnas de la CFPB: T1 es el motivo
+canónico; T2 es «alguna solución registrada» (respuesta cerrada con
+explicación, con alivio no monetario o monetario); T3 es «compensación
+monetaria»; T4 es «respuesta no oportuna». Las tasas de positivos en ajuste
+son `{python} n(DATOS["positives"]["pct_positivos_T2_conocidos"], 1)` % para
+T2, `{python} n(DATOS["positives"]["pct_positivos_T3_conocidos"], 1)` % para
+T3 y `{python} n(DATOS["positives"]["pct_positivos_T4"], 1)` % para T4. No se
+remuestrea: la métrica principal de T2–T4 es la precisión promedio, que no
+depende del umbral.
+
+```{python}
+#| label: tbl-problemas
+#| tbl-cap: "Problemas encontrados en los datos y su tratamiento, del informe de limpieza."
+rows = [[p["problema"], p["tratamiento"]] for p in DATOS["problems"]]
+Markdown(md_table(["Problema", "Tratamiento"], rows))
+```

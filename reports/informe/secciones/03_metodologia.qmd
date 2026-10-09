@@ -1,0 +1,161 @@
+# Metodología {#sec-metodologia}
+
+## Protocolo de evaluación
+
+Las decisiones de este protocolo se fijaron antes de entrenar y no se
+cambiaron después; están escritas, con fecha, en el registro de pre-registro
+del repositorio (`docs/registro/models_plan.md`). El anexo C las resume.
+
+```{python}
+#| label: tbl-ventanas
+#| tbl-cap: "Ventanas temporales y filas elegibles por vista. La vista sin texto compartido decide; la completa se reporta."
+rows = []
+for split, label in (("fit", "Ajuste"), ("calibration", "Calibración"), ("validation", "Validación")):
+    window = DATOS["splits"][split]
+    counts = DATOS["row_counts"][split]
+    rows.append([label, f'desde {window["start"]} hasta antes de {window["end"]}', i(counts["complete"]), i(counts["no_shared_text"])])
+Markdown(md_table(["Ventana", "Fechas", "Filas (completa)", "Filas (sin texto compartido)"], rows, "llrr"))
+```
+
+- **Tres periodos por fecha.** El sistema predecirá reclamos futuros, así que
+  se ajusta en el pasado, se decide en calibración y se confirma en validación.
+- **Validación se abre una vez.** Los modelos se eligen solo en calibración.
+  Validación (2025-H1) se abrió el 2026-10-01 con todo congelado y confirmó
+  T1–T3, M9 y M10. Las rondas posteriores (bloques A, B, C y el bloque diario)
+  también se decidieron solo con ajuste y calibración, pero sus cifras de
+  validación se reportan como **ya consultadas**: no son evidencia limpia. No
+  queda otro periodo intacto: 2025-H2 se contaminó en un experimento anterior
+  y 2026 es parcial y se reserva sellado.
+- **Regla de reemplazo.** Un candidato reemplaza al vigente solo si mejora la
+  métrica principal al menos
+  `{python} pct(CLAS["rule"]["minimum_relative_gain"], 0)` y un bootstrap
+  pareado por semanas (`{python} i(CLAS["rule"]["bootstrap_draws"])`
+  remuestreos, semilla `{python} CLAS["rule"]["seed"]`) deja el intervalo del
+  95 % entero a su favor. Con 12 semanas de calibración, una mejora pequeña
+  puede ser azar o una sola semana rara.
+- **Orden de complejidad.** Los candidatos se prueban del más simple al más
+  complejo; cada uno reemplaza al anterior solo si cumple la regla.
+- **Modelos bayesianos en tres pasos.** Revisión de priors por simulación
+  predictiva, piloto corto y corrida completa, con diagnósticos de
+  convergencia (R-hat ≤ 1.01, sin divergencias) y cobertura de intervalos
+  dentro de rangos fijados.
+- **Trazabilidad.** Cada corrida registra en MLflow el commit, el hash de
+  datos, la semilla y las métricas; los artefactos grandes van por DVC.
+
+## Clasificadores T1–T3
+
+La métrica principal es Macro-F1 para T1 (90 motivos, muchos raros) y
+precisión promedio (AP) para T2 y T3, siempre en la vista sin texto
+compartido. La referencia es la **regla por producto**: el motivo o la tasa de
+positivos más frecuente de cada producto en ajuste.
+
+Las representaciones compiten en orden de complejidad: TF-IDF del texto, TF-IDF
+más el producto, embeddings BGE-large [@xiao2023bge] del texto y BGE más el
+producto, cada una con un clasificador lineal calibrado. Para T1 se añadió un
+bloque posterior con **TabPFN-3.5** [@hollmann2025tabpfn], un modelo tabular
+en contexto que no se entrena: recibe `{python} i(TABPFN["context_rows"])`
+filas de contexto (`{python} TABPFN["context_classes"]` clases presentes), con
+los embeddings reducidos a `{python} TABPFN["pca"]` componentes de PCA más el
+producto, y predice en `{python} TABPFN["estimators"]` estimadores promediados.
+Una ablación pre-registrada probó 256 componentes y los 1,024 valores sin PCA.
+
+T4 (respuesta no oportuna) se evaluó con el mismo protocolo y se descartó al
+confirmarlo en validación; lo reemplaza una regla de plazo con feriados.
+
+## Reclamos parecidos y patrones semánticos
+
+Cada narrativa se representa con un embedding BGE-large de 1,024 dimensiones
+(`{python} SEM["bge_model"]`), normalizado. Un índice exacto de producto
+interno (FAISS, [@douze2024faiss]) sobre `{python} i(SEM["faiss_rows"])`
+reclamos de ajuste devuelve los diez más parecidos.
+
+Los **patrones** son una partición del espacio semántico: PCA ajustado solo
+con filas de ajuste (`{python} SEM["pca_components"]` componentes conservan
+`{python} pct(SEM["pca_variance"])` de la varianza), UMAP a
+`{python} SEM["umap_components"]` dimensiones [@mcinnes2018umap] y k-means.
+Se compararon `{python} SEM["candidate_count"]` configuraciones de k-means,
+HDBSCAN y CURE con criterios de aceptación fijados antes: tamaño del grupo
+mayor, fracción de ruido, silhouette, estabilidad entre submuestras
+(ARI ≥ `{python} SEM["acceptance"]["minimum_stability_ari"]`) y cobertura de
+reclamos futuros (≥ `{python} pct(SEM["acceptance"]["minimum_future_coverage"], 0)`).
+Un reclamo es **novedoso** si su distancia al centro asignado supera el
+percentil `{python} int(SEM["novelty_quantile"] * 100)` de las distancias de
+ajuste. Una ronda de sensibilidad (bloque A) repitió la partición en
+`{python} SEM["sensitivity_spaces"]` espacios alternativos (PCA 128/256/512,
+UMAP 5/10/15/30 y otras semillas) para saber si otro espacio daba grupos
+mejores.
+
+## Conteo semanal por patrón (M9)
+
+Para saber si un patrón recibe más reclamos de lo normal hace falta cuántos se
+esperaban. El conteo semanal de cada patrón se modela como *total de la
+semana × participación esperada* con una **binomial negativa** por patrón, que
+admite más variación que la Poisson. La participación esperada de la familia
+ganadora usa una **memoria que decae**: cada semana pesa δ veces la siguiente
+más reciente (δ elegido en ajuste entre valores fijados). Los candidatos se
+comparan por el **WIS** (*weighted interval score*, [@bracher2021wis]): la
+media, sobre los intervalos de 50 %, 80 % y 95 % y la mediana, del error
+absoluto de la mediana más la penalización por intervalos anchos o que no
+cubren el valor observado. Menor es mejor. Se exige además cobertura de 70–90
+% para el intervalo de 80 % y de 88–99 % para el de 95 %.
+
+Los modelos se escriben en PyMC [@abrilpla2023pymc] y se muestrean con NUTS en
+NumPyro sobre el clúster Khipu; la referencia es una Poisson con la
+participación de las cuatro semanas previas. Además de las variantes
+bayesianas se probaron dos modelos fundacionales de series de tiempo sin
+entrenamiento, Chronos-2 [@ansari2024chronos] y TimesFM [@das2024timesfm].
+
+## Composición semanal (M10)
+
+M9 pregunta «¿este patrón trajo más de lo esperado?»; M10 pregunta «¿la mezcla
+de la semana es rara?». Una **Dirichlet-multinomial** modela el vector de
+conteos de los 40 patrones condicionado al total de la semana, con
+participaciones de cuatro semanas y una concentración global κ: cuanto mayor
+κ, más se parece la composición de cada semana a la esperada. Se evalúa por el
+**log score conjunto** (logaritmo de la probabilidad asignada a la composición
+observada, sumado en calibración) contra una multinomial de cuatro semanas.
+Sobre el modelo aceptado se derivó una señal semanal de **mezcla rara**: un
+p-valor predictivo posterior del log score de cada semana, con aviso si
+p < `{python} COMP["signal"]["alert_p_value"]`.
+
+## Alertas de aumento persistente (M11)
+
+Cada semana y patrón recibe un **exceso** z: el score normal de la mid-PIT del
+conteo observado en la predictiva de M9, es decir, la posición del observado
+dentro de la distribución predicha, transformada para que sea
+aproximadamente N(0, 1) si el modelo está calibrado. Dos reglas compiten: un
+**CUSUM** [@page1954cusum] que acumula los excesos
+(k = `{python} ALERTAS["settings"]["cusum_k"]`) y avisa cuando supera h, y una
+regla que avisa si el exceso de una sola semana supera z\*. Los umbrales se
+fijan por simulación de series N(0, 1) para un presupuesto de
+`{python} ALERTAS["settings"]["false_alarms_per_month"]` falsa alarma al mes en
+total sobre los 40 patrones. La detección se mide inyectando crecimientos
+sostenidos de 10 % y 20 % semanal y escalones de 50 % y 100 % en los conteos
+de calibración, con un horizonte de
+`{python} ALERTAS["settings"]["horizon_weeks"]` semanas. CUSUM se adopta si
+detecta al menos
+`{python} pct(ALERTAS["settings"]["minimum_detection_gain"], 0)` más que la
+regla semanal en los dos crecimientos.
+
+## Bloque diario
+
+El bloque diario se pre-registró como prueba aparte: el semanal sirve para
+acciones preventivas y correctivas; el diario, para decisiones rápidas del día
+a día. El panel tiene `{python} i(DIARIO["panel"]["rows"])` filas
+(`{python} DIARIO["panel"]["days"]["fit"]` días de ajuste,
+`{python} DIARIO["panel"]["days"]["calibration"]` de calibración y
+`{python} DIARIO["panel"]["days"]["validation"]` de validación, sin huecos)
+con un total medio diario de `{python} i(DIARIO["panel"]["mean_daily_total"]["fit"])`
+reclamos en ajuste y `{python} i(DIARIO["panel"]["mean_daily_total"]["calibration"])`
+en calibración. Los candidatos de conteo (D-A a D-D) son binomiales
+negativas que condicionan en el total del día con memoria que decae
+(δ = `{python} DIARIO["share_selection"]["chosen"]["discount"]`, elegido en ajuste) y
+distintas formas del ciclo semanal; D-B es un espacio de estados y D-E la
+Dirichlet-multinomial diaria. La regla diaria de alerta D-11 repite el diseño
+de M11 con un presupuesto, aprobado por el equipo, de
+`{python} DIARIO["change"]["settings"]["false_alarms_per_month"]` falsas
+alarmas al mes sobre 40 patrones y ráfagas inyectadas de ×2 durante 3 días, ×3
+durante 1 día y ×1.5 durante 7 días. Se adopta solo si detecta al menos
+`{python} pct(DIARIO["change"]["settings"]["minimum_detection"], 0)` de las
+dos primeras ráfagas con mediana de retraso de a lo más
+`{python} DIARIO["change"]["settings"]["maximum_median_delay"]` días.

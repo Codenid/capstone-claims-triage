@@ -1,0 +1,55 @@
+# Conclusiones y trabajo futuro {#sec-conclusiones}
+
+## Conclusiones
+
+1. Es posible construir, con datos públicos y reglas fijadas de antemano, un
+   prototipo de triaje que entrega evidencia útil en cada una de sus cinco
+   salidas, y documentar con la misma calidad lo que funcionó y lo que no.
+2. El motivo del reclamo se predice mejor con un modelo tabular en contexto
+   sobre embeddings reducidos que con clasificadores entrenados: Macro-F1
+   `{python} n(TABPFN["macro_f1"])` frente a `{python} n(T1["rule_calibration"])`
+   de la regla por producto y `{python} n(T1["candidates"]["bge_product"])` del
+   mejor modelo entrenado, con la ventaja mantenida en 2025-H1.
+3. Para solución y compensación bastan modelos lineales sobre TF-IDF; el
+   producto y los embeddings no superan la regla del 5 %. La respuesta fuera
+   de plazo no se predice del texto.
+4. Un espacio semántico BGE con PCA y UMAP sostiene tanto la búsqueda de
+   reclamos parecidos como una partición en 40 patrones estable y con
+   cobertura futura de `{python} pct(SEM["kmeans"]["future_coverage"], 0)`.
+5. Una binomial negativa jerárquica con memoria corta predice el volumen
+   semanal por patrón con `{python} pct(SEMANAL["c_a_vs_poisson"]["wis_gain"], 0)`
+   menos error que la referencia Poisson y gana a alternativas más complejas;
+   la Dirichlet-multinomial describe la composición semanal y da una señal de
+   mezcla rara.
+6. Un CUSUM sobre los excesos del modelo semanal, con una falsa alarma al mes
+   fijada por simulación, detecta crecimientos sostenidos de 10 % y 20 %
+   semanal en `{python} pct(ALERTAS["detection"]["growth_10"]["cusum"]["detected"], 0)`
+   y `{python} pct(ALERTAS["detection"]["growth_20"]["cusum"]["detected"], 0)`
+   de los casos simulados.
+7. El bloque diario confirma la arquitectura a resolución de día para el
+   conteo (`{python} pct(DIARIO["winner"]["wis_gain"], 0)` menos error que
+   la referencia, con el día de semana como pieza principal) y muestra que
+   una alerta diaria con el diseño de M11 no alcanza la detección exigida.
+8. El pre-registro, la vista sin texto compartido y la evaluación hacia
+   adelante costaron tiempo y evitaron resultados optimistas: dos candidatos
+   mejores en apariencia se rechazaron por la regla del bootstrap y un
+   componente se retiró al confirmarlo.
+
+## Trabajo futuro
+
+- **Pipeline de inferencia** (planificado como rama aparte): ajustar una vez
+  los componentes vigentes y, con datos nuevos que respeten las mismas
+  columnas, solo predecir: motivo, probabilidades, vecinos, patrón, conteo
+  semanal y diario, señal de composición y alertas semanales; reajustar solo
+  cuando la deriva lo exija.
+- **Alerta diaria, segunda versión pre-registrada**: umbrales empíricos sobre
+  los excesos de ajuste en lugar de la normal simulada, y ráfagas mayores en
+  los escenarios.
+- **De sugerencias a acciones de triaje**: requiere definiciones del banco
+  (equipos, mapeo de motivos a equipos, presupuesto de alertas revisables al
+  mes).
+- **Prueba final sellada en 2026** cuando la base de la CFPB complete ese año.
+- **Licencias y alternativas**: validación experta de la licencia de TabPFN;
+  ajuste fino y ensamble de TabPFN; Kumo Tabular con más memoria.
+- **Transferencia a datos propios**: repetir la preparación y el protocolo con
+  reclamos del banco y su taxonomía revisada.

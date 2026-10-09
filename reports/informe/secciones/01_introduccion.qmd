@@ -1,0 +1,73 @@
+# Introducción
+
+## El problema y la decisión que mejora
+
+Un banco regulado recibe cada día reclamos escritos por sus clientes. Una
+persona del equipo de atención los lee, decide de qué tratan, los deriva al
+equipo que corresponde y vigila los plazos. Esa persona también es la primera
+en notar cuándo una campaña, un producto o un fallo operativo empieza a
+generar reclamos nuevos, pero lo nota tarde, porque el volumen diario no deja
+ver el conjunto.
+
+El triaje tiene tres decisiones concretas que un sistema puede apoyar sin
+reemplazar a la persona:
+
+- **Qué es este reclamo.** Sugerir el motivo más probable y los tres más
+  probables reduce el tiempo de lectura y las derivaciones erradas.
+- **Qué suele pasar con reclamos así.** Saber si reclamos parecidos terminaron
+  con una solución registrada o con compensación ayuda a priorizar y a
+  anticipar la respuesta.
+- **Qué está cambiando.** Agrupar los reclamos en patrones de significado y
+  vigilar cuántos llegan a cada patrón convierte un flujo de texto en una
+  señal que se puede revisar cada semana y, con más ruido, cada día.
+
+El sistema entrega evidencia y la decisión final queda en la persona. No
+afirma detectar fraude, no mide el plazo interno del banco y no reemplaza la
+revisión humana de ninguna alerta.
+
+## Objetivos
+
+**Objetivo general.** Construir y evaluar, de forma reproducible y con reglas
+fijadas antes de ver los resultados, un prototipo de triaje de reclamos que
+sugiera el motivo, estime resultados históricos, encuentre reclamos parecidos
+y detecte patrones semánticos cuyo volumen aumenta.
+
+**Objetivos específicos.**
+
+1. Preparar una tabla única de reclamos con texto normalizado, taxonomía
+   canónica congelada, objetivos T1–T4 y periodos temporales de ajuste,
+   calibración y validación, documentada con su diccionario.
+2. Elegir, con un protocolo de evaluación hacia adelante y una vista sin
+   texto compartido, los clasificadores de motivo (T1), solución (T2) y
+   compensación (T3), y decidir si el de respuesta fuera de plazo (T4) aporta
+   algo.
+3. Construir un espacio semántico de reclamos (embeddings, PCA, UMAP, índice de
+   vecinos) y una partición en patrones estable en el tiempo, con una regla de
+   novedad.
+4. Modelar el conteo semanal y la composición semanal de los patrones con
+   modelos bayesianos comparados contra referencias simples, y derivar una
+   regla de alerta de aumento persistente con un presupuesto de falsas alarmas.
+5. Probar, como bloque aparte y pre-registrado, si la misma arquitectura
+   funciona a resolución diaria y si una regla de alerta diaria aporta sobre la
+   semanal.
+6. Registrar cada decisión, su regla y su evidencia en MLflow, DVC y un
+   registro de pre-registro, de modo que otra persona pueda reproducir el
+   resultado.
+
+## Alcance y estructura del documento
+
+El prototipo se construyó sobre datos públicos de Estados Unidos porque un
+banco peruano no comparte sus reclamos. Las etiquetas disponibles, el motivo
+asignado por la CFPB y la respuesta de la empresa, son aproximaciones de las
+categorías internas de un banco. Por eso el entregable es el **método** y la
+**evidencia de que funciona en datos reales**, no las cifras en sí.
+
+La @sec-datos describe los datos y su preparación. La @sec-metodologia explica
+el protocolo de evaluación y cada componente, con la razón de cada elección. La
+@sec-resultados presenta los resultados por componente. La @sec-discusion
+discute qué se eligió y qué no funcionó. La @sec-limitaciones declara
+expectativas y límites, y la @sec-conclusiones cierra con conclusiones y
+trabajo futuro. Los anexos traen el catálogo de los 40 patrones, la tabla
+completa de candidatos y el resumen de las reglas pre-registradas. Toda cifra
+del documento se lee de los archivos de resultados del repositorio al momento
+de renderizarlo; ninguna se escribió a mano.

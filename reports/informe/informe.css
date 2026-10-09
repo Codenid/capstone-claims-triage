@@ -1,0 +1,76 @@
+:root {
+  --ink: #1f2933;
+  --muted: #52606d;
+  --line: #d9dee3;
+  --accent: #2f5d8a;
+  --surface: #ffffff;
+}
+
+body {
+  font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+  color: var(--ink);
+  background: var(--surface);
+  line-height: 1.55;
+  font-size: 1.02rem;
+  max-width: 100%;
+}
+
+main.content {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 0 16px;
+}
+
+h1, h2, h3, .title, .subtitle {
+  font-family: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  line-height: 1.25;
+}
+
+h1.title { font-size: 1.9rem; margin-bottom: 0.3rem; }
+p.subtitle { color: var(--muted); font-size: 1.1rem; }
+h1 { font-size: 1.5rem; margin-top: 2.4rem; border-bottom: 1px solid var(--line); padding-bottom: 0.3rem; }
+h2 { font-size: 1.2rem; margin-top: 1.8rem; }
+h3 { font-size: 1.05rem; margin-top: 1.4rem; }
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+  font-size: 0.88rem;
+  margin: 0.8rem 0 1.2rem;
+}
+
+th, td {
+  border-top: 1px solid var(--line);
+  padding: 0.35rem 0.5rem;
+  vertical-align: top;
+  text-align: left;
+}
+
+th { border-bottom: 2px solid var(--ink); font-weight: 600; }
+tbody tr:last-child td { border-bottom: 1px solid var(--line); }
+
+figure { margin: 1.2rem 0; }
+figcaption, caption, .caption, .table-caption, .figure-caption {
+  color: var(--muted);
+  font-size: 0.88rem;
+  font-family: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+img { max-width: 100%; height: auto; }
+
+code { font-size: 0.9em; }
+
+#TOC, nav.toc { font-family: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif; font-size: 0.88rem; }
+#TOC a { color: var(--accent); text-decoration: none; }
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #e6e9ec;
+    --muted: #a7b0ba;
+    --line: #3a434d;
+    --accent: #8fb8e6;
+    --surface: #14181c;
+  }
+}

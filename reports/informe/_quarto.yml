@@ -1,0 +1,42 @@
+project:
+  type: default
+  render:
+    - informe.qmd
+
+lang: es
+bibliography: referencias.bib
+number-sections: true
+toc: true
+toc-depth: 2
+crossref:
+  fig-title: Figura
+  tbl-title: Tabla
+  fig-prefix: figura
+  tbl-prefix: tabla
+  sec-prefix: sección
+  eq-prefix: ecuación
+
+execute:
+  echo: false
+  warning: false
+  freeze: false
+
+format:
+  html:
+    minimal: true
+    embed-resources: false
+    css: informe.css
+    toc-location: left
+    fig-width: 7
+    fig-height: 3.6
+    fig-dpi: 150
+  typst:
+    papersize: a4
+    margin:
+      x: 2.2cm
+      y: 2.4cm
+    fontsize: 10.5pt
+    fig-width: 6.3
+    fig-height: 3.3
+    toc-depth: 2
+    keep-typ: true

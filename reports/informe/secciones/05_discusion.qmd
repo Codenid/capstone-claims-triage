@@ -1,0 +1,87 @@
+# Discusión {#sec-discusion}
+
+## Qué se eligió y por qué
+
+**El motivo se predice mejor con un modelo tabular en contexto que con un
+clasificador entrenado.** TabPFN-3.5 no se ajusta a los datos: recibe
+`{python} i(TABPFN["context_rows"])` ejemplos y predice el resto. Aun así gana
+`{python} signed_pct(TABPFN["gain"])` a la mejor combinación entrenada y
+mantiene la ventaja en 2025-H1. Que la ablación con 256 componentes empate y
+la de 1,024 columnas pierda dice que el límite está en cuántas columnas puede
+ver cada estimador, no en la riqueza del embedding. El costo es una licencia no
+comercial que un banco tendría que negociar.
+
+**Para solución y compensación, lo simple basta.** TF-IDF con una regresión
+logística calibrada supera a la regla por producto y los embeddings no suman
+el 5 % exigido. La regla de orden de complejidad evitó quedarse con un modelo
+más caro por una décima.
+
+**Los patrones son una partición útil, no categorías.** k-means sobre UMAP 15
+pasó todos los criterios: grupos de tamaño razonable, estables entre
+submuestras y que cubren `{python} pct(SEM["kmeans"]["future_coverage"], 0)`
+de los reclamos futuros. HDBSCAN dejaba la mitad de los reclamos como ruido y
+CURE juntaba casi todo en un grupo. La ronda de sensibilidad confirmó que
+ningún otro espacio da grupos claramente mejores, y que otra semilla de UMAP
+da otra partición de calidad parecida. Por eso el catálogo del anexo A
+describe cada patrón con sus palabras y ejemplos, para que la persona
+entienda qué agrupa, en lugar de tratarlos como etiquetas del negocio.
+
+**En el conteo semanal, la memoria corta gana a la sofisticación.** La
+binomial negativa jerárquica con memoria que decae (C-A) mejora a la de
+cuatro semanas de igual peso y a tres alternativas más complejas: un espacio
+de estados con innovaciones t de Student (C-B), que no superó a v3 con
+claridad, y dos modelos fundacionales de series sin entrenamiento (Chronos-2 y
+TimesFM), que fueron peores que la referencia bayesiana. Las series de 40
+patrones son cortas y ruidosas; un modelo que condiciona en el total de la
+semana y reparte por participación reciente captura lo esencial.
+
+**Las alertas necesitan un presupuesto explícito.** Fijar una falsa alarma al
+mes y derivar los umbrales por simulación hizo comparable a CUSUM con la regla
+de una semana: CUSUM detecta más crecimiento sostenido con el mismo
+presupuesto. La elección se tomó con la regla de 5 puntos escrita antes.
+
+**A escala diaria, el conteo funciona y la alerta no.** D-D predice el conteo
+diario de cada patrón con `{python} pct(DIARIO["winner"]["wis_gain"], 0)`
+menos error que la Poisson de 7 días, y el efecto de día de semana es lo que
+más aporta. Pero una ráfaga de ×2 durante tres días queda dentro del ruido de
+una binomial negativa con dispersión moderada, y los excesos diarios reales
+tienen colas más pesadas que la normal con la que se simularon los umbrales:
+la regla avisa dos o tres veces más de lo presupuestado y detecta menos de la
+mitad. El bloque diario deja un modelo de expectativa diaria útil y una regla
+que habría que rediseñar con umbrales empíricos, no un sustituto de M11.
+
+## Qué no funcionó, y qué se aprendió
+
+- **T4.** La respuesta fuera de plazo no se predice del texto: el modelo no
+  supera a la regla por producto en validación y se reemplazó por una regla de
+  plazo con calendario de feriados. Fue correcto fijar de antemano que la
+  confirmación en validación podía rechazar un componente.
+- **BGE solo texto para T1.** Perdió frente a TF-IDF + producto: el producto
+  es una columna barata que vale más que la riqueza del embedding en esa tarea.
+- **HDBSCAN y CURE.** Son más elegantes que k-means, pero los criterios de
+  aceptación (ruido, cobertura futura, tamaño del grupo mayor) los
+  descartaron. Los criterios estaban escritos antes de correr.
+- **Modelos fundacionales de series.** Chronos-2 y TimesFM sin entrenamiento
+  no ganan a una binomial negativa bien especificada en series cortas con
+  total conocido. Su valor está en series largas sin covariables.
+- **D-B, el espacio de estados diario.** Con 39 contrastes y 639 días, el
+  muestreador satura la profundidad de árbol tanto en la parametrización
+  centrada (R-hat 1.87) como en la no centrada (R-hat
+  `{python} n(DIARIO["state_space_pilot"]["diagnostics"]["rhat_max"], 2)`).
+  Una corrida completa superaría las 8 horas del clúster. Un filtro de Kalman
+  sobre una aproximación gaussiana sería la vía, fuera de esta ronda.
+- **El eco de las ráfagas.** Cuando un patrón recibe más de la mitad de los
+  reclamos de una semana, M9 espera de más para ese patrón y de menos para los
+  otros en las semanas siguientes, y M11 avisa por eso. La memoria corta lo
+  atenúa pero no lo corrige; un recorte de semanas atípicas se probó en ajuste
+  y no ganó.
+- **La señal de mezcla rara en 2023.** Marcó `{python} COMP["signal"]["splits"]["fit"]["flagged"]`
+  de `{python} COMP["signal"]["splits"]["fit"]["weeks"]` semanas de ajuste: una
+  única concentración κ no describe la variación de composición de ese año.
+  La señal sirve como ordenación de semanas, no como prueba.
+- **Kumo Tabular y Relational.** No cupieron en la memoria del clúster;
+  quedan como prueba futura, igual que el ajuste fino de TabPFN.
+
+El valor del pre-registro se vio en cada uno de estos casos: el criterio
+estaba escrito, la decisión fue mecánica y el resultado negativo quedó
+documentado con la misma calidad que el positivo.

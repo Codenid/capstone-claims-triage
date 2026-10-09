@@ -2458,4 +2458,13 @@ Planificado el 2026-10-07. Español, para asesor y jurado, 25–35 páginas.
   patrones, bandas de M9, escenarios de M11, ablaciones.
 - Proyecto Quarto en `reports/informe/` con `_quarto.yml`, capítulos por
   sección, bibliografía y las dos salidas desde la misma fuente.
+- Implementado el 2026-10-08 en la rama `report/pipaber`: `informe.qmd`
+  incluye `secciones/00_resumen` a `09_anexos`; `facts.py` carga todas las
+  fuentes y expone formateadores; figuras en matplotlib dentro del documento;
+  anexos con el catálogo de los 40 patrones, la tabla comparativa completa
+  (120 filas) y las reglas pre-registradas; declaración de uso de IA. Alcance
+  decidido por el usuario: todo el proyecto, un documento, los tres anexos.
+  Cuerpo de unas 19 páginas más 32 de anexos en Typst (A4, 10.5 pt); HTML de
+  180 kB con recursos externos para no superar el límite de 1 MB del guard del
+  curso. Se versiona el PDF; el HTML se renderiza bajo demanda.
 

@@ -1,0 +1,36 @@
+## Resumen {.unnumbered}
+
+Un banco recibe reclamos en texto libre y debe clasificarlos, atenderlos a
+tiempo y notar cuándo algo nuevo está pasando. Este informe documenta un
+prototipo reproducible que apoya a la persona que hace ese triaje con cinco
+salidas: el motivo más probable del reclamo, la probabilidad de que termine con
+alguna solución y con compensación, los reclamos históricos parecidos, el
+patrón semántico al que pertenece y, cada semana y cada día, qué patrones
+reciben más reclamos de lo esperado.
+
+Se usaron `{python} i(DATOS["rows"])` reclamos públicos de la Oficina de
+Protección Financiera del Consumidor de Estados Unidos (CFPB), con evaluación
+hacia adelante en el tiempo, una vista que excluye el texto reutilizado
+(`{python} n(DATOS["shared_pct"], 1)` % de las narrativas comparten texto con
+otra) y reglas de decisión escritas antes de correr cada modelo. Un
+clasificador tabular en contexto, TabPFN-3.5, sugiere el motivo entre 90
+clases con Macro-F1 `{python} n(TABPFN["macro_f1"])` frente a
+`{python} n(T1["rule_calibration"])` de la regla por producto. Modelos
+lineales sobre TF-IDF estiman solución y compensación con precisión promedio
+`{python} n(T2["candidates"][T2["selected"]])` y
+`{python} n(T3["candidates"][T3["selected"]])`. Cuarenta patrones semánticos
+sobre embeddings BGE organizan el flujo. Una binomial negativa jerárquica con
+memoria corta predice el volumen semanal de cada patrón con
+`{python} pct(SEMANAL["c_a_vs_poisson"]["wis_gain"], 0)` menos error que la
+referencia Poisson, y un CUSUM sobre sus excesos detecta crecimientos
+sostenidos de 20 % semanal en
+`{python} pct(ALERTAS["detection"]["growth_20"]["cusum"]["detected"], 0)` de
+los casos simulados con una falsa alarma al mes. Un bloque diario,
+pre-registrado como prueba aparte, dejó un modelo de conteo diario con
+`{python} pct(DIARIO["winner"]["wis_gain"], 0)` menos error que su referencia
+y una regla de alerta diaria que no se adopta porque detecta menos de la mitad
+de las ráfagas simuladas.
+
+Se declaran los límites: etiquetas aproximadas, licencias no comerciales,
+taxonomía sin revisión del negocio y un periodo de validación ya consultado.
+El método se traslada a un banco; las cifras no.

@@ -1,0 +1,97 @@
+# Anexo A. Catálogo de los 40 patrones {.unnumbered #sec-anexo-a}
+
+Cada patrón se describe con su producto principal, su tamaño en ajuste, los
+términos que lo distinguen (TF-IDF del patrón frente al resto) y su serie
+semanal con las bandas de M9 y las alertas de M11. Los ejemplos completos, con
+fragmentos de narrativa, están en `reports/modeling/patterns/catalogo.html`.
+
+```{python}
+#| label: anexo-catalogo
+#| output: asis
+for p in sorted(CATALOGO, key=lambda p: p["cluster_id"]):
+    weekly = p["weekly"]["fit"]
+    alerts = p.get("alert_weeks", {}) or {}
+    alert_text = "; ".join(
+        f"{label}: {', '.join(weeks)}"
+        for key, label in (("fit", "ajuste"), ("calibration", "calibración"), ("validation", "validación"))
+        for weeks in [alerts.get(key, [])]
+        if weeks
+    ) or "sin alertas de M11"
+    print(f'### Patrón {p["cluster_id"]:02d} {{.unnumbered}}\n')
+    print(
+        f'**Producto principal:** {p["main_product"]} ({pct(p["main_product_fraction"], 0)} de sus reclamos). '
+        f'**Reclamos en ajuste:** {i(p["fit_rows"])} ({n(weekly["mean_count"], 1)} por semana, '
+        f'{pct(weekly["mean_share"], 2)} del total). '
+        f'**Texto único:** {pct(p["unique_text_fraction"], 0)}. '
+        f'**Alertas de M11:** {alert_text}.\n'
+    )
+    print(f'**Términos:** {", ".join(p["terms"][:12])}.\n')
+    print(f'![Serie semanal del patrón {p["cluster_id"]:02d}](figuras/{p["image"]}){{width=100%}}\n')
+```
+
+# Anexo B. Tabla completa de candidatos {.unnumbered #sec-anexo-b}
+
+Reproducción de `etapa_4_5_modelado_evaluacion/resultados/comparacion_modelos.csv`:
+cada candidato con su métrica principal, su referencia, la ganancia relativa
+con el intervalo del bootstrap y la decisión. Las filas sin decisión son
+referencias o cifras informativas.
+
+```{python}
+#| label: anexo-tabla
+#| output: asis
+def cell(value, decimals=3):
+    if value in ("", None):
+        return "—"
+    try:
+        return n(float(value), decimals)
+    except ValueError:
+        return str(value)
+
+def gain(value):
+    if value in ("", None):
+        return "—"
+    try:
+        return signed_pct(float(value))
+    except ValueError:
+        return str(value)
+
+rows = []
+for r in TABLA:
+    interval = "—"
+    if r["ic95_inferior"] not in ("", None) and r["ic95_superior"] not in ("", None):
+        interval = f'[{float(r["ic95_inferior"]):+.3f}, {float(r["ic95_superior"]):+.3f}]'
+    rows.append([
+        r["etapa"], r["tarea"], r["modelo"], r["rol"], r["conjunto"].replace("_", " "),
+        r["metrica"], cell(r["valor"]), gain(r["ganancia_relativa"]), interval, r["decision"] or "—",
+    ])
+print(md_table(["Etapa", "Tarea", "Modelo", "Rol", "Conjunto", "Métrica", "Valor", "Ganancia", "IC 95 %", "Decisión"], rows, "llllllrrll"))
+```
+
+# Anexo C. Reglas pre-registradas {.unnumbered #sec-anexo-c}
+
+Resumen de las reglas escritas en `docs/registro/models_plan.md` antes de
+correr cada etapa. El registro completo, con fechas y la evidencia de cada
+decisión, es un documento de bitácora del repositorio.
+
+```{python}
+#| label: anexo-reglas
+#| output: asis
+rules = [
+    ["Protocolo", "Tres ventanas por fecha; se decide en calibración; validación se abre una vez con todo congelado", f'ajuste {DATOS["splits"]["fit"]["start"]} a {DATOS["splits"]["validation"]["end"]}'],
+    ["Protocolo", "La vista sin texto compartido decide; la completa se reporta", f'{n(DATOS["shared_pct"], 1)} % de filas comparten texto'],
+    ["Reemplazo", "Un candidato reemplaza al vigente solo con ≥ 5 % de mejora relativa y el IC 95 % del bootstrap pareado por semanas entero a su favor", f'{i(CLAS["rule"]["bootstrap_draws"])} remuestreos, semilla {CLAS["rule"]["seed"]}'],
+    ["Orden", "Los candidatos compiten del más simple al más complejo", "T1–T4: regla → TF-IDF texto → TF-IDF + producto → BGE texto → BGE + producto"],
+    ["Patrones", "Criterios de aceptación de la partición fijados antes de correr", f'ARI ≥ {SEM["acceptance"]["minimum_stability_ari"]}, cobertura futura ≥ {pct(SEM["acceptance"]["minimum_future_coverage"], 0)}, grupo mayor ≤ {pct(SEM["acceptance"]["maximum_largest_cluster_fraction"], 0)}, ruido ≤ {pct(SEM["acceptance"]["maximum_noise_fraction"], 0)}'],
+    ["Novedad", "Reclamo novedoso si su distancia al centro supera el percentil fijado de las distancias de ajuste", f'percentil {int(SEM["novelty_quantile"] * 100)}'],
+    ["Bayesianos", "Prior predictive, piloto y full; R-hat ≤ 1.01, sin divergencias; cobertura 80 % en 70–90 % y 95 % en 88–99 %", "aplica a M9, M10 y al bloque diario"],
+    ["M9", "WIS en calibración contra el mejor baseline Poisson; la misma regla del 5 % con bootstrap", f'referencia B1-R4, WIS {n(SEMANAL["reference_wis"], 2)}'],
+    ["M9 bloque C", "δ y el recorte de semanas atípicas se eligen solo en ajuste", "ganó δ = 0.5 sin recorte"],
+    ["M10", "Log score conjunto contra la multinomial de cuatro semanas; p-valor de mezcla rara con umbral fijado", f'aviso si p < {COMP["signal"]["alert_p_value"]}'],
+    ["M11", "Presupuesto de falsas alarmas fijado; umbrales por simulación; CUSUM se adopta si detecta ≥ 5 puntos más que la regla semanal en los dos crecimientos", f'{ALERTAS["settings"]["false_alarms_per_month"]} al mes; h = {n(ALERTAS["thresholds"]["cusum"], 2)}, z* = {n(ALERTAS["thresholds"]["weekly"], 2)}'],
+    ["Diario", "Prueba aparte; el bloque semanal sigue vigente; si varios candidatos aceptan la regla, gana el de menor WIS", f'δ = {DIARIO["share_selection"]["chosen"]["discount"]} elegido en ajuste; ganador {DIARIO["winner_label"]}'],
+    ["Diario", "D-B queda fuera del full si el piloto no converge o el full proyectado supera 8 h (fijado antes de ver el piloto)", f'R-hat del piloto {n(DIARIO["state_space_pilot"]["diagnostics"]["rhat_max"], 2)}'],
+    ["D-11", "Se adopta si detecta ≥ 50 % de las ráfagas ×2/3 días y ×3/1 día con mediana de retraso ≤ 2 días", f'{DIARIO["change"]["settings"]["false_alarms_per_month"]} falsas alarmas al mes; no adoptada'],
+    ["Validación", "Todo lo decidido después del 2026-10-01 reporta 2025-H1 como ya consultado; 2026 queda sellado", "sin excepciones"],
+]
+print(md_table(["Ámbito", "Regla", "Parámetros"], rules))
+```

@@ -1,0 +1,7 @@
+/.quarto/
+/informe_files/
+/figuras/
+/informe.html
+/informe.typ
+
+**/*.quarto_ipynb

@@ -1,0 +1,19 @@
+# Declaración de uso de inteligencia artificial {.unnumbered}
+
+Este proyecto usó un asistente de programación basado en modelos de lenguaje
+(Claude Code, Anthropic) como herramienta de trabajo, de acuerdo con la
+política de uso aceptable de herramientas de IA de la institución del autor
+principal. El asistente ayudó a escribir código, pruebas, scripts de clúster
+y borradores de documentación, incluido este informe, siempre bajo la
+dirección del equipo y a partir de un registro de pre-registro escrito antes
+de cada corrida.
+
+Las decisiones de modelado, las reglas de aceptación y la lectura de los
+resultados fueron revisadas por el equipo; las cifras de este documento se
+leen de los archivos de resultados del repositorio al renderizarlo, con el
+commit y el hash de datos de cada corrida registrados en MLflow. Los datos
+son públicos y no contienen información personal identificable más allá de lo
+que la CFPB publica con autorización del consumidor. La interpretación de las
+licencias de los modelos de terceros (TabPFN-3.5, TimesFM 3.0) debe ser
+validada por una persona experta antes de cualquier uso fuera de este
+contexto académico.

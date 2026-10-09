@@ -1,0 +1,431 @@
+# Resultados {#sec-resultados}
+
+## Clasificadores
+
+```{python}
+#| label: tbl-t1
+#| tbl-cap: "T1, motivo del reclamo: Macro-F1 en calibración sin texto compartido, en el orden en que compitieron. Cada fila reemplaza a la anterior solo si cumple la regla del 5 % con el bootstrap a favor."
+ladder = [("Regla por producto", T1["rule_calibration"], "referencia")]
+for step in T1["steps"]:
+    ladder.append(
+        (
+            facts.T1_LABELS[step["challenger"]],
+            T1["candidates"][step["challenger"]],
+            f'{signed_pct(step["relative_gain"])} frente a {facts.T1_LABELS[step["current"]]}; IC {ic(step["difference"])}; '
+            + ("reemplaza" if step["replaces"] else "no reemplaza"),
+        )
+    )
+ladder.append(
+    (
+        facts.T1_LABELS["tabpfn"],
+        TABPFN["macro_f1"],
+        f'{signed_pct(TABPFN["gain"])} frente a BGE + producto; IC {ic(TABPFN["difference"])}; '
+        + ("reemplaza" if TABPFN["wins"] else "no reemplaza"),
+    )
+)
+Markdown(md_table(["Candidato", "Macro-F1", "Decisión"], [[a, n(b), c] for a, b, c in ladder], "lrl"))
+```
+
+```{python}
+#| label: fig-t1
+#| fig-cap: "Macro-F1 de T1 en calibración por representación. El producto y los embeddings aportan; TabPFN-3.5 sobre PCA 100 más producto es el vigente."
+labels = [row[0] for row in ladder]
+values = [row[1] for row in ladder]
+fig, ax = plt.subplots(figsize=(6.3, 2.8))
+colors = [AZUL if lab.startswith("TabPFN") else GRIS for lab in labels]
+bars = ax.barh(labels[::-1], values[::-1], color=colors[::-1], height=0.6)
+for bar, value in zip(bars, values[::-1]):
+    ax.text(value + 0.004, bar.get_y() + bar.get_height() / 2, f"{value:.3f}", va="center", fontsize=8)
+ax.set_xlim(0, max(values) * 1.2)
+ax.set_xlabel("Macro-F1 (calibración, sin texto compartido)")
+ax.grid(axis="y", visible=False)
+plt.show()
+```
+
+TabPFN-3.5 acierta el motivo entre los tres primeros en
+`{python} pct(TABPFN["top_three"])` de los reclamos de calibración. En
+2025-H1 (ya consultado) mantiene Macro-F1 `{python} n(TABPFN["validation_f1"])`
+frente a `{python} n(TABPFN["validation_reference_f1"])` de BGE + producto y
+`{python} n(T1["final_rule"])` de la regla por producto. La ablación de
+entrada no cambió la decisión: con 256 componentes de PCA el Macro-F1 fue
+`{python} n(CLAS["ablation"]["tabpfn_pca256"]["macro_f1"])`
+(`{python} signed_pct(CLAS["ablation"]["tabpfn_pca256"]["gain"])`, IC
+`{python} ic(CLAS["ablation"]["tabpfn_pca256"]["difference"])`, incluye el
+cero) y con los 1,024 valores sin PCA cayó a
+`{python} n(CLAS["ablation"]["tabpfn_bge1024"]["macro_f1"])`
+(`{python} signed_pct(CLAS["ablation"]["tabpfn_bge1024"]["gain"])`), porque
+cada estimador de TabPFN ve a lo más 768 columnas.
+
+```{python}
+#| label: tbl-t2t3
+#| tbl-cap: "T2 (alguna solución registrada) y T3 (compensación monetaria): precisión promedio en calibración sin texto compartido y confirmación en 2025-H1. T4 no se confirmó."
+def task_row(name, task):
+    selected = task["selected"]
+    return [
+        name,
+        facts.T1_LABELS.get(selected, selected),
+        n(task["rule_calibration"]),
+        n(task["candidates"][selected]),
+        n(task["final_rule"]),
+        n(task["final_model"]),
+        "confirmado" if CLAS["confirmed"][name] else "no confirmado",
+    ]
+rows = [task_row("T2", T2), task_row("T3", T3), task_row("T4", T4)]
+Markdown(md_table(["Tarea", "Modelo elegido", "Regla (cal.)", "Modelo (cal.)", "Regla (2025-H1)", "Modelo (2025-H1)", "Validación"], rows, "llrrrrl"))
+```
+
+Para T2 y T3 el producto no sumó el 5 % exigido sobre el TF-IDF del texto
+(`{python} n(T2["candidates"]["tfidf_product"])` frente a
+`{python} n(T2["candidates"]["tfidf_text"])` en T2), así que quedó el modelo
+más simple. Los umbrales de decisión se fijaron en calibración maximizando F1:
+`{python} n(T2["thresholds"]["tfidf_text"])` para T2 y
+`{python} n(T3["thresholds"]["tfidf_text"])` para T3. T4 no supera a la regla
+por producto en validación (`{python} n(T4["final_model"])` frente a
+`{python} n(T4["final_rule"])`): sale del triaje y lo reemplaza una regla de
+plazo con feriados.
+
+## Espacio semántico y patrones
+
+El vecino más parecido por FAISS tiene similitud coseno mediana
+`{python} n(SEM["faiss"]["top1_similarity_median"])` en calibración; comparte
+producto en `{python} pct(SEM["faiss"]["top1_same_product_rate"])` de los
+casos y motivo en `{python} pct(SEM["faiss"]["top1_same_t1_rate"])`. Es la
+evidencia de que el espacio captura significado y no solo palabras.
+
+```{python}
+#| label: tbl-clustering
+#| tbl-cap: "Las tres familias de agrupamiento sobre UMAP 15 (mejor configuración de cada una, muestra de 20,000 reclamos de ajuste). Solo k-means pasa todos los criterios."
+def cluster_row(label, c):
+    return [
+        label,
+        i(c["clusters"]),
+        pct(c["noise_fraction"], 0),
+        pct(c["largest_cluster_fraction"], 0),
+        n(c["silhouette_mean"], 3),
+        n(c["stability_ari"], 2),
+        pct(c["future_coverage"], 0),
+        "aceptado" if c["accepted"] else "rechazado: " + ", ".join(c["final_failures"]),
+    ]
+rows = [
+    cluster_row("k-means k = 40", SEM["kmeans"]),
+    cluster_row("HDBSCAN", SEM["hdbscan"]),
+    cluster_row("CURE", SEM["cure"]),
+]
+Markdown(md_table(["Algoritmo", "Grupos", "Ruido", "Grupo mayor", "Silhouette", "Estabilidad ARI", "Cobertura futura", "Resultado"], rows, "lrrrrrrl"))
+```
+
+Los 40 patrones de k-means cubren `{python} pct(SEM["kmeans"]["future_coverage"])`
+de los reclamos futuros con la regla de novedad; en ajuste
+`{python} pct(SEM["novelty"]["fit"]["novel_fraction"], 2)` de los reclamos
+resultan novedosos, en calibración
+`{python} pct(SEM["novelty"]["calibration"]["novel_fraction"], 2)` y en
+validación `{python} pct(SEM["novelty"]["validation"]["novel_fraction"], 2)`.
+Los patrones tienen entre `{python} i(SEM["fit_clusters"]["minimum_rows"])` y
+`{python} i(SEM["fit_clusters"]["maximum_rows"])` reclamos de ajuste (mediana
+`{python} i(SEM["fit_clusters"]["median_rows"])`); el mayor concentra
+`{python} pct(SEM["fit_clusters"]["largest_cluster_fraction"])`. La ronda de
+sensibilidad probó `{python} SEM["sensitivity_candidates"]` combinaciones de
+espacio y algoritmo: `{python} SEM["sensitivity_accepted"]` pasaron los
+criterios y ninguna ganó a la partición vigente por la regla del 5 % en la
+coincidencia de vecinos. Cambiar solo la semilla de UMAP da particiones con
+ARI `{python} n(SEM["seed_ari"]["umap15_s43"], 2)` y
+`{python} n(SEM["seed_ari"]["umap15_s44"], 2)` respecto de la vigente: los
+patrones son una partición útil y estable en su calidad, no categorías
+naturales. El anexo A describe cada uno.
+
+```{python}
+#| label: fig-patrones
+#| fig-cap: "Tres patrones y su serie semanal (ajuste, calibración y validación; bandas de M9 y alertas de M11 donde las hubo). El catálogo completo está en el anexo A."
+#| output: asis
+chosen = sorted(CATALOGO, key=lambda p: p["fit_rows"], reverse=True)[:3]
+for p in chosen:
+    print(f'![Patrón {p["cluster_id"]}: {", ".join(p["terms"][:4])}](figuras/{p["image"]}){{width=100%}}\n')
+```
+
+## Conteo semanal por patrón (M9)
+
+```{python}
+#| label: tbl-m9
+#| tbl-cap: "Candidatos de M9 por WIS en las 12 semanas de calibración (menor es mejor) y cobertura de los intervalos de 80 % y 95 %. Las referencias no compiten."
+rows = []
+for c in SEMANAL["candidates"]:
+    cov = " / ".join("—" if c[k] is None else pct(c[k], 0) for k in ("coverage_80", "coverage_95"))
+    if c["wis_gain"] is None:
+        decision = "referencia"
+    else:
+        decision = f'{signed_pct(-c["wis_gain"])} frente a {c["reference"]}; {c["status"]}'
+    rows.append([c["label"], n(c["wis"], 2), cov, decision])
+Markdown(md_table(["Candidato", "WIS", "Cobertura 80 / 95", "Resultado"], rows, "lrll"))
+```
+
+```{python}
+#| label: fig-m9
+#| fig-cap: "WIS de calibración de los candidatos semanales. C-A, la binomial negativa jerárquica con memoria que decae, es la vigente."
+labels = [c["label"] for c in SEMANAL["candidates"]]
+values = [c["wis"] for c in SEMANAL["candidates"]]
+colors = [AZUL if c["model_id"] == "nb_discounted_hierarchical_v1" else (NARANJA if c["status"] == "referencia" else GRIS) for c in SEMANAL["candidates"]]
+fig, ax = plt.subplots(figsize=(6.3, 3.4))
+bars = ax.barh(labels[::-1], values[::-1], color=colors[::-1], height=0.6)
+for bar, value in zip(bars, values[::-1]):
+    ax.text(value + 1, bar.get_y() + bar.get_height() / 2, f"{value:.1f}", va="center", fontsize=8)
+ax.set_xlim(0, max(values) * 1.15)
+ax.set_xlabel("WIS en calibración (menor es mejor)")
+ax.grid(axis="y", visible=False)
+plt.show()
+```
+
+C-A reduce el WIS de la referencia Poisson de cuatro semanas de
+`{python} n(SEMANAL["reference_wis"], 2)` a `{python} n(SEMANAL["c_a"]["wis"], 2)`
+(`{python} pct(SEMANAL["c_a_vs_poisson"]["wis_gain"], 1)` menos) y gana a la
+versión con cuatro semanas de igual peso, NB-R4-H v3
+(`{python} n(SEMANAL["v3"]["wis"], 2)`), por
+`{python} pct(SEMANAL["c_a_challenge"]["comparison"]["wis_gain"], 1)` con IC
+`{python} ic(SEMANAL["c_a_challenge"]["comparison"]["difference"]["wis"], 2)`.
+Su memoria δ = `{python} SEMANAL["share_selection"]["chosen_discount"]`
+se eligió en ajuste; en la práctica mira las dos últimas semanas. Las
+coberturas son `{python} pct(SEMANAL["c_a"]["coverage_80"], 0)` y
+`{python} pct(SEMANAL["c_a"]["coverage_95"], 0)`. En 2025-H1 (ya consultado)
+C-A da WIS `{python} n(SEMANAL["c_a_validation"]["comparison"]["metrics"]["model"]["wis"], 1)`
+frente a `{python} n(SEMANAL["c_a_validation"]["comparison"]["metrics"]["m9"]["wis"], 1)`
+de v3; la validación es más difícil que la calibración porque contiene la
+ráfaga del 13 de enero de 2025, en la que un patrón recibió más de la mitad de
+los reclamos de la semana.
+
+## Composición semanal (M10)
+
+La Dirichlet-multinomial con participaciones de cuatro semanas (DM-R4) mejora
+el log score de calibración de la multinomial de cuatro semanas de
+`{python} n(COMP["dm_r4"]["log_score"]["b2_rolling_4"], 0)` a
+`{python} n(COMP["dm_r4"]["log_score"]["model"], 0)` (diferencia
+`{python} n(COMP["dm_r4"]["difference"]["estimate"], 0)`, IC
+`{python} ic(COMP["dm_r4"]["difference"], 0)`), con concentración
+κ = `{python} i(COMP["kappa"])`: mucha más variación entre semanas que una
+multinomial. La versión con participaciones fijas (DM-V1) se rechazó por una
+comprobación predictiva. En 2025-H1 el log score fue
+`{python} n(COMP["final"]["log_score"]["model"], 0)` frente a
+`{python} n(COMP["final"]["log_score"]["b2_rolling_4"], 0)`.
+
+La señal de mezcla rara marcó `{python} COMP["signal"]["splits"]["calibration"]["flagged"]`
+de `{python} COMP["signal"]["splits"]["calibration"]["weeks"]` semanas de
+calibración, `{python} COMP["signal"]["splits"]["validation"]["flagged"]` de
+`{python} COMP["signal"]["splits"]["validation"]["weeks"]` de validación (la
+ráfaga de enero y su eco) y `{python} COMP["signal"]["splits"]["fit"]["flagged"]`
+de `{python} COMP["signal"]["splits"]["fit"]["weeks"]` de ajuste, cuando una
+señal calibrada marcaría `{python} n(COMP["signal"]["splits"]["fit"]["expected_flagged_if_calibrated"], 1)`.
+Una sola κ no cubre los cambios de composición de 2023; es un límite
+declarado y el umbral no se recalibró.
+
+```{python}
+#| label: fig-senal
+#| fig-cap: "p-valor semanal de mezcla rara (escala logarítmica). La línea marca el umbral 0.01 fijado antes de mirar; 2025-H1 ya estaba consultada."
+import datetime as dt
+weeks = sorted(COMP["signal"]["weeks"].items())
+dates = [dt.date.fromisoformat(w) for w, _ in weeks]
+pvals = [max(v["p_value"], 1e-4) for _, v in weeks]
+splits = [v["split"] for _, v in weeks]
+fig, ax = plt.subplots(figsize=(6.3, 2.6))
+color = {"fit": GRIS, "calibration": AZUL, "validation": NARANJA}
+for split in ("fit", "calibration", "validation"):
+    xs = [d for d, s in zip(dates, splits) if s == split]
+    ys = [p for p, s in zip(pvals, splits) if s == split]
+    ax.plot(xs, ys, marker="o", markersize=2.5, linewidth=0.8, color=color[split], label={"fit": "ajuste", "calibration": "calibración", "validation": "validación"}[split])
+ax.axhline(COMP["signal"]["alert_p_value"], color="black", linewidth=0.8, linestyle="--")
+ax.set_yscale("log")
+ax.set_ylabel("p-valor")
+ax.legend(frameon=False, ncol=3, fontsize=8)
+plt.show()
+```
+
+## Alertas de aumento persistente (M11)
+
+```{python}
+#| label: tbl-m11
+#| tbl-cap: "Detección de cada regla en los escenarios inyectados sobre la calibración (fracción detectada en 8 semanas y mediana del retraso en semanas) con el presupuesto de una falsa alarma al mes."
+scenario_labels = {
+    "growth_10": "Crecimiento 10 % semanal",
+    "growth_20": "Crecimiento 20 % semanal",
+    "step_50": "Escalón +50 %",
+    "step_100": "Escalón +100 %",
+    "none": "Sin aumento (falsas alarmas)",
+}
+rows = []
+for key, label in scenario_labels.items():
+    d = ALERTAS["detection"][key]
+    rows.append([label, f'{pct(d["cusum"]["detected"])} ({n(d["cusum"]["median_delay"], 0)} sem.)', f'{pct(d["weekly"]["detected"])} ({n(d["weekly"]["median_delay"], 0)} sem.)'])
+Markdown(md_table(["Escenario", "CUSUM", "Regla de una semana"], rows, "lrr"))
+```
+
+```{python}
+#| label: fig-m11
+#| fig-cap: "Fracción detectada por escenario y regla. CUSUM gana en los dos crecimientos sostenidos, que son los que deciden."
+import numpy as np
+keys = list(scenario_labels)
+x = np.arange(len(keys))
+cusum = [ALERTAS["detection"][k]["cusum"]["detected"] for k in keys]
+weekly = [ALERTAS["detection"][k]["weekly"]["detected"] for k in keys]
+fig, ax = plt.subplots(figsize=(6.3, 2.8))
+ax.bar(x - 0.18, cusum, width=0.34, color=AZUL, label="CUSUM")
+ax.bar(x + 0.18, weekly, width=0.34, color=GRIS, label="regla de una semana")
+ax.set_xticks(x, ["crec. 10 %", "crec. 20 %", "escalón 50 %", "escalón 100 %", "sin aumento"])
+ax.set_ylabel("fracción detectada")
+ax.set_ylim(0, 1)
+ax.legend(frameon=False, fontsize=8)
+ax.grid(axis="x", visible=False)
+plt.show()
+```
+
+Con umbrales h = `{python} n(ALERTAS["thresholds"]["cusum"], 2)` y
+z\* = `{python} n(ALERTAS["thresholds"]["weekly"], 2)`, CUSUM detecta
+`{python} pct(ALERTAS["decision"]["gains"]["growth_10"], 1)` y
+`{python} pct(ALERTAS["decision"]["gains"]["growth_20"], 1)` más que la regla
+semanal en los crecimientos de 10 % y 20 %, por encima del
+`{python} pct(ALERTAS["decision"]["minimum"], 0)` exigido: **CUSUM es la regla
+vigente**. En los datos reales avisa
+`{python} n(ALERTAS["real"]["fit"]["cusum_per_month"], 1)` veces al mes en
+ajuste y `{python} n(ALERTAS["real"]["calibration"]["cusum_per_month"], 1)` en
+calibración. En 2025-H1 (ya consultado) hubo
+`{python} ALERTAS["validation_real"]["cusum"]` alertas en
+`{python} ALERTAS["validation_real"]["weeks"]` semanas, buena parte de ellas
+el eco de la ráfaga de enero: M9 esperó de más para ese patrón y de menos para
+los otros en las semanas siguientes. Sobre la línea base anterior (v3) CUSUM
+detectaba `{python} pct(ALERTAS["previous_detection"]["growth_10"]["cusum"]["detected"], 1)`
+y `{python} pct(ALERTAS["previous_detection"]["growth_20"]["cusum"]["detected"], 1)`
+con más alarmas reales
+(`{python} n(ALERTAS["previous_real"]["calibration"]["cusum_per_month"], 1)` al
+mes en calibración): la memoria corta de C-A da menos alertas y menos falsas,
+pero también menos detección, porque alcanza antes a un patrón que crece.
+
+## Bloque diario
+
+```{python}
+#| label: tbl-diario
+#| tbl-cap: "Candidatos de conteo diario: WIS en los 92 días de calibración (menor es mejor), ganancia frente a la Poisson de 7 días y cobertura. Todos aceptan la regla; gana el de menor WIS."
+rows = []
+for c in DIARIO["counts"]:
+    rows.append([c["label"], n(c["wis"]), signed_pct(-c["wis_gain"]), f'{pct(c["coverage_80"], 0)} / {pct(c["coverage_95"], 0)}', c["status"] + (" · **ganador**" if c["model_id"] == DIARIO["winner"]["model_id"] else "")])
+pilot = DIARIO["state_space_pilot"]
+rows.append([facts.DAILY_LABELS["nb_daily_state_space_v1"], n(pilot["comparison"]["metrics"]["model"]["wis"]) + " (piloto, 7 días)", "—", "—", f'no evaluado en full: R-hat {n(pilot["diagnostics"]["rhat_max"], 2)}, árbol saturado'])
+Markdown(md_table(["Candidato", "WIS", "Ganancia", "Cobertura 80 / 95", "Resultado"], rows, "lrrll"))
+```
+
+```{python}
+#| label: fig-diario
+#| fig-cap: "WIS diario de calibración de los candidatos de conteo y de la referencia Poisson de 7 días."
+labels = [c["label"] for c in DIARIO["counts"]] + ["Referencia: Poisson de 7 días"]
+values = [c["wis"] for c in DIARIO["counts"]] + [DIARIO["winner"]["baseline_wis"]]
+colors = [AZUL if c["model_id"] == DIARIO["winner"]["model_id"] else GRIS for c in DIARIO["counts"]] + [NARANJA]
+fig, ax = plt.subplots(figsize=(6.3, 2.4))
+bars = ax.barh(labels[::-1], values[::-1], color=colors[::-1], height=0.6)
+for bar, value in zip(bars, values[::-1]):
+    ax.text(value + 0.1, bar.get_y() + bar.get_height() / 2, f"{value:.2f}", va="center", fontsize=8)
+ax.set_xlim(0, max(values) * 1.15)
+ax.set_xlabel("WIS diario en calibración (menor es mejor)")
+ax.grid(axis="y", visible=False)
+plt.show()
+```
+
+El efecto de día de semana es la pieza que más aporta
+(`{python} n(DIARIO["counts"][-1]["wis"] - DIARIO["winner"]["wis"], 2)` de WIS
+entre D-D y la variante sin ese efecto). El ganador por la regla
+pre-registrada es **`{python} DIARIO["winner_label"]`**, pero contra D-A la
+diferencia es `{python} n(DIARIO["pairwise"]["nb_daily_hierarchical_v1"]["difference"]["wis"]["estimate"], 3)`
+con IC `{python} ic(DIARIO["pairwise"]["nb_daily_hierarchical_v1"]["difference"]["wis"])`:
+la inflación de ceros no cambia la calibración y D-A queda como alternativa más
+simple. En 2025-H1 (reporte único, ya consultado) D-D da WIS
+`{python} n(DIARIO["validation"]["metrics"]["model"]["wis"], 2)` frente a
+`{python} n(DIARIO["validation"]["metrics"]["b1_rolling_7"]["wis"], 2)` de la
+Poisson de 7 días, con cobertura
+`{python} pct(DIARIO["validation"]["metrics"]["model"]["coverage_80"], 0)` y
+`{python} pct(DIARIO["validation"]["metrics"]["model"]["coverage_95"], 0)`. El
+espacio de estados diario (D-B) quedó fuera por una regla fijada antes de
+verlo: su muestreador satura la profundidad de árbol en las dos
+parametrizaciones probadas y una corrida completa no cabe en las 8 horas por
+trabajo del clúster.
+
+La Dirichlet-multinomial diaria (D-E, κ =
+`{python} i(DIARIO["composition"]["posterior"]["kappa_p50"])`, IC
+[`{python} i(DIARIO["composition"]["posterior"]["kappa_p025"])`,
+`{python} i(DIARIO["composition"]["posterior"]["kappa_p975"])`]) mejora el
+log score de calibración de la multinomial de 7 días en
+`{python} n(DIARIO["composition"]["comparison"]["difference"]["estimate"], 1)`
+(IC `{python} ic(DIARIO["composition"]["comparison"]["difference"], 1)`) y da
+la señal diaria de mezcla rara: marca
+`{python} DIARIO["composition"]["signal"]["calibration"]["flagged"]` de
+`{python} DIARIO["composition"]["signal"]["calibration"]["days"]` días de
+calibración.
+
+```{python}
+#| label: tbl-d11
+#| tbl-cap: "Regla diaria D-11 sobre D-D: fracción de ráfagas inyectadas detectadas en 14 días (mediana del retraso en días) con 4 falsas alarmas al mes; la última columna es el CUSUM semanal de M11 sobre las mismas ráfagas agregadas a semanas."
+d11_labels = {
+    "burst_x2_3d": "Ráfaga ×2 durante 3 días",
+    "burst_x3_1d": "Ráfaga ×3 durante 1 día",
+    "rise_x1_5_7d": "Subida ×1.5 durante 7 días",
+    "none": "Sin aumento (falsas alarmas)",
+}
+rows = []
+for key, label in d11_labels.items():
+    d = DIARIO["change"]["detection"][key]
+    def cell(rule):
+        delay = d[rule]["median_delay"]
+        return pct(d[rule]["detected"]) + ("" if delay is None else f' ({n(delay, 0)} d)')
+    rows.append([label, cell("cusum"), cell("daily"), pct(d["weekly_cusum"]["detected"])])
+Markdown(md_table(["Escenario", "CUSUM diario", "Regla de un día", "CUSUM semanal"], rows, "lrrr"))
+```
+
+```{python}
+#| label: fig-d11
+#| fig-cap: "Fracción de ráfagas detectadas por cada regla diaria y por el CUSUM semanal. Ninguna regla diaria alcanza el 50 % exigido."
+keys = list(d11_labels)
+x = np.arange(len(keys))
+fig, ax = plt.subplots(figsize=(6.3, 2.8))
+for offset, rule, color, label in ((-0.26, "cusum", AZUL, "CUSUM diario"), (0.0, "daily", VERDE, "regla de un día"), (0.26, "weekly_cusum", GRIS, "CUSUM semanal")):
+    ax.bar(x + offset, [DIARIO["change"]["detection"][k][rule]["detected"] for k in keys], width=0.25, color=color, label=label)
+ax.axhline(DIARIO["change"]["settings"]["minimum_detection"], color="black", linewidth=0.8, linestyle="--")
+ax.set_xticks(x, ["×2, 3 días", "×3, 1 día", "×1.5, 7 días", "sin aumento"])
+ax.set_ylabel("fracción detectada")
+ax.set_ylim(0, 1)
+ax.legend(frameon=False, fontsize=8, ncol=3)
+ax.grid(axis="x", visible=False)
+plt.show()
+```
+
+Con umbrales h = `{python} n(DIARIO["change"]["thresholds"]["cusum"], 2)` y
+z\* = `{python} n(DIARIO["change"]["thresholds"]["daily"], 2)`, la mejor regla
+diaria detecta `{python} pct(DIARIO["change"]["detection"]["burst_x3_1d"]["daily"]["detected"])`
+de las ráfagas ×3 de un día y
+`{python} pct(DIARIO["change"]["detection"]["burst_x2_3d"]["daily"]["detected"])`
+de las ×2 de tres días, por debajo del
+`{python} pct(DIARIO["change"]["settings"]["minimum_detection"], 0)` fijado:
+**D-11 no se adopta**. Además, con esos umbrales las alarmas reales son
+`{python} n(DIARIO["change"]["real_alarms"]["calibration"]["cusum_per_month"], 1)`
+(CUSUM) y `{python} n(DIARIO["change"]["real_alarms"]["calibration"]["daily_per_month"], 1)`
+(un día) al mes en calibración, frente a las
+`{python} DIARIO["change"]["settings"]["false_alarms_per_month"]` presupuestadas:
+los excesos diarios tienen colas más pesadas que la normal supuesta por la
+simulación. M11 sigue siendo la única regla de alerta.
+
+## Tabla comparativa
+
+La tabla comparativa del curso reúne `{python} len(TABLA)` filas: cada
+candidato, su métrica, su referencia, su ganancia relativa con intervalo y la
+decisión. El anexo B la reproduce completa; la @tbl-vigentes resume lo
+vigente.
+
+```{python}
+#| label: tbl-vigentes
+#| tbl-cap: "Componentes vigentes y su cifra de calibración y de validación (2025-H1 ya consultada salvo T1–T3, M9 y M10, confirmados antes de abrirla por segunda vez)."
+rows = [
+    ["T1, motivo (90 clases)", "TabPFN-3.5, PCA 100 + producto", "Macro-F1 " + n(TABPFN["macro_f1"]), "Macro-F1 " + n(TABPFN["validation_f1"]) + " (ya consultado)"],
+    ["T2, alguna solución", "TF-IDF solo texto, logística calibrada", "AP " + n(T2["candidates"][T2["selected"]]), "AP " + n(T2["final_model"])],
+    ["T3, compensación", "TF-IDF solo texto", "AP " + n(T3["candidates"][T3["selected"]]), "AP " + n(T3["final_model"])],
+    ["Reclamos parecidos", "FAISS exacto sobre BGE", "similitud mediana " + n(SEM["faiss"]["top1_similarity_median"]), "—"],
+    ["Patrones", "PCA 256 → UMAP 15 → k-means 40", pct(SEM["novelty"]["fit"]["novel_fraction"], 2) + " novedosos", pct(SEM["novelty"]["validation"]["novel_fraction"], 2)],
+    ["M9, conteo semanal", "C-A, NB jerárquica con memoria que decae", "WIS " + n(SEMANAL["c_a"]["wis"], 2), "WIS " + n(SEMANAL["c_a_validation"]["comparison"]["metrics"]["model"]["wis"], 1) + " (ya consultado)"],
+    ["M10, composición semanal", "DM-R4, κ = " + i(COMP["kappa"]), "log score " + n(COMP["dm_r4"]["log_score"]["model"], 0), n(COMP["final"]["log_score"]["model"], 0)],
+    ["M11, alertas", "CUSUM sobre los excesos de C-A", n(ALERTAS["real"]["calibration"]["cusum_per_month"], 1) + " alertas al mes", str(ALERTAS["validation_real"]["cusum"]) + " en 25 semanas (ya consultado)"],
+    ["Conteo diario", DIARIO["winner_label"], "WIS " + n(DIARIO["winner"]["wis"]), "WIS " + n(DIARIO["validation"]["metrics"]["model"]["wis"], 2) + " (ya consultado)"],
+    ["Alerta diaria D-11", "no adoptada", "detección máxima " + pct(DIARIO["change"]["detection"]["burst_x3_1d"]["daily"]["detected"], 0), "no consultado"],
+]
+Markdown(md_table(["Componente", "Vigente", "Calibración", "Validación"], rows))
+```

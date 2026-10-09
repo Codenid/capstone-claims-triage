@@ -1,0 +1,57 @@
+# Expectativas y limitaciones {#sec-limitaciones}
+
+## Qué se puede esperar del prototipo
+
+- Una sugerencia de motivo acertada entre las tres primeras en
+  `{python} pct(TABPFN["top_three"], 0)` de los reclamos, que reduce lectura y
+  derivaciones erradas pero no elimina la revisión.
+- Probabilidades de solución y compensación útiles para priorizar, con
+  precisión promedio `{python} n(T2["final_model"], 2)` y
+  `{python} n(T3["final_model"], 2)` en el periodo posterior al ajuste.
+- Una expectativa semanal por patrón con intervalos que cubren
+  `{python} pct(SEMANAL["c_a"]["coverage_95"], 0)` de los conteos en
+  calibración, y alrededor de `{python} n(ALERTAS["real"]["calibration"]["cusum_per_month"], 1)`
+  alertas al mes para revisión humana en un periodo tranquilo; muchas más en
+  un periodo con ráfagas, como 2025-H1.
+- Una expectativa diaria por patrón con intervalos, para el día a día, sin
+  alerta automática asociada.
+
+## Límites declarados
+
+- **Etiquetas aproximadas.** El motivo y las respuestas de la CFPB no son las
+  categorías internas de un banco peruano. T2 y T3 miden lo que la empresa
+  respondió, no lo que el cliente merecía. Ninguna salida detecta fraude.
+- **Taxonomía sin revisión del negocio.** El mapa canónico de productos y
+  motivos es una propuesta congelada
+  (`{python} DATOS["versions"]["taxonomy_status"]`); un banco tendría que
+  revisarlo antes de usar T1.
+- **Validación consultada.** Todo lo decidido después del 2026-10-01 se eligió
+  con ajuste y calibración, pero su cifra de 2025-H1 se conoció al confirmar
+  los componentes iniciales. Esas cifras son informativas, no evidencia
+  limpia. 2026 queda sellado como prueba final cuando su cobertura esté
+  completa.
+- **Licencias.** TabPFN-3.5 y TimesFM 3.0 tienen licencias de uso no
+  comercial; sirven para esta evaluación académica, pero usar TabPFN con un
+  banco requiere una licencia de Prior Labs. Un experto debe validar esa
+  lectura antes de proponerlo.
+- **Deriva.** Los modelos se ajustaron con 2023–2024. Cuando la composición
+  de reclamos cambie, habrá que reajustar; el pipeline planificado prevé
+  ajustar una vez y solo predecir mientras la deriva no obligue a repetirlo.
+- **Eco de ráfagas.** Una semana muy concentrada en un patrón contamina las
+  expectativas de las semanas siguientes y produce alertas que son eco, no
+  novedad. La persona que revisa debe saberlo.
+- **Escala diaria.** En estos datos históricos los días están completos; en
+  producción los últimos días de la CFPB llegan incompletos, así que lo diario
+  solo vale para días maduros o para datos propios sin rezago. No hay
+  calendario de feriados en el modelo: un feriado se ve como un día de bajo
+  volumen. La alerta diaria no se adoptó.
+- **Patrones.** Son una partición útil, no categorías: otro espacio u otra
+  semilla da grupos distintos de calidad parecida. El catálogo mitiga eso al
+  describir cada patrón con palabras y ejemplos.
+- **Cómputo.** Las corridas bayesianas completas necesitan un clúster
+  (Khipu, cola estándar, hasta 8 horas por trabajo); un espacio de estados
+  diario no cupo. El pipeline de inferencia, en cambio, solo predice y corre
+  en un equipo común.
+- **Transferencia.** El método se traslada a un banco; las cifras no. Con
+  datos propios habría que repetir la preparación, el protocolo y las rondas
+  de candidatos con los mismos criterios.

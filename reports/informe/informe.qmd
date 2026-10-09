@@ -1,0 +1,77 @@
+---
+title: "Triaje de reclamos financieros con revisión humana"
+subtitle: "Motivo sugerido, resultados históricos, patrones semánticos y alertas sobre los reclamos públicos de la CFPB"
+author:
+  - name: "Grupo 1: Piero Palacios Bernuy, Winston Flores, Gianmarco Mejía y Edgard Froylan Inga Quillas"
+    affiliations:
+      - name: "Proyecto Integrador I · Maestría en Ciencia de Datos e IA · UTEC Posgrado · 2026-2"
+date: today
+date-format: "D [de] MMMM [de] YYYY"
+keywords: [triaje, reclamos, CFPB, TabPFN, binomial negativa, CUSUM, PyMC, pre-registro]
+---
+
+```{python}
+#| label: setup
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(".").resolve()))
+import facts
+from facts import n, i, pct, signed_pct, ic, md_table
+from IPython.display import Markdown
+
+import matplotlib
+import matplotlib.pyplot as plt
+
+matplotlib.rcParams.update(
+    {
+        "font.size": 9,
+        "axes.spines.top": False,
+        "axes.spines.right": False,
+        "axes.grid": True,
+        "grid.alpha": 0.25,
+        "axes.titlesize": 10,
+        "figure.constrained_layout.use": True,
+    }
+)
+F = facts.build()
+# Typst only reads files under the project folder: copy the pattern series here.
+import shutil
+
+shutil.copytree(facts.REPORTS / "patterns" / "series", Path("figuras") / "series", dirs_exist_ok=True)
+DATOS, CLAS, SEM = F["datos"], F["clasificadores"], F["semantico"]
+SEMANAL, COMP, ALERTAS, DIARIO = F["semanal"], F["composicion"], F["alertas"], F["diario"]
+CATALOGO, TABLA = F["catalogo"], F["tabla"]
+T1, T2, T3, T4 = (CLAS["tasks"][t] for t in ("T1", "T2", "T3", "T4"))
+TABPFN = CLAS["tabpfn"]
+AZUL, GRIS, NARANJA, VERDE = "#2F5D8A", "#9AA5B1", "#D9822B", "#3C8D5A"
+```
+
+{{< include secciones/00_resumen.qmd >}}
+
+{{< include secciones/01_introduccion.qmd >}}
+
+{{< include secciones/02_datos.qmd >}}
+
+{{< include secciones/03_metodologia.qmd >}}
+
+{{< include secciones/04_resultados.qmd >}}
+
+{{< include secciones/05_discusion.qmd >}}
+
+{{< include secciones/06_limitaciones.qmd >}}
+
+{{< include secciones/07_conclusiones.qmd >}}
+
+{{< include secciones/08_declaracion_ia.qmd >}}
+
+::: {.content-visible when-format="html"}
+
+# Referencias {.unnumbered}
+
+::: {#refs}
+:::
+
+:::
+
+{{< include secciones/09_anexos.qmd >}}
