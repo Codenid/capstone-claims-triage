@@ -1,10 +1,7 @@
 ---
 title: "Triaje de reclamos financieros con revisión humana"
 subtitle: "Motivo sugerido, resultados históricos, patrones semánticos y alertas sobre los reclamos públicos de la CFPB"
-author:
-  - name: "Grupo 1: Piero Palacios Bernuy, Winston Flores, Gianmarco Mejía y Edgard Froylan Inga Quillas"
-    affiliations:
-      - name: "Proyecto Integrador I · Maestría en Ciencia de Datos e IA · UTEC Posgrado · 2026-2"
+author: "Grupo 1: Piero Palacios Bernuy, Winston Flores, Gianmarco Mejía y Edgard Froylan Inga Quillas · Proyecto Integrador I · Maestría en Ciencia de Datos e IA · UTEC Posgrado · 2026-2"
 date: today
 date-format: "D [de] MMMM [de] YYYY"
 keywords: [triaje, reclamos, CFPB, TabPFN, binomial negativa, CUSUM, PyMC, pre-registro]

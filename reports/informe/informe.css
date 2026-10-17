@@ -11,14 +11,6 @@ body {
   color: var(--ink);
   background: var(--surface);
   line-height: 1.55;
-  font-size: 1.02rem;
-  max-width: 100%;
-}
-
-main.content {
-  max-width: 48rem;
-  margin: 0 auto;
-  padding: 0 16px;
 }
 
 h1, h2, h3, .title, .subtitle {
@@ -64,13 +56,3 @@ code { font-size: 0.9em; }
 
 #TOC, nav.toc { font-family: "Source Sans 3", "Segoe UI", Helvetica, Arial, sans-serif; font-size: 0.88rem; }
 #TOC a { color: var(--accent); text-decoration: none; }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --ink: #e6e9ec;
-    --muted: #a7b0ba;
-    --line: #3a434d;
-    --accent: #8fb8e6;
-    --surface: #14181c;
-  }
-}

@@ -23,10 +23,11 @@ execute:
 
 format:
   html:
-    minimal: true
+    theme: cosmo
     embed-resources: true
     css: informe.css
     toc-location: left
+    toc-title: Contenido
     fig-width: 7
     fig-height: 3.6
     fig-dpi: 150
