@@ -2464,7 +2464,8 @@ Planificado el 2026-10-07. Español, para asesor y jurado, 25–35 páginas.
   anexos con el catálogo de los 40 patrones, la tabla comparativa completa
   (120 filas) y las reglas pre-registradas; declaración de uso de IA. Alcance
   decidido por el usuario: todo el proyecto, un documento, los tres anexos.
-  Cuerpo de unas 19 páginas más 32 de anexos en Typst (A4, 10.5 pt); HTML de
-  180 kB con recursos externos para no superar el límite de 1 MB del guard del
-  curso. Se versiona el PDF; el HTML se renderiza bajo demanda.
+  Cuerpo de unas 19 páginas más 32 de anexos en Typst (A4, 10.5 pt); HTML
+  autocontenido de unos 6 MB (figuras incrustadas), que no se versiona porque
+  el guard del curso limita el HTML a 1 MB. Se versiona el PDF; el HTML se
+  renderiza bajo demanda.
 

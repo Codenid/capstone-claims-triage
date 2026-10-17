@@ -20,8 +20,9 @@ cd reports/informe && QUARTO_PYTHON=../../.venv/Scripts/python.exe quarto render
 ```
 
 En Linux o macOS el intérprete es `../../.venv/bin/python`. Salidas:
-`informe.html` (con `informe_files/` y `figuras/`, no versionados) e
-`informe.pdf` (versionado). Una sola fuente de datos vive en DVC: el resumen
+`informe.html` (autocontenido, unos 6 MB, con las figuras incrustadas; no se
+versiona porque el guard del curso limita el HTML a 1 MB) e `informe.pdf`
+(versionado). El HTML se puede copiar y abrir solo, en cualquier navegador. Una sola fuente de datos vive en DVC: el resumen
 posterior de M10, del que se lee κ; antes de renderizar, `dvc pull` de
 `reports/modeling/weekly_composition/dirichlet_multinomial_rolling_4_v1/*/posterior_summary.csv.dvc`.
 

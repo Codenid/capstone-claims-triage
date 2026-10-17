@@ -24,7 +24,7 @@ execute:
 format:
   html:
     minimal: true
-    embed-resources: false
+    embed-resources: true
     css: informe.css
     toc-location: left
     fig-width: 7
