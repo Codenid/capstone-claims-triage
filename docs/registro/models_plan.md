@@ -2469,3 +2469,40 @@ Planificado el 2026-10-07. Español, para asesor y jurado, 25–35 páginas.
   el guard del curso limita el HTML a 1 MB. Se versiona el PDF; el HTML se
   renderiza bajo demanda.
 
+## 31. Revisión de literatura (PB-23) y candidatos futuros
+
+Registrado el 2026-10-19, después de la revisión con Asta documentada en
+`docs/literatura/revision_asta.md`. Ninguno de estos candidatos se ha corrido;
+cada uno queda aquí con su regla antes de ejecutarse, y todos se deciden en
+calibración sin texto compartido con la regla de 25.2 (≥ 5 % de mejora
+relativa y bootstrap pareado por semanas con el IC 95 % entero a favor).
+
+- **C-T1-FT**: ajuste fino de un transformer (BERT base o FinBERT) sobre las
+  narrativas para T1 con las 90 clases. Compite contra TabPFN-3.5 (Macro-F1
+  0.271). Origen: varios trabajos con clases gruesas; Zhang et al. (2026)
+  respalda la cabeza TabPFN. Presupuesto: una GPU de Khipu, un full.
+- **C-T3-ESTRUCT**: T2 y T3 con producto + empresa + estado además del
+  TF-IDF del texto. Antes de correr se amplía el contrato de entrada para
+  incluir empresa y estado como columnas usadas, con la misma vista sin texto
+  compartido. Compite contra TF-IDF solo texto (AP 0.609 y 0.364). Origen:
+  Wang, Zhu y Chen (2026).
+- **C-M9-ENS**: ensamble por promedio de cuantiles de C-A y los candidatos
+  aceptados del bloque C. Compite contra C-A (WIS 30.30). Se reporta también
+  el WIS en escala logarítmica (Bosse et al. 2023) como métrica secundaria;
+  no decide. Origen: Cramer et al. (2022).
+- **C-M11-FARR**: al estimar la participación esperada de M9, reponderar
+  (no recortar) las semanas con alarma de M11 como hacen Farrington (1996) y
+  Noufaily (2013). Se evalúa con la misma simulación de M11: se adopta si la
+  detección en los crecimientos de 10 % y 20 % no baja más de 5 puntos y las
+  alertas reales de ajuste y calibración disminuyen; el efecto sobre el eco de
+  2025-H1 se reporta como ya consultado, no decide.
+- **C-PAT-INC**: asignación incremental de reclamos nuevos con creación de
+  grupos nuevos (Pattnayak et al. 2026) como diseño del pipeline §29; no
+  compite con M8, se documenta como extensión.
+- **D-11 v2**: umbrales empíricos sobre los excesos de ajuste en lugar de la
+  N(0, 1) simulada, y ráfagas mayores (×3 durante 3 días) en los escenarios.
+  Misma regla de adopción de §28.3.
+
+Orden sugerido si hay cómputo: C-M11-FARR (barato, ataca el límite declarado),
+C-M9-ENS, C-T3-ESTRUCT, C-T1-FT. PB-24 (Theorizer) puede añadir hipótesis
+aquí antes de correr cualquiera.

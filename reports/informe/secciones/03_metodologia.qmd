@@ -58,6 +58,12 @@ filas de contexto (`{python} TABPFN["context_classes"]` clases presentes), con
 los embeddings reducidos a `{python} TABPFN["pca"]` componentes de PCA más el
 producto, y predice en `{python} TABPFN["estimators"]` estimadores promediados.
 Una ablación pre-registrada probó 256 componentes y los 1,024 valores sin PCA.
+Usar TabPFN como cabeza sobre un codificador congelado tiene respaldo
+reciente fuera de este dominio [@zhang2026tabpfnhead], y la tolerancia de los
+embeddings a perder dimensiones explica por qué una PCA corta basta
+[@takeshita2025dimensions]. Sobre narrativas de la CFPB la literatura usa
+TF-IDF o embeddings con cabezas lineales y clases gruesas [@bastani2019lda;
+@roumeliotis2025reasoning]; no encontramos trabajos con TabPFN en este dato.
 
 T4 (respuesta no oportuna) se evaluó con el mismo protocolo y se descartó al
 confirmarlo en validación; lo reemplaza una regla de plazo con feriados.
@@ -78,7 +84,10 @@ HDBSCAN y CURE con criterios de aceptación fijados antes: tamaño del grupo
 mayor, fracción de ruido, silhouette, estabilidad entre submuestras
 (ARI ≥ `{python} SEM["acceptance"]["minimum_stability_ari"]`) y cobertura de
 reclamos futuros (≥ `{python} pct(SEM["acceptance"]["minimum_future_coverage"], 0)`).
-Un reclamo es **novedoso** si su distancia al centro asignado supera el
+La tubería es la de BERTopic [@grootendorst2022bertopic] con k-means en el
+último paso: HDBSCAN, la opción habitual, dejó la mitad de los reclamos como
+ruido en nuestros datos. Un reclamo es **novedoso** si su distancia al centro
+asignado supera el
 percentil `{python} int(SEM["novelty_quantile"] * 100)` de las distancias de
 ajuste. Una ronda de sensibilidad (bloque A) repitió la partición en
 `{python} SEM["sensitivity_spaces"]` espacios alternativos (PCA 128/256/512,
@@ -99,8 +108,12 @@ absoluto de la mediana más la penalización por intervalos anchos o que no
 cubren el valor observado. Menor es mejor. Se exige además cobertura de 70–90
 % para el intervalo de 80 % y de 88–99 % para el de 95 %.
 
-Los modelos se escriben en PyMC [@abrilpla2023pymc] y se muestrean con NUTS en
-NumPyro sobre el clúster Khipu; la referencia es una Poisson con la
+La descomposición «total de la semana × composición» tiene un antecedente
+formal en el marco Dirichlet-multinomial-Poisson para conteos por causa
+[@nigri2026dmp], y el protocolo de evaluación es el de los concursos de
+pronóstico epidemiológico [@cramer2022ensemble]. Los modelos se escriben en
+PyMC [@abrilpla2023pymc] y se muestrean con NUTS en NumPyro sobre el clúster
+Khipu; la referencia es una Poisson con la
 participación de las cuatro semanas previas. Además de las variantes
 bayesianas se probaron dos modelos fundacionales de series de tiempo sin
 entrenamiento, Chronos-2 [@ansari2024chronos] y TimesFM [@das2024timesfm].
@@ -126,8 +139,9 @@ dentro de la distribución predicha, transformada para que sea
 aproximadamente N(0, 1) si el modelo está calibrado. Dos reglas compiten: un
 **CUSUM** [@page1954cusum] que acumula los excesos
 (k = `{python} ALERTAS["settings"]["cusum_k"]`) y avisa cuando supera h, y una
-regla que avisa si el exceso de una sola semana supera z\*. Los umbrales se
-fijan por simulación de series N(0, 1) para un presupuesto de
+regla que avisa si el exceso de una sola semana supera z\*, las dos reglas
+clásicas de la vigilancia de conteos [@salmon2016surveillance;
+@robertson2016cusum]. Los umbrales se fijan por simulación de series N(0, 1) para un presupuesto de
 `{python} ALERTAS["settings"]["false_alarms_per_month"]` falsa alarma al mes en
 total sobre los 40 patrones. La detección se mide inyectando crecimientos
 sostenidos de 10 % y 20 % semanal y escalones de 50 % y 100 % en los conteos

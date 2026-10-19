@@ -33,3 +33,5 @@ reports/modeling/*-latest.out
 # OS
 .DS_Store
 Thumbs.db
+# Asta literature search results (JSON > 1 MB)
+.asta/

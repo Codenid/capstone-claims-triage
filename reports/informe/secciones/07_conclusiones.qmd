@@ -48,6 +48,11 @@
 - **De sugerencias a acciones de triaje**: requiere definiciones del banco
   (equipos, mapeo de motivos a equipos, presupuesto de alertas revisables al
   mes).
+- **Candidatos de la revisión de literatura** (registro §31, sin correr):
+  reponderación de semanas con alarma al estilo Farrington, ensamble de
+  cuantiles de los candidatos semanales [@cramer2022ensemble], columnas
+  estructuradas en T2–T3 [@wang2026cfpbrelief] y ajuste fino de un
+  transformer para T1; todos bajo la misma regla de reemplazo.
 - **Prueba final sellada en 2026** cuando la base de la CFPB complete ese año.
 - **Licencias y alternativas**: validación experta de la licencia de TabPFN;
   ajuste fino y ensamble de TabPFN; Kumo Tabular con más memoria.
