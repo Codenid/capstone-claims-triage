@@ -700,3 +700,13 @@ sbatch scripts/hpc/m11d_daily_change.slurm
 sbatch scripts/hpc/m11d_daily_change.slurm --validation
 ```
 
+## Pipeline de inferencia (§29)
+
+Ajustar una vez, puntuar muchas veces; nada se reentrena en `score`. Detalle en
+[`docs/pipeline.md`](../../docs/pipeline.md).
+
+```bash
+uv run --no-sync python -m src.pipeline fit
+uv run --no-sync python -m src.pipeline sample --start 2024-11-04 --end 2024-11-18 --output data/pipeline_demo/tabla.parquet
+INPUT=data/pipeline_demo/tabla.parquet OUTPUT=reports/pipeline/<nombre> sbatch scripts/hpc/pipeline_score.slurm
+```

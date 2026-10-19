@@ -2441,6 +2441,18 @@ bloque diario. Sale de `Modeling/pipaber`.
   salida por reclamo (motivo top-3 con probabilidad, T2/T3, patrón, novedad,
   vecinos) y por periodo (conteos, alertas, p-valor), más la ficha de
   evidencia por reclamo. Pruebas con una tabla sintética de 200 filas.
+- Implementado el 2026-10-19 en la rama `pipeline/pipaber` (`src/pipeline/`:
+  `contract`, `frozen`, `counts`, `signals`, `score`, `fit`, CLI; job
+  `scripts/hpc/pipeline_score.slurm`; `docs/pipeline.md`). Decisiones al
+  implementar: (i) `fit` no reentrena: comprueba la cadena congelada, lista
+  los comandos de cada etapa y escribe el manifiesto con los hashes de DVC;
+  (ii) los periodos que trae la tabla nueva reemplazan a los congelados en el
+  panel extendido, y el CUSUM arrastra su estado desde la historia; (iii) la
+  ficha de evidencia por reclamo no se genera en `score` (queda la de
+  `reports/evidence_card/`); (iv) D-11 no se adoptó, así que `daily.csv`
+  trae expectativa e intervalos de D-D sin alarmas. Prueba de punta a punta
+  en Khipu con dos semanas de calibración (2024-11-04 a 2024-11-17, 35,265
+  reclamos, ya consultadas): resultado en la nota siguiente.
 
 ## 30. Rama `report/pipaber`: informe en Quarto (HTML y PDF por Typst)
 

@@ -35,3 +35,8 @@ reports/modeling/*-latest.out
 Thumbs.db
 # Asta literature search results (JSON > 1 MB)
 .asta/
+
+# Pipeline demo inputs and per-complaint outputs (data; score.json stays)
+data/pipeline_demo/
+reports/pipeline/**/*.csv
+reports/pipeline/**/*.parquet

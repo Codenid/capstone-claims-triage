@@ -252,6 +252,7 @@ una limitación conocida; la memoria corta la atenúa pero no la corrige.
 | [`reports/modeling/README.md`](../reports/modeling/README.md) | Índice de los archivos de resultados |
 | [`docs/registro/models_plan.md`](registro/models_plan.md) | Registro de reglas fijadas antes de correr; bitácora, no lectura |
 | [`scripts/hpc/README.md`](../scripts/hpc/README.md) | Cómo se ejecuta cada etapa en el clúster |
+| [`docs/pipeline.md`](pipeline.md) | Pipeline de inferencia: contrato de entrada, qué hace `score`, señales de reentrenamiento |
 
 Las corridas se registran en MLflow (DagsHub) con commit, hash de datos,
 semilla y métricas; los artefactos grandes van por DVC.
