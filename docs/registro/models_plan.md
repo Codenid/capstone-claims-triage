@@ -2453,6 +2453,35 @@ bloque diario. Sale de `Modeling/pipaber`.
   trae expectativa e intervalos de D-D sin alarmas. Prueba de punta a punta
   en Khipu con dos semanas de calibración (2024-11-04 a 2024-11-17, 35,265
   reclamos, ya consultadas): resultado en la nota siguiente.
+- Prueba de punta a punta, 2026-10-20 (job 57781 de Khipu, GPU, 11 min 48 s;
+  commit 3cb322d). Un primer intento en CPU (job 57754) falló tras 3 h de
+  embeddings porque el panel semanal congelado guarda las dos semanas que
+  cruzan un límite de partición (2024-09-30 y 2024-12-30) como filas
+  parciales por partición; la historia congelada ahora las suma y descarta la
+  última semana incompleta, como hace M9. Resultado sobre las dos semanas:
+  T1 con TabPFN-3.5 en las 35,265 filas; novedosos 1.15 %; cobertura del
+  intervalo de 80 % de M9 78.8 % (95 %: 90.0 %) y de D-D 85.7 %; mezcla rara
+  en ninguna semana (p 0.16 y 0.28); Macro-F1 de T1 sobre el lote 0.307
+  frente a la referencia congelada 0.271; ninguna señal de reentrenamiento.
+  CUSUM avisa en el patrón 14 la semana del 2024-11-11 (observado 4,247,
+  esperado 3,676, CUSUM 3.74), la misma alarma de la corrida congelada de M11
+  (observado 4,178, CUSUM 3.60), y además en el patrón 19 la semana del
+  2024-11-04 (observado 1,863, esperado 1,475, CUSUM 3.45), que la corrida
+  congelada no dio. La regla semanal no avisa.
+- Hallazgo: la asignación de patrón no es reproducible reclamo a reclamo. El
+  pipeline coincide con las etiquetas congeladas en el 89.9 % de los 35,265
+  reclamos; los conteos semanales por patrón difieren hasta en 336 reclamos
+  (patrón 14, 8 %) con el mismo total. Diagnóstico en Khipu con los
+  embeddings congelados: `umap.transform` sobre las mismas filas da la misma
+  salida (acuerdo 100 %), pero la salida de cada punto depende de qué otros
+  puntos van en su lote (acuerdo 91.5 % con lotes de 8,192 como en M8B y
+  90.5 % con lotes de 20,000); los embeddings recalculados coinciden con los
+  congelados (coseno 1.000 en 256 filas). El ruido está en la proyección
+  UMAP, no en el embedding ni en k-means. Consecuencia: el patrón es una
+  etiqueta blanda cerca de las fronteras y los conteos del pipeline llevan
+  ese ruido de reasignación, que aquí añadió una alarma de CUSUM. Decisión
+  pendiente (ver C-PAT-INC en §31): aceptar y documentar, o sustituir la
+  proyección por una asignación determinista por reclamo.
 
 ## 30. Rama `report/pipaber`: informe en Quarto (HTML y PDF por Typst)
 

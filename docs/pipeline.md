@@ -88,3 +88,11 @@ falta (`dvc pull` los trae) y escribe `reports/pipeline/fit.json`.
   intervalos, no alarmas.
 - Un producto desconocido para M4 entra a TabPFN con el primer código de
   producto; la columna `known_product` lo marca.
+- La asignación de patrón depende del lote: `umap.transform` da resultados
+  distintos para un mismo reclamo según qué otros reclamos van en su lote
+  (prueba de punta a punta, §29: 89.9 % de acuerdo con las etiquetas
+  congeladas y conteos por patrón que difieren hasta 8 %). El patrón es una
+  etiqueta blanda cerca de las fronteras.
+- Los embeddings en CPU solo son razonables para lotes pequeños: dos semanas
+  (35,265 reclamos) tomaron 3 h con 16 núcleos y 12 min en una GPU del clúster
+  (job completo incluido TabPFN).
