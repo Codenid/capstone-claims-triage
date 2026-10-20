@@ -1,0 +1,65 @@
+{
+  "stage": "C-PAT-INC",
+  "plan": "models_plan.md §31.1",
+  "git_commit": "4b09c51b2d67c804aee5a363333e1952e06cb269",
+  "seed": 42,
+  "settings": {
+    "report_dir": "reports/modeling/pattern_knn",
+    "run_name": "c-pat-inc-knn-v1",
+    "neighbors": 5,
+    "secondary_neighbors": [
+      1,
+      10,
+      20
+    ],
+    "novelty_sample_rows": 20000,
+    "novelty_quantile": 0.01,
+    "umap_batch_rows": 8192,
+    "search_batch_rows": 4096
+  },
+  "index_rows": 120000,
+  "clusters": 40,
+  "novelty_threshold": 0.8026967644691467,
+  "splits": {
+    "calibration": {
+      "rows": 234600,
+      "agreement_knn": 0.8322634271099745,
+      "agreement_reprojected": 0.9056862745098039,
+      "agreement_by_k": {
+        "1": 0.795230179028133,
+        "5": 0.8322634271099745,
+        "10": 0.8434867860187554,
+        "20": 0.8510699062233589
+      },
+      "novel_fraction": 0.008529411764705883,
+      "deterministic_under_permutation": true,
+      "stable_fraction": 0.9056862745098039,
+      "agreement_stable": 0.891643212816627,
+      "agreement_border": 0.2620446533490012
+    },
+    "validation": {
+      "rows": 695184,
+      "agreement_knn": 0.8513774770420492,
+      "agreement_reprojected": 0.9375474694469378,
+      "agreement_by_k": {
+        "1": 0.7833767750696219,
+        "5": 0.8513774770420492,
+        "10": 0.8640374346935488,
+        "20": 0.8714743147138024
+      },
+      "novel_fraction": 0.011560968031485189,
+      "deterministic_under_permutation": true,
+      "stable_fraction": 0.9375474694469378,
+      "agreement_stable": 0.8893916240134526,
+      "agreement_border": 0.2807029666482403,
+      "already_consulted": true
+    }
+  },
+  "decision": {
+    "rule": "adopt if the k-NN agreement with the frozen calibration labels is at least the agreement of the permuted frozen projection",
+    "agreement_knn": 0.8322634271099745,
+    "agreement_reprojected": 0.9056862745098039,
+    "adopted": false
+  },
+  "elapsed_seconds": 1136.3397536841221
+}
