@@ -91,7 +91,9 @@ falta (`dvc pull` los trae) y escribe `reports/pipeline/fit.json`.
 - La asignación de patrón depende del lote: `umap.transform` da resultados
   distintos para un mismo reclamo según qué otros reclamos van en su lote
   (prueba de punta a punta, §29: 89.9 % de acuerdo con las etiquetas
-  congeladas y conteos por patrón que difieren hasta 8 %). El patrón es una
+  congeladas y conteos por patrón que difieren hasta 8 %). El sustituto
+  determinista por voto de vecinos (C-PAT-INC v1, §31.1) acordó menos con las
+  etiquetas congeladas (83 % frente a 91 %) y no se adoptó. El patrón es una
   etiqueta blanda cerca de las fronteras.
 - Los embeddings en CPU solo son razonables para lotes pequeños: dos semanas
   (35,265 reclamos) tomaron 3 h con 16 núcleos y 12 min en una GPU del clúster

@@ -2590,3 +2590,18 @@ usuario: probar una asignación determinista por reclamo.
   la proyección, 100 % de novedosos). Queda en
   `reports/modeling/pattern_knn.bug-57788/` en el clon de Khipu, fuera de
   Git; corregido en el commit siguiente con prueba unitaria y relanzado.
+- **Resultado (job 57789, 19 min; `reports/modeling/pattern_knn/results.json`;
+  MLflow eb685d3e). No se adopta.** Acuerdo con las etiquetas congeladas en
+  calibración: voto de 5 vecinos 83.2 %, proyección permutada 90.6 %. Con k =
+  1, 10 y 20: 79.5 %, 84.3 % y 85.1 %, siempre por debajo de la referencia.
+  El voto es determinista (idéntico en orden permutado) y marca 0.85 % de
+  novedosos (umbral de similitud 0.803). En el núcleo estable (90.6 % de los
+  reclamos donde la proyección coincide consigo misma) el voto acuerda el
+  89.2 %, y en la frontera el 26.2 %: los vecinos en el espacio BGE de 1,024
+  dimensiones definen una partición parecida pero no la misma que UMAP 15 +
+  k-means, y el índice cubre solo 120,000 de los 1,067,194 reclamos de
+  ajuste. Validación (ya consultada): 85.1 % frente a 93.8 %. Decisión del
+  usuario tomada antes del resultado: el pipeline conserva la proyección y el
+  patrón se declara etiqueta blanda cerca de las fronteras (unos 9 % de los
+  reclamos cambian de patrón al re-proyectar), en §29, `docs/pipeline.md`,
+  `docs/modelos.md` y el informe.

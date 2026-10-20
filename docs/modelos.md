@@ -43,6 +43,7 @@ peruano.
 | Conteo diario por patrón (M9D, §28) | **D-D**: binomial negativa con inflación de ceros, memoria que decae (δ = 0.8) y efecto de día de semana | WIS 6.95 | WIS 14.56 (ya consultado) | `reports/modeling/daily_counts/zinb_daily_hierarchical_v1/` |
 | Composición diaria (M10D, §28) | D-E: Dirichlet-multinomial con participaciones de 7 días, κ = 261 | log score −152 | — | `reports/modeling/daily_counts/dirichlet_multinomial_daily_v1/` |
 | Alertas diarias (D-11, §28.3) | **No adoptada**: ninguna regla diaria detecta ≥ 50 % de las ráfagas inyectadas | 44 % como máximo; 8–13 alarmas reales al mes | no consultado | `reports/modeling/daily_change/` |
+| Patrón por vecinos (C-PAT-INC v1, §31.1) | **No adoptado**: voto de 5 vecinos de ajuste en FAISS como sustituto determinista de UMAP en el pipeline | acuerdo con las etiquetas congeladas 83.2 % frente a 90.6 % de UMAP consigo mismo | 85.1 % frente a 93.8 % (ya consultado) | `reports/modeling/pattern_knn/` |
 
 TabPFN-3.5 tiene licencia no comercial: sirve para esta evaluación académica,
 pero usarlo con el banco requiere una licencia de Prior Labs. Un experto debe
@@ -190,6 +191,20 @@ normal supuesta. A escala diaria, pasar de 20 a 40 reclamos en un patrón
 queda dentro del ruido de una binomial negativa. El modelo diario D-D sigue
 siendo útil para la expectativa del día (intervalos y composición); la alerta
 diaria queda como pendiente con umbrales empíricos y ráfagas mayores.
+
+**Patrón por vecinos (C-PAT-INC v1).** La prueba de punta a punta del
+pipeline (§29) mostró que `umap.transform` asigna un patrón distinto al mismo
+reclamo según el lote en que viaja: al re-proyectar los 234,600 reclamos de
+calibración en orden permutado, el 9.4% cambia de patrón. Se probó un
+sustituto determinista, el voto ponderado por similitud de los 5 vecinos de
+ajuste más parecidos en el índice FAISS (120,000 reclamos), con la regla
+escrita antes: se adopta si acuerda con las etiquetas congeladas al menos
+tanto como la proyección consigo misma. Acordó el 83.2% (k = 20: 85.1%)
+frente al 90.6%, así que **no se adopta**: los vecinos en el espacio BGE
+definen una partición parecida pero no la misma. El patrón queda como una
+**etiqueta blanda**: fiable en el núcleo, con ruido del orden del 9% cerca de
+las fronteras, lo que una alarma de M11 en un patrón pequeño debe tener en
+cuenta.
 
 ## Descartados sin correr
 
