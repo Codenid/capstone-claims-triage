@@ -2547,3 +2547,40 @@ relativa y bootstrap pareado por semanas con el IC 95 % entero a favor).
 Orden sugerido si hay cómputo: C-M11-FARR (barato, ataca el límite declarado),
 C-M9-ENS, C-T3-ESTRUCT, C-T1-FT. PB-24 (Theorizer) puede añadir hipótesis
 aquí antes de correr cualquiera.
+
+### 31.1 Pre-registro de C-PAT-INC v1: patrón por vecinos de ajuste
+
+Registrado el 2026-10-20, antes de correrlo, a raíz del hallazgo de §29: la
+proyección `umap.transform` da un patrón distinto al mismo reclamo según el
+lote en que viaja (acuerdo consigo misma de 90.5–91.5 %). Decisión del
+usuario: probar una asignación determinista por reclamo.
+
+- **Candidato.** El patrón de un reclamo nuevo es el voto de sus k = 5
+  vecinos más parecidos en el índice FAISS congelado de M6 (120,000 reclamos
+  de ajuste, producto interno sobre embeddings normalizados), ponderado por
+  la similitud; en empate gana el vecino más cercano. La etiqueta de cada
+  vecino es la congelada de M8B. Novedad: la similitud al vecino más cercano
+  queda por debajo del percentil 1 de esa similitud en 20,000 reclamos de
+  ajuste que no están en el índice (muestra fija, semilla 42); mismo 1 % de
+  diseño que el p99 de M8B. No hay nada que ajustar: solo búsqueda y voto.
+- **Métrica principal.** Acuerdo con las etiquetas congeladas de M8B sobre
+  los 234,600 reclamos de calibración (vista completa: M8B etiquetó todo).
+- **Referencia.** El mismo acuerdo de la proyección congelada consigo misma:
+  `umap.transform` de los mismos reclamos en orden permutado (semilla 42) con
+  lotes de 8,192 como en M8B, seguido del k-means congelado.
+- **Regla de adopción.** C-PAT-INC v1 sustituye a la proyección en
+  `assign_patterns` del pipeline si su acuerdo con las etiquetas congeladas
+  es mayor o igual que el de la proyección permutada. No aplica la regla
+  25.2 porque el candidato no compite por una métrica de predicción: cambia
+  un paso que no es reproducible por otro que lo es, y la exigencia es que no
+  sea menos fiel a las etiquetas congeladas que el paso que reemplaza.
+- **Secundarias, no deciden.** k ∈ {1, 10, 20}; fracción de novedosos en
+  calibración; acuerdo por separado en el núcleo estable (reclamos en los que
+  la proyección permutada coincide con la congelada) y en la frontera;
+  comprobación de determinismo (el voto en orden permutado debe ser
+  idéntico); acuerdo en validación, reportado como ya consultado.
+- **Alcance.** Si se adopta, cambia solo la asignación de reclamos nuevos en
+  el pipeline. Las etiquetas congeladas de ajuste, calibración y validación,
+  los paneles semanal y diario, M9, M10, M11, D-D y el catálogo no cambian.
+- **Cómputo.** `src/models/pattern_knn.py` por `scripts/hpc/pattern_knn.slurm`
+  (CPU, Khipu); salida `reports/modeling/pattern_knn/results.json`.

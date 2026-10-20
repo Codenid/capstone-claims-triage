@@ -710,3 +710,11 @@ uv run --no-sync python -m src.pipeline fit
 uv run --no-sync python -m src.pipeline sample --start 2024-11-04 --end 2024-11-18 --output data/pipeline_demo/tabla.parquet
 INPUT=data/pipeline_demo/tabla.parquet OUTPUT=reports/pipeline/<nombre> sbatch scripts/hpc/pipeline_score.slurm
 ```
+
+C-PAT-INC v1 (§31.1) evalúa el patrón por voto de vecinos de ajuste contra las
+etiquetas congeladas de M8B; CPU, unos minutos; escribe
+`reports/modeling/pattern_knn/results.json` una sola vez:
+
+```bash
+sbatch scripts/hpc/pattern_knn.slurm
+```

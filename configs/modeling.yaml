@@ -180,6 +180,18 @@ representations:
 
 # M11: CUSUM against the weekly excess rule, approved on 2026-10-01
 # (models_plan.md §24).
+pattern_knn:
+  # C-PAT-INC v1 (models_plan.md §31.1): pattern of a new complaint by the vote
+  # of its nearest fit neighbors in the frozen M6 FAISS index.
+  report_dir: reports/modeling/pattern_knn
+  run_name: c-pat-inc-knn-v1
+  neighbors: 5
+  secondary_neighbors: [1, 10, 20]
+  novelty_sample_rows: 20000
+  novelty_quantile: 0.01
+  umap_batch_rows: 8192
+  search_batch_rows: 4096
+
 persistent_change:
   # Redone with C-A after block C (models_plan.md §25.5). The first M11 used
   # nb_rolling_4_hierarchical_v3, run 20260927T161316.494762Z-full-a3ecfab3-9105ce1f,
