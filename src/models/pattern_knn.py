@@ -126,11 +126,20 @@ def split_embeddings(
         frozen.patterns_dir / f"{split}_assignments.parquet",
         columns=[ID_COLUMN, "embedding_row", "cluster_id"],
     )
-    array = load_embedding_array(frozen.bge_full_dir, split)
-    values = np.asarray(array[0 : len(array)], dtype=np.float32)
-    array.close()
+    values = materialize(load_embedding_array(frozen.bge_full_dir, split))
     rows = assignments["embedding_row"].to_numpy()
     return values[rows], assignments
+
+
+def materialize(array: Any) -> np.ndarray:
+    """Copy an EmbeddingArray into memory before closing its memory maps.
+
+    A slice of a single-file array is a view of the map; reading it after
+    close() returns garbage (job 57788 of 2026-10-20).
+    """
+    values = np.array(array[0 : len(array)], dtype=np.float32, copy=True)
+    array.close()
+    return values
 
 
 def fit_rows_outside_index(frozen: FrozenArtifacts, rows: int, seed: int) -> np.ndarray:
@@ -144,7 +153,7 @@ def fit_rows_outside_index(frozen: FrozenArtifacts, rows: int, seed: int) -> np.
     chosen = outside.iloc[fixed_sample_positions(len(outside), rows, seed)]
     positions = np.sort(chosen["embedding_row"].to_numpy())
     array = load_embedding_array(frozen.bge_full_dir, "fit")
-    values = np.stack([np.asarray(array[p : p + 1])[0] for p in positions])
+    values = np.stack([np.array(array[p : p + 1])[0] for p in positions])
     array.close()
     return values.astype(np.float32)
 

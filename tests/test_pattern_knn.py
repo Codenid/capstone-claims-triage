@@ -1,6 +1,10 @@
+from pathlib import Path
+import tempfile
 import unittest
 
 import numpy as np
+
+from src.models.bge_full import EmbeddingArray
 
 from src.models import pattern_knn
 
@@ -56,6 +60,18 @@ class VoteTests(unittest.TestCase):
                 "adopted"
             ]
         )
+
+
+class MaterializeTests(unittest.TestCase):
+    def test_values_survive_closing_the_memory_map(self):
+        expected = np.arange(12, dtype=np.float32).reshape(4, 3)
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "calibration_embeddings.npy"
+            np.save(path, expected)
+            values = pattern_knn.materialize(EmbeddingArray([path]))
+            self.assertFalse(isinstance(values, np.memmap))
+            np.testing.assert_array_equal(values, expected)
+            np.testing.assert_array_equal(values[[3, 0]], expected[[3, 0]])
 
 
 if __name__ == "__main__":

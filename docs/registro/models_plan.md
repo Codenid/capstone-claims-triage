@@ -2584,3 +2584,9 @@ usuario: probar una asignación determinista por reclamo.
   los paneles semanal y diario, M9, M10, M11, D-D y el catálogo no cambian.
 - **Cómputo.** `src/models/pattern_knn.py` por `scripts/hpc/pattern_knn.slurm`
   (CPU, Khipu); salida `reports/modeling/pattern_knn/results.json`.
+- Corrida descartada por error de programa, no por resultado: el job 57788
+  (2026-10-20) leía los embeddings de calibración y validación después de
+  cerrar su mapa de memoria y obtuvo basura (acuerdo 7 % para el voto y para
+  la proyección, 100 % de novedosos). Queda en
+  `reports/modeling/pattern_knn.bug-57788/` en el clon de Khipu, fuera de
+  Git; corregido en el commit siguiente con prueba unitaria y relanzado.
