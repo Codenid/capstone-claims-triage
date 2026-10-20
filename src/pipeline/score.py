@@ -214,7 +214,8 @@ def frozen_weekly_history(frozen: FrozenArtifacts) -> pd.DataFrame:
     history = pd.read_csv(
         frozen.weekly_counts, usecols=("week", "cluster_id", "complaint_count")
     )
-    return history.rename(columns={"week": "period"})
+    days = pd.read_csv(frozen.daily_counts, usecols=("day",))["day"]
+    return count_rules.complete_frozen_weeks(history, pd.to_datetime(days).max())
 
 
 def frozen_daily_history(frozen: FrozenArtifacts) -> pd.DataFrame:

@@ -89,6 +89,24 @@ class CountsTests(unittest.TestCase):
         self.assertEqual(int(daily["complaint_count"].sum()), 200)
         self.assertTrue((weekly.groupby("period")["total"].nunique() == 1).all())
 
+    def test_complete_frozen_weeks_sums_split_boundaries(self):
+        history = pd.DataFrame(
+            {
+                "split": ["fit", "fit", "calibration", "validation"],
+                "week": ["2024-09-23", "2024-09-30", "2024-09-30", "2025-06-30"],
+                "cluster_id": [0, 0, 0, 0],
+                "complaint_count": [9, 1, 13, 2],
+            }
+        )
+
+        weeks = counts.complete_frozen_weeks(history, pd.Timestamp("2025-06-30"))
+
+        self.assertEqual(
+            weeks["period"].tolist(), list(pd.to_datetime(["2024-09-23", "2024-09-30"]))
+        )
+        self.assertEqual(weeks["complaint_count"].tolist(), [9, 14])
+        self.assertFalse(weeks.duplicated(["period", "cluster_id"]).any())
+
     def test_extend_history_replaces_overlapping_periods(self):
         history = pd.DataFrame(
             {

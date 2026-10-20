@@ -68,6 +68,26 @@ def period_counts(
     return complete.sort_values(["period", "cluster_id"]).reset_index(drop=True)
 
 
+def complete_frozen_weeks(
+    history: pd.DataFrame,
+    last_day: pd.Timestamp,
+) -> pd.DataFrame:
+    """One row per frozen week and pattern, complete weeks only.
+
+    The frozen panel keys its rows by split, so a week cut by a split boundary
+    appears as two partial rows; their sum is the whole week. A week is
+    complete when the frozen data reach its seventh day.
+    """
+    frame = history[["week", "cluster_id", "complaint_count"]].copy()
+    frame["week"] = pd.to_datetime(frame["week"])
+    summed = frame.groupby(["week", "cluster_id"], as_index=False)[
+        "complaint_count"
+    ].sum()
+    complete = summed["week"] + pd.Timedelta(days=6) <= pd.Timestamp(last_day)
+    result = summed.loc[complete].rename(columns={"week": "period"})
+    return result.reset_index(drop=True)
+
+
 def extend_history(
     history: pd.DataFrame,
     new: pd.DataFrame,

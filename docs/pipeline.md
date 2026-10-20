@@ -38,7 +38,10 @@ response?` permiten, si vienen, medir la deriva de T1 con etiquetas reales.
 6. **Vecinos**: los cinco reclamos de ajuste más parecidos en el índice FAISS.
 7. **Conteos**: semanas y días de la tabla nueva sobre la historia congelada
    (`reports/modeling/weekly_counts.csv`, `daily_counts.csv`); los periodos
-   que trae la tabla reemplazan a los congelados. Sobre ese panel extendido:
+   que trae la tabla reemplazan a los congelados. Del panel semanal congelado
+   se suman las dos semanas que cruzan un límite de partición (2024-09-30 y
+   2024-12-30, guardadas como filas parciales por partición) y se descarta la
+   última semana incompleta. Sobre ese panel extendido:
    expectativa e intervalos de M9 (C-A) y de D-D, exceso z, CUSUM y las dos
    reglas de M11 con sus umbrales, y el p-valor de mezcla rara de M10.
 8. **Señales de reentrenamiento** (`signals` en `score.json`): fracción de
