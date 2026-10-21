@@ -2481,7 +2481,14 @@ bloque diario. Sale de `Modeling/pipaber`.
   etiqueta blanda cerca de las fronteras y los conteos del pipeline llevan
   ese ruido de reasignación, que aquí añadió una alarma de CUSUM. Decisión
   pendiente (ver C-PAT-INC en §31): aceptar y documentar, o sustituir la
-  proyección por una asignación determinista por reclamo.
+  proyección por una asignación determinista por reclamo. Resuelto en §31.1:
+  no se sustituye; el patrón queda como etiqueta blanda.
+- Ruta de respaldo sin TabPFN (job 57784, CPU, 16 núcleos, 2 h 57 min; MLflow
+  no publicado por ser la misma tabla): mismas señales y alarmas; T1 con el
+  lineal BGE + producto da Macro-F1 0.280 sobre el lote frente a 0.307 de
+  TabPFN, y coincide con él en el 78.7 % de los motivos. Los embeddings en
+  CPU difieren de los de GPU en menos de 3e-6 y aun así UMAP cambia el patrón
+  del 0.6 % de los reclamos: otra muestra de la etiqueta blanda.
 
 ## 30. Rama `report/pipaber`: informe en Quarto (HTML y PDF por Typst)
 
