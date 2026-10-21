@@ -718,3 +718,12 @@ etiquetas congeladas de M8B; CPU, unos minutos; escribe
 ```bash
 sbatch scripts/hpc/pattern_knn.slurm
 ```
+
+C-M11-FARR v1 (§31.2) repite la simulación de M11 con la memoria reponderada
+por el exceso y la compara con `persistent_change_c_a/results.json`; CPU,
+alrededor de una hora; `--validation` solo después de registrar la decisión:
+
+```bash
+sbatch scripts/hpc/m11_farr.slurm
+sbatch scripts/hpc/m11_farr.slurm --validation
+```

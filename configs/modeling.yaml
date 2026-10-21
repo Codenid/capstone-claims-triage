@@ -192,6 +192,18 @@ pattern_knn:
   umap_batch_rows: 8192
   search_batch_rows: 4096
 
+persistent_change_farr:
+  # C-M11-FARR v1 (models_plan.md §31.2): C-A's memory where a week's count
+  # enters with weight (z0 / z)^2 when its upward excess z exceeds z0.
+  report_dir: reports/modeling/persistent_change_farr
+  run_name: m11-farr-v1
+  reference_report: reports/modeling/persistent_change_c_a/results.json
+  excess_threshold: 2.58
+  secondary_thresholds: [2.0, 3.0]
+  weight_draws: 200
+  maximum_detection_drop: 0.05
+  wis_samples_per_draw: 20
+
 persistent_change:
   # Redone with C-A after block C (models_plan.md §25.5). The first M11 used
   # nb_rolling_4_hierarchical_v3, run 20260927T161316.494762Z-full-a3ecfab3-9105ce1f,

@@ -2612,3 +2612,39 @@ usuario: probar una asignación determinista por reclamo.
   patrón se declara etiqueta blanda cerca de las fronteras (unos 9 % de los
   reclamos cambian de patrón al re-proyectar), en §29, `docs/pipeline.md`,
   `docs/modelos.md` y el informe.
+
+### 31.2 Pre-registro de C-M11-FARR v1: memoria reponderada por el exceso
+
+Registrado el 2026-10-21, antes de correrlo. Decisiones del usuario sobre el
+diseño abierto de §31: peso inverso al cuadrado con z₀ = 2.58, solo excesos
+hacia arriba, y el WIS como secundaria que no decide.
+
+- **Candidato.** La participación esperada de M11 sigue siendo la memoria de
+  C-A, m_t = δ·m_{t−1} + w_t ⊙ y_t con δ = 0.5, pero cada patrón entra a la
+  memoria con peso w_{t,c} = 1 si z_{t,c} ≤ z₀ y w_{t,c} = (z₀/z_{t,c})² si
+  z_{t,c} > z₀, donde z_{t,c} es el exceso de M11 (score normal de la
+  mid-PIT) de ese patrón en esa semana, calculado con la expectativa de
+  m_{t−1} y α de C-A. Para el peso se usa una submuestra fija de 200 de los
+  2,000 sorteos de α (semilla 42): el peso es una función suave de z y con
+  2,000 sorteos las 18,000 inyecciones de la simulación tardarían horas; el
+  exceso que se reporta y decide usa los 2,000 sorteos como M11. Es causal:
+  la semana t solo usa datos hasta t. z₀ = 2.58 (Noufaily 2013). Nada se reajusta: α, δ, el
+  presupuesto de una falsa alarma al mes y los umbrales h = 3.37 y z* = 2.53
+  son los de M11 vigente (la simulación N(0, 1) no depende de la
+  participación).
+- **Regla de adopción (la de §31).** Con la misma simulación de M11 sobre
+  ajuste + calibración, se adopta si (i) la detección del CUSUM en los
+  crecimientos de 10 % y 20 % no baja más de 5 puntos frente a M11 vigente
+  (42.3 % y 70.9 %) y (ii) las alarmas reales del CUSUM al mes bajan en
+  ajuste y en calibración (hoy 2.25 y 1.45). Las dos condiciones a la vez.
+- **Secundarias, no deciden.** z₀ = 2.0 y 3.0 con las mismas medidas; el WIS
+  plug-in en calibración (y en ajuste) de NB(α de C-A) con la expectativa
+  reponderada frente a la de C-A, con 20 muestras por sorteo de α; las
+  alarmas reales de 2025-H1 con `--validation`, una vez, ya consultadas.
+- **Alcance si se adopta.** Cambia la participación con la que M11 (y el
+  pipeline) calcula la expectativa y el exceso; las predicciones de M9 para
+  el conteo no cambian salvo que una ronda posterior lo pre-registre.
+- **Cómputo.** `src/models/persistent_change_farr.py` por
+  `scripts/hpc/m11_farr.slurm` (CPU); salida en
+  `reports/modeling/persistent_change_farr/`. Referencia:
+  `reports/modeling/persistent_change_c_a/results.json`.
