@@ -43,6 +43,7 @@ peruano.
 | Conteo diario por patrón (M9D, §28) | **D-D**: binomial negativa con inflación de ceros, memoria que decae (δ = 0.8) y efecto de día de semana | WIS 6.95 | WIS 14.56 (ya consultado) | `reports/modeling/daily_counts/zinb_daily_hierarchical_v1/` |
 | Composición diaria (M10D, §28) | D-E: Dirichlet-multinomial con participaciones de 7 días, κ = 261 | log score −152 | — | `reports/modeling/daily_counts/dirichlet_multinomial_daily_v1/` |
 | Alertas diarias (D-11, §28.3) | **No adoptada**: ninguna regla diaria detecta ≥ 50 % de las ráfagas inyectadas | 44 % como máximo; 8–13 alarmas reales al mes | no consultado | `reports/modeling/daily_change/` |
+| Memoria reponderada para M11 (C-M11-FARR v1, §31.2) | **No adoptada**: peso (z₀/z)² en las semanas con exceso al estimar la participación | detección 22.9 % y 56.0 % (M11: 42.3 % y 70.9 %); 6.2 y 4.35 alarmas al mes (M11: 2.25 y 1.45) | no consultado | `reports/modeling/persistent_change_farr/` |
 | Patrón por vecinos (C-PAT-INC v1, §31.1) | **No adoptado**: voto de 5 vecinos de ajuste en FAISS como sustituto determinista de UMAP en el pipeline | acuerdo con las etiquetas congeladas 83.2 % frente a 90.6 % de UMAP consigo mismo | 85.1 % frente a 93.8 % (ya consultado) | `reports/modeling/pattern_knn/` |
 
 TabPFN-3.5 tiene licencia no comercial: sirve para esta evaluación académica,
@@ -191,6 +192,18 @@ normal supuesta. A escala diaria, pasar de 20 a 40 reclamos en un patrón
 queda dentro del ruido de una binomial negativa. El modelo diario D-D sigue
 siendo útil para la expectativa del día (intervalos y composición); la alerta
 diaria queda como pendiente con umbrales empíricos y ráfagas mayores.
+
+**Memoria reponderada para M11 (C-M11-FARR v1).** Para corregir el eco de
+las ráfagas se probó que cada semana entre a la memoria de C-A con peso
+(z₀/z)² cuando su exceso supera z₀ = 2.58 (Farrington 1996, Noufaily 2013),
+sin reajustar nada. El resultado fue el contrario al buscado: con una memoria
+de unas dos semanas (δ = 0.5) la reponderación se realimenta, un aumento real
+sostenido nunca entra a la memoria y el CUSUM avisa de continuo: 6.2 y 4.35
+alarmas al mes en ajuste y calibración frente a 2.25 y 1.45, detección de los
+crecimientos 19 y 15 puntos por debajo, y WIS plug-in en calibración de 56.7
+frente a 30.3. **No se adopta**; M11 sigue con la memoria de C-A. La
+reponderación clásica funciona contra una línea base de años ajustada por
+regresión, no contra una memoria recursiva corta.
 
 **Patrón por vecinos (C-PAT-INC v1).** La prueba de punta a punta del
 pipeline (§29) mostró que `umap.transform` asigna un patrón distinto al mismo

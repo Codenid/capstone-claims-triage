@@ -42,6 +42,7 @@ Los archivos no se movieron: muchas rutas están fijadas en
 | M10 | `weekly_composition/` | Composición semanal Dirichlet-Multinomial (tabla abajo) | Ver tabla |
 | M11 | `persistent_change/` | CUSUM sobre NB-R4-H v3: diseño, alertas, detección y reporte de 2025-H1 | Histórico |
 | M11 | `persistent_change_c_a/` | CUSUM sobre C-A, rehecho tras el bloque C | **Vigente** |
+| §31.2 | `persistent_change_farr/` | C-M11-FARR v1: M11 con memoria reponderada por el exceso; no adoptado (`alerts.csv` y `detection.csv` por DVC) | Decisión |
 | §31.1 | `pattern_knn/results.json` | C-PAT-INC v1: patrón por voto de vecinos contra las etiquetas congeladas; no adoptado | Decisión |
 | §22 | `final_confirmation.json`, `final_confirmation.md` | Confirmación única en validación de T1–T4, M9 y M10 (2026-10-01) | Registro |
 | Gráficos | `model_graphs/*.png` | Grafos PyMC de los modelos de M9 y M10 | Referencia |

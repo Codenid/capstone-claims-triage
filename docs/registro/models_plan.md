@@ -2648,3 +2648,24 @@ hacia arriba, y el WIS como secundaria que no decide.
   `scripts/hpc/m11_farr.slurm` (CPU); salida en
   `reports/modeling/persistent_change_farr/`. Referencia:
   `reports/modeling/persistent_change_c_a/results.json`.
+- **Resultado (job 57860, 1 h 46 min; `results.json`; `alerts.csv` y
+  `detection.csv` por DVC; MLflow ed1ae03d). No se adopta: falla las dos
+  condiciones.** Detección del CUSUM con z₀ = 2.58: 22.9 % y 56.0 % en los
+  crecimientos de 10 % y 20 % (M11: 42.3 % y 70.9 %; caídas de 19.4 y 14.9
+  puntos). Alarmas reales del CUSUM: 6.2 al mes en ajuste y 4.35 en
+  calibración (M11: 2.25 y 1.45). Secundarias: z₀ = 2.0 da 11.8 y 12.3
+  alarmas al mes; z₀ = 3.0 da 5.85 y 4.35 con detección 25.0 % y 58.2 %; el
+  WIS plug-in en calibración sube de 30.3 (C-A) a 56.7 (39.2 a 51.8 en
+  ajuste; z₀ = 3.0: 51.8). Diagnóstico: la reponderación se realimenta con
+  una memoria tan corta (δ = 0.5, unas dos semanas). Al restar peso a una
+  semana alta, la participación del patrón baja, la semana siguiente vuelve
+  a quedar «en exceso» y se vuelve a descontar: 143 filas con z > 2.58
+  frente a 58 en M11, desviación típica de z 1.29 frente a 0.99, y casi
+  todas las celdas del panel cambian (4,000 de 4,120). Un aumento real
+  sostenido nunca entra a la memoria, así que la expectativa pierde
+  calibración y el CUSUM avisa de continuo. Farrington y Noufaily
+  reponderan contra una línea base de años ajustada por regresión, no
+  contra una memoria recursiva de dos semanas; la idea no se traslada a
+  este diseño. M11 vigente (C-A sin reponderar) sigue siendo la regla de
+  alerta; la validación con `--validation` no se corre porque el candidato
+  no se adopta.
