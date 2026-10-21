@@ -2669,3 +2669,64 @@ hacia arriba, y el WIS como secundaria que no decide.
   este diseño. M11 vigente (C-A sin reponderar) sigue siendo la regla de
   alerta; la validación con `--validation` no se corre porque el candidato
   no se adopta.
+
+## 32. Cierre del modelado: modelo final
+
+Registrado el 2026-10-21. Con los dos candidatos de §31 corridos y rechazados
+por sus reglas (§31.1, §31.2), el modelado queda cerrado. Esta sección fija qué
+es «el modelo final», dónde está congelado y bajo qué condición se abre de
+nuevo. No cambia ninguna decisión anterior; las recoge.
+
+### 32.1 Qué significa final
+
+- El modelo final es la cadena congelada que `python -m src.pipeline fit`
+  comprueba y describe en `reports/pipeline/fit.json` (§29): doce etapas de
+  P1–P6 a M9D, con los hashes de DVC y las claves de corrida de la tabla
+  siguiente. `score` puntúa tablas nuevas con esa cadena sin reajustar nada.
+- Cualquier cambio en un componente exige una entrada nueva en este registro
+  con su regla antes de correr, y un re-render del informe (§30) después.
+- Validación (2025-H1) se abrió una vez el 2026-10-01 (§22). Todo lo decidido
+  después se decidió solo con ajuste y calibración; sus cifras de validación
+  son **ya consultadas** y se reportan como tales.
+
+### 32.2 Componentes finales
+
+| Salida | Componente final | Configuración y corrida congelada | DVC | MLflow | Calibración | Validación 2025-H1 |
+|---|---|---|---|---|---|---|
+| T1 motivo (90 clases) | TabPFN-3.5 en contexto: 20,000 filas de ajuste, PCA 100 de BGE + producto, 8 estimadores | `foundation_t1` en `configs/modeling.yaml`; `reports/modeling/foundation_t1/` | `bge_full` 3ff36a29, `semantic_space` 08662a82 | b29a0b2a (ablación d07b98c6) | Macro-F1 0.271 | 0.270 (ya consultado) |
+| T2 solución registrada | TF-IDF solo texto + logística calibrada, umbral 0.300 | `artifacts/models/representation_comparison/` | ecf6c926 | bb51ccdd | AP 0.609 | 0.570 (§22) |
+| T3 compensación | TF-IDF solo texto, umbral 0.182 | ídem | ecf6c926 | 243949bf | AP 0.364 | 0.270 (§22) |
+| T4 respuesta no oportuna | Descartado en §22; lo reemplaza la regla de plazo con feriados | `configs/peru_holidays.yaml` | — | c2feae99 | AP 0.078 | rechazado |
+| Reclamos parecidos | FAISS exacto (producto interno) sobre BGE-large normalizado, 120,000 reclamos de ajuste | `artifacts/models/semantic_space/` | 08662a82 | 47bacfc5 | similitud mediana 0.924 | 0.918 |
+| Patrones semánticos | PCA 256 → UMAP 15 → k-means k = 40; novedad si distancia > p99 por patrón | `artifacts/models/weekly_patterns/`, catálogo en `cluster_summary.csv` | `clustering` 425408aa, `weekly_patterns` 87be2a97 | 19835707, 8a392437 (sensibilidad 5ca3b797) | 0.88 % novedosos | 0.77 % |
+| M9 conteo semanal | C-A: binomial negativa jerárquica, memoria que decae δ = 0.5 | `configs/weekly_counts/nb_discounted_hierarchical_v1.yaml`, corrida `20261005T200606.263137Z-full-0aa0a0fb-2348e548` | `weekly_counts` 3f9fa011 | 8f29cf28 (bloque C 21ec486b) | WIS 30.30 | 129.6 (ya consultado) |
+| M10 composición semanal | DM-R4: Dirichlet-multinomial de 4 semanas, κ = 826; señal de mezcla rara p < 0.01 | `configs/weekly_composition/dirichlet_multinomial_rolling_4_v1.yaml`, corrida `20261001T015410.667626Z-full-cff27014-1fa6f95c` | `weekly_composition` b73cc2d9 | 90ac1c09 (señal 2e6d9a23) | log score −210.1 | −251.7 (§22) |
+| M11 alertas persistentes | CUSUM k = 0.5, h = 3.37 sobre los excesos de C-A; 1 falsa alarma al mes | `reports/modeling/persistent_change_c_a/results.json` | `alerts.csv`, `detection.csv` | 836c2ce8 (2025-H1: 87c94112) | 1.45 alarmas al mes | 30 alertas en 25 semanas (ya consultado) |
+| D-D conteo diario | Binomial negativa con inflación de ceros, δ = 0.8, efecto de día de semana | `configs/daily_counts/zinb_daily_hierarchical_v1.yaml`, corrida `20261008T040100.226680Z-full-2e0a6b9e-2eb7afd9` | `daily_counts` 1f048446 | a76cf32a (desafío 2fedeefa) | WIS 6.95 | 14.56 (ya consultado) |
+| D-E composición diaria | Dirichlet-multinomial de 7 días, κ = 261 | `configs/daily_counts/dirichlet_multinomial_daily_v1.yaml` | `daily_counts` 1f048446 | 8c4b1cd5 | log score −152 | — |
+| Alerta diaria | No adoptada (§28.3); `daily.csv` del pipeline trae expectativa e intervalos de D-D | `reports/modeling/daily_change/` | — | c3bd8c4a | 44 % como máximo | — |
+
+Confirmación única en validación: 8862d1ec (§22). Prueba de punta a punta
+del pipeline: b673813a (§29). Candidatos rechazados tras el cierre de §22:
+C-PAT-INC v1 eb685d3e (§31.1), C-M11-FARR v1 ed1ae03d (§31.2). Las corridas
+de C-A (M9) y de M11 sobre C-A no se habían publicado en MLflow; se
+publicaron el 2026-10-21 (66 corridas en total).
+
+### 32.3 Límites declarados que el informe debe repetir
+
+- El patrón es una etiqueta blanda cerca de las fronteras: la proyección UMAP
+  cambia el patrón de alrededor del 9 % de los reclamos según el lote
+  (§29, §31.1). Una alarma de M11 en un patrón pequeño puede ser reasignación.
+- El eco de las ráfagas en M9 y M11 queda sin corregir: el recorte (§25.5) y
+  la reponderación (§31.2) no ganaron.
+- La alerta diaria no alcanza la detección exigida (§28.3).
+- T4 no se predice del texto; la regla de plazo depende del calendario.
+- TabPFN-3.5 tiene licencia de uso no comercial; un banco debe validarla.
+- Las cifras de validación posteriores al 2026-10-01 son ya consultadas; 2026
+  queda sellado como prueba final.
+
+### 32.4 Trabajo futuro, sin pre-registro de corrida
+
+C-T1-FT, C-T3-ESTRUCT, C-M9-ENS y D-11 v2 (§31) quedan documentados con sus
+reglas, sin cómputo asignado. PB-24 (Asta Theorizer) puede añadir hipótesis
+aquí; nada se corre sin entrada propia en este registro.

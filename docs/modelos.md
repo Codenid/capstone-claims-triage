@@ -28,6 +28,10 @@ peruano.
 
 ## Modelos vigentes
 
+El modelado se cerró el 2026-10-21 (§32 del registro): estos son los
+componentes finales, con sus corridas congeladas, hashes de DVC e
+identificadores de MLflow en la tabla de §32.2.
+
 | Componente | Modelo vigente | Calibración | Validación (2025-H1) | Dónde |
 |---|---|---|---|---|
 | T1, motivo del reclamo (90 clases) | **TabPFN-3.5** en contexto con 20,000 filas de PCA 100 + producto | Macro-F1 0.271, top-3 95.5% | Macro-F1 0.270, top-3 95.9% (ya consultado) | `reports/modeling/foundation_t1/` |
