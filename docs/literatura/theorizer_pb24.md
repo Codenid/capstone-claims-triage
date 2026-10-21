@@ -337,11 +337,21 @@ latente en paneles cortos bajo WIS (P4).
 | 3 | Blanqueo ZCA o eliminación de componentes comunes antes de PCA y TabPFN; repetir la ablación 256 y 1,024 | P3, teoría 5 | Un job de GPU | Si rescata 256–512 componentes, mejor Macro-F1 y calibración de T1 |
 | 4 | Contexto de TabPFN con mínimos por clase y vecinos FAISS por reclamo | P3, teoría 6 | Un job de GPU | Mejor cola de T1 con el mismo presupuesto |
 | 5 | M11 con cuarentena discreta: banda de guarda g y sustitución del valor límite en semanas con alarma | P1, teoría 5 | Un job de CPU, mismo protocolo que §31.2 | Menos eco sin realimentación; la regla de §31 ya está escrita |
-| 6 | Segunda regla de M11 sobre la suma móvil de 4 semanas, presupuesto repartido | P1, teoría 6 | Un job de CPU | Más detección de crecimientos lentos |
-| 7 | Anclar el patrón a prototipos fijos en PCA 256 o a UMAP paramétrico, con criterio de estabilidad fuera de muestra además de §19 | P2, teoría 2 | Rehacer M8B y los paneles | Etiquetas reproducibles; obliga a reajustar M9–M11 |
+| 6 | Alerta multiescala con un solo presupuesto: suma móvil de 3 días para ráfagas cortas (la D-11 v2 de §28.3, con umbrales empíricos), regla semanal, y suma móvil de 4 semanas para crecimientos lentos | P1, teorías 2 y 6 | Un job de CPU por escala | Más detección de ráfagas de días y de crecimientos lentos; el eco de D-D (δ = 0.8, unos cinco días) se trata con la misma cuarentena de la hipótesis 5 |
+| 7 | Anclar el patrón a una **mezcla gaussiana en PCA 256** (propuesta del usuario): asignación determinista en un espacio fijo, probabilidad por patrón, conteos blandos opcionales y novedad por verosimilitud; criterios de §19 más acuerdo ≥ 91 % con las etiquetas congeladas y determinismo bajo permutación. Alternativa: UMAP paramétrico | P2, teorías 1, 2 y 4 | Rehacer M8B y los paneles | Etiquetas reproducibles y margen por reclamo; obliga a reajustar M9–M11. En el espacio UMAP la mezcla no resuelve nada: heredaría la inestabilidad de la proyección |
 | 8 | Modelo de participaciones dinámico con FFBS y Pólya-gamma o filtro, en lugar de NUTS sobre trayectorias | P4, teorías 2, 3, 6 | Semanas de implementación | Solo si el panel crece; hoy C-A es el modelo correcto |
 
 Nada de esto se corre sin entrada propia en el registro (§32.4). Las
 prioridades 1 y 2 no cambian ningún modelo y caben antes del informe final;
 las 3 a 6 son candidatos pre-registrables de un ciclo cada uno; 7 y 8 son
-rondas nuevas.
+rondas nuevas. Para la prioridad 1, una mezcla gaussiana ajustada sobre las
+coordenadas UMAP de ajuste existentes, inicializada en los centros de
+k-means, da la probabilidad por patrón con la que medir la masa de frontera
+sin tocar ningún modelo.
+
+Nota sobre las escalas: las preguntas se centraron en la escala semanal
+(M11); el bloque diario entró como contexto en la pregunta 4. Hoy no hay
+alarma diaria vigente (D-11 no se adoptó, §28.3); D-D es expectativa e
+intervalos. Las teorías 2 y 6 de la pregunta 1 explican el resultado de D-11
+(una regla de un día es buena para picos enormes y mala para ráfagas de tres
+días) y señalan la suma móvil de 3 días como la versión diaria correcta.

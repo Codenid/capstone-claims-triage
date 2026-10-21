@@ -2745,7 +2745,11 @@ M11; (2) confirmar la U del WIS frente al descuento con la rejilla de §25.4;
 (3) blanqueo de embeddings antes de PCA y TabPFN, repitiendo la ablación;
 (4) contexto de TabPFN con mínimos por clase y vecinos FAISS; (5) M11 con
 cuarentena discreta (banda de guarda y sustitución del valor límite), con la
-regla de §31; (6) segunda regla de M11 sobre la suma móvil de 4 semanas;
-(7) anclar el patrón a prototipos fijos en PCA 256 o UMAP paramétrico;
-(8) participaciones dinámicas con FFBS y Pólya-gamma en lugar de NUTS. Las
+regla de §31, aplicable también a la memoria de D-D; (6) alerta multiescala
+con un solo presupuesto: suma móvil de 3 días (D-11 v2), regla semanal y
+suma móvil de 4 semanas; (7) anclar el patrón a una mezcla gaussiana en
+PCA 256 (propuesta del usuario: determinista, con probabilidad por patrón y
+novedad por verosimilitud) o a UMAP paramétrico, con los criterios de §19 más
+los de §31.1; (8) participaciones dinámicas con FFBS y Pólya-gamma en lugar
+de NUTS. Las
 dos primeras no cambian modelos; las demás necesitan entrada propia aquí.
