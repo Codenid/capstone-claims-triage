@@ -142,3 +142,7 @@ pre-registro y la validación hacia adelante son la práctica recomendada.
 
 Ninguno de estos se corre hasta que el registro tenga su entrada con fecha y
 regla, y todos se deciden en calibración.
+
+Continuación: las teorías de Asta Theorizer sobre los resultados cerrados
+(PB-24, 2026-10-21) están en [`theorizer_pb24.md`](theorizer_pb24.md), con
+el balance de qué hicimos bien y mal según la literatura y qué probar.

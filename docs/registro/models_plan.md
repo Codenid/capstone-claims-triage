@@ -2730,3 +2730,22 @@ publicaron el 2026-10-21 (66 corridas en total).
 C-T1-FT, C-T3-ESTRUCT, C-M9-ENS y D-11 v2 (§31) quedan documentados con sus
 reglas, sin cómputo asignado. PB-24 (Asta Theorizer) puede añadir hipótesis
 aquí; nada se corre sin entrada propia en este registro.
+
+**PB-24, corrido el 2026-10-21** (`docs/literatura/theorizer_pb24.md`): cuatro
+preguntas sobre los límites de §32.3 y los modelos bayesianos, por etapas con
+validación del usuario, 25 teorías y 300 juicios de novedad (231 derivables
+no enunciados, 35 ya establecidos, 16 genuinamente nuevos). Veredicto sobre
+lo hecho: C-A, la exclusión de D-B y el rechazo de C-M11-FARR coinciden con
+lo que la literatura predice; el patrón en el espacio UMAP, la reponderación
+con memoria de dos semanas, la única escala temporal de M11, el contexto fijo
+de TabPFN y los embeddings sin blanquear son lo que la literatura habría hecho
+distinto. Hipótesis que quedan como trabajo futuro, por costo, ninguna
+corrida: (1) reportar la masa de frontera del patrón junto a cada alarma de
+M11; (2) confirmar la U del WIS frente al descuento con la rejilla de §25.4;
+(3) blanqueo de embeddings antes de PCA y TabPFN, repitiendo la ablación;
+(4) contexto de TabPFN con mínimos por clase y vecinos FAISS; (5) M11 con
+cuarentena discreta (banda de guarda y sustitución del valor límite), con la
+regla de §31; (6) segunda regla de M11 sobre la suma móvil de 4 semanas;
+(7) anclar el patrón a prototipos fijos en PCA 256 o UMAP paramétrico;
+(8) participaciones dinámicas con FFBS y Pólya-gamma en lugar de NUTS. Las
+dos primeras no cambian modelos; las demás necesitan entrada propia aquí.
