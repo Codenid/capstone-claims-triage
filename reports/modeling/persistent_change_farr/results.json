@@ -1,0 +1,369 @@
+{
+  "stage": "C-M11-FARR",
+  "plan": "models_plan.md §31.2",
+  "split": "fit_calibration",
+  "git_commit": "b033a360413367beb24f1a670251014b2c8cbbb6",
+  "seed": 42,
+  "settings": {
+    "report_dir": "reports/modeling/persistent_change_farr",
+    "run_name": "m11-farr-v1",
+    "reference_report": "reports/modeling/persistent_change_c_a/results.json",
+    "excess_threshold": 2.58,
+    "secondary_thresholds": [
+      2.0,
+      3.0
+    ],
+    "weight_draws": 200,
+    "maximum_detection_drop": 0.05,
+    "wis_samples_per_draw": 20
+  },
+  "m9_model": "nb_discounted_hierarchical_v1",
+  "m9_run_key": "20261005T200606.263137Z-full-0aa0a0fb-2348e548",
+  "discount": 0.5,
+  "thresholds": {
+    "cusum": 3.3682710863649845,
+    "weekly": 2.527158075861908
+  },
+  "m9_check": {
+    "rows": 3960,
+    "expected_max_difference": 1.8462742445990443e-10,
+    "upper_tail_max_difference": 0.03855564512859794
+  },
+  "reference": {
+    "real_alarms": {
+      "fit": {
+        "weeks": 87,
+        "cusum": 45,
+        "cusum_per_month": 2.249076354679803,
+        "weekly": 58,
+        "weekly_per_month": 2.8988095238095237
+      },
+      "calibration": {
+        "weeks": 12,
+        "cusum": 4,
+        "cusum_per_month": 1.4494047619047619,
+        "weekly": 3,
+        "weekly_per_month": 1.0870535714285714
+      }
+    },
+    "detection": {
+      "growth_10": {
+        "runs": 3680,
+        "cusum": {
+          "detected": 0.42282608695652174,
+          "median_delay": 5.0
+        },
+        "weekly": {
+          "detected": 0.31956521739130433,
+          "median_delay": 4.0
+        }
+      },
+      "growth_20": {
+        "runs": 3680,
+        "cusum": {
+          "detected": 0.7089673913043478,
+          "median_delay": 4.0
+        },
+        "weekly": {
+          "detected": 0.5402173913043479,
+          "median_delay": 3.0
+        }
+      },
+      "step_50": {
+        "runs": 3680,
+        "cusum": {
+          "detected": 0.3160326086956522,
+          "median_delay": 2.0
+        },
+        "weekly": {
+          "detected": 0.36086956521739133,
+          "median_delay": 1.0
+        }
+      },
+      "step_100": {
+        "runs": 3680,
+        "cusum": {
+          "detected": 0.5160326086956522,
+          "median_delay": 2.0
+        },
+        "weekly": {
+          "detected": 0.5690217391304347,
+          "median_delay": 1.0
+        }
+      },
+      "none": {
+        "runs": 3680,
+        "cusum": {
+          "detected": 0.06521739130434782,
+          "median_delay": 5.0
+        },
+        "weekly": {
+          "detected": 0.10489130434782609,
+          "median_delay": 4.0
+        }
+      }
+    },
+    "wis": {
+      "fit": 20.752107348111657,
+      "calibration": 30.327525297619044
+    }
+  },
+  "candidates": {
+    "2.58": {
+      "threshold": 2.58,
+      "reweighted_rows": 143,
+      "real_alarms": {
+        "fit": {
+          "weeks": 87,
+          "cusum": 124,
+          "cusum_per_month": 6.197454844006568,
+          "weekly": 133,
+          "weekly_per_month": 6.647270114942529
+        },
+        "calibration": {
+          "weeks": 12,
+          "cusum": 12,
+          "cusum_per_month": 4.348214285714286,
+          "weekly": 13,
+          "weekly_per_month": 4.710565476190475
+        }
+      },
+      "detection": {
+        "growth_10": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.22907608695652174,
+            "median_delay": 5.0
+          },
+          "weekly": {
+            "detected": 0.20625,
+            "median_delay": 4.0
+          }
+        },
+        "growth_20": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.5603260869565218,
+            "median_delay": 5.0
+          },
+          "weekly": {
+            "detected": 0.4247282608695652,
+            "median_delay": 4.0
+          }
+        },
+        "step_50": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.22282608695652173,
+            "median_delay": 2.0
+          },
+          "weekly": {
+            "detected": 0.2654891304347826,
+            "median_delay": 1.0
+          }
+        },
+        "step_100": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.4375,
+            "median_delay": 2.0
+          },
+          "weekly": {
+            "detected": 0.48967391304347824,
+            "median_delay": 1.0
+          }
+        },
+        "none": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.06657608695652174,
+            "median_delay": 2.0
+          },
+          "weekly": {
+            "detected": 0.0891304347826087,
+            "median_delay": 2.0
+          }
+        }
+      },
+      "wis": {
+        "fit": 44.39496428571429,
+        "calibration": 56.73922433035714
+      }
+    },
+    "2.0": {
+      "threshold": 2.0,
+      "reweighted_rows": 330,
+      "real_alarms": {
+        "fit": {
+          "weeks": 87,
+          "cusum": 236,
+          "cusum_per_month": 11.795155993431854,
+          "weekly": 246,
+          "weekly_per_month": 12.294950738916254
+        },
+        "calibration": {
+          "weeks": 12,
+          "cusum": 34,
+          "cusum_per_month": 12.319940476190476,
+          "weekly": 35,
+          "weekly_per_month": 12.682291666666666
+        }
+      },
+      "detection": {
+        "growth_10": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.25027173913043477,
+            "median_delay": 5.0
+          },
+          "weekly": {
+            "detected": 0.21440217391304348,
+            "median_delay": 3.0
+          }
+        },
+        "growth_20": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.5567934782608696,
+            "median_delay": 5.0
+          },
+          "weekly": {
+            "detected": 0.43478260869565216,
+            "median_delay": 4.0
+          }
+        },
+        "step_50": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.27608695652173915,
+            "median_delay": 2.0
+          },
+          "weekly": {
+            "detected": 0.2758152173913043,
+            "median_delay": 1.0
+          }
+        },
+        "step_100": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.49483695652173915,
+            "median_delay": 2.0
+          },
+          "weekly": {
+            "detected": 0.49320652173913043,
+            "median_delay": 1.0
+          }
+        },
+        "none": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.10815217391304348,
+            "median_delay": 1.0
+          },
+          "weekly": {
+            "detected": 0.11684782608695653,
+            "median_delay": 1.0
+          }
+        }
+      },
+      "wis": {
+        "fit": 54.728690424876845,
+        "calibration": 66.84477901785714
+      }
+    },
+    "3.0": {
+      "threshold": 3.0,
+      "reweighted_rows": 123,
+      "real_alarms": {
+        "fit": {
+          "weeks": 87,
+          "cusum": 117,
+          "cusum_per_month": 5.8475985221674875,
+          "weekly": 133,
+          "weekly_per_month": 6.647270114942529
+        },
+        "calibration": {
+          "weeks": 12,
+          "cusum": 12,
+          "cusum_per_month": 4.348214285714286,
+          "weekly": 13,
+          "weekly_per_month": 4.710565476190475
+        }
+      },
+      "detection": {
+        "growth_10": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.25,
+            "median_delay": 5.0
+          },
+          "weekly": {
+            "detected": 0.2233695652173913,
+            "median_delay": 4.0
+          }
+        },
+        "growth_20": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.5820652173913043,
+            "median_delay": 5.0
+          },
+          "weekly": {
+            "detected": 0.4467391304347826,
+            "median_delay": 4.0
+          }
+        },
+        "step_50": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.21766304347826088,
+            "median_delay": 2.0
+          },
+          "weekly": {
+            "detected": 0.28532608695652173,
+            "median_delay": 1.0
+          }
+        },
+        "step_100": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.4255434782608696,
+            "median_delay": 1.0
+          },
+          "weekly": {
+            "detected": 0.5010869565217392,
+            "median_delay": 1.0
+          }
+        },
+        "none": {
+          "runs": 3680,
+          "cusum": {
+            "detected": 0.06277173913043478,
+            "median_delay": 2.0
+          },
+          "weekly": {
+            "detected": 0.10135869565217391,
+            "median_delay": 3.0
+          }
+        }
+      },
+      "wis": {
+        "fit": 39.23084883004927,
+        "calibration": 51.8179181547619
+      }
+    }
+  },
+  "decision": {
+    "rule": "adopt if CUSUM detection in the deciding scenarios drops at most 0.05 against M11 and real CUSUM alarms per month fall in fit and calibration",
+    "detection_drops": {
+      "growth_10": 0.19375,
+      "growth_20": 0.14864130434782608
+    },
+    "fewer_alarms": {
+      "fit": false,
+      "calibration": false
+    },
+    "adopted": false
+  },
+  "elapsed_seconds": 6350.755204413086
+}
