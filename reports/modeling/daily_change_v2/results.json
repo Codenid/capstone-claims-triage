@@ -1,0 +1,206 @@
+{
+  "stage": "M11D-V2",
+  "plan": "models_plan.md §32.5",
+  "git_commit": "d3e1b54b0cb1f6b7984911949b9fdbac31154ed4",
+  "seed": 42,
+  "m9d_model": "zinb_daily_hierarchical_v1",
+  "m9d_run_key": "20261008T040100.226680Z-full-2e0a6b9e-2eb7afd9",
+  "daily_counts_sha256": "08f06e53ff0ee975db2d46950d7154f9d3c29eaf6e2a6999bb9d11876d8465be",
+  "source_dvc_hash": "87be2a97daa3b169bbd65850a64c89a6.dir",
+  "settings": {
+    "m9d_model": "zinb_daily_hierarchical_v1",
+    "m9d_run_key": "20261008T040100.226680Z-full-2e0a6b9e-2eb7afd9",
+    "report_dir": "reports/modeling/daily_change_v2",
+    "run_name": "m11d-daily-change-v2",
+    "prediction_draws": 2000,
+    "expected_tolerance": 0.02,
+    "warmup_days": 7,
+    "cusum_k": 0.5,
+    "false_alarms_per_month": 4,
+    "simulation_series": 2000,
+    "simulation_days": 5000,
+    "horizon_days": 14,
+    "starts_per_pattern": 25,
+    "compare_weekly": true,
+    "minimum_detection": 0.5,
+    "maximum_median_delay": 2,
+    "deciding_scenarios": [
+      "burst_x2_3d",
+      "burst_x3_1d"
+    ],
+    "scan_days": 3,
+    "calibration_budget_factor": 1.5
+  },
+  "scenarios": {
+    "burst_x2_3d": {
+      "kind": "burst",
+      "size": 2.0,
+      "days": 3
+    },
+    "burst_x3_1d": {
+      "kind": "burst",
+      "size": 3.0,
+      "days": 1
+    },
+    "rise_x1_5_7d": {
+      "kind": "burst",
+      "size": 1.5,
+      "days": 7
+    },
+    "burst_x3_3d": {
+      "kind": "burst",
+      "size": 3.0,
+      "days": 3
+    },
+    "none": {
+      "kind": "none",
+      "size": 1.0,
+      "days": 0
+    }
+  },
+  "false_alarm_rate_per_decision": 0.0032854209445585215,
+  "thresholds": {
+    "daily": 3.643573224066513,
+    "scan": 3.401234548537215,
+    "cusum": 4.68445448204875
+  },
+  "run_check": {
+    "rows": 28960,
+    "expected_max_difference": 1.5558187822980472,
+    "relative": 0.01447759877040454
+  },
+  "real_alarms": {
+    "fit": {
+      "days": 632,
+      "daily": 84,
+      "daily_per_month": 4.045490506329114,
+      "scan": 83,
+      "scan_per_month": 3.9973299050632916,
+      "cusum": 83,
+      "cusum_per_month": 3.9973299050632916
+    },
+    "calibration": {
+      "days": 92,
+      "daily": 12,
+      "daily_per_month": 3.970108695652174,
+      "scan": 9,
+      "scan_per_month": 2.9775815217391304,
+      "cusum": 12,
+      "cusum_per_month": 3.970108695652174
+    }
+  },
+  "detection": {
+    "burst_x2_3d": {
+      "runs": 1000,
+      "daily": {
+        "detected": 0.208,
+        "median_delay": 1.0
+      },
+      "scan": {
+        "detected": 0.241,
+        "median_delay": 2.0
+      },
+      "cusum": {
+        "detected": 0.216,
+        "median_delay": 2.0
+      },
+      "weekly_cusum": {
+        "detected": 0.304,
+        "median_delay": 4.0
+      }
+    },
+    "burst_x3_1d": {
+      "runs": 1000,
+      "daily": {
+        "detected": 0.287,
+        "median_delay": 1.0
+      },
+      "scan": {
+        "detected": 0.1,
+        "median_delay": 1.0
+      },
+      "cusum": {
+        "detected": 0.02,
+        "median_delay": 6.5
+      },
+      "weekly_cusum": {
+        "detected": 0.291,
+        "median_delay": 4.0
+      }
+    },
+    "rise_x1_5_7d": {
+      "runs": 1000,
+      "daily": {
+        "detected": 0.102,
+        "median_delay": 2.0
+      },
+      "scan": {
+        "detected": 0.168,
+        "median_delay": 3.0
+      },
+      "cusum": {
+        "detected": 0.188,
+        "median_delay": 3.0
+      },
+      "weekly_cusum": {
+        "detected": 0.307,
+        "median_delay": 4.0
+      }
+    },
+    "burst_x3_3d": {
+      "runs": 1000,
+      "daily": {
+        "detected": 0.348,
+        "median_delay": 1.0
+      },
+      "scan": {
+        "detected": 0.383,
+        "median_delay": 2.0
+      },
+      "cusum": {
+        "detected": 0.352,
+        "median_delay": 2.0
+      },
+      "weekly_cusum": {
+        "detected": 0.369,
+        "median_delay": 3.0
+      }
+    },
+    "none": {
+      "runs": 1000,
+      "daily": {
+        "detected": 0.033,
+        "median_delay": 7.0
+      },
+      "scan": {
+        "detected": 0.025,
+        "median_delay": 7.0
+      },
+      "cusum": {
+        "detected": 0.028,
+        "median_delay": 7.0
+      },
+      "weekly_cusum": {
+        "detected": 0.0,
+        "median_delay": null
+      }
+    }
+  },
+  "decision": {
+    "adopted": false,
+    "rule": null,
+    "checks": {
+      "burst_x2_3d:daily": false,
+      "burst_x3_1d:daily": false,
+      "budget:daily": true,
+      "burst_x2_3d:scan": false,
+      "burst_x3_1d:scan": false,
+      "budget:scan": true,
+      "burst_x2_3d:cusum": false,
+      "burst_x3_1d:cusum": false,
+      "budget:cusum": true
+    },
+    "calibration_budget_limit": 6.0
+  },
+  "elapsed_seconds": 4794.204572724178
+}
