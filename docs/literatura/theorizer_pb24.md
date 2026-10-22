@@ -9,6 +9,10 @@ teorías antes de cada paso siguiente; 30 papers por pregunta; objetivo
 «accuracy-focused». Los resultados crudos (tiendas de teorías, extracciones,
 índices) están en `.asta/generate-theories/2026-10-21-*/` fuera de Git.
 
+Los 67 papers cuyos hallazgos sostienen alguna teoría están en
+`reports/informe/referencias_theorizer.bib` y se citan por pregunta en el
+capítulo de cierre del informe.
+
 Las preguntas salen de los límites declarados en §32.3 y de los modelos
 bayesianos de §32.2. Ninguna teoría cambia un resultado: entran como
 hipótesis de trabajo futuro (§32.4), con cita, sin corrida.

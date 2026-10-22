@@ -1,10 +1,11 @@
 project:
   type: default
+  pre-render: python build_bib.py
   render:
     - informe.qmd
 
 lang: es
-bibliography: referencias.bib
+bibliography: bibliografia.bib
 number-sections: true
 toc: true
 toc-depth: 2

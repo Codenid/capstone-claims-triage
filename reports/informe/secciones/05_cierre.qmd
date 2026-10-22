@@ -243,3 +243,22 @@ for key in ("q1", "q2", "q3", "q4"):
     rows.append([short[key], f'{q["with_findings"]} de {q["papers"]}', len(q["theories"]), j.get("derivable_unstated", 0), j.get("explicit_established", 0) + j.get("explicit_peripheral", 0), j.get("genuinely_new", 0)])
 Markdown(md_table(["Pregunta", "Papers con hallazgos", "Teorías", "Derivable", "Establecido", "Nuevo"], rows, "lrrrrr"))
 ```
+
+Los trabajos cuyos hallazgos sostienen las teorías de cada pregunta, y que
+por tanto respaldan la lectura anterior, son los siguientes; la lista
+completa de papers revisados, con sus extracciones, queda en el registro del
+proyecto.
+
+```{python}
+#| label: evidencia-theorizer
+#| output: asis
+short = {"q1": "Línea base de M11", "q2": "Estabilidad del patrón", "q3": "T1, TabPFN frente a ajuste fino", "q4": "Conteos bayesianos"}
+for key in ("q1", "q2", "q3", "q4"):
+    q = CIERRE["theorizer"]["questions"][key]
+    keys = q.get("evidence_keys", [])
+    if not keys:
+        continue
+    citations = "; ".join(f"@{k}" for k in keys)
+    print(f"- **{short[key]}** ({len(keys)} trabajos): [{citations}].")
+print()
+```

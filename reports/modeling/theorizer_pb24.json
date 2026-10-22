@@ -48,7 +48,26 @@
         "explicit_peripheral": 5,
         "derivable_unstated": 28,
         "genuinely_new": 3
-      }
+      },
+      "evidence_keys": [
+        "bedubourg2017evaluation",
+        "britton2014introduction",
+        "craig2023comparison",
+        "dorea2013syndromic",
+        "enki2016comparison",
+        "gopaluni2025evaluation",
+        "hutwagner2005comparing",
+        "nekorchuk2020malaria",
+        "nekorchuk2021comparing",
+        "noufaily2018comparison",
+        "salmon2014monitoring",
+        "silva2024monitoring",
+        "stewart2016why",
+        "widdowson2003automated",
+        "zacher2019supervised",
+        "zacher2022supervised",
+        "zareie2023outbreak"
+      ]
     },
     "q2": {
       "slug": "pattern_stability",
@@ -95,7 +114,31 @@
         "genuinely_new": 6,
         "explicit_peripheral": 3,
         "explicit_established": 2
-      }
+      },
+      "evidence_keys": [
+        "angelov2020top",
+        "bahri2020efficient",
+        "bryant2017sotxtstream",
+        "chavooshi2025autoencoded",
+        "feitocasares2026interpreting",
+        "ghojogh2021uniform",
+        "gupta2023measuring",
+        "herrmann2022enhancing",
+        "hodgson2024partially",
+        "liu2020concept",
+        "long2017landmark",
+        "mcinnes2018umap",
+        "periti2022what",
+        "periti2023lexical",
+        "sainburg2020parametric",
+        "saleknia2026what",
+        "sapc2021focusing",
+        "saravanakumar2021event",
+        "senanayake2019self",
+        "tarekegn2024large",
+        "vykhopen2026online",
+        "wassenaar2024approximate"
+      ]
     },
     "q3": {
       "slug": "tabpfn_finetune",
@@ -142,7 +185,23 @@
         "genuinely_new": 3,
         "explicit_established": 16,
         "explicit_peripheral": 4
-      }
+      },
+      "evidence_keys": [
+        "bergstrom2026modular",
+        "berta2026calarena",
+        "erickson2025tabarena",
+        "gardner2024large",
+        "hollmann2022tabpfn",
+        "hollmann2025accurate",
+        "jiang2025representation",
+        "kang2026language",
+        "ma2024tabdpt",
+        "manokhin2026classifier",
+        "qu2025tabicl",
+        "spinaci2025contexttab",
+        "tanna2026exploring",
+        "zhang2026tabpfn"
+      ]
     },
     "q4": {
       "slug": "bayesian_counts",
@@ -194,7 +253,23 @@
         "genuinely_new": 4,
         "explicit_peripheral": 5,
         "explicit_established": 11
-      }
+      },
+      "evidence_keys": [
+        "aijo2016temporal",
+        "aktekin2016sequential",
+        "bakdash2017malware",
+        "berry2018bayesian",
+        "das2022dirichlet",
+        "fong2023deep",
+        "huang2026bayesian",
+        "linderman2015dependent",
+        "long2024fast",
+        "randahl2024forecasting",
+        "saxena2024scalable",
+        "silverman2019bayesian",
+        "yanchenko2021hierarchical",
+        "zhang2023discrete"
+      ]
     }
   },
   "totals": {
@@ -205,6 +280,7 @@
       "derivable_unstated": 231,
       "genuinely_new": 16
     },
-    "judgments": 299
+    "judgments": 299,
+    "evidence_papers": 67
   }
 }

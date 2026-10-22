@@ -2530,7 +2530,11 @@ Planificado el 2026-10-07. Español, para asesor y jurado, 25–35 páginas.
   2026-10-22 la tabla comparativa del curso (anexo B) pasó de 120 a 186
   filas al añadir C-PAT-INC v1, C-M11-FARR v1 y D-11 v2 al generador
   (`src/evaluation/comparison_table.py`), y el informe se volvió a
-  renderizar.
+  renderizar. El mismo día entró `reports/informe/referencias_theorizer.bib`:
+  los 67 papers cuyos hallazgos sostienen alguna teoría de PB-24 (17, 22,
+  14 y 14 por pregunta), generados de las salidas de Theorizer y citados por
+  pregunta en el capítulo de cierre; las claves viajan en
+  `reports/modeling/theorizer_pb24.json`.
 
 ## 31. Revisión de literatura (PB-23) y candidatos futuros
 
