@@ -2829,4 +2829,28 @@ hipótesis de `docs/literatura/theorizer_pb24.md`; no deciden nada, informan.
   M11 (hipótesis 1) y para el informe. Salida:
   `reports/modeling/patterns/boundary_mass.json`.
 - Cómputo: `scripts/hpc/pb24_checks.slurm` (CPU).
+- **Resultados (job 58014, 2 min).** *Curva del descuento:* la U existe en
+  las dos particiones. En ajuste el WIS baja de 21.66 (δ = 0.1) a un mínimo
+  de 20.87 en δ = 0.4, 20.92 en 0.5 y sube hasta 30.73 en 0.95; en
+  calibración, de 31.54 a un mínimo de 30.45 en 0.4, 30.66 en 0.5 y 57.09 en
+  0.95. La predicción de la teoría 7 se confirma y δ = 0.5 queda a 0.3 % del
+  mínimo, dentro del ruido; C-A no cambia. *Masa de frontera:* la mezcla
+  gaussiana convergió en 29 iteraciones pero coincide con la etiqueta de
+  k-means solo en el 42 % de los reclamos de ajuste (41 % en calibración,
+  53 % en validación): sobre las coordenadas UMAP, la mezcla define otra
+  partición, no una versión blanda de la de k-means, así que sus
+  probabilidades no sirven como margen de los patrones vigentes (el 1.5 %
+  con margen de probabilidad < 0.2 describe a la mezcla, no a k-means). Esto
+  refuerza la hipótesis 7 tal como la propuso el usuario: la mezcla tendría
+  que ser la partición, en un espacio fijo, no una capa sobre k-means. El
+  margen geométrico sí describe a k-means: el 17.6 % de los reclamos de
+  ajuste, el 21.0 % de calibración y el 19.6 % de validación están a menos
+  del 10 % de distancia relativa de un segundo centro, consistente con el
+  9 % que cambia de patrón al re-proyectar. Por patrón, en calibración, la
+  mediana es 19 %, con extremos de 76 % (patrón 4), 67 % (patrón 3, el
+  mayor con 15,699 reclamos) y 62 % (patrón 18) frente a 0–3 % (patrones 34,
+  35, 20, 0, 5). Los dos patrones con alarma en la prueba de punta a punta
+  (§29) están por debajo de la mediana: 12.8 % (patrón 14) y 9.4 % (patrón
+  19). Decisión: la tabla de `boundary_mass.json` acompaña a las alarmas de
+  M11 en el informe y en el pipeline como contexto de lectura; nada cambia.
 

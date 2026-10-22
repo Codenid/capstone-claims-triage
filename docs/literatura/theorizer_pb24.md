@@ -341,6 +341,15 @@ latente en paneles cortos bajo WIS (P4).
 | 7 | Anclar el patrón a una **mezcla gaussiana en PCA 256** (propuesta del usuario): asignación determinista en un espacio fijo, probabilidad por patrón, conteos blandos opcionales y novedad por verosimilitud; criterios de §19 más acuerdo ≥ 91 % con las etiquetas congeladas y determinismo bajo permutación. Alternativa: UMAP paramétrico | P2, teorías 1, 2 y 4 | Rehacer M8B y los paneles | Etiquetas reproducibles y margen por reclamo; obliga a reajustar M9–M11. En el espacio UMAP la mezcla no resuelve nada: heredaría la inestabilidad de la proyección |
 | 8 | Modelo de participaciones dinámico con FFBS y Pólya-gamma o filtro, en lugar de NUTS sobre trayectorias | P4, teorías 2, 3, 6 | Semanas de implementación | Solo si el panel crece; hoy C-A es el modelo correcto |
 
+Resultados de las prioridades 1 y 2 (2026-10-21, §32.6): la U del WIS
+frente al descuento existe en ajuste y en calibración, con mínimo en δ = 0.4
+y δ = 0.5 a 0.3 % de él (C-A no cambia). La mezcla gaussiana sobre UMAP
+define otra partición (42 % de acuerdo con k-means), así que el margen
+utilizable es el geométrico: alrededor del 20 % de los reclamos están a
+menos del 10 % de distancia relativa de un segundo centro, con una mediana
+por patrón de 19 % y extremos de 0 % a 76 %. Esa tabla acompaña a las
+alarmas de M11. D-11 v2 (prioridad del usuario) se pre-registró en §32.5.
+
 Nada de esto se corre sin entrada propia en el registro (§32.4). Las
 prioridades 1 y 2 no cambian ningún modelo y caben antes del informe final;
 las 3 a 6 son candidatos pre-registrables de un ciclo cada uno; 7 y 8 son

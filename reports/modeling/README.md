@@ -42,6 +42,8 @@ Los archivos no se movieron: muchas rutas están fijadas en
 | M10 | `weekly_composition/` | Composición semanal Dirichlet-Multinomial (tabla abajo) | Ver tabla |
 | M11 | `persistent_change/` | CUSUM sobre NB-R4-H v3: diseño, alertas, detección y reporte de 2025-H1 | Histórico |
 | M11 | `persistent_change_c_a/` | CUSUM sobre C-A, rehecho tras el bloque C | **Vigente** |
+| §32.6 | `weekly_counts/nb_discounted_hierarchical_v1/discount_curve.json` | Curva del WIS frente al descuento de C-A en una rejilla ampliada (U confirmada, mínimo 0.4, C-A sigue en 0.5) | Información |
+| §32.6 | `patterns/boundary_mass.json` | Masa de frontera por patrón: margen geométrico de k-means y mezcla gaussiana sobre UMAP (otra partición, 42 % de acuerdo) | Información |
 | §31.2 | `persistent_change_farr/` | C-M11-FARR v1: M11 con memoria reponderada por el exceso; no adoptado (`alerts.csv` y `detection.csv` por DVC) | Decisión |
 | §31.1 | `pattern_knn/results.json` | C-PAT-INC v1: patrón por voto de vecinos contra las etiquetas congeladas; no adoptado | Decisión |
 | §22 | `final_confirmation.json`, `final_confirmation.md` | Confirmación única en validación de T1–T4, M9 y M10 (2026-10-01) | Registro |
