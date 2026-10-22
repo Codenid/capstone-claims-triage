@@ -387,6 +387,21 @@ daily_change:
     rise_x1_5_7d: {kind: burst, size: 1.5, days: 7}
     none: {kind: none, size: 1.0, days: 0}
 
+# D-11 v2 (models_plan.md §32.5): the daily alert with a 3-day scan on the
+# excesses and empirical thresholds fixed on fit. Keys not listed here are
+# read from `daily_change` (frozen D-D run, warm-up, budget, horizon, rule).
+daily_change_v2:
+  report_dir: reports/modeling/daily_change_v2
+  run_name: m11d-daily-change-v2
+  scan_days: 3
+  calibration_budget_factor: 1.5
+  scenarios:
+    burst_x2_3d: {kind: burst, size: 2.0, days: 3}
+    burst_x3_1d: {kind: burst, size: 3.0, days: 1}
+    rise_x1_5_7d: {kind: burst, size: 1.5, days: 7}
+    burst_x3_3d: {kind: burst, size: 3.0, days: 3}
+    none: {kind: none, size: 1.0, days: 0}
+
 # Pattern catalogue (asked by the advisor on 2026-10-07): what each of the 40
 # patterns is about and its weekly series with the current M9 band.
 pattern_catalog:

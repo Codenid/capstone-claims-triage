@@ -2753,3 +2753,51 @@ novedad por verosimilitud) o a UMAP paramétrico, con los criterios de §19 más
 los de §31.1; (8) participaciones dinámicas con FFBS y Pólya-gamma en lugar
 de NUTS. Las
 dos primeras no cambian modelos; las demás necesitan entrada propia aquí.
+
+### 32.5 Pre-registro de D-11 v2: alerta diaria con ventana de 3 días
+
+Registrado el 2026-10-21, antes de correrlo, como primer candidato tras
+PB-24 (decisión del usuario: primero D-11 v2, luego las dos comprobaciones
+sin cómputo, luego el informe). Motivación: D-11 (§28.3) no se adoptó porque
+una regla de un día no distingue una ráfaga de tres días del ruido de una
+binomial negativa, y porque sus umbrales, simulados con N(0, 1), avisaban el
+doble o el triple del presupuesto: los excesos reales de D-D tienen colas
+más pesadas. Las teorías 2 y 6 de la pregunta 1 de PB-24 (Gopaluni 2025,
+Bédubourg 2017) señalan la suma móvil de pocos días como la escala correcta
+para ráfagas cortas; Noufaily (2013) y la nota de §31 piden umbrales
+empíricos. Nada de M11, D-D ni sus umbrales cambia.
+
+- **Excesos.** Los mismos de D-11: z_{c,d}, score normal de la mid-PIT del
+  conteo observado bajo la predictiva de D-D (ceros inflados, 2,000 sorteos
+  de α, medianas de β y π), tras 7 días de calentamiento.
+- **Tres reglas, mismo presupuesto** de 4 falsas alarmas al mes sobre 40
+  patrones (1/304 por decisión): (i) un día, z > z*; (ii) **ventana de 3
+  días**, S_d = (z_d + z_{d−1} + z_{d−2}) / √3 > s*, evaluada cada día; (iii)
+  CUSUM diario con k = 0.5 y h. S_d es la versión en excesos de la suma móvil
+  de conteos de la literatura: bajo calibración es N(0, 1), y los umbrales
+  empíricos absorben lo que no lo sea.
+- **Umbrales empíricos, fijados en ajuste.** z* y s* son el cuantil
+  1 − 1/304 de z y de S sobre todas las decisiones de ajuste (632 días × 40
+  patrones); h se fija por bisección para que el CUSUM sobre los excesos
+  reales de ajuste dé 4 alarmas al mes. Calibración no interviene en los
+  umbrales; sus alarmas reales se reportan como comprobación.
+- **Escenarios** inyectados en calibración, 25 inicios × 40 patrones por
+  escenario, horizonte 14 días: ×2 durante 3 días, ×3 durante 1 día, ×1.5
+  durante 7 días, **×3 durante 3 días** (nuevo, de §31) y sin aumento. Para
+  la ventana de 3 días el exceso se calcula también en los dos días previos
+  al inicio, con el panel real, para que S esté definido desde el primer día
+  de la ráfaga. Se reporta además qué ve el CUSUM semanal de M11 sobre las
+  mismas ráfagas, como en D-11.
+- **Regla de adopción** (la de §28.3 más la comprobación del presupuesto):
+  una regla se adopta si detecta ≥ 50 % de las ráfagas ×2/3 días y ×3/1 día
+  con mediana de retraso ≤ 2 días, y sus alarmas reales en calibración no
+  superan 1.5 × el presupuesto (6 al mes). Si varias cumplen, la de mayor
+  detección sumada en esos dos escenarios; en empate, la más simple (un día,
+  ventana, CUSUM). La regla adoptada complementa a M11; ninguna lo reemplaza.
+  Si ninguna cumple, la alerta diaria queda definitivamente como lista
+  ordenada por exceso sin presupuesto garantizado.
+- **Cómputo.** `src/models/daily_change_v2.py` por
+  `scripts/hpc/m11d_daily_change_v2.slurm` (CPU, unos 60 min como D-11);
+  salida `reports/modeling/daily_change_v2/`; `--validation` solo si se
+  adopta.
+

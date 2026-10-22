@@ -700,6 +700,14 @@ sbatch scripts/hpc/m11d_daily_change.slurm
 sbatch scripts/hpc/m11d_daily_change.slurm --validation
 ```
 
+D-11 v2 (§32.5) añade la ventana de 3 días sobre los excesos y fija los
+umbrales en ajuste de forma empírica; misma regla de adopción:
+
+```bash
+sbatch scripts/hpc/m11d_daily_change_v2.slurm
+sbatch scripts/hpc/m11d_daily_change_v2.slurm --validation
+```
+
 ## Pipeline de inferencia (§29)
 
 Ajustar una vez, puntuar muchas veces; nada se reentrena en `score`. Detalle en
