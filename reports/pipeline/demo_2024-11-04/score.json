@@ -1,0 +1,68 @@
+{
+  "stage": "PIPELINE",
+  "plan": "models_plan.md §29",
+  "git_commit": "3cb322df2524275e576bda26aeaa63b4c2dc076d",
+  "scored_at_utc": "2026-10-20T18:58:21.111594+00:00",
+  "rows": 35265,
+  "dates": {
+    "first": "2024-11-04",
+    "last": "2024-11-17"
+  },
+  "weeks": 2,
+  "days": 14,
+  "t1_model": "tabpfn-3.5",
+  "device": "cuda",
+  "frozen": {
+    "m9_run": "nb_discounted_hierarchical_v1/20261005T200606.263137Z-full-0aa0a0fb-2348e548",
+    "m10_run": "dirichlet_multinomial_rolling_4_v1/20261001T015410.667626Z-full-cff27014-1fa6f95c",
+    "daily_run": "zinb_daily_hierarchical_v1/20261008T040100.226680Z-full-2e0a6b9e-2eb7afd9",
+    "m11_thresholds": "reports/modeling/persistent_change_c_a/results.json",
+    "tabpfn_context_rows": 20000,
+    "tabpfn_pca_components": 100,
+    "dvc_hashes": {
+      "bge_full_artifacts": "3ff36a299da1f2e19a00a4bce49f18ad.dir",
+      "semantic_artifacts": "08662a82971a71666b06c9ccf8120d7f.dir",
+      "weekly_patterns_artifacts": "87be2a97daa3b169bbd65850a64c89a6.dir",
+      "tfidf": "94536b940d1546580c62b80078e2bbfc.dir",
+      "representation_comparison": "ecf6c9262d0e9a44ad9ea97617e316ba.dir",
+      "clustering_comparison": "425408aa84d0e2a44b8c5becd467e724.dir",
+      "weekly_counts": "3f9fa011df52813a67c45b83d39b42cd.dir",
+      "weekly_composition": "b73cc2d94925f1cbacbb81f84c79a5ef.dir",
+      "daily_counts": "1f048446cbdeceebefad1a6a24b87ac2.dir"
+    }
+  },
+  "signals": {
+    "novelty": {
+      "novel_fraction": 0.011484474691620587,
+      "limit": 0.03,
+      "warning": false
+    },
+    "coverage": {
+      "coverage_80": 0.7875,
+      "weeks": 2,
+      "floor": 0.7,
+      "warning": false
+    },
+    "mixture": {
+      "rare_weeks": [],
+      "scored_weeks": 2
+    },
+    "macro_f1": {
+      "macro_f1": 0.30717869726641434,
+      "frozen": 0.27063657960221493,
+      "rows": 35265,
+      "relative_drop": -0.13502283289978556,
+      "warning": false
+    },
+    "retrain_recommended": false,
+    "warnings": [],
+    "default_rule": "M9, M10 and the alert thresholds every quarter on a moving window; classifiers and patterns only when a signal warns"
+  },
+  "alerts": {
+    "cusum_weeks": 2,
+    "cusum_rows": 2,
+    "weekly_rule_rows": 0,
+    "rare_mixture_weeks": 0
+  },
+  "elapsed_seconds": 691.7748565268703
+}
