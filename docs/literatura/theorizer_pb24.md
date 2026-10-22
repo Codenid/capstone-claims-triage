@@ -348,7 +348,12 @@ define otra partición (42 % de acuerdo con k-means), así que el margen
 utilizable es el geométrico: alrededor del 20 % de los reclamos están a
 menos del 10 % de distancia relativa de un segundo centro, con una mediana
 por patrón de 19 % y extremos de 0 % a 76 %. Esa tabla acompaña a las
-alarmas de M11. D-11 v2 (prioridad del usuario) se pre-registró en §32.5.
+alarmas de M11. D-11 v2 (prioridad del usuario, §32.5) se corrió y no se
+adoptó: con umbrales empíricos el presupuesto se cumple, la ventana de 3
+días es la mejor regla diaria para ráfagas de varios días (24 % en ×2/3 d
+frente a 21 % de un día), pero ninguna llega al 50 %; a resolución diaria
+la señal por patrón no alcanza con 4 falsas alarmas al mes. La parte
+semanal de la hipótesis 6 (suma de 4 semanas) sigue pendiente.
 
 Nada de esto se corre sin entrada propia en el registro (§32.4). Las
 prioridades 1 y 2 no cambian ningún modelo y caben antes del informe final;

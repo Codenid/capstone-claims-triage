@@ -48,6 +48,7 @@ identificadores de MLflow en la tabla de §32.2.
 | Composición diaria (M10D, §28) | D-E: Dirichlet-multinomial con participaciones de 7 días, κ = 261 | log score −152 | — | `reports/modeling/daily_counts/dirichlet_multinomial_daily_v1/` |
 | Alertas diarias (D-11, §28.3) | **No adoptada**: ninguna regla diaria detecta ≥ 50 % de las ráfagas inyectadas | 44 % como máximo; 8–13 alarmas reales al mes | no consultado | `reports/modeling/daily_change/` |
 | Memoria reponderada para M11 (C-M11-FARR v1, §31.2) | **No adoptada**: peso (z₀/z)² en las semanas con exceso al estimar la participación | detección 22.9 % y 56.0 % (M11: 42.3 % y 70.9 %); 6.2 y 4.35 alarmas al mes (M11: 2.25 y 1.45) | no consultado | `reports/modeling/persistent_change_farr/` |
+| Alerta diaria v2 (D-11 v2, §32.5) | **No adoptada**: ventana de 3 días sobre los excesos y umbrales empíricos; el presupuesto se cumple (4 al mes) pero la detección cae | ×2/3 d: 24 % la ventana, 21 % un día, 22 % CUSUM; ×3/3 d: 38 % | no consultado | `reports/modeling/daily_change_v2/` |
 | Patrón por vecinos (C-PAT-INC v1, §31.1) | **No adoptado**: voto de 5 vecinos de ajuste en FAISS como sustituto determinista de UMAP en el pipeline | acuerdo con las etiquetas congeladas 83.2 % frente a 90.6 % de UMAP consigo mismo | 85.1 % frente a 93.8 % (ya consultado) | `reports/modeling/pattern_knn/` |
 
 TabPFN-3.5 tiene licencia no comercial: sirve para esta evaluación académica,
@@ -208,6 +209,20 @@ crecimientos 19 y 15 puntos por debajo, y WIS plug-in en calibración de 56.7
 frente a 30.3. **No se adopta**; M11 sigue con la memoria de C-A. La
 reponderación clásica funciona contra una línea base de años ajustada por
 regresión, no contra una memoria recursiva corta.
+
+**Alerta diaria v2 (D-11 v2).** Tras PB-24 se probó la escala que la
+literatura señala para ráfagas cortas: una ventana de 3 días sobre los
+excesos de D-D, S = (z_d + z_{d−1} + z_{d−2})/√3, junto a la regla de un día
+y el CUSUM, con umbrales empíricos fijados en ajuste (z* = 3.64, s* = 3.40,
+h = 4.68) en lugar de la normal simulada. El presupuesto de 4 falsas alarmas
+al mes ahora sí se cumple en calibración (4.0, 3.0 y 4.0), pero la detección
+de una ráfaga ×2 de 3 días queda en 24% con la ventana, 21% con un día y 22%
+con el CUSUM (38% para ×3 de 3 días), lejos del 50% exigido. **No se
+adopta.** La ventana de 3 días es la mejor regla diaria para ráfagas de
+varios días y la peor para un pico de un día, como predice la escala
+temporal; pero a resolución diaria y con 40 patrones, honrar el presupuesto
+deja la señal por debajo del ruido de la binomial negativa. La salida diaria
+sigue siendo la expectativa de D-D y la lista de patrones por exceso.
 
 **Patrón por vecinos (C-PAT-INC v1).** La prueba de punta a punta del
 pipeline (§29) mostró que `umap.transform` asigna un patrón distinto al mismo

@@ -2800,6 +2800,29 @@ empíricos. Nada de M11, D-D ni sus umbrales cambia.
   `scripts/hpc/m11d_daily_change_v2.slurm` (CPU, unos 60 min como D-11);
   salida `reports/modeling/daily_change_v2/`; `--validation` solo si se
   adopta.
+- **Resultado (job 58012, 80 min; `results.json`; `alerts.csv` y
+  `detection.csv` por DVC; MLflow c4199ba5). No se adopta: ninguna regla
+  llega al 50 %.** Umbrales empíricos en ajuste: z* = 3.64 (D-11 con N(0, 1):
+  2.72), s* = 3.40, h = 4.68 (D-11: 3.90). Con ellos el presupuesto sí se
+  cumple: 4.0 alarmas al mes en ajuste por construcción y 4.0, 3.0 y 4.0 en
+  calibración (un día, ventana, CUSUM), frente a las 8–13 de D-11. El costo
+  es la detección: ×2 durante 3 días, 20.8 % (un día), 24.1 % (ventana de 3
+  días), 21.6 % (CUSUM), 30.4 % el CUSUM semanal sobre las mismas ráfagas;
+  ×3 durante 1 día, 28.7 %, 10.0 %, 2.0 %; ×1.5 durante 7 días, 10.2 %,
+  16.8 %, 18.8 %; ×3 durante 3 días, 34.8 %, 38.3 %, 35.2 %; sin aumento,
+  3.3 %, 2.5 %, 2.8 % en 14 días (≈ el 4.5 % esperado). Lectura: la ventana
+  de 3 días es la mejor regla diaria para ráfagas de varios días (+3 puntos
+  sobre un día en ×2/3 d, +3.5 en ×3/3 d) y la peor para un pico de un día,
+  como predice la escala temporal; pero con el presupuesto respetado de
+  verdad, ninguna regla diaria sobre 40 patrones detecta ni la mitad de una
+  ráfaga ×2: el 35 % de D-11 v1 era con el triple de falsas alarmas. A esta
+  resolución la señal por patrón es demasiado pequeña frente a las colas de
+  la binomial negativa. Decisión: la alerta diaria formal queda descartada
+  en esta ronda; la salida diaria del pipeline sigue siendo la expectativa e
+  intervalos de D-D y la lista de patrones por exceso, sin presupuesto
+  garantizado. Para el informe: por qué un día no basta, por qué la ventana
+  de 3 días es la escala correcta y por qué aun así no alcanza con 4 falsas
+  alarmas al mes.
 
 ### 32.6 Comprobaciones de PB-24 sin cambio de modelo
 
