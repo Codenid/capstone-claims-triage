@@ -32,19 +32,35 @@
    una alerta diaria con el diseño de M11 no alcanza la detección exigida.
 8. El pre-registro, la vista sin texto compartido y la evaluación hacia
    adelante costaron tiempo y evitaron resultados optimistas: dos candidatos
-   mejores en apariencia se rechazaron por la regla del bootstrap y un
-   componente se retiró al confirmarlo.
+   mejores en apariencia se rechazaron por la regla del bootstrap, un
+   componente se retiró al confirmarlo y los tres candidatos del cierre se
+   rechazaron por reglas escritas antes de correrlos.
+9. El pipeline puntúa una tabla nueva de dos semanas en
+   `{python} n(CIERRE["pipeline"]["gpu_minutes"], 0)` minutos con GPU sin
+   reentrenar nada, y el contraste con la literatura respalda las elecciones
+   centrales (memoria corta en M9, exclusión del espacio de estados diario,
+   rechazo de la reponderación) y señala qué habría hecho distinto.
 
 ## Trabajo futuro
 
-- **Pipeline de inferencia** (planificado como rama aparte): ajustar una vez
-  los componentes vigentes y, con datos nuevos que respeten las mismas
-  columnas, solo predecir: motivo, probabilidades, vecinos, patrón, conteo
-  semanal y diario, señal de composición y alertas semanales; reajustar solo
-  cuando la deriva lo exija.
-- **Alerta diaria, segunda versión pre-registrada**: umbrales empíricos sobre
-  los excesos de ajuste en lugar de la normal simulada, y ráfagas mayores en
-  los escenarios.
+Las hipótesis que dejó el contraste con la literatura, por costo y sin
+corrida asignada:
+
+- **Alerta multiescala con un solo presupuesto**: regla semanal más una
+  sobre la suma móvil de cuatro semanas para los crecimientos lentos que la
+  semanal pierde.
+- **Cuarentena discreta en M11**: banda de guarda y, en las semanas con
+  alarma, guardar en la memoria el valor límite en lugar del pico
+  [@dorea2013syndromic], que no se realimenta como la reponderación.
+- **T1**: blanquear los embeddings antes de PCA y TabPFN, y construir el
+  contexto con mínimos por clase y vecinos recuperados en lugar de una
+  muestra fija.
+- **Patrón anclado**: una mezcla gaussiana o prototipos fijos en el espacio
+  PCA, o un codificador paramétrico, para que la asignación de un reclamo
+  nuevo sea determinista y traiga su probabilidad; obliga a rehacer los
+  paneles y a reevaluar M9–M11.
+- **Participaciones dinámicas con inferencia por bloques** (FFBS con
+  Pólya-gamma) en lugar de NUTS sobre trayectorias, solo si el panel crece.
 - **De sugerencias a acciones de triaje**: requiere definiciones del banco
   (equipos, mapeo de motivos a equipos, presupuesto de alertas revisables al
   mes).

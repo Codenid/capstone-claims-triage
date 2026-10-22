@@ -91,6 +91,9 @@ rules = [
     ["Diario", "Prueba aparte; el bloque semanal sigue vigente; si varios candidatos aceptan la regla, gana el de menor WIS", f'δ = {DIARIO["share_selection"]["chosen"]["discount"]} elegido en ajuste; ganador {DIARIO["winner_label"]}'],
     ["Diario", "D-B queda fuera del full si el piloto no converge o el full proyectado supera 8 h (fijado antes de ver el piloto)", f'R-hat del piloto {n(DIARIO["state_space_pilot"]["diagnostics"]["rhat_max"], 2)}'],
     ["D-11", "Se adopta si detecta ≥ 50 % de las ráfagas ×2/3 días y ×3/1 día con mediana de retraso ≤ 2 días", f'{DIARIO["change"]["settings"]["false_alarms_per_month"]} falsas alarmas al mes; no adoptada'],
+    ["Cierre: patrón", "El voto de vecinos sustituye a la proyección UMAP solo si acuerda con las etiquetas congeladas al menos tanto como la proyección consigo misma", f'{pct(CIERRE["knn"]["agreement"])} frente a {pct(CIERRE["knn"]["reprojected"])}; no adoptado'],
+    ["Cierre: M11", "La memoria reponderada se adopta si la detección del CUSUM no baja más de 5 puntos en los crecimientos y las alarmas reales bajan", f'detección −{n(100 * CIERRE["farr"]["drops"]["growth_10"], 0)} y −{n(100 * CIERRE["farr"]["drops"]["growth_20"], 0)} puntos; no adoptada'],
+    ["Cierre: D-11 v2", "Misma regla de D-11 con umbrales empíricos y ventana de 3 días; además las alarmas de calibración no superan 1.5 × el presupuesto", f'ventana {pct(CIERRE["daily_v2"]["detection"]["burst_x2_3d"]["scan"]["detected"], 0)} en ×2/3 días; no adoptada'],
     ["Validación", "Todo lo decidido después del 2026-10-01 reporta 2025-H1 como ya consultado; 2026 queda sellado", "sin excepciones"],
 ]
 print(md_table(["Ámbito", "Regla", "Parámetros"], rules))

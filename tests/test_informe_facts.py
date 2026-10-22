@@ -25,8 +25,18 @@ class InformeFactsTests(unittest.TestCase):
         F = self.F
         self.assertEqual(
             set(F),
-            {"datos", "clasificadores", "semantico", "semanal", "composicion",
-             "alertas", "diario", "catalogo", "tabla"},
+            {
+                "datos",
+                "clasificadores",
+                "semantico",
+                "semanal",
+                "composicion",
+                "alertas",
+                "diario",
+                "cierre",
+                "catalogo",
+                "tabla",
+            },
         )
         self.assertGreater(F["datos"]["rows"], 3_000_000)
         self.assertEqual(len(F["catalogo"]), 40)
@@ -46,6 +56,12 @@ class InformeFactsTests(unittest.TestCase):
             F["diario"]["winner"]["wis"],
             F["diario"]["share_selection"]["chosen"]["discount"],
             F["diario"]["composition"]["posterior"]["kappa_p50"],
+            F["cierre"]["knn"]["agreement"],
+            F["cierre"]["farr"]["wis"]["calibration"],
+            F["cierre"]["daily_v2"]["thresholds"]["scan"],
+            F["cierre"]["curve"]["shape"]["fit"]["argmin_discount"],
+            F["cierre"]["boundary"]["median"],
+            F["cierre"]["pipeline"]["coverage_80"],
         ]
         for value in cited:
             self.assertTrue(math.isfinite(float(value)), value)
@@ -58,6 +74,14 @@ class InformeFactsTests(unittest.TestCase):
         best = min(accepted, key=lambda c: c["wis"])
         self.assertEqual(self.F["diario"]["winner"]["model_id"], best["model_id"])
         self.assertFalse(self.F["diario"]["change"]["decision"]["adopted"])
+
+    def test_the_closing_candidates_were_all_rejected(self):
+        cierre = self.F["cierre"]
+        self.assertFalse(cierre["knn"]["adopted"])
+        self.assertFalse(cierre["farr"]["adopted"])
+        self.assertFalse(cierre["daily_v2"]["adopted"])
+        self.assertTrue(cierre["curve"]["shape"]["fit"]["u_shaped"])
+        self.assertEqual(cierre["theorizer"]["totals"]["theories"], 25)
 
     def test_formatters_and_tables(self):
         facts = self.facts

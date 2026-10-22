@@ -386,9 +386,7 @@ def composition_facts() -> dict[str, Any]:
         "dm_r4": dm_r4["comparison"],
         "dm_r4_status": dm_r4["candidate_status"],
         "dm_v1": runs["dirichlet_multinomial_static_v1"]["comparison"],
-        "dm_v1_status": runs["dirichlet_multinomial_static_v1"][
-            "candidate_status"
-        ],
+        "dm_v1_status": runs["dirichlet_multinomial_static_v1"]["candidate_status"],
         "kappa": kappa,
         "final": final["weekly_composition"],
         "signal": signal,
@@ -477,6 +475,102 @@ def daily_facts() -> dict[str, Any]:
     }
 
 
+def closing_facts() -> dict[str, Any]:
+    """The closing round (§29, §31.1, §31.2, §32.5, §32.6, PB-24)."""
+    knn = load_json("reports/modeling/pattern_knn/results.json")
+    farr = load_json("reports/modeling/persistent_change_farr/results.json")
+    daily_v2 = load_json("reports/modeling/daily_change_v2/results.json")
+    curve = load_json(
+        "reports/modeling/weekly_counts/nb_discounted_hierarchical_v1/"
+        "discount_curve.json"
+    )
+    boundary = load_json("reports/modeling/patterns/boundary_mass.json")
+    gpu = load_json("reports/pipeline/demo_2024-11-04/score.json")
+    cpu = load_json("reports/pipeline/demo_2024-11-04_cpu/score.json")
+    theorizer = load_json("reports/modeling/theorizer_pb24.json")
+    farr_primary = farr["candidates"][str(farr["settings"]["excess_threshold"])]
+    calibration_patterns = boundary["splits"]["calibration"]["patterns"]
+    fractions = sorted(
+        (p["boundary_fraction_distance"], p["cluster_id"])
+        for p in calibration_patterns
+        if p.get("rows")
+    )
+    return {
+        "knn": {
+            "agreement": knn["splits"]["calibration"]["agreement_knn"],
+            "reprojected": knn["splits"]["calibration"]["agreement_reprojected"],
+            "by_k": knn["splits"]["calibration"]["agreement_by_k"],
+            "stable": knn["splits"]["calibration"]["agreement_stable"],
+            "border": knn["splits"]["calibration"]["agreement_border"],
+            "novel": knn["splits"]["calibration"]["novel_fraction"],
+            "validation": knn["splits"]["validation"]["agreement_knn"],
+            "validation_reprojected": knn["splits"]["validation"][
+                "agreement_reprojected"
+            ],
+            "adopted": knn["decision"]["adopted"],
+            "index_rows": knn["index_rows"],
+        },
+        "farr": {
+            "threshold": farr["settings"]["excess_threshold"],
+            "detection": farr_primary["detection"],
+            "reference_detection": farr["reference"]["detection"],
+            "alarms": farr_primary["real_alarms"],
+            "reference_alarms": farr["reference"]["real_alarms"],
+            "wis": farr_primary["wis"],
+            "reference_wis": farr["reference"]["wis"],
+            "reweighted_rows": farr_primary["reweighted_rows"],
+            "candidates": farr["candidates"],
+            "adopted": farr["decision"]["adopted"],
+            "drops": farr["decision"]["detection_drops"],
+        },
+        "daily_v2": {
+            "thresholds": daily_v2["thresholds"],
+            "alarms": daily_v2["real_alarms"],
+            "detection": daily_v2["detection"],
+            "settings": daily_v2["settings"],
+            "adopted": daily_v2["decision"]["adopted"],
+        },
+        "curve": {
+            "fit": curve["splits"]["fit"],
+            "calibration": curve["splits"]["calibration"],
+            "shape": curve["shape"],
+            "chosen": curve["chosen_discount"],
+        },
+        "boundary": {
+            "fit": boundary["splits"]["fit"]["boundary_fraction_distance"],
+            "calibration": boundary["splits"]["calibration"][
+                "boundary_fraction_distance"
+            ],
+            "validation": boundary["splits"]["validation"][
+                "boundary_fraction_distance"
+            ],
+            "mixture_agreement": boundary["splits"]["fit"][
+                "mixture_agreement_with_kmeans"
+            ],
+            "threshold": boundary["thresholds"]["distance_margin"],
+            "patterns": calibration_patterns,
+            "median": fractions[len(fractions) // 2][0],
+            "lowest": fractions[:3],
+            "highest": fractions[-3:],
+        },
+        "pipeline": {
+            "gpu": gpu,
+            "cpu": cpu,
+            "rows": gpu["rows"],
+            "weeks": gpu["weeks"],
+            "days": gpu["days"],
+            "gpu_minutes": gpu["elapsed_seconds"] / 60,
+            "cpu_minutes": cpu["elapsed_seconds"] / 60,
+            "coverage_80": gpu["signals"]["coverage"]["coverage_80"],
+            "novel": gpu["signals"]["novelty"]["novel_fraction"],
+            "macro_f1_gpu": gpu["signals"]["macro_f1"]["macro_f1"],
+            "macro_f1_cpu": cpu["signals"]["macro_f1"]["macro_f1"],
+            "cusum_rows": gpu["alerts"]["cusum_rows"],
+        },
+        "theorizer": theorizer,
+    }
+
+
 def catalog_facts() -> list[dict[str, Any]]:
     catalog = load_json("reports/modeling/patterns/catalog.json")
     patterns = []
@@ -501,6 +595,7 @@ def build() -> dict[str, Any]:
         "composicion": composition_facts(),
         "alertas": alert_facts(),
         "diario": daily_facts(),
+        "cierre": closing_facts(),
         "catalogo": catalog_facts(),
         "tabla": table_rows(),
     }

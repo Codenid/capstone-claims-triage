@@ -53,6 +53,9 @@ y detecte patrones semánticos cuyo volumen aumenta.
 6. Registrar cada decisión, su regla y su evidencia en MLflow, DVC y un
    registro de pre-registro, de modo que otra persona pueda reproducir el
    resultado.
+7. Entregar un pipeline de inferencia que ajuste una vez y puntúe muchas
+   veces, cerrar el modelado probando por regla los candidatos abiertos y
+   contrastar el conjunto con la literatura.
 
 ## Alcance y estructura del documento
 
@@ -64,7 +67,9 @@ categorías internas de un banco. Por eso el entregable es el **método** y la
 
 La @sec-datos describe los datos y su preparación. La @sec-metodologia explica
 el protocolo de evaluación y cada componente, con la razón de cada elección. La
-@sec-resultados presenta los resultados por componente. La @sec-discusion
+@sec-resultados presenta los resultados por componente. La @sec-cierre
+describe el pipeline, los candidatos de cierre y el contraste con la
+literatura. La @sec-discusion
 discute qué se eligió y qué no funcionó. La @sec-limitaciones declara
 expectativas y límites, y la @sec-conclusiones cierra con conclusiones y
 trabajo futuro. Los anexos traen el catálogo de los 40 patrones, la tabla

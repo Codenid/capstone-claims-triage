@@ -29,7 +29,16 @@ los casos simulados con una falsa alarma al mes. Un bloque diario,
 pre-registrado como prueba aparte, dejó un modelo de conteo diario con
 `{python} pct(DIARIO["winner"]["wis_gain"], 0)` menos error que su referencia
 y una regla de alerta diaria que no se adopta porque detecta menos de la mitad
-de las ráfagas simuladas.
+de las ráfagas simuladas. El cierre construyó el pipeline que usa todo lo
+anterior sin reentrenar, probado de punta a punta, y rechazó por sus reglas
+los tres candidatos que quedaban abiertos: un sustituto determinista de la
+proyección UMAP (el patrón queda como etiqueta blanda, con
+`{python} pct(CIERRE["boundary"]["calibration"], 0)` de los reclamos cerca
+de una frontera), la reponderación de las semanas con ráfaga en M11 (se
+realimenta con memoria corta) y una alerta diaria con ventana de tres días
+(cumple el presupuesto de falsas alarmas pero no la detección). Un contraste
+con la literatura mediante Asta Theorizer confirmó las elecciones centrales
+y dejó ocho hipótesis de trabajo futuro.
 
 Se declaran los límites: etiquetas aproximadas, licencias no comerciales,
 taxonomía sin revisión del negocio y un periodo de validación ya consultado.

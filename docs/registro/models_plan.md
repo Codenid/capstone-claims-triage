@@ -2516,6 +2516,17 @@ Planificado el 2026-10-07. Español, para asesor y jurado, 25–35 páginas.
   autocontenido de unos 6 MB (figuras incrustadas), que no se versiona porque
   el guard del curso limita el HTML a 1 MB. Se versiona el PDF; el HTML se
   renderiza bajo demanda.
+- Re-render del 2026-10-21, tras el cierre (§32): capítulo nuevo «Cierre del
+  modelado» (pipeline y prueba de punta a punta, patrón blando con la masa
+  de frontera, C-M11-FARR, D-11 v2 con la explicación de por qué un día no
+  basta y por qué se miran tres, la U del descuento y el contraste con la
+  literatura de PB-24), resumen, objetivos, metodología, discusión,
+  limitaciones, conclusiones y anexo C actualizados; doce referencias nuevas;
+  `facts.py` lee además `pattern_knn`, `persistent_change_farr`,
+  `daily_change_v2`, `discount_curve.json`, `boundary_mass.json`, los
+  `score.json` del pipeline y `reports/modeling/theorizer_pb24.json`
+  (resumen de las corridas de Theorizer, generado de sus exportaciones).
+  PDF de unas 54 páginas versionado; HTML de unos 8 MB sin versionar.
 
 ## 31. Revisión de literatura (PB-23) y candidatos futuros
 

@@ -1,0 +1,245 @@
+# Cierre del modelado {#sec-cierre}
+
+Con los componentes elegidos y confirmados, la última ronda hizo tres cosas:
+construyó el pipeline que los usa sin reentrenar, probó por regla los
+candidatos que quedaban abiertos y contrastó el conjunto con la literatura.
+Todo se decidió con las mismas reglas de la @sec-metodologia; ninguna cifra
+de validación se usó para decidir.
+
+## Pipeline de inferencia: ajustar una vez, puntuar muchas veces
+
+El pipeline recibe una tabla de reclamos con las columnas públicas de la
+CFPB y devuelve, por reclamo, el motivo más probable y los dos siguientes,
+las probabilidades de solución y compensación, el patrón y su novedad y los
+cinco reclamos de ajuste más parecidos; y por semana y por día, el conteo de
+cada patrón con la expectativa e intervalos de M9 y del modelo diario, el
+exceso, el CUSUM de M11 y el p-valor de mezcla rara de M10. Comprueba antes
+que la cadena congelada esté completa (hashes de DVC y claves de corrida) y
+no reajusta nada. La prueba de punta a punta corrió sobre dos semanas de
+calibración (`{python} i(CIERRE["pipeline"]["rows"])` reclamos,
+`{python} CIERRE["pipeline"]["weeks"]` semanas,
+`{python} CIERRE["pipeline"]["days"]` días): en una GPU del clúster tomó
+`{python} n(CIERRE["pipeline"]["gpu_minutes"], 0)` minutos con TabPFN; en
+CPU, sin TabPFN y con el clasificador lineal de respaldo,
+`{python} n(CIERRE["pipeline"]["cpu_minutes"] / 60, 1)` horas. El intervalo
+de 80 % de M9 cubrió `{python} pct(CIERRE["pipeline"]["coverage_80"], 0)` de
+los conteos, la fracción de reclamos novedosos fue
+`{python} pct(CIERRE["pipeline"]["novel"])` y el CUSUM reprodujo la alarma
+que la corrida congelada de M11 había dado en esas semanas.
+
+## El patrón es una etiqueta blanda
+
+La prueba de punta a punta mostró algo que la evaluación por bloques no
+podía ver: la proyección UMAP asigna un patrón distinto al mismo reclamo
+según con qué otros reclamos se procesa. Con los embeddings congelados, la
+proyección coincide consigo misma en
+`{python} pct(CIERRE["knn"]["reprojected"])` de los reclamos de calibración
+cuando se cambia el orden de los lotes; los embeddings, en cambio, se
+reproducen exactamente. El ruido está en la proyección, no en el texto ni en
+k-means, y mueve los conteos semanales por patrón hasta en 8 %.
+
+Se pre-registró un sustituto determinista: el voto, ponderado por similitud,
+de los cinco reclamos de ajuste más parecidos en el índice FAISS
+(`{python} i(CIERRE["knn"]["index_rows"])` reclamos), con la regla de adoptarlo
+si coincidía con las etiquetas congeladas al menos tanto como la proyección
+consigo misma. Coincidió en `{python} pct(CIERRE["knn"]["agreement"])`
+(con 20 vecinos, `{python} pct(CIERRE["knn"]["by_k"]["20"])`) frente a
+`{python} pct(CIERRE["knn"]["reprojected"])`: los vecinos en el espacio de
+1,024 dimensiones definen una partición parecida, no la misma. **No se
+adopta**; el patrón queda declarado como etiqueta blanda cerca de las
+fronteras.
+
+Para leer las alarmas con ese dato a la vista se midió la masa de frontera
+de cada patrón: la fracción de reclamos cuyo segundo centro de k-means está
+a menos del `{python} pct(CIERRE["boundary"]["threshold"], 0)` de distancia
+relativa del primero. En calibración es
+`{python} pct(CIERRE["boundary"]["calibration"])` en total, con mediana por
+patrón de `{python} pct(CIERRE["boundary"]["median"], 0)` y extremos de
+`{python} pct(CIERRE["boundary"]["lowest"][0][0], 0)` (patrón
+`{python} CIERRE["boundary"]["lowest"][0][1]`) a
+`{python} pct(CIERRE["boundary"]["highest"][-1][0], 0)` (patrón
+`{python} CIERRE["boundary"]["highest"][-1][1]`). Una alarma de M11 en un
+patrón con mucha masa de frontera puede ser reasignación; en uno con poca,
+no. Una mezcla gaussiana ajustada sobre las mismas coordenadas UMAP no
+sirvió como margen de la partición vigente: coincide con k-means en
+`{python} pct(CIERRE["boundary"]["mixture_agreement"], 0)` de los reclamos,
+es decir, define otra partición.
+
+```{python}
+#| label: fig-frontera
+#| fig-cap: "Masa de frontera por patrón en calibración: fracción de reclamos cuyo segundo centro está a menos del 10 % de distancia relativa del primero. La línea es la mediana entre patrones."
+patterns = sorted(CIERRE["boundary"]["patterns"], key=lambda p: p["cluster_id"])
+ids = [p["cluster_id"] for p in patterns]
+values = [p.get("boundary_fraction_distance", 0.0) for p in patterns]
+fig, ax = plt.subplots(figsize=(6.3, 2.6))
+ax.bar(ids, values, color=AZUL, width=0.8)
+ax.axhline(CIERRE["boundary"]["median"], color="black", linewidth=0.8, linestyle="--")
+ax.set_xlabel("patrón")
+ax.set_ylabel("masa de frontera")
+ax.set_ylim(0, 1)
+ax.grid(axis="x", visible=False)
+plt.show()
+```
+
+## El eco de las ráfagas no se corrige con reponderación
+
+M11 espera de más en un patrón durante las semanas que siguen a una ráfaga,
+porque la memoria de C-A la absorbe entera. La corrección clásica de la
+vigilancia epidemiológica, reducir el peso de los periodos anómalos al
+estimar la línea base [@farrington1996outbreak; @noufaily2013improved], se
+pre-registró con peso (z₀/z)² para los excesos por encima de
+z₀ = `{python} CIERRE["farr"]["threshold"]` y se evaluó con la misma
+simulación de M11. Salió al revés de lo buscado: la detección del CUSUM en
+los crecimientos de 10 % y 20 % bajó de
+`{python} pct(CIERRE["farr"]["reference_detection"]["growth_10"]["cusum"]["detected"], 1)`
+y `{python} pct(CIERRE["farr"]["reference_detection"]["growth_20"]["cusum"]["detected"], 1)`
+a `{python} pct(CIERRE["farr"]["detection"]["growth_10"]["cusum"]["detected"], 1)`
+y `{python} pct(CIERRE["farr"]["detection"]["growth_20"]["cusum"]["detected"], 1)`,
+las alarmas reales subieron de
+`{python} n(CIERRE["farr"]["reference_alarms"]["calibration"]["cusum_per_month"], 2)`
+a `{python} n(CIERRE["farr"]["alarms"]["calibration"]["cusum_per_month"], 2)`
+al mes en calibración y el WIS de la expectativa pasó de
+`{python} n(CIERRE["farr"]["reference_wis"]["calibration"], 1)` a
+`{python} n(CIERRE["farr"]["wis"]["calibration"], 1)`. Con una memoria de
+unas dos semanas la reponderación se realimenta: al restar peso a una semana
+alta baja la participación, la semana siguiente vuelve a quedar «en exceso»
+y se descuenta otra vez, y un aumento real sostenido nunca entra a la
+memoria (`{python} CIERRE["farr"]["reweighted_rows"]` filas reponderadas
+frente a 58 con exceso en M11). Farrington y Noufaily reponderan contra una
+línea base de años ajustada por regresión; la idea no se traslada a una
+memoria recursiva corta. **No se adopta**; el eco queda como límite
+declarado y la literatura señala otra salida, la cuarentena discreta de las
+semanas con alarma [@dorea2013syndromic], que queda como trabajo futuro.
+
+## Por qué un día no basta y por qué se miran tres
+
+La alerta diaria se volvió a probar con lo que la literatura de vigilancia
+señala para ráfagas cortas [@gopaluni2025rolling; @bedubourg2017evaluation]:
+una regla sobre la ventana de los últimos tres días,
+$S = (z_d + z_{d-1} + z_{d-2}) / \sqrt{3}$, junto a la regla de un día y el CUSUM
+diario, y umbrales empíricos fijados sobre los excesos reales de ajuste en
+lugar de la normal simulada (z\* =
+`{python} n(CIERRE["daily_v2"]["thresholds"]["daily"], 2)` frente a
+`{python} n(DIARIO["change"]["thresholds"]["daily"], 2)` en D-11; s\* =
+`{python} n(CIERRE["daily_v2"]["thresholds"]["scan"], 2)`; h =
+`{python} n(CIERRE["daily_v2"]["thresholds"]["cusum"], 2)`).
+
+```{python}
+#| label: tbl-d11v2
+#| tbl-cap: "D-11 v2 sobre D-D: fracción de ráfagas inyectadas detectadas en 14 días (mediana del retraso en días) con umbrales empíricos y 4 falsas alarmas al mes; la última columna es el CUSUM semanal de M11 sobre las mismas ráfagas."
+v2_labels = {
+    "burst_x2_3d": "Ráfaga ×2 durante 3 días",
+    "burst_x3_1d": "Ráfaga ×3 durante 1 día",
+    "burst_x3_3d": "Ráfaga ×3 durante 3 días",
+    "rise_x1_5_7d": "Subida ×1.5 durante 7 días",
+    "none": "Sin aumento (falsas alarmas)",
+}
+rows = []
+for key, label in v2_labels.items():
+    d = CIERRE["daily_v2"]["detection"][key]
+    def cell(rule):
+        delay = d[rule]["median_delay"]
+        return pct(d[rule]["detected"]) + ("" if delay is None else f' ({n(delay, 0)} d)')
+    weekly = pct(d["weekly_cusum"]["detected"]) if "weekly_cusum" in d else "—"
+    rows.append([label, cell("daily"), cell("scan"), cell("cusum"), weekly])
+Markdown(md_table(["Escenario", "Un día", "Ventana de 3 días", "CUSUM diario", "CUSUM semanal"], rows, "lrrrr"))
+```
+
+Con los umbrales empíricos el presupuesto sí se cumple:
+`{python} n(CIERRE["daily_v2"]["alarms"]["calibration"]["daily_per_month"], 1)`,
+`{python} n(CIERRE["daily_v2"]["alarms"]["calibration"]["scan_per_month"], 1)` y
+`{python} n(CIERRE["daily_v2"]["alarms"]["calibration"]["cusum_per_month"], 1)`
+alarmas al mes en calibración frente a las
+`{python} CIERRE["daily_v2"]["settings"]["false_alarms_per_month"]`
+presupuestadas (D-11 daba entre 8 y 13 porque sus umbrales suponían colas
+normales). El costo es la detección: la ventana de tres días es la mejor
+regla diaria para ráfagas de varios días
+(`{python} pct(CIERRE["daily_v2"]["detection"]["burst_x2_3d"]["scan"]["detected"], 0)`
+en ×2 de tres días frente a
+`{python} pct(CIERRE["daily_v2"]["detection"]["burst_x2_3d"]["daily"]["detected"], 0)`
+de un día) y la peor para un pico de un día, como predice la escala
+temporal; pero ninguna llega al 50 % exigido. La razón es aritmética: un
+patrón de 15 reclamos diarios tiene un ruido de unos ±6; una ráfaga ×2 da 30,
+que está a 2.5 desviaciones, justo donde no se distingue de un día raro. La
+suma de tres días de ráfaga (90 frente a 45, ruido ±10) sí se distingue, y
+por eso la ventana gana; pero con 40 patrones vigilados cada día y 4 falsas
+alarmas al mes, el umbral tiene que ser tan alto que la mitad de las ráfagas
+×2 queda debajo. **D-11 v2 no se adopta.** La salida diaria sigue siendo la
+expectativa de D-D con sus intervalos y la lista de patrones ordenada por
+exceso, sin presupuesto de falsas alarmas garantizado.
+
+## El descuento de C-A está donde la teoría lo predice
+
+La rejilla que eligió δ = `{python} CIERRE["curve"]["chosen"]` en ajuste
+empezaba en ese valor, así que nunca midió qué pasa con memorias más cortas.
+Al ampliarla, el WIS en función del descuento dibuja la U que predice la
+teoría: en ajuste baja de
+`{python} n(CIERRE["curve"]["fit"][0]["wis"], 2)` (δ = 0.1) a
+`{python} n(CIERRE["curve"]["shape"]["fit"]["minimum_wis"], 2)` en δ =
+`{python} CIERRE["curve"]["shape"]["fit"]["argmin_discount"]` y sube a
+`{python} n(CIERRE["curve"]["fit"][-1]["wis"], 2)` en δ = 0.95; en
+calibración, de `{python} n(CIERRE["curve"]["calibration"][0]["wis"], 2)` a un
+mínimo de `{python} n(CIERRE["curve"]["shape"]["calibration"]["minimum_wis"], 2)`
+y `{python} n(CIERRE["curve"]["calibration"][-1]["wis"], 2)`. El valor
+elegido queda a menos de 0.3 % del mínimo; C-A no cambia.
+
+```{python}
+#| label: fig-descuento
+#| fig-cap: "WIS plug-in de la memoria de C-A frente al descuento δ, en ajuste y en calibración. La rejilla original (0.5 a 0.9) no veía el brazo izquierdo."
+fig, ax = plt.subplots(figsize=(6.3, 2.6))
+for split, color, label in (("fit", AZUL, "ajuste"), ("calibration", NARANJA, "calibración")):
+    points = CIERRE["curve"][split]
+    ax.plot([p["discount"] for p in points], [p["wis"] for p in points], marker="o", markersize=3.5, color=color, label=label)
+ax.axvline(CIERRE["curve"]["chosen"], color="black", linewidth=0.8, linestyle="--")
+ax.set_xlabel("descuento δ")
+ax.set_ylabel("WIS")
+ax.legend(frameon=False, fontsize=8)
+plt.show()
+```
+
+## Contraste con la literatura
+
+Con el modelado cerrado se usó Asta Theorizer para contrastar cuatro
+preguntas con la literatura: el diseño de la línea base de M11, la
+estabilidad del patrón, el cabezal tabular en contexto frente al ajuste fino
+en T1, y la memoria corta frente al espacio de estados en los modelos de
+conteo. Cada pregunta buscó y extrajo hallazgos de unos 30 papers, formó
+teorías y evaluó su novedad, validando el equipo cada etapa. Resultaron
+`{python} CIERRE["theorizer"]["totals"]["theories"]` teorías y
+`{python} CIERRE["theorizer"]["totals"]["judgments"]` juicios de novedad:
+`{python} CIERRE["theorizer"]["totals"]["novelty_judgments"]["derivable_unstated"]`
+derivables de la literatura pero no enunciados,
+`{python} CIERRE["theorizer"]["totals"]["novelty_judgments"]["explicit_established"]`
+ya establecidos y
+`{python} CIERRE["theorizer"]["totals"]["novelty_judgments"]["genuinely_new"]`
+genuinamente nuevos. Tres conclusiones pesan sobre este informe:
+
+- Lo que hicimos coincide con lo que la literatura predice en C-A (una
+  memoria regularizada gana a un estado latente mal identificado en paneles
+  cortos [@berry2018dcmm; @chapados2014hnbss]), en la exclusión de D-B (NUTS
+  sobre trayectorias latentes de composición se atasca; la salida es
+  marginalizar o muestrear por bloques [@linderman2015polyagamma;
+  @silverman2019mln; @saxena2024mlndlm]) y en el rechazo de la
+  reponderación (el efecto cambia de signo con memoria corta).
+- Lo que la literatura habría hecho distinto: anclar el patrón a prototipos
+  fijos en un espacio fijo o a un codificador paramétrico
+  [@sainburg2020parametric] en lugar de la proyección UMAP; dos escalas de
+  alerta en vez de una; blanquear los embeddings y curar el contexto de
+  TabPFN con mínimos por clase [@bergstrom2026comet; @tanna2026finetuning;
+  @qu2025tabicl].
+- Lo genuinamente nuevo de este trabajo, según esa evaluación: la inversión
+  del efecto de la robustificación según la memoria efectiva, y los conteos
+  por patrón como canal de error de medida cuya matriz de confusión depende
+  del lote.
+
+```{python}
+#| label: tbl-theorizer
+#| tbl-cap: "Las cuatro preguntas a Theorizer: papers con hallazgos extraídos, teorías formadas y juicios de novedad por grado."
+short = {"q1": "P1. Línea base de M11", "q2": "P2. Estabilidad del patrón", "q3": "P3. T1, TabPFN frente a ajuste fino", "q4": "P4. Conteos bayesianos"}
+rows = []
+for key in ("q1", "q2", "q3", "q4"):
+    q = CIERRE["theorizer"]["questions"][key]
+    j = q["novelty_judgments"]
+    rows.append([short[key], f'{q["with_findings"]} de {q["papers"]}', len(q["theories"]), j.get("derivable_unstated", 0), j.get("explicit_established", 0) + j.get("explicit_peripheral", 0), j.get("genuinely_new", 0)])
+Markdown(md_table(["Pregunta", "Papers con hallazgos", "Teorías", "Derivable", "Establecido", "Nuevo"], rows, "lrrrrr"))
+```

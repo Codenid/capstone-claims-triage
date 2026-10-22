@@ -35,19 +35,25 @@
   banco requiere una licencia de Prior Labs. Un experto debe validar esa
   lectura antes de proponerlo.
 - **Deriva.** Los modelos se ajustaron con 2023–2024. Cuando la composición
-  de reclamos cambie, habrá que reajustar; el pipeline planificado prevé
-  ajustar una vez y solo predecir mientras la deriva no obligue a repetirlo.
+  de reclamos cambie, habrá que reajustar; el pipeline ajusta una vez y
+  solo predice, con cuatro señales de reentrenamiento (novedad, cobertura de
+  M9, mezcla rara y caída de T1 cuando la tabla trae el motivo real).
 - **Eco de ráfagas.** Una semana muy concentrada en un patrón contamina las
   expectativas de las semanas siguientes y produce alertas que son eco, no
-  novedad. La persona que revisa debe saberlo.
+  novedad. La reponderación de esas semanas se probó y empeoró las dos
+  cosas que debía mejorar (@sec-cierre); la persona que revisa debe saberlo.
 - **Escala diaria.** En estos datos históricos los días están completos; en
   producción los últimos días de la CFPB llegan incompletos, así que lo diario
   solo vale para días maduros o para datos propios sin rezago. No hay
   calendario de feriados en el modelo: un feriado se ve como un día de bajo
-  volumen. La alerta diaria no se adoptó.
+  volumen. La alerta diaria no se adoptó en ninguna de sus dos versiones:
+  con el presupuesto de falsas alarmas respetado, ni la regla de un día ni
+  la ventana de tres días detectan la mitad de una ráfaga ×2.
 - **Patrones.** Son una partición útil, no categorías: otro espacio u otra
-  semilla da grupos distintos de calidad parecida. El catálogo mitiga eso al
-  describir cada patrón con palabras y ejemplos.
+  semilla da grupos distintos de calidad parecida, y la proyección de un
+  reclamo nuevo cambia de patrón en alrededor del 9 % de los casos según el
+  lote en que se procesa. El catálogo mitiga lo primero; la masa de frontera
+  por patrón (@sec-cierre) acompaña a cada alarma para leer lo segundo.
 - **Cómputo.** Las corridas bayesianas completas necesitan un clúster
   (Khipu, cola estándar, hasta 8 horas por trabajo); un espacio de estados
   diario no cupo. El pipeline de inferencia, en cambio, solo predice y corre

@@ -1,0 +1,210 @@
+{
+  "date": "2026-10-21",
+  "tool": "Asta Theorizer via asta generate-theories (piecemeal: find-and-extract, form-theory, evaluate-novelty)",
+  "papers_per_question": 30,
+  "questions": {
+    "q1": {
+      "slug": "cusum_echo",
+      "title": "Eco de las ráfagas: diseño de la línea base de M11",
+      "run_id": "gen-20261021-c09f9734",
+      "papers": 38,
+      "full_text": 22,
+      "with_findings": 21,
+      "findings": 98,
+      "theories": [
+        {
+          "id": "theory-1",
+          "name": "Short-memory baseline feedback instability (corrected)",
+          "evidence": 12
+        },
+        {
+          "id": "theory-2",
+          "name": "Budgeted sensitivity via time-scale matching (aggregation / memory length)",
+          "evidence": 4
+        },
+        {
+          "id": "theory-3",
+          "name": "False-alarm budget invariance via baseline degrees-of-freedom management (revised)",
+          "evidence": 11
+        },
+        {
+          "id": "theory-4",
+          "name": "Feedback instability from baseline contamination and anomaly re-injection (echo amplification)",
+          "evidence": 5
+        },
+        {
+          "id": "theory-5",
+          "name": "Guard-band plus winsorized baseline storage beats residual reweighting in short windows",
+          "evidence": 9
+        },
+        {
+          "id": "theory-6",
+          "name": "Multi-scale aggregation as an implicit longer-memory baseline for sustained growth",
+          "evidence": 11
+        }
+      ],
+      "novelty_judgments": {
+        "explicit_established": 6,
+        "explicit_peripheral": 5,
+        "derivable_unstated": 28,
+        "genuinely_new": 3
+      }
+    },
+    "q2": {
+      "slug": "pattern_stability",
+      "title": "Estabilidad del patrón: asignación fuera de muestra",
+      "run_id": "gen-20261021-e8cd9fe2",
+      "papers": 37,
+      "full_text": 27,
+      "with_findings": 27,
+      "findings": 76,
+      "theories": [
+        {
+          "id": "theory-1",
+          "name": "Boundary-Margin Instability and Measurement-Error Propagation (revised)",
+          "evidence": 11
+        },
+        {
+          "id": "theory-2",
+          "name": "Anchored-Prototype Determinism vs Manifold-Extension Drift",
+          "evidence": 10
+        },
+        {
+          "id": "theory-3",
+          "name": "Anchored-Inductive Assignment Stability Tradeoff (revised)",
+          "evidence": 18
+        },
+        {
+          "id": "theory-4",
+          "name": "Boundary-Mass Drives Count-Alarm Fragility",
+          "evidence": 8
+        },
+        {
+          "id": "theory-5",
+          "name": "UMAP OOS Batch-Composition Dependence via Neighbor-Graph Perturbation",
+          "evidence": 8
+        },
+        {
+          "id": "theory-6",
+          "name": "Order-Dependence Instability in Online Prototype Clustering and Its Effect on Counts",
+          "evidence": 7
+        }
+      ],
+      "novelty_judgments": {
+        "derivable_unstated": 86,
+        "genuinely_new": 6,
+        "explicit_peripheral": 3,
+        "explicit_established": 2
+      }
+    },
+    "q3": {
+      "slug": "tabpfn_finetune",
+      "title": "T1: cabezal tabular en contexto frente a ajuste fino",
+      "run_id": "gen-20261021-0d334f20",
+      "papers": 40,
+      "full_text": 31,
+      "with_findings": 23,
+      "findings": 78,
+      "theories": [
+        {
+          "id": "theory-1",
+          "name": "Bottlenecked Bayesian Head Theory (BBH) — revised",
+          "evidence": 13
+        },
+        {
+          "id": "theory-2",
+          "name": "Many-Class Decomposition and Tail-Exposure Theory (MaC-TET)",
+          "evidence": 8
+        },
+        {
+          "id": "theory-3",
+          "name": "Many-Class Decomposition vs Tail Metrics Theory (MCD-TM) — corrected",
+          "evidence": 13
+        },
+        {
+          "id": "theory-4",
+          "name": "Compression–Context Alignment Theory (CCAT)",
+          "evidence": 9
+        },
+        {
+          "id": "theory-5",
+          "name": "Isotropy–Whitening Rescue Hypothesis (IWRH)",
+          "evidence": 7
+        },
+        {
+          "id": "theory-6",
+          "name": "Tail-Aware Context Curation Theory (TACCT)",
+          "evidence": 13
+        }
+      ],
+      "novelty_judgments": {
+        "derivable_unstated": 53,
+        "genuinely_new": 3,
+        "explicit_established": 16,
+        "explicit_peripheral": 4
+      }
+    },
+    "q4": {
+      "slug": "bayesian_counts",
+      "title": "Conteos bayesianos: memoria corta frente a espacio de estados",
+      "run_id": "gen-20261021-a2026bc1",
+      "papers": 33,
+      "full_text": 29,
+      "with_findings": 27,
+      "findings": 140,
+      "theories": [
+        {
+          "id": "theory-1",
+          "name": "Effective-Sample-Size vs Flexibility Theory for Short Compositional Count Panels (revised)",
+          "evidence": 10
+        },
+        {
+          "id": "theory-2",
+          "name": "Inference-Geometry Dominance Theory for Dynamic Share Models under NUTS",
+          "evidence": 3
+        },
+        {
+          "id": "theory-3",
+          "name": "Sampler-Geometry Theory for Dynamic Share Models on Short Panels (revised)",
+          "evidence": 3
+        },
+        {
+          "id": "theory-4",
+          "name": "Short-Memory Observation-Driven Dominance Theory for WIS on Short, Noisy Count Panels",
+          "evidence": 4
+        },
+        {
+          "id": "theory-5",
+          "name": "Short-Panel Share Forecast Dominance of Observation-Driven Memory Models",
+          "evidence": 6
+        },
+        {
+          "id": "theory-6",
+          "name": "Inference-Mechanism Trumps Model Class in Dynamic Compositional Counts",
+          "evidence": 3
+        },
+        {
+          "id": "theory-7",
+          "name": "Discount-Matching Principle for Memory Share Models",
+          "evidence": 9
+        }
+      ],
+      "novelty_judgments": {
+        "derivable_unstated": 64,
+        "genuinely_new": 4,
+        "explicit_peripheral": 5,
+        "explicit_established": 11
+      }
+    }
+  },
+  "totals": {
+    "theories": 25,
+    "novelty_judgments": {
+      "explicit_established": 35,
+      "explicit_peripheral": 17,
+      "derivable_unstated": 231,
+      "genuinely_new": 16
+    },
+    "judgments": 299
+  }
+}

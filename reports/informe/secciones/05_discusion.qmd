@@ -48,7 +48,8 @@ una binomial negativa con dispersión moderada, y los excesos diarios reales
 tienen colas más pesadas que la normal con la que se simularon los umbrales:
 la regla avisa dos o tres veces más de lo presupuestado y detecta menos de la
 mitad. El bloque diario deja un modelo de expectativa diaria útil y una regla
-que habría que rediseñar con umbrales empíricos, no un sustituto de M11.
+que, rediseñada con umbrales empíricos y ventana de tres días, tampoco
+alcanzó la detección exigida (@sec-cierre); no es un sustituto de M11.
 
 ## Qué no funcionó, y qué se aprendió
 
@@ -76,16 +77,24 @@ que habría que rediseñar con umbrales empíricos, no un sustituto de M11.
   reclamos de una semana, M9 espera de más para ese patrón y de menos para los
   otros en las semanas siguientes, y M11 avisa por eso. La memoria corta lo
   atenúa pero no lo corrige; un recorte de semanas atípicas se probó en ajuste
-  y no ganó. La vigilancia epidemiológica resuelve el mismo problema
-  reponderando las semanas con brote al estimar la línea base
-  [@farrington1996outbreak; @noufaily2013improved]; es el primer candidato de
-  la revisión de literatura (anexo C y registro §31).
+  y no ganó. La reponderación de las semanas con brote, que la vigilancia
+  epidemiológica usa con líneas base de años [@farrington1996outbreak;
+  @noufaily2013improved], se probó en el cierre y empeoró el eco
+  (@sec-cierre): con memoria corta se realimenta.
 - **La señal de mezcla rara en 2023.** Marcó `{python} COMP["signal"]["splits"]["fit"]["flagged"]`
   de `{python} COMP["signal"]["splits"]["fit"]["weeks"]` semanas de ajuste: una
   única concentración κ no describe la variación de composición de ese año.
   La señal sirve como ordenación de semanas, no como prueba.
 - **Kumo Tabular y Relational.** No cupieron en la memoria del clúster;
   quedan como prueba futura, igual que el ajuste fino de TabPFN.
+
+- **Los tres candidatos del cierre.** El voto de vecinos, la reponderación
+  de M11 y la alerta diaria de tres días fallaron sus reglas (@sec-cierre).
+  Los tres dejaron una explicación: la proyección UMAP no es reproducible y
+  los vecinos definen otra partición; una memoria de dos semanas se
+  realimenta si se reponderan sus propias anomalías; y a resolución diaria,
+  honrar el presupuesto de falsas alarmas deja la señal por patrón debajo
+  del ruido. El contraste con la literatura confirmó las tres lecturas.
 
 El valor del pre-registro se vio en cada uno de estos casos: el criterio
 estaba escrito, la decisión fue mecánica y el resultado negativo quedó

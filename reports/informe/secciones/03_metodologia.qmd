@@ -173,3 +173,21 @@ durante 1 día y ×1.5 durante 7 días. Se adopta solo si detecta al menos
 `{python} pct(DIARIO["change"]["settings"]["minimum_detection"], 0)` de las
 dos primeras ráfagas con mediana de retraso de a lo más
 `{python} DIARIO["change"]["settings"]["maximum_median_delay"]` días.
+
+## Cierre: pipeline y candidatos posteriores
+
+El pipeline de inferencia fija la cadena de componentes vigentes (hashes de
+DVC y claves de corrida) y puntúa tablas nuevas sin reajustar; su prueba de
+punta a punta usa dos semanas de calibración ya consultadas. Los candidatos
+probados después del cierre se decidieron con reglas escritas antes de
+correrlos: un sustituto de la proyección UMAP por voto de vecinos (criterio:
+acuerdo con las etiquetas congeladas al menos igual al de la proyección
+consigo misma), la reponderación de las semanas con exceso en la memoria de
+M11 (misma simulación de M11: detección que no baje más de 5 puntos y menos
+alarmas reales) y una alerta diaria con ventana de tres días y umbrales
+empíricos (la regla de D-11 más el presupuesto comprobado en calibración).
+Dos comprobaciones sin cambio de modelo, la curva del WIS frente al descuento
+de C-A y la masa de frontera de cada patrón, completan el cierre. El
+contraste con la literatura se hizo con Asta Theorizer por etapas, validando
+el equipo la lista de papers y las teorías antes de cada paso.
+
