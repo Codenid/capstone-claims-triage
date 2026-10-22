@@ -60,6 +60,8 @@ DIMENSIONS = (
     "empirical_synthesis_meta_regulariry",
 )
 STOP = {"a", "an", "the", "of", "for", "on", "in", "and", "to", "with", "from", "by"}
+# Same work published twice: cite the hand-written entry.
+ALIASES = {"1802.03426": "mcinnes2018umap"}
 
 
 def slug(text: str) -> str:
@@ -83,14 +85,28 @@ def protect_title(title: str) -> str:
     return " ".join(words)
 
 
-def hand_keys() -> set[str]:
+def normalized(title: str) -> str:
+    return slug(title)[:60]
+
+
+def hand_entries() -> dict[str, str]:
+    """Identifiers (key, DOI, arXiv id, normalized title) -> hand-written key."""
     text = HAND_BIB.read_text(encoding="utf-8")
-    return set(re.findall(r"^@\w+\{([^,]+),", text, flags=re.M))
+    lookup: dict[str, str] = {}
+    for block in re.split(r"^@", text, flags=re.M)[1:]:
+        key = block.split("{", 1)[1].split(",", 1)[0].strip()
+        lookup[key] = key
+        for field, value in re.findall(
+            r"^\s*(doi|eprint|title)\s*=\s*\{(.*)\},?$", block, flags=re.M
+        ):
+            value = value.strip()
+            lookup[normalized(value) if field == "title" else value.lower()] = key
+    return lookup
 
 
 def entry(key: str, paper: dict[str, Any], meta: dict[str, Any]) -> str:
     authors = [a["name"] for a in (meta.get("authors") or []) if a.get("name")]
-    author = " and ".join(authors[:6]) + (" and others" if len(authors) > 6 else "")
+    author = " and ".join(authors)
     title = (paper.get("title") or meta.get("title") or "").strip()
     year = paper.get("publication_year") or meta.get("year")
     venue = (meta.get("venue") or "").strip()
@@ -113,7 +129,10 @@ def entry(key: str, paper: dict[str, Any], meta: dict[str, Any]) -> str:
 
 
 def citation_key(
-    paper: dict[str, Any], meta: dict[str, Any], used: dict[str, str]
+    paper: dict[str, Any],
+    meta: dict[str, Any],
+    used: dict[str, str],
+    reserved: set[str],
 ) -> str | None:
     title = (paper.get("title") or meta.get("title") or "").strip()
     year = paper.get("publication_year") or meta.get("year")
@@ -123,14 +142,14 @@ def citation_key(
     surname = authors[0].split()[-1]
     words = [w for w in re.findall(r"[A-Za-z]+", title) if w.lower() not in STOP]
     key = f"{slug(surname)}{year}{slug(words[0] if words else 'paper')}"
-    if key in used and used[key] != title:
+    if (key in used and used[key] != title) or key in reserved:
         key += slug(words[1]) if len(words) > 1 else "b"
     used.setdefault(key, title)
     return key
 
 
 def main() -> None:
-    existing = hand_keys()
+    existing = hand_entries()
     used: dict[str, str] = {}
     entries: dict[str, str] = {}
     summary: dict[str, Any] = {
@@ -169,11 +188,22 @@ def main() -> None:
         for pid in sorted(supporting):
             paper = papers.get(pid) or {}
             meta = paper.get("s2_metadata") or {}
-            key = citation_key(paper, meta, used)
+            ids = meta.get("externalIds") or {}
+            title = (paper.get("title") or meta.get("title") or "").strip()
+            hand = (
+                ALIASES.get(ids.get("ArXiv") or "")
+                or existing.get((ids.get("DOI") or "").lower())
+                or existing.get((ids.get("ArXiv") or "").lower())
+                or existing.get(normalized(title))
+            )
+            if hand:  # already written by hand: cite that entry
+                keys.append(hand)
+                continue
+            key = citation_key(paper, meta, used, set(existing.values()))
             if key is None:
                 continue
             keys.append(key)
-            if key not in existing and key not in entries:
+            if key not in entries:
                 entries[key] = entry(key, paper, meta)
         totals.update(degrees)
         theories_total += len(theories)
@@ -202,7 +232,9 @@ def main() -> None:
         "theories": theories_total,
         "novelty_judgments": dict(totals),
         "judgments": sum(totals.values()),
-        "evidence_papers": len(used),
+        "evidence_papers": len(
+            {k for q in summary["questions"].values() for k in q["evidence_keys"]}
+        ),
     }
     SUMMARY.write_text(
         json.dumps(summary, indent=2, ensure_ascii=False) + "\n",

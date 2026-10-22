@@ -6,6 +6,7 @@ project:
 
 lang: es
 bibliography: bibliografia.bib
+csl: apa.csl
 number-sections: true
 toc: true
 toc-depth: 2

@@ -5,7 +5,7 @@
   "questions": {
     "q1": {
       "slug": "cusum_echo",
-      "title": "Eco de las ráfagas: diseño de la línea base de M11",
+      "title": "Syndromic Surveillance Using Veterinary Laboratory Data: Algorithm Combination and Customization of Alerts",
       "run_id": "gen-20261021-c09f9734",
       "papers": 38,
       "full_text": 22,
@@ -55,12 +55,12 @@
         "craig2023comparison",
         "dorea2013syndromic",
         "enki2016comparison",
-        "gopaluni2025evaluation",
+        "gopaluni2025rolling",
         "hutwagner2005comparing",
         "nekorchuk2020malaria",
         "nekorchuk2021comparing",
         "noufaily2018comparison",
-        "salmon2014monitoring",
+        "salmon2016surveillance",
         "silva2024monitoring",
         "stewart2016why",
         "widdowson2003automated",
@@ -71,7 +71,7 @@
     },
     "q2": {
       "slug": "pattern_stability",
-      "title": "Estabilidad del patrón: asignación fuera de muestra",
+      "title": "Top2Vec: Distributed Representations of Topics",
       "run_id": "gen-20261021-e8cd9fe2",
       "papers": 37,
       "full_text": 27,
@@ -142,7 +142,7 @@
     },
     "q3": {
       "slug": "tabpfn_finetune",
-      "title": "T1: cabezal tabular en contexto frente a ajuste fino",
+      "title": "TabDPT: Scaling Tabular Foundation Models on Real Data",
       "run_id": "gen-20261021-0d334f20",
       "papers": 40,
       "full_text": 31,
@@ -187,25 +187,25 @@
         "explicit_peripheral": 4
       },
       "evidence_keys": [
-        "bergstrom2026modular",
+        "bergstrom2026comet",
         "berta2026calarena",
         "erickson2025tabarena",
         "gardner2024large",
         "hollmann2022tabpfn",
-        "hollmann2025accurate",
+        "hollmann2025tabpfn",
         "jiang2025representation",
         "kang2026language",
         "ma2024tabdpt",
         "manokhin2026classifier",
         "qu2025tabicl",
         "spinaci2025contexttab",
-        "tanna2026exploring",
-        "zhang2026tabpfn"
+        "tanna2026finetuning",
+        "zhang2026tabpfnhead"
       ]
     },
     "q4": {
       "slug": "bayesian_counts",
-      "title": "Conteos bayesianos: memoria corta frente a espacio de estados",
+      "title": "Dirichlet Proportions Model for Hierarchically Coherent Probabilistic Forecasting",
       "run_id": "gen-20261021-a2026bc1",
       "papers": 33,
       "full_text": 29,
@@ -258,15 +258,15 @@
         "aijo2016temporal",
         "aktekin2016sequential",
         "bakdash2017malware",
-        "berry2018bayesian",
+        "berry2018dcmm",
         "das2022dirichlet",
         "fong2023deep",
         "huang2026bayesian",
-        "linderman2015dependent",
+        "linderman2015polyagamma",
         "long2024fast",
         "randahl2024forecasting",
-        "saxena2024scalable",
-        "silverman2019bayesian",
+        "saxena2024mlndlm",
+        "silverman2019mln",
         "yanchenko2021hierarchical",
         "zhang2023discrete"
       ]

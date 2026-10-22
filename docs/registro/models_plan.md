@@ -2535,6 +2535,11 @@ Planificado el 2026-10-07. Español, para asesor y jurado, 25–35 páginas.
   14 y 14 por pregunta), generados de las salidas de Theorizer y citados por
   pregunta en el capítulo de cierre; las claves viajan en
   `reports/modeling/theorizer_pb24.json`.
+  El 2026-10-22 el informe pasó a estilo APA 7 en citas y referencias
+  (`apa.csl` oficial; Pandoc para el HTML con el conector en español y
+  el motor nativo de Typst para el PDF), con una sola lista de
+  referencias para los dos formatos y los papers duplicados entre la
+  bibliografía manual y la generada unificados por DOI, arXiv o título.
 
 ## 31. Revisión de literatura (PB-23) y candidatos futuros
 

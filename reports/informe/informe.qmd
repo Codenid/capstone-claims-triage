@@ -64,13 +64,9 @@ AZUL, GRIS, NARANJA, VERDE = "#2F5D8A", "#9AA5B1", "#D9822B", "#3C8D5A"
 
 {{< include secciones/08_declaracion_ia.qmd >}}
 
-::: {.content-visible when-format="html"}
-
 # Referencias {.unnumbered}
 
 ::: {#refs}
-:::
-
 :::
 
 {{< include secciones/09_anexos.qmd >}}
