@@ -99,6 +99,32 @@ M11D,alertas diarias reales,cusum,candidato,ajuste,"40 patrones, diario",alertas
 M11D,alertas diarias reales,daily,candidato,ajuste,"40 patrones, diario",alertas_por_mes,13.244165,,,,,no adoptada,reports/modeling/daily_change/results.json
 M11D,alertas diarias reales,cusum,candidato,calibracion_2024_q4,"40 patrones, diario",alertas_por_mes,8.271060,,,,,no adoptada,reports/modeling/daily_change/results.json
 M11D,alertas diarias reales,daily,candidato,calibracion_2024_q4,"40 patrones, diario",alertas_por_mes,12.902853,,,,,no adoptada,reports/modeling/daily_change/results.json
+M11D-V2,"alertas diarias, escenario burst_x2_3d",daily,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.208000,,,,,no adoptada,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario burst_x2_3d",scan,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.241000,,,,,no adoptada,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario burst_x2_3d",cusum,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.216000,,,,,no adoptada,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario burst_x2_3d",weekly_cusum,referencia M11,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.304000,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario burst_x3_1d",daily,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.287000,,,,,no adoptada,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario burst_x3_1d",scan,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.100000,,,,,no adoptada,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario burst_x3_1d",cusum,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.020000,,,,,no adoptada,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario burst_x3_1d",weekly_cusum,referencia M11,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.291000,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario rise_x1_5_7d",daily,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.102000,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario rise_x1_5_7d",scan,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.168000,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario rise_x1_5_7d",cusum,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.188000,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario rise_x1_5_7d",weekly_cusum,referencia M11,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.307000,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario burst_x3_3d",daily,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.348000,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario burst_x3_3d",scan,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.383000,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario burst_x3_3d",cusum,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.352000,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario burst_x3_3d",weekly_cusum,referencia M11,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.369000,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario none",daily,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.033000,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario none",scan,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.025000,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario none",cusum,candidato,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.028000,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,"alertas diarias, escenario none",weekly_cusum,referencia M11,calibracion simulada,"40 patrones, diario",tasa_de_deteccion,0.000000,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,alertas diarias reales,daily,candidato,ajuste,"40 patrones, diario",alertas_por_mes,4.045491,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,alertas diarias reales,scan,candidato,ajuste,"40 patrones, diario",alertas_por_mes,3.997330,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,alertas diarias reales,cusum,candidato,ajuste,"40 patrones, diario",alertas_por_mes,3.997330,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,alertas diarias reales,daily,candidato,calibracion_2024_q4,"40 patrones, diario",alertas_por_mes,3.970109,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,alertas diarias reales,scan,candidato,calibracion_2024_q4,"40 patrones, diario",alertas_por_mes,2.977582,,,,,,reports/modeling/daily_change_v2/results.json
+M11D-V2,alertas diarias reales,cusum,candidato,calibracion_2024_q4,"40 patrones, diario",alertas_por_mes,3.970109,,,,,,reports/modeling/daily_change_v2/results.json
 M11,"alertas, escenario growth_10",cusum,ganador M11,calibracion simulada,40 patrones,tasa_de_deteccion,0.422826,,,,,elegido,reports/modeling/persistent_change_c_a/results.json
 M11,"alertas, escenario growth_10",weekly,candidato,calibracion simulada,40 patrones,tasa_de_deteccion,0.319565,,,,,,reports/modeling/persistent_change_c_a/results.json
 M11,"alertas, escenario growth_20",cusum,ganador M11,calibracion simulada,40 patrones,tasa_de_deteccion,0.708967,,,,,elegido,reports/modeling/persistent_change_c_a/results.json
@@ -113,6 +139,46 @@ M11,alertas reales,cusum,ganador M11,calibracion_2024_q4,40 patrones,alertas_por
 M11,alertas reales,weekly,candidato,calibracion_2024_q4,40 patrones,alertas_por_mes,1.087054,,,,,,reports/modeling/persistent_change_c_a/results.json
 M11,alertas reales,cusum,ganador M11,validacion_2025_h1 (ya consultada),40 patrones,alertas_por_mes,5.217857,,,,,,reports/modeling/persistent_change_c_a/validation_results.json
 M11,alertas reales,weekly,candidato,validacion_2025_h1 (ya consultada),40 patrones,alertas_por_mes,5.565714,,,,,,reports/modeling/persistent_change_c_a/validation_results.json
+C-M11-FARR,"alertas, escenario growth_10","memoria reponderada, z0 = 2.58",candidato,calibracion simulada,40 patrones,tasa_de_deteccion,0.229076,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario growth_20","memoria reponderada, z0 = 2.58",candidato,calibracion simulada,40 patrones,tasa_de_deteccion,0.560326,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario step_50","memoria reponderada, z0 = 2.58",candidato,calibracion simulada,40 patrones,tasa_de_deteccion,0.222826,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario step_100","memoria reponderada, z0 = 2.58",candidato,calibracion simulada,40 patrones,tasa_de_deteccion,0.437500,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario none","memoria reponderada, z0 = 2.58",candidato,calibracion simulada,40 patrones,tasa_de_deteccion,0.066576,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,alertas reales,"memoria reponderada, z0 = 2.58",candidato,ajuste,40 patrones,alertas_por_mes,6.197455,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,alertas reales,"memoria reponderada, z0 = 2.58",candidato,calibracion_2024_q4,40 patrones,alertas_por_mes,4.348214,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,expectativa semanal (secundaria),"memoria reponderada, z0 = 2.58",candidato,calibracion_2024_q4,40 patrones,wis_plug_in,56.739224,C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario growth_10","memoria reponderada, z0 = 2.0",sensibilidad,calibracion simulada,40 patrones,tasa_de_deteccion,0.250272,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario growth_20","memoria reponderada, z0 = 2.0",sensibilidad,calibracion simulada,40 patrones,tasa_de_deteccion,0.556793,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario step_50","memoria reponderada, z0 = 2.0",sensibilidad,calibracion simulada,40 patrones,tasa_de_deteccion,0.276087,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario step_100","memoria reponderada, z0 = 2.0",sensibilidad,calibracion simulada,40 patrones,tasa_de_deteccion,0.494837,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario none","memoria reponderada, z0 = 2.0",sensibilidad,calibracion simulada,40 patrones,tasa_de_deteccion,0.108152,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,alertas reales,"memoria reponderada, z0 = 2.0",sensibilidad,ajuste,40 patrones,alertas_por_mes,11.795156,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,alertas reales,"memoria reponderada, z0 = 2.0",sensibilidad,calibracion_2024_q4,40 patrones,alertas_por_mes,12.319940,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,expectativa semanal (secundaria),"memoria reponderada, z0 = 2.0",sensibilidad,calibracion_2024_q4,40 patrones,wis_plug_in,66.844779,C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario growth_10","memoria reponderada, z0 = 3.0",sensibilidad,calibracion simulada,40 patrones,tasa_de_deteccion,0.250000,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario growth_20","memoria reponderada, z0 = 3.0",sensibilidad,calibracion simulada,40 patrones,tasa_de_deteccion,0.582065,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario step_50","memoria reponderada, z0 = 3.0",sensibilidad,calibracion simulada,40 patrones,tasa_de_deteccion,0.217663,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario step_100","memoria reponderada, z0 = 3.0",sensibilidad,calibracion simulada,40 patrones,tasa_de_deteccion,0.425543,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario none","memoria reponderada, z0 = 3.0",sensibilidad,calibracion simulada,40 patrones,tasa_de_deteccion,0.062772,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,alertas reales,"memoria reponderada, z0 = 3.0",sensibilidad,ajuste,40 patrones,alertas_por_mes,5.847599,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,alertas reales,"memoria reponderada, z0 = 3.0",sensibilidad,calibracion_2024_q4,40 patrones,alertas_por_mes,4.348214,CUSUM de M11 sobre C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,expectativa semanal (secundaria),"memoria reponderada, z0 = 3.0",sensibilidad,calibracion_2024_q4,40 patrones,wis_plug_in,51.817918,C-A,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario growth_10",CUSUM de M11 sobre C-A (referencia),referencia M11,calibracion simulada,40 patrones,tasa_de_deteccion,0.422826,,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario growth_20",CUSUM de M11 sobre C-A (referencia),referencia M11,calibracion simulada,40 patrones,tasa_de_deteccion,0.708967,,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario step_50",CUSUM de M11 sobre C-A (referencia),referencia M11,calibracion simulada,40 patrones,tasa_de_deteccion,0.316033,,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario step_100",CUSUM de M11 sobre C-A (referencia),referencia M11,calibracion simulada,40 patrones,tasa_de_deteccion,0.516033,,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,"alertas, escenario none",CUSUM de M11 sobre C-A (referencia),referencia M11,calibracion simulada,40 patrones,tasa_de_deteccion,0.065217,,,,,,reports/modeling/persistent_change_farr/results.json
+C-M11-FARR,expectativa semanal (secundaria),C-A (referencia),referencia M9,calibracion_2024_q4,40 patrones,wis_plug_in,30.327525,,,,,,reports/modeling/persistent_change_farr/results.json
+C-PAT-INC,patron de reclamos nuevos,proyeccion UMAP permutada (referencia),referencia M8B,calibracion_2024_q4,completa,acuerdo_con_etiquetas_congeladas,0.905686,,,,,,reports/modeling/pattern_knn/results.json
+C-PAT-INC,patron de reclamos nuevos,voto de 1 vecinos FAISS,sensibilidad,calibracion_2024_q4,completa,acuerdo_con_etiquetas_congeladas,0.795230,proyeccion UMAP permutada,,,,,reports/modeling/pattern_knn/results.json
+C-PAT-INC,patron de reclamos nuevos,voto de 5 vecinos FAISS,candidato,calibracion_2024_q4,completa,acuerdo_con_etiquetas_congeladas,0.832263,proyeccion UMAP permutada,,,,no adoptado,reports/modeling/pattern_knn/results.json
+C-PAT-INC,patron de reclamos nuevos,voto de 10 vecinos FAISS,sensibilidad,calibracion_2024_q4,completa,acuerdo_con_etiquetas_congeladas,0.843487,proyeccion UMAP permutada,,,,,reports/modeling/pattern_knn/results.json
+C-PAT-INC,patron de reclamos nuevos,voto de 20 vecinos FAISS,sensibilidad,calibracion_2024_q4,completa,acuerdo_con_etiquetas_congeladas,0.851070,proyeccion UMAP permutada,,,,,reports/modeling/pattern_knn/results.json
+C-PAT-INC,patron de reclamos nuevos,proyeccion UMAP permutada (referencia),referencia M8B,validacion_2025_h1 (ya consultada),completa,acuerdo_con_etiquetas_congeladas,0.937547,,,,,,reports/modeling/pattern_knn/results.json
+C-PAT-INC,patron de reclamos nuevos,voto de 1 vecinos FAISS,sensibilidad,validacion_2025_h1 (ya consultada),completa,acuerdo_con_etiquetas_congeladas,0.783377,proyeccion UMAP permutada,,,,,reports/modeling/pattern_knn/results.json
+C-PAT-INC,patron de reclamos nuevos,voto de 5 vecinos FAISS,candidato,validacion_2025_h1 (ya consultada),completa,acuerdo_con_etiquetas_congeladas,0.851377,proyeccion UMAP permutada,,,,,reports/modeling/pattern_knn/results.json
+C-PAT-INC,patron de reclamos nuevos,voto de 10 vecinos FAISS,sensibilidad,validacion_2025_h1 (ya consultada),completa,acuerdo_con_etiquetas_congeladas,0.864037,proyeccion UMAP permutada,,,,,reports/modeling/pattern_knn/results.json
+C-PAT-INC,patron de reclamos nuevos,voto de 20 vecinos FAISS,sensibilidad,validacion_2025_h1 (ya consultada),completa,acuerdo_con_etiquetas_congeladas,0.871474,proyeccion UMAP permutada,,,,,reports/modeling/pattern_knn/results.json
 M7S bloque A,patrones semánticos,umap15_s42/kmeans_k40,ganador M7 (referencia),muestra de ajuste,"20,000 filas",neighbour_lift,0.637448,,,,,,reports/modeling/space_sensitivity/results.json
 M7S bloque A,patrones semánticos,umap5_s42/kmeans_k40,candidato,muestra de ajuste,"20,000 filas",neighbour_lift,0.626560,umap15_s42/kmeans_k40,-0.017081,-0.014335,-0.007483,no reemplaza,reports/modeling/space_sensitivity/results.json
 M7S bloque A,patrones semánticos,umap5_s42/gmm_k80_full,candidato,muestra de ajuste,"20,000 filas",neighbour_lift,0.614082,umap15_s42/kmeans_k40,-0.036655,-0.027217,-0.019510,no reemplaza,reports/modeling/space_sensitivity/results.json

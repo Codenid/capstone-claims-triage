@@ -2526,7 +2526,11 @@ Planificado el 2026-10-07. Español, para asesor y jurado, 25–35 páginas.
   `daily_change_v2`, `discount_curve.json`, `boundary_mass.json`, los
   `score.json` del pipeline y `reports/modeling/theorizer_pb24.json`
   (resumen de las corridas de Theorizer, generado de sus exportaciones).
-  PDF de unas 54 páginas versionado; HTML de unos 8 MB sin versionar.
+  PDF de unas 54 páginas versionado; HTML de unos 8 MB sin versionar. El
+  2026-10-22 la tabla comparativa del curso (anexo B) pasó de 120 a 186
+  filas al añadir C-PAT-INC v1, C-M11-FARR v1 y D-11 v2 al generador
+  (`src/evaluation/comparison_table.py`), y el informe se volvió a
+  renderizar.
 
 ## 31. Revisión de literatura (PB-23) y candidatos futuros
 

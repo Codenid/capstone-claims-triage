@@ -57,6 +57,9 @@ SPACE = "reports/modeling/space_sensitivity/results.json"
 DAILY = "reports/modeling/daily_counts"
 DAILY_CHALLENGE = "reports/modeling/daily_counts/challenge"
 DAILY_ALERTS = "reports/modeling/daily_change/results.json"
+PATTERN_KNN = "reports/modeling/pattern_knn/results.json"
+FARR = "reports/modeling/persistent_change_farr/results.json"
+DAILY_ALERTS_V2 = "reports/modeling/daily_change_v2/results.json"
 DAILY_FAMILIES = {
     "nb_daily_hierarchical_v1": "D-A: binomial negativa diaria con día de semana",
     "nb_daily_no_dow_v1": "D-B2: binomial negativa diaria sin día de semana",
@@ -427,10 +430,13 @@ def daily_rows() -> list[dict[str, Any]]:
             value = report["validation"]["metrics"]["model"]["wis"]
             difference = comparison["difference"]["wis"]
         else:
-            value, difference = winner["wis"], {
-                "p025": winner["wis_difference_p025"],
-                "p975": winner["wis_difference_p975"],
-            }
+            value, difference = (
+                winner["wis"],
+                {
+                    "p025": winner["wis_difference_p025"],
+                    "p975": winner["wis_difference_p975"],
+                },
+            )
             comparison = {"wis_gain": winner["wis_gain"]}
         rows.append(
             row(
@@ -580,6 +586,192 @@ def space_rows() -> list[dict[str, Any]]:
     return rows
 
 
+def pattern_knn_rows() -> list[dict[str, Any]]:
+    """C-PAT-INC v1 (§31.1): agreement with the frozen labels, against UMAP."""
+    if not (PROJECT_ROOT / PATTERN_KNN).is_file():
+        return []
+    report = load(PATTERN_KNN)
+    adopted = report["decision"]["adopted"]
+    rows = []
+    for split, label in (("calibration", CALIBRATION), ("validation", VALIDATION)):
+        result = report["splits"][split]
+        rows.append(
+            row(
+                etapa="C-PAT-INC",
+                tarea="patron de reclamos nuevos",
+                modelo="proyeccion UMAP permutada (referencia)",
+                rol="referencia M8B",
+                conjunto=label,
+                vista="completa",
+                metrica="acuerdo_con_etiquetas_congeladas",
+                valor=result["agreement_reprojected"],
+                fuente=PATTERN_KNN,
+            )
+        )
+        for k, agreement in result["agreement_by_k"].items():
+            primary = int(k) == report["settings"]["neighbors"]
+            decision = ""
+            if primary and split == "calibration":
+                decision = "adoptado" if adopted else "no adoptado"
+            rows.append(
+                row(
+                    etapa="C-PAT-INC",
+                    tarea="patron de reclamos nuevos",
+                    modelo=f"voto de {k} vecinos FAISS",
+                    rol="candidato" if primary else "sensibilidad",
+                    conjunto=label,
+                    vista="completa",
+                    metrica="acuerdo_con_etiquetas_congeladas",
+                    valor=agreement,
+                    referencia="proyeccion UMAP permutada",
+                    decision=decision,
+                    fuente=PATTERN_KNN,
+                )
+            )
+    return rows
+
+
+def farr_rows() -> list[dict[str, Any]]:
+    """C-M11-FARR v1 (§31.2): the reweighted memory against the frozen M11."""
+    if not (PROJECT_ROOT / FARR).is_file():
+        return []
+    report = load(FARR)
+    adopted = report["decision"]["adopted"]
+    primary = str(report["settings"]["excess_threshold"])
+    deciding = report["settings"].get("deciding_scenarios", [])
+    rows = []
+    for threshold, candidate in report["candidates"].items():
+        label = f"memoria reponderada, z0 = {threshold}"
+        role = "candidato" if threshold == primary else "sensibilidad"
+        for scenario, result in candidate["detection"].items():
+            decision = ""
+            if threshold == primary and scenario in deciding:
+                decision = "adoptada" if adopted else "no adoptada"
+            rows.append(
+                row(
+                    etapa="C-M11-FARR",
+                    tarea=f"alertas, escenario {scenario}",
+                    modelo=label,
+                    rol=role,
+                    conjunto="calibracion simulada",
+                    vista="40 patrones",
+                    metrica="tasa_de_deteccion",
+                    valor=result["cusum"]["detected"],
+                    referencia="CUSUM de M11 sobre C-A",
+                    decision=decision,
+                    fuente=FARR,
+                )
+            )
+        for split, split_label in (("fit", "ajuste"), ("calibration", CALIBRATION)):
+            rows.append(
+                row(
+                    etapa="C-M11-FARR",
+                    tarea="alertas reales",
+                    modelo=label,
+                    rol=role,
+                    conjunto=split_label,
+                    vista="40 patrones",
+                    metrica="alertas_por_mes",
+                    valor=candidate["real_alarms"][split]["cusum_per_month"],
+                    referencia="CUSUM de M11 sobre C-A",
+                    fuente=FARR,
+                )
+            )
+        rows.append(
+            row(
+                etapa="C-M11-FARR",
+                tarea="expectativa semanal (secundaria)",
+                modelo=label,
+                rol=role,
+                conjunto=CALIBRATION,
+                vista="40 patrones",
+                metrica="wis_plug_in",
+                valor=candidate["wis"]["calibration"],
+                referencia="C-A",
+                fuente=FARR,
+            )
+        )
+    for scenario, result in report["reference"]["detection"].items():
+        rows.append(
+            row(
+                etapa="C-M11-FARR",
+                tarea=f"alertas, escenario {scenario}",
+                modelo="CUSUM de M11 sobre C-A (referencia)",
+                rol="referencia M11",
+                conjunto="calibracion simulada",
+                vista="40 patrones",
+                metrica="tasa_de_deteccion",
+                valor=result["cusum"]["detected"],
+                fuente=FARR,
+            )
+        )
+    rows.append(
+        row(
+            etapa="C-M11-FARR",
+            tarea="expectativa semanal (secundaria)",
+            modelo="C-A (referencia)",
+            rol="referencia M9",
+            conjunto=CALIBRATION,
+            vista="40 patrones",
+            metrica="wis_plug_in",
+            valor=report["reference"]["wis"]["calibration"],
+            fuente=FARR,
+        )
+    )
+    return rows
+
+
+def daily_alert_v2_rows() -> list[dict[str, Any]]:
+    """D-11 v2 (§32.5): the three daily rules with empirical thresholds."""
+    if not (PROJECT_ROOT / DAILY_ALERTS_V2).is_file():
+        return []
+    report = load(DAILY_ALERTS_V2)
+    adopted = report["decision"]["adopted"]
+    deciding = report["settings"]["deciding_scenarios"]
+    rules = ("daily", "scan", "cusum")
+    rows = []
+    for scenario, result in report["detection"].items():
+        for rule in (*rules, "weekly_cusum"):
+            if rule not in result:
+                continue
+            decision = ""
+            if rule != "weekly_cusum" and scenario in deciding:
+                decision = "adoptada" if adopted else "no adoptada"
+            rows.append(
+                row(
+                    etapa="M11D-V2",
+                    tarea=f"alertas diarias, escenario {scenario}",
+                    modelo=rule,
+                    rol="referencia M11" if rule == "weekly_cusum" else "candidato",
+                    conjunto="calibracion simulada",
+                    vista="40 patrones, diario",
+                    metrica="tasa_de_deteccion",
+                    valor=result[rule]["detected"],
+                    decision=decision,
+                    fuente=DAILY_ALERTS_V2,
+                )
+            )
+    for split, label in (("fit", "ajuste"), ("calibration", CALIBRATION)):
+        alarms = report["real_alarms"].get(split)
+        if not alarms:
+            continue
+        for rule in rules:
+            rows.append(
+                row(
+                    etapa="M11D-V2",
+                    tarea="alertas diarias reales",
+                    modelo=rule,
+                    rol="candidato",
+                    conjunto=label,
+                    vista="40 patrones, diario",
+                    metrica="alertas_por_mes",
+                    valor=alarms[f"{rule}_per_month"],
+                    fuente=DAILY_ALERTS_V2,
+                )
+            )
+    return rows
+
+
 def build() -> list[dict[str, Any]]:
     return (
         classifier_rows()
@@ -587,7 +779,10 @@ def build() -> list[dict[str, Any]]:
         + composition_rows()
         + daily_rows()
         + daily_alert_rows()
+        + daily_alert_v2_rows()
         + alert_rows()
+        + farr_rows()
+        + pattern_knn_rows()
         + space_rows()
     )
 

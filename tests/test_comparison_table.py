@@ -32,6 +32,15 @@ class ComparisonTableTests(unittest.TestCase):
         self.assertIn("D-E: Dirichlet-multinomial diaria", models)
         self.assertTrue(any(r["rol"] == "baseline" for r in rows))
         self.assertTrue(all(r["vista"] == "40 patrones, diario" for r in rows))
+        closing = {r["etapa"] for r in built}
+        self.assertTrue({"C-PAT-INC", "C-M11-FARR", "M11D-V2"} <= closing)
+        rejected = [
+            r
+            for r in built
+            if r["etapa"] in ("C-PAT-INC", "C-M11-FARR", "M11D-V2") and r["decision"]
+        ]
+        self.assertTrue(rejected)
+        self.assertTrue(all(r["decision"].startswith("no adoptad") for r in rejected))
         alerts = [r for r in built if r["etapa"] == "M11D"]
         self.assertTrue(alerts)
         candidates = [r for r in alerts if r["rol"] == "candidato"]
