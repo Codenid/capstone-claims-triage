@@ -2801,3 +2801,32 @@ empíricos. Nada de M11, D-D ni sus umbrales cambia.
   salida `reports/modeling/daily_change_v2/`; `--validation` solo si se
   adopta.
 
+### 32.6 Comprobaciones de PB-24 sin cambio de modelo
+
+Registradas el 2026-10-21, antes de correrlas. Son las dos primeras
+hipótesis de `docs/literatura/theorizer_pb24.md`; no deciden nada, informan.
+
+- **Curva del WIS frente al descuento de C-A** (teoría 7 de la pregunta 4).
+  La rejilla de §25.5 probó δ ∈ {0.5, 0.6, 0.7, 0.75, 0.8, 0.9} y el WIS fue
+  creciente en δ: el mínimo quedó en el borde (0.5) y el brazo izquierdo de la
+  U nunca se midió. Se repite el mismo WIS plug-in (dispersión media de v3,
+  semanas de ajuste tras el calentamiento) para δ ∈ {0.1, 0.2, 0.3, 0.4,
+  0.5, 0.6, 0.7, 0.75, 0.8, 0.9, 0.95} sin recorte, y como información en
+  calibración. C-A conserva δ = 0.5 pase lo que pase: la selección fue en
+  ajuste y está congelada; si el mínimo en ajuste cayera por debajo de 0.5 se
+  anota como hallazgo, no se cambia el modelo. Salida:
+  `reports/modeling/weekly_counts/nb_discounted_hierarchical_v1/discount_curve.json`.
+- **Masa de frontera de cada patrón** (teoría 4 de la pregunta 2; propuesta
+  del usuario de usar una mezcla gaussiana). Sobre las coordenadas UMAP 15
+  congeladas de M8B, una mezcla gaussiana de 40 componentes (covarianza
+  completa, inicializada en los centros de k-means, ajustada sobre una
+  muestra fija de 200,000 reclamos de ajuste, semilla 42) da una probabilidad
+  por patrón; el margen es la diferencia entre la primera y la segunda. Por
+  partición y patrón se reporta la fracción con margen < 0.2 y con
+  probabilidad máxima < 0.6, junto a un margen geométrico de k-means,
+  (d₂ − d₁)/d₁ < 0.1, y el acuerdo del argmax de la mezcla con la etiqueta de
+  k-means. La partición no cambia; la tabla sirve para leer las alarmas de
+  M11 (hipótesis 1) y para el informe. Salida:
+  `reports/modeling/patterns/boundary_mass.json`.
+- Cómputo: `scripts/hpc/pb24_checks.slurm` (CPU).
+

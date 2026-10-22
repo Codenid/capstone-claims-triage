@@ -708,6 +708,13 @@ sbatch scripts/hpc/m11d_daily_change_v2.slurm
 sbatch scripts/hpc/m11d_daily_change_v2.slurm --validation
 ```
 
+Comprobaciones de PB-24 sin cambio de modelo (§32.6): curva del WIS frente al
+descuento de C-A y masa de frontera de cada patrón con una mezcla gaussiana:
+
+```bash
+sbatch scripts/hpc/pb24_checks.slurm
+```
+
 ## Pipeline de inferencia (§29)
 
 Ajustar una vez, puntuar muchas veces; nada se reentrena en `score`. Detalle en
