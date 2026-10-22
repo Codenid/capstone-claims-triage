@@ -1,0 +1,143 @@
+{
+  "stage": "PB-24 check",
+  "plan": "models_plan.md §32.6",
+  "git_commit": "6b8e263f79da3866712859c691a06bb5743c54cc",
+  "weekly_counts_sha256": "35c5503b0b9b2a4b9e47984294683d27987b3c7824ae41de642c0a47cefd1ce1",
+  "source_dvc_hash": "87be2a97daa3b169bbd65850a64c89a6.dir",
+  "reference_run": "reports/modeling/weekly_counts/nb_rolling_4_hierarchical_v3/20260927T161316.494762Z-full-a3ecfab3-9105ce1f",
+  "dispersion": "posterior mean of alpha[c] in the v3 run, as in §25.5",
+  "chosen_discount": 0.5,
+  "decision": "none: C-A keeps its discount; this is information",
+  "splits": {
+    "fit": [
+      {
+        "discount": 0.1,
+        "memory_weeks": 1.1111111111111112,
+        "wis": 21.656769293924466
+      },
+      {
+        "discount": 0.2,
+        "memory_weeks": 1.25,
+        "wis": 21.245576765188833
+      },
+      {
+        "discount": 0.3,
+        "memory_weeks": 1.4285714285714286,
+        "wis": 20.987892036124794
+      },
+      {
+        "discount": 0.4,
+        "memory_weeks": 1.6666666666666667,
+        "wis": 20.865650656814452
+      },
+      {
+        "discount": 0.5,
+        "memory_weeks": 2.0,
+        "wis": 20.922200328407225
+      },
+      {
+        "discount": 0.6,
+        "memory_weeks": 2.5,
+        "wis": 21.227227011494254
+      },
+      {
+        "discount": 0.7,
+        "memory_weeks": 3.333333333333333,
+        "wis": 21.900443349753697
+      },
+      {
+        "discount": 0.75,
+        "memory_weeks": 4.0,
+        "wis": 22.471366995073893
+      },
+      {
+        "discount": 0.8,
+        "memory_weeks": 5.000000000000001,
+        "wis": 23.301153530377672
+      },
+      {
+        "discount": 0.9,
+        "memory_weeks": 10.000000000000002,
+        "wis": 26.616910919540228
+      },
+      {
+        "discount": 0.95,
+        "memory_weeks": 19.999999999999982,
+        "wis": 30.726820607553364
+      }
+    ],
+    "calibration": [
+      {
+        "discount": 0.1,
+        "memory_weeks": 1.1111111111111112,
+        "wis": 31.544255952380954
+      },
+      {
+        "discount": 0.2,
+        "memory_weeks": 1.25,
+        "wis": 30.987380952380953
+      },
+      {
+        "discount": 0.3,
+        "memory_weeks": 1.4285714285714286,
+        "wis": 30.605505952380952
+      },
+      {
+        "discount": 0.4,
+        "memory_weeks": 1.6666666666666667,
+        "wis": 30.454464285714288
+      },
+      {
+        "discount": 0.5,
+        "memory_weeks": 2.0,
+        "wis": 30.657261904761906
+      },
+      {
+        "discount": 0.6,
+        "memory_weeks": 2.5,
+        "wis": 31.196324404761906
+      },
+      {
+        "discount": 0.7,
+        "memory_weeks": 3.333333333333333,
+        "wis": 32.646279761904765
+      },
+      {
+        "discount": 0.75,
+        "memory_weeks": 4.0,
+        "wis": 33.946547619047614
+      },
+      {
+        "discount": 0.8,
+        "memory_weeks": 5.000000000000001,
+        "wis": 36.01970238095238
+      },
+      {
+        "discount": 0.9,
+        "memory_weeks": 10.000000000000002,
+        "wis": 45.6497619047619
+      },
+      {
+        "discount": 0.95,
+        "memory_weeks": 19.999999999999982,
+        "wis": 57.09083333333333
+      }
+    ]
+  },
+  "shape": {
+    "fit": {
+      "argmin_discount": 0.4,
+      "minimum_wis": 20.865650656814452,
+      "left_arm_observed": true,
+      "right_arm_observed": true,
+      "u_shaped": true
+    },
+    "calibration": {
+      "argmin_discount": 0.4,
+      "minimum_wis": 30.454464285714288,
+      "left_arm_observed": true,
+      "right_arm_observed": true,
+      "u_shaped": true
+    }
+  }
+}

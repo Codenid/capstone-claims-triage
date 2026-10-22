@@ -1,0 +1,1128 @@
+{
+  "stage": "PB-24 check",
+  "plan": "models_plan.md §32.6",
+  "git_commit": "6b8e263f79da3866712859c691a06bb5743c54cc",
+  "mixture": {
+    "components": 40,
+    "covariance": "full",
+    "sample_rows": 200000,
+    "converged": true,
+    "iterations": 29
+  },
+  "thresholds": {
+    "probability_margin": 0.2,
+    "probability_floor": 0.6,
+    "distance_margin": 0.1
+  },
+  "decision": "none: the partition is unchanged; this is information",
+  "splits": {
+    "fit": {
+      "rows": 1067194,
+      "mixture_agreement_with_kmeans": 0.42159532381179055,
+      "boundary_fraction_probability": 0.014786439953747866,
+      "uncertain_fraction": 0.019212064535595215,
+      "boundary_fraction_distance": 0.1756175540717058,
+      "patterns": [
+        {
+          "cluster_id": 0,
+          "rows": 1947,
+          "mean_probability_gap": 0.9418469050735372,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 1.6871465608514198,
+          "boundary_fraction_distance": 0.0061633281972265025
+        },
+        {
+          "cluster_id": 1,
+          "rows": 5995,
+          "mean_probability_gap": 0.9343786332373164,
+          "boundary_fraction_probability": 0.0003336113427856547,
+          "uncertain_fraction": 0.000500417014178482,
+          "mean_distance_margin": 0.29946217910011746,
+          "boundary_fraction_distance": 0.17964970809007505
+        },
+        {
+          "cluster_id": 2,
+          "rows": 8520,
+          "mean_probability_gap": 0.9028315171189003,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.05704225352112676,
+          "mean_distance_margin": 0.24801161630808638,
+          "boundary_fraction_distance": 0.17241784037558686
+        },
+        {
+          "cluster_id": 3,
+          "rows": 35532,
+          "mean_probability_gap": 0.9359270924990277,
+          "boundary_fraction_probability": 0.015704154002026342,
+          "uncertain_fraction": 0.017983789260385005,
+          "mean_distance_margin": 0.20579519806577018,
+          "boundary_fraction_distance": 0.5383879320049533
+        },
+        {
+          "cluster_id": 4,
+          "rows": 13290,
+          "mean_probability_gap": 0.9266434508665107,
+          "boundary_fraction_probability": 0.006395786305492852,
+          "uncertain_fraction": 0.010158013544018058,
+          "mean_distance_margin": 0.6468570724238544,
+          "boundary_fraction_distance": 0.35665914221218964
+        },
+        {
+          "cluster_id": 5,
+          "rows": 9474,
+          "mean_probability_gap": 0.9418723597347517,
+          "boundary_fraction_probability": 0.011821828161283512,
+          "uncertain_fraction": 0.011821828161283512,
+          "mean_distance_margin": 0.2743132924105161,
+          "boundary_fraction_distance": 0.1088241503061009
+        },
+        {
+          "cluster_id": 6,
+          "rows": 13745,
+          "mean_probability_gap": 0.9200652704915655,
+          "boundary_fraction_probability": 0.0168061113132048,
+          "uncertain_fraction": 0.017169879956347764,
+          "mean_distance_margin": 1.0915445092541056,
+          "boundary_fraction_distance": 0.2000727537286286
+        },
+        {
+          "cluster_id": 7,
+          "rows": 11531,
+          "mean_probability_gap": 0.9102855335746753,
+          "boundary_fraction_probability": 0.049778856994189574,
+          "uncertain_fraction": 0.049778856994189574,
+          "mean_distance_margin": 0.18920487116911242,
+          "boundary_fraction_distance": 0.38305437516260515
+        },
+        {
+          "cluster_id": 8,
+          "rows": 119770,
+          "mean_probability_gap": 0.9922519609322102,
+          "boundary_fraction_probability": 0.003398179844702346,
+          "uncertain_fraction": 0.003398179844702346,
+          "mean_distance_margin": 1.6601824298368182,
+          "boundary_fraction_distance": 0.07061868581447775
+        },
+        {
+          "cluster_id": 9,
+          "rows": 2670,
+          "mean_probability_gap": 0.9428911931224552,
+          "boundary_fraction_probability": 0.006367041198501872,
+          "uncertain_fraction": 0.006367041198501872,
+          "mean_distance_margin": 0.43350713086673226,
+          "boundary_fraction_distance": 0.28651685393258425
+        },
+        {
+          "cluster_id": 10,
+          "rows": 9158,
+          "mean_probability_gap": 0.905890560519925,
+          "boundary_fraction_probability": 0.0055689015068792315,
+          "uncertain_fraction": 0.058091286307053944,
+          "mean_distance_margin": 0.21478459015608958,
+          "boundary_fraction_distance": 0.12808473465822232
+        },
+        {
+          "cluster_id": 11,
+          "rows": 97126,
+          "mean_probability_gap": 0.935324769561942,
+          "boundary_fraction_probability": 0.020375594588472705,
+          "uncertain_fraction": 0.028159298231163643,
+          "mean_distance_margin": 0.6584994947073384,
+          "boundary_fraction_distance": 0.17415522105306508
+        },
+        {
+          "cluster_id": 12,
+          "rows": 86363,
+          "mean_probability_gap": 0.9502378295693247,
+          "boundary_fraction_probability": 0.015261165082269027,
+          "uncertain_fraction": 0.015469587670645994,
+          "mean_distance_margin": 1.474908468885503,
+          "boundary_fraction_distance": 0.1135787316327594
+        },
+        {
+          "cluster_id": 13,
+          "rows": 97382,
+          "mean_probability_gap": 0.972424847589676,
+          "boundary_fraction_probability": 0.005935388470148488,
+          "uncertain_fraction": 0.006007270337434023,
+          "mean_distance_margin": 1.100855861742611,
+          "boundary_fraction_distance": 0.10157934731264505
+        },
+        {
+          "cluster_id": 14,
+          "rows": 176716,
+          "mean_probability_gap": 0.9585294950870007,
+          "boundary_fraction_probability": 0.013105774236628263,
+          "uncertain_fraction": 0.016082301545983387,
+          "mean_distance_margin": 0.787471348017017,
+          "boundary_fraction_distance": 0.1683039453133842
+        },
+        {
+          "cluster_id": 15,
+          "rows": 7597,
+          "mean_probability_gap": 0.9813930825225196,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 4.98187018212248,
+          "boundary_fraction_distance": 0.06792154797946558
+        },
+        {
+          "cluster_id": 16,
+          "rows": 9342,
+          "mean_probability_gap": 0.9009578432649581,
+          "boundary_fraction_probability": 0.00042817383857846286,
+          "uncertain_fraction": 0.0008563476771569257,
+          "mean_distance_margin": 0.18806393601710464,
+          "boundary_fraction_distance": 0.35474202526225646
+        },
+        {
+          "cluster_id": 17,
+          "rows": 71113,
+          "mean_probability_gap": 0.9770626188944431,
+          "boundary_fraction_probability": 0.009337251979244302,
+          "uncertain_fraction": 0.011530943709307722,
+          "mean_distance_margin": 1.110215019566794,
+          "boundary_fraction_distance": 0.1267419459170616
+        },
+        {
+          "cluster_id": 18,
+          "rows": 10792,
+          "mean_probability_gap": 0.8752224803945771,
+          "boundary_fraction_probability": 0.04364343958487769,
+          "uncertain_fraction": 0.07579688658265382,
+          "mean_distance_margin": 0.3685564724744042,
+          "boundary_fraction_distance": 0.24369903632320236
+        },
+        {
+          "cluster_id": 19,
+          "rows": 63214,
+          "mean_probability_gap": 0.9332744532516024,
+          "boundary_fraction_probability": 0.02236846268231721,
+          "uncertain_fraction": 0.0424747682475401,
+          "mean_distance_margin": 1.4165004796424303,
+          "boundary_fraction_distance": 0.19483025911981522
+        },
+        {
+          "cluster_id": 20,
+          "rows": 3371,
+          "mean_probability_gap": 0.9937931290484486,
+          "boundary_fraction_probability": 0.0011865915158706616,
+          "uncertain_fraction": 0.0011865915158706616,
+          "mean_distance_margin": 0.76786142803759,
+          "boundary_fraction_distance": 0.007416196974191634
+        },
+        {
+          "cluster_id": 21,
+          "rows": 4109,
+          "mean_probability_gap": 0.9658861018694687,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 1.7914538604112922,
+          "boundary_fraction_distance": 0.10148454611827695
+        },
+        {
+          "cluster_id": 22,
+          "rows": 12879,
+          "mean_probability_gap": 0.9402819552396184,
+          "boundary_fraction_probability": 0.00605637083624505,
+          "uncertain_fraction": 0.00605637083624505,
+          "mean_distance_margin": 0.29301953360711724,
+          "boundary_fraction_distance": 0.2886093640810622
+        },
+        {
+          "cluster_id": 23,
+          "rows": 6407,
+          "mean_probability_gap": 0.8737768747202146,
+          "boundary_fraction_probability": 0.09754955517402841,
+          "uncertain_fraction": 0.09754955517402841,
+          "mean_distance_margin": 0.38956618638071466,
+          "boundary_fraction_distance": 0.310441704385828
+        },
+        {
+          "cluster_id": 24,
+          "rows": 9733,
+          "mean_probability_gap": 0.908160348717637,
+          "boundary_fraction_probability": 0.04489879790403781,
+          "uncertain_fraction": 0.04489879790403781,
+          "mean_distance_margin": 0.2856083713152497,
+          "boundary_fraction_distance": 0.23969998972567555
+        },
+        {
+          "cluster_id": 25,
+          "rows": 14204,
+          "mean_probability_gap": 0.9265990807999192,
+          "boundary_fraction_probability": 0.030484370599831032,
+          "uncertain_fraction": 0.030484370599831032,
+          "mean_distance_margin": 0.34146799009319445,
+          "boundary_fraction_distance": 0.24647986482680934
+        },
+        {
+          "cluster_id": 26,
+          "rows": 11256,
+          "mean_probability_gap": 0.9734357190536203,
+          "boundary_fraction_probability": 8.884150675195451e-05,
+          "uncertain_fraction": 0.00017768301350390902,
+          "mean_distance_margin": 0.3752484939811756,
+          "boundary_fraction_distance": 0.1911869225302061
+        },
+        {
+          "cluster_id": 27,
+          "rows": 8018,
+          "mean_probability_gap": 0.9642307423895029,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.43626322030141884,
+          "boundary_fraction_distance": 0.20728361187328512
+        },
+        {
+          "cluster_id": 28,
+          "rows": 6960,
+          "mean_probability_gap": 0.840321246427456,
+          "boundary_fraction_probability": 0.06666666666666667,
+          "uncertain_fraction": 0.06666666666666667,
+          "mean_distance_margin": 0.16111801214675342,
+          "boundary_fraction_distance": 0.2028735632183908
+        },
+        {
+          "cluster_id": 29,
+          "rows": 9166,
+          "mean_probability_gap": 0.7863436902274088,
+          "boundary_fraction_probability": 0.07451451014619245,
+          "uncertain_fraction": 0.13048221688850098,
+          "mean_distance_margin": 0.24891522980316558,
+          "boundary_fraction_distance": 0.21754309404320316
+        },
+        {
+          "cluster_id": 30,
+          "rows": 21597,
+          "mean_probability_gap": 0.9131364909411555,
+          "boundary_fraction_probability": 0.008195582719822198,
+          "uncertain_fraction": 0.008241885447052831,
+          "mean_distance_margin": 0.23285421878327736,
+          "boundary_fraction_distance": 0.3097652451729407
+        },
+        {
+          "cluster_id": 31,
+          "rows": 8060,
+          "mean_probability_gap": 0.9444147206241861,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.3089549925903726,
+          "boundary_fraction_distance": 0.23833746898263028
+        },
+        {
+          "cluster_id": 32,
+          "rows": 9040,
+          "mean_probability_gap": 0.942911919901185,
+          "boundary_fraction_probability": 0.018805309734513276,
+          "uncertain_fraction": 0.01924778761061947,
+          "mean_distance_margin": 0.19990543026168184,
+          "boundary_fraction_distance": 0.4482300884955752
+        },
+        {
+          "cluster_id": 33,
+          "rows": 7051,
+          "mean_probability_gap": 0.9975009459463988,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.9758486430932423,
+          "boundary_fraction_distance": 0.031484895759466745
+        },
+        {
+          "cluster_id": 34,
+          "rows": 6530,
+          "mean_probability_gap": 0.9902858651394572,
+          "boundary_fraction_probability": 0.009954058192955589,
+          "uncertain_fraction": 0.009954058192955589,
+          "mean_distance_margin": 8.934685219634268,
+          "boundary_fraction_distance": 0.009954058192955589
+        },
+        {
+          "cluster_id": 35,
+          "rows": 2888,
+          "mean_probability_gap": 0.9836637786297088,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 2.167402629742894,
+          "boundary_fraction_distance": 0.0
+        },
+        {
+          "cluster_id": 36,
+          "rows": 53587,
+          "mean_probability_gap": 0.9431017036165774,
+          "boundary_fraction_probability": 0.02134846138055872,
+          "uncertain_fraction": 0.021609718775076045,
+          "mean_distance_margin": 0.8077724010422678,
+          "boundary_fraction_distance": 0.18153656670461119
+        },
+        {
+          "cluster_id": 37,
+          "rows": 6255,
+          "mean_probability_gap": 0.9555434629217521,
+          "boundary_fraction_probability": 0.002398081534772182,
+          "uncertain_fraction": 0.002398081534772182,
+          "mean_distance_margin": 0.3742895138019661,
+          "boundary_fraction_distance": 0.2594724220623501
+        },
+        {
+          "cluster_id": 38,
+          "rows": 6321,
+          "mean_probability_gap": 0.9107034350243349,
+          "boundary_fraction_probability": 0.0322733744660655,
+          "uncertain_fraction": 0.0322733744660655,
+          "mean_distance_margin": 0.4243016211517143,
+          "boundary_fraction_distance": 0.1937984496124031
+        },
+        {
+          "cluster_id": 39,
+          "rows": 8485,
+          "mean_probability_gap": 0.8765189019876397,
+          "boundary_fraction_probability": 0.058809664113140835,
+          "uncertain_fraction": 0.05892751915144372,
+          "mean_distance_margin": 0.16152633437783193,
+          "boundary_fraction_distance": 0.4149675898644667
+        }
+      ]
+    },
+    "calibration": {
+      "rows": 234600,
+      "mixture_agreement_with_kmeans": 0.41274509803921566,
+      "boundary_fraction_probability": 0.018363171355498722,
+      "uncertain_fraction": 0.021568627450980392,
+      "boundary_fraction_distance": 0.20980392156862746,
+      "patterns": [
+        {
+          "cluster_id": 0,
+          "rows": 285,
+          "mean_probability_gap": 0.9553948294068002,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.007017543859649123,
+          "mean_distance_margin": 2.278781498254708,
+          "boundary_fraction_distance": 0.010526315789473684
+        },
+        {
+          "cluster_id": 1,
+          "rows": 1205,
+          "mean_probability_gap": 0.9804654483632403,
+          "boundary_fraction_probability": 0.0016597510373443983,
+          "uncertain_fraction": 0.0016597510373443983,
+          "mean_distance_margin": 0.2856133795709361,
+          "boundary_fraction_distance": 0.12448132780082988
+        },
+        {
+          "cluster_id": 2,
+          "rows": 3729,
+          "mean_probability_gap": 0.9259286119124971,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.006167873424510592,
+          "mean_distance_margin": 0.3267425926249569,
+          "boundary_fraction_distance": 0.12791633145615447
+        },
+        {
+          "cluster_id": 3,
+          "rows": 15699,
+          "mean_probability_gap": 0.9729798799337023,
+          "boundary_fraction_probability": 0.0027390279635645582,
+          "uncertain_fraction": 0.002930122937766737,
+          "mean_distance_margin": 0.16305661666001714,
+          "boundary_fraction_distance": 0.6718262309701255
+        },
+        {
+          "cluster_id": 4,
+          "rows": 1633,
+          "mean_probability_gap": 0.8585860428239158,
+          "boundary_fraction_probability": 0.021432945499081445,
+          "uncertain_fraction": 0.023270055113288425,
+          "mean_distance_margin": 0.14545734846316302,
+          "boundary_fraction_distance": 0.7562767911818739
+        },
+        {
+          "cluster_id": 5,
+          "rows": 3950,
+          "mean_probability_gap": 0.889090709443029,
+          "boundary_fraction_probability": 0.0010126582278481013,
+          "uncertain_fraction": 0.0010126582278481013,
+          "mean_distance_margin": 0.2568477363250135,
+          "boundary_fraction_distance": 0.025822784810126582
+        },
+        {
+          "cluster_id": 6,
+          "rows": 2158,
+          "mean_probability_gap": 0.8647589228998916,
+          "boundary_fraction_probability": 0.03104726598702502,
+          "uncertain_fraction": 0.0319740500463392,
+          "mean_distance_margin": 0.2222419452746812,
+          "boundary_fraction_distance": 0.22289156626506024
+        },
+        {
+          "cluster_id": 7,
+          "rows": 2754,
+          "mean_probability_gap": 0.8850425702207775,
+          "boundary_fraction_probability": 0.06100217864923747,
+          "uncertain_fraction": 0.06100217864923747,
+          "mean_distance_margin": 0.1362043823017981,
+          "boundary_fraction_distance": 0.4600580973129993
+        },
+        {
+          "cluster_id": 8,
+          "rows": 20316,
+          "mean_probability_gap": 0.9863681086989606,
+          "boundary_fraction_probability": 0.010189013585351446,
+          "uncertain_fraction": 0.010189013585351446,
+          "mean_distance_margin": 1.6618880322257323,
+          "boundary_fraction_distance": 0.08756645008860012
+        },
+        {
+          "cluster_id": 9,
+          "rows": 302,
+          "mean_probability_gap": 0.974834996490633,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.556619012577465,
+          "boundary_fraction_distance": 0.11920529801324503
+        },
+        {
+          "cluster_id": 10,
+          "rows": 3197,
+          "mean_probability_gap": 0.978696674668979,
+          "boundary_fraction_probability": 0.00031279324366593683,
+          "uncertain_fraction": 0.001876759461995621,
+          "mean_distance_margin": 0.21850771389779688,
+          "boundary_fraction_distance": 0.4735689709102283
+        },
+        {
+          "cluster_id": 11,
+          "rows": 17877,
+          "mean_probability_gap": 0.9299727401517326,
+          "boundary_fraction_probability": 0.016445712367846956,
+          "uncertain_fraction": 0.027409520613078258,
+          "mean_distance_margin": 0.7764298612312108,
+          "boundary_fraction_distance": 0.23253342283380882
+        },
+        {
+          "cluster_id": 12,
+          "rows": 17470,
+          "mean_probability_gap": 0.9495981490676979,
+          "boundary_fraction_probability": 0.01631368059530624,
+          "uncertain_fraction": 0.01659988551803091,
+          "mean_distance_margin": 1.2669036407040144,
+          "boundary_fraction_distance": 0.11282198053806526
+        },
+        {
+          "cluster_id": 13,
+          "rows": 17123,
+          "mean_probability_gap": 0.947768432637448,
+          "boundary_fraction_probability": 0.004204870641826783,
+          "uncertain_fraction": 0.004263271622963266,
+          "mean_distance_margin": 0.9668169691376314,
+          "boundary_fraction_distance": 0.16153711382351224
+        },
+        {
+          "cluster_id": 14,
+          "rows": 52605,
+          "mean_probability_gap": 0.9609687131678801,
+          "boundary_fraction_probability": 0.01151981750784146,
+          "uncertain_fraction": 0.017374774261001806,
+          "mean_distance_margin": 0.7519408013927767,
+          "boundary_fraction_distance": 0.12835281817317745
+        },
+        {
+          "cluster_id": 15,
+          "rows": 789,
+          "mean_probability_gap": 0.9420028600120672,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 1.8370409182023129,
+          "boundary_fraction_distance": 0.45627376425855515
+        },
+        {
+          "cluster_id": 16,
+          "rows": 3435,
+          "mean_probability_gap": 0.8985490289657434,
+          "boundary_fraction_probability": 0.0002911208151382824,
+          "uncertain_fraction": 0.0002911208151382824,
+          "mean_distance_margin": 0.18019535440840598,
+          "boundary_fraction_distance": 0.2215429403202329
+        },
+        {
+          "cluster_id": 17,
+          "rows": 8078,
+          "mean_probability_gap": 0.9505233427399151,
+          "boundary_fraction_probability": 0.029586531319633572,
+          "uncertain_fraction": 0.030205496410002475,
+          "mean_distance_margin": 0.9030572605523284,
+          "boundary_fraction_distance": 0.31369150779896016
+        },
+        {
+          "cluster_id": 18,
+          "rows": 1618,
+          "mean_probability_gap": 0.63504231186342,
+          "boundary_fraction_probability": 0.37639060568603216,
+          "uncertain_fraction": 0.37639060568603216,
+          "mean_distance_margin": 0.14114803886950847,
+          "boundary_fraction_distance": 0.6211372064276885
+        },
+        {
+          "cluster_id": 19,
+          "rows": 17793,
+          "mean_probability_gap": 0.9486765271637169,
+          "boundary_fraction_probability": 0.019895464508514583,
+          "uncertain_fraction": 0.029899398639914573,
+          "mean_distance_margin": 1.325932844106428,
+          "boundary_fraction_distance": 0.09425054796830214
+        },
+        {
+          "cluster_id": 20,
+          "rows": 466,
+          "mean_probability_gap": 0.9927202656615561,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.6403090234935743,
+          "boundary_fraction_distance": 0.006437768240343348
+        },
+        {
+          "cluster_id": 21,
+          "rows": 651,
+          "mean_probability_gap": 0.9403013381938078,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.12189145982671354,
+          "boundary_fraction_distance": 0.1781874039938556
+        },
+        {
+          "cluster_id": 22,
+          "rows": 2489,
+          "mean_probability_gap": 0.9315383588315164,
+          "boundary_fraction_probability": 0.0012053033346725592,
+          "uncertain_fraction": 0.0012053033346725592,
+          "mean_distance_margin": 0.16316934797474092,
+          "boundary_fraction_distance": 0.3105664925672961
+        },
+        {
+          "cluster_id": 23,
+          "rows": 1445,
+          "mean_probability_gap": 0.6917283803525069,
+          "boundary_fraction_probability": 0.31141868512110726,
+          "uncertain_fraction": 0.31141868512110726,
+          "mean_distance_margin": 0.18120136821782218,
+          "boundary_fraction_distance": 0.4885813148788927
+        },
+        {
+          "cluster_id": 24,
+          "rows": 2178,
+          "mean_probability_gap": 0.8251025277567817,
+          "boundary_fraction_probability": 0.09963269054178145,
+          "uncertain_fraction": 0.09963269054178145,
+          "mean_distance_margin": 0.32339036323719567,
+          "boundary_fraction_distance": 0.2024793388429752
+        },
+        {
+          "cluster_id": 25,
+          "rows": 2155,
+          "mean_probability_gap": 0.9712774603496811,
+          "boundary_fraction_probability": 0.02134570765661253,
+          "uncertain_fraction": 0.02134570765661253,
+          "mean_distance_margin": 0.19036345388493434,
+          "boundary_fraction_distance": 0.30301624129930393
+        },
+        {
+          "cluster_id": 26,
+          "rows": 1642,
+          "mean_probability_gap": 0.987333484058746,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.18060019225788998,
+          "boundary_fraction_distance": 0.5109622411693058
+        },
+        {
+          "cluster_id": 27,
+          "rows": 883,
+          "mean_probability_gap": 0.941747487618668,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.3105397013507187,
+          "boundary_fraction_distance": 0.32163080407701017
+        },
+        {
+          "cluster_id": 28,
+          "rows": 2724,
+          "mean_probability_gap": 0.872113642582146,
+          "boundary_fraction_probability": 0.05726872246696035,
+          "uncertain_fraction": 0.05726872246696035,
+          "mean_distance_margin": 0.2424686675630766,
+          "boundary_fraction_distance": 0.029001468428781204
+        },
+        {
+          "cluster_id": 29,
+          "rows": 1562,
+          "mean_probability_gap": 0.8952796070059014,
+          "boundary_fraction_probability": 0.023047375160051217,
+          "uncertain_fraction": 0.02496798975672215,
+          "mean_distance_margin": 0.19496996283727996,
+          "boundary_fraction_distance": 0.09539052496798976
+        },
+        {
+          "cluster_id": 30,
+          "rows": 5323,
+          "mean_probability_gap": 0.9329752747820462,
+          "boundary_fraction_probability": 0.015968438850272403,
+          "uncertain_fraction": 0.015968438850272403,
+          "mean_distance_margin": 0.23436170567656425,
+          "boundary_fraction_distance": 0.3176780011271839
+        },
+        {
+          "cluster_id": 31,
+          "rows": 3330,
+          "mean_probability_gap": 0.9619996753086867,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.34209002014943524,
+          "boundary_fraction_distance": 0.15465465465465467
+        },
+        {
+          "cluster_id": 32,
+          "rows": 1468,
+          "mean_probability_gap": 0.9606416561963416,
+          "boundary_fraction_probability": 0.0170299727520436,
+          "uncertain_fraction": 0.02111716621253406,
+          "mean_distance_margin": 0.2175590717136715,
+          "boundary_fraction_distance": 0.2888283378746594
+        },
+        {
+          "cluster_id": 33,
+          "rows": 197,
+          "mean_probability_gap": 0.981090569651121,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.33846009488490864,
+          "boundary_fraction_distance": 0.34517766497461927
+        },
+        {
+          "cluster_id": 34,
+          "rows": 522,
+          "mean_probability_gap": 0.9976738527955974,
+          "boundary_fraction_probability": 0.0019157088122605363,
+          "uncertain_fraction": 0.0019157088122605363,
+          "mean_distance_margin": 5.152670120797774,
+          "boundary_fraction_distance": 0.0
+        },
+        {
+          "cluster_id": 35,
+          "rows": 372,
+          "mean_probability_gap": 1.0,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 2.5240537345906047,
+          "boundary_fraction_distance": 0.0
+        },
+        {
+          "cluster_id": 36,
+          "rows": 8479,
+          "mean_probability_gap": 0.9769072834430582,
+          "boundary_fraction_probability": 0.007548059912725558,
+          "uncertain_fraction": 0.008255690529543579,
+          "mean_distance_margin": 0.9743275909679991,
+          "boundary_fraction_distance": 0.11168769902111098
+        },
+        {
+          "cluster_id": 37,
+          "rows": 1287,
+          "mean_probability_gap": 0.9601789926936454,
+          "boundary_fraction_probability": 0.004662004662004662,
+          "uncertain_fraction": 0.004662004662004662,
+          "mean_distance_margin": 0.3257116661068966,
+          "boundary_fraction_distance": 0.12975912975912976
+        },
+        {
+          "cluster_id": 38,
+          "rows": 3139,
+          "mean_probability_gap": 0.8801721819347674,
+          "boundary_fraction_probability": 0.06371455877668047,
+          "uncertain_fraction": 0.06498884995221409,
+          "mean_distance_margin": 0.5091387009737258,
+          "boundary_fraction_distance": 0.16470213443771903
+        },
+        {
+          "cluster_id": 39,
+          "rows": 2272,
+          "mean_probability_gap": 0.9450391346674674,
+          "boundary_fraction_probability": 0.014084507042253521,
+          "uncertain_fraction": 0.014964788732394365,
+          "mean_distance_margin": 0.17205207403920847,
+          "boundary_fraction_distance": 0.5607394366197183
+        }
+      ]
+    },
+    "validation": {
+      "rows": 695184,
+      "mixture_agreement_with_kmeans": 0.5267569449239338,
+      "boundary_fraction_probability": 0.01079282607194642,
+      "uncertain_fraction": 0.01261248820456167,
+      "boundary_fraction_distance": 0.19628040921540196,
+      "patterns": [
+        {
+          "cluster_id": 0,
+          "rows": 146,
+          "mean_probability_gap": 0.8964210649577692,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 1.7496808810974724,
+          "boundary_fraction_distance": 0.21232876712328766
+        },
+        {
+          "cluster_id": 1,
+          "rows": 4962,
+          "mean_probability_gap": 0.991482810213334,
+          "boundary_fraction_probability": 0.00040306328093510683,
+          "uncertain_fraction": 0.00040306328093510683,
+          "mean_distance_margin": 0.45780021691830797,
+          "boundary_fraction_distance": 0.053204353083434096
+        },
+        {
+          "cluster_id": 2,
+          "rows": 11956,
+          "mean_probability_gap": 0.9488003923778051,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.007945801271328204,
+          "mean_distance_margin": 0.5318502817254909,
+          "boundary_fraction_distance": 0.04156908665105386
+        },
+        {
+          "cluster_id": 3,
+          "rows": 57170,
+          "mean_probability_gap": 0.9800655984948133,
+          "boundary_fraction_probability": 0.001644218995976911,
+          "uncertain_fraction": 0.0016792023788700368,
+          "mean_distance_margin": 0.1347899627614641,
+          "boundary_fraction_distance": 0.7672030785376946
+        },
+        {
+          "cluster_id": 4,
+          "rows": 3307,
+          "mean_probability_gap": 0.9265158801794737,
+          "boundary_fraction_probability": 0.0006047777441790142,
+          "uncertain_fraction": 0.005442999697611128,
+          "mean_distance_margin": 0.20211912844712399,
+          "boundary_fraction_distance": 0.7338977925612338
+        },
+        {
+          "cluster_id": 5,
+          "rows": 6594,
+          "mean_probability_gap": 0.8859855447619923,
+          "boundary_fraction_probability": 0.00015165301789505612,
+          "uncertain_fraction": 0.00015165301789505612,
+          "mean_distance_margin": 0.26799310883517813,
+          "boundary_fraction_distance": 0.01637852593266606
+        },
+        {
+          "cluster_id": 6,
+          "rows": 4764,
+          "mean_probability_gap": 0.7410109515804183,
+          "boundary_fraction_probability": 0.036943744752308987,
+          "uncertain_fraction": 0.03757346767422334,
+          "mean_distance_margin": 0.24747364397696625,
+          "boundary_fraction_distance": 0.1897565071368598
+        },
+        {
+          "cluster_id": 7,
+          "rows": 5680,
+          "mean_probability_gap": 0.8166360599822228,
+          "boundary_fraction_probability": 0.1311619718309859,
+          "uncertain_fraction": 0.1311619718309859,
+          "mean_distance_margin": 0.14966994579311163,
+          "boundary_fraction_distance": 0.46443661971830985
+        },
+        {
+          "cluster_id": 8,
+          "rows": 105620,
+          "mean_probability_gap": 0.9962691009371719,
+          "boundary_fraction_probability": 0.0020545351259231206,
+          "uncertain_fraction": 0.0020545351259231206,
+          "mean_distance_margin": 1.8587851730651386,
+          "boundary_fraction_distance": 0.054743419806854765
+        },
+        {
+          "cluster_id": 9,
+          "rows": 381,
+          "mean_probability_gap": 0.9853913454248672,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.4682367235372091,
+          "boundary_fraction_distance": 0.11548556430446194
+        },
+        {
+          "cluster_id": 10,
+          "rows": 5443,
+          "mean_probability_gap": 0.9898047827584073,
+          "boundary_fraction_probability": 0.0009186110600771634,
+          "uncertain_fraction": 0.0031232776042623553,
+          "mean_distance_margin": 0.17050677445101847,
+          "boundary_fraction_distance": 0.45912180782656625
+        },
+        {
+          "cluster_id": 11,
+          "rows": 39804,
+          "mean_probability_gap": 0.9305016918556552,
+          "boundary_fraction_probability": 0.01595317053562456,
+          "uncertain_fraction": 0.032986634509094566,
+          "mean_distance_margin": 0.8281893252226368,
+          "boundary_fraction_distance": 0.20196462667068638
+        },
+        {
+          "cluster_id": 12,
+          "rows": 46642,
+          "mean_probability_gap": 0.9603764213484732,
+          "boundary_fraction_probability": 0.012392264482655117,
+          "uncertain_fraction": 0.0125209039063505,
+          "mean_distance_margin": 1.2965013156635332,
+          "boundary_fraction_distance": 0.09909523605334249
+        },
+        {
+          "cluster_id": 13,
+          "rows": 52572,
+          "mean_probability_gap": 0.8544487874462178,
+          "boundary_fraction_probability": 0.004374952446169063,
+          "uncertain_fraction": 0.004374952446169063,
+          "mean_distance_margin": 0.8330098040963061,
+          "boundary_fraction_distance": 0.2720649775545918
+        },
+        {
+          "cluster_id": 14,
+          "rows": 200776,
+          "mean_probability_gap": 0.9531183774971472,
+          "boundary_fraction_probability": 0.011156711957604495,
+          "uncertain_fraction": 0.012292305853289238,
+          "mean_distance_margin": 0.8677354744035525,
+          "boundary_fraction_distance": 0.0973622345300235
+        },
+        {
+          "cluster_id": 15,
+          "rows": 915,
+          "mean_probability_gap": 0.9712646925456612,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.10479242958256305,
+          "boundary_fraction_distance": 0.848087431693989
+        },
+        {
+          "cluster_id": 16,
+          "rows": 4861,
+          "mean_probability_gap": 0.8333411030544607,
+          "boundary_fraction_probability": 0.002057189878625797,
+          "uncertain_fraction": 0.002880065830076116,
+          "mean_distance_margin": 0.13564429857685886,
+          "boundary_fraction_distance": 0.44394157580744703
+        },
+        {
+          "cluster_id": 17,
+          "rows": 12967,
+          "mean_probability_gap": 0.960264620276546,
+          "boundary_fraction_probability": 0.0023906840441119763,
+          "uncertain_fraction": 0.002930515925040487,
+          "mean_distance_margin": 0.90919529175983,
+          "boundary_fraction_distance": 0.30276856636076194
+        },
+        {
+          "cluster_id": 18,
+          "rows": 1946,
+          "mean_probability_gap": 0.9186125340747949,
+          "boundary_fraction_probability": 0.012332990750256937,
+          "uncertain_fraction": 0.01695786228160329,
+          "mean_distance_margin": 0.2030016323897612,
+          "boundary_fraction_distance": 0.23278520041109968
+        },
+        {
+          "cluster_id": 19,
+          "rows": 41896,
+          "mean_probability_gap": 0.9676448463107679,
+          "boundary_fraction_probability": 0.013867672331487493,
+          "uncertain_fraction": 0.017853733053274777,
+          "mean_distance_margin": 1.3341475472582704,
+          "boundary_fraction_distance": 0.09640538476226848
+        },
+        {
+          "cluster_id": 20,
+          "rows": 333,
+          "mean_probability_gap": 0.9775299611564507,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.23440869311182183,
+          "boundary_fraction_distance": 0.06306306306306306
+        },
+        {
+          "cluster_id": 21,
+          "rows": 1782,
+          "mean_probability_gap": 0.9833334276007965,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.16593020700361794,
+          "boundary_fraction_distance": 0.05218855218855219
+        },
+        {
+          "cluster_id": 22,
+          "rows": 5118,
+          "mean_probability_gap": 0.8947117909003283,
+          "boundary_fraction_probability": 0.0011723329425556857,
+          "uncertain_fraction": 0.0011723329425556857,
+          "mean_distance_margin": 0.15398412192274563,
+          "boundary_fraction_distance": 0.4423602969910121
+        },
+        {
+          "cluster_id": 23,
+          "rows": 3484,
+          "mean_probability_gap": 0.8301452173175519,
+          "boundary_fraction_probability": 0.16963260619977039,
+          "uncertain_fraction": 0.16963260619977039,
+          "mean_distance_margin": 0.23891352457357456,
+          "boundary_fraction_distance": 0.27324913892078073
+        },
+        {
+          "cluster_id": 24,
+          "rows": 3464,
+          "mean_probability_gap": 0.8550461166027439,
+          "boundary_fraction_probability": 0.08689376443418013,
+          "uncertain_fraction": 0.08689376443418013,
+          "mean_distance_margin": 0.3013915968656951,
+          "boundary_fraction_distance": 0.11085450346420324
+        },
+        {
+          "cluster_id": 25,
+          "rows": 4834,
+          "mean_probability_gap": 0.9700546951938159,
+          "boundary_fraction_probability": 0.02254861398427803,
+          "uncertain_fraction": 0.02254861398427803,
+          "mean_distance_margin": 0.19782059098136975,
+          "boundary_fraction_distance": 0.21638394704178734
+        },
+        {
+          "cluster_id": 26,
+          "rows": 3426,
+          "mean_probability_gap": 0.9894390774509779,
+          "boundary_fraction_probability": 0.0002918855808523059,
+          "uncertain_fraction": 0.0002918855808523059,
+          "mean_distance_margin": 0.2237421396491337,
+          "boundary_fraction_distance": 0.5169293636894338
+        },
+        {
+          "cluster_id": 27,
+          "rows": 765,
+          "mean_probability_gap": 0.9509605101559122,
+          "boundary_fraction_probability": 0.00261437908496732,
+          "uncertain_fraction": 0.00392156862745098,
+          "mean_distance_margin": 0.3699490080944128,
+          "boundary_fraction_distance": 0.3150326797385621
+        },
+        {
+          "cluster_id": 28,
+          "rows": 3835,
+          "mean_probability_gap": 0.8920863729326571,
+          "boundary_fraction_probability": 0.027640156453715776,
+          "uncertain_fraction": 0.027640156453715776,
+          "mean_distance_margin": 0.16710841974660204,
+          "boundary_fraction_distance": 0.01616688396349413
+        },
+        {
+          "cluster_id": 29,
+          "rows": 6288,
+          "mean_probability_gap": 0.9059370524791909,
+          "boundary_fraction_probability": 0.011927480916030535,
+          "uncertain_fraction": 0.013040712468193385,
+          "mean_distance_margin": 0.13898084028913082,
+          "boundary_fraction_distance": 0.054707379134860054
+        },
+        {
+          "cluster_id": 30,
+          "rows": 9528,
+          "mean_probability_gap": 0.9171882659914385,
+          "boundary_fraction_probability": 0.007031905961376994,
+          "uncertain_fraction": 0.007031905961376994,
+          "mean_distance_margin": 0.24491028513104046,
+          "boundary_fraction_distance": 0.32965994962216627
+        },
+        {
+          "cluster_id": 31,
+          "rows": 7990,
+          "mean_probability_gap": 0.95214238274635,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.303470603989157,
+          "boundary_fraction_distance": 0.2525657071339174
+        },
+        {
+          "cluster_id": 32,
+          "rows": 2328,
+          "mean_probability_gap": 0.9211387883803692,
+          "boundary_fraction_probability": 0.03951890034364261,
+          "uncertain_fraction": 0.0468213058419244,
+          "mean_distance_margin": 0.1709298148692961,
+          "boundary_fraction_distance": 0.45575601374570446
+        },
+        {
+          "cluster_id": 33,
+          "rows": 357,
+          "mean_probability_gap": 0.9880372024350942,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.17733141539927053,
+          "boundary_fraction_distance": 0.2661064425770308
+        },
+        {
+          "cluster_id": 34,
+          "rows": 816,
+          "mean_probability_gap": 0.9986950301660656,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 0.3818074721128823,
+          "boundary_fraction_distance": 0.0
+        },
+        {
+          "cluster_id": 35,
+          "rows": 288,
+          "mean_probability_gap": 0.9985972325493605,
+          "boundary_fraction_probability": 0.0,
+          "uncertain_fraction": 0.0,
+          "mean_distance_margin": 2.6051458320889704,
+          "boundary_fraction_distance": 0.003472222222222222
+        },
+        {
+          "cluster_id": 36,
+          "rows": 21234,
+          "mean_probability_gap": 0.9557014077242862,
+          "boundary_fraction_probability": 0.019920881604973156,
+          "uncertain_fraction": 0.02048601299802204,
+          "mean_distance_margin": 0.9507172141257871,
+          "boundary_fraction_distance": 0.13181689742865216
+        },
+        {
+          "cluster_id": 37,
+          "rows": 2044,
+          "mean_probability_gap": 0.9636505751957694,
+          "boundary_fraction_probability": 0.0014677103718199608,
+          "uncertain_fraction": 0.0014677103718199608,
+          "mean_distance_margin": 0.33984473523655845,
+          "boundary_fraction_distance": 0.11790606653620352
+        },
+        {
+          "cluster_id": 38,
+          "rows": 5028,
+          "mean_probability_gap": 0.8863126068807508,
+          "boundary_fraction_probability": 0.016308671439936355,
+          "uncertain_fraction": 0.01650755767700875,
+          "mean_distance_margin": 0.4414846643146497,
+          "boundary_fraction_distance": 0.18496420047732698
+        },
+        {
+          "cluster_id": 39,
+          "rows": 3840,
+          "mean_probability_gap": 0.9344393351470274,
+          "boundary_fraction_probability": 0.019270833333333334,
+          "uncertain_fraction": 0.019270833333333334,
+          "mean_distance_margin": 0.18223404403230717,
+          "boundary_fraction_distance": 0.5385416666666667
+        }
+      ]
+    }
+  },
+  "elapsed_seconds": 99.05012121470645
+}
