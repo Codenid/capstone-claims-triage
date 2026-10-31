@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<!-- Prototipo de pantallas (PB-25, issue #27). HTML estatico sin dependencias de datos:
+     las cifras del reclamo y de las semanas del 4 y 11 de noviembre de 2024 vienen de M9/M11;
+     el resto de las series es sintetico. Generado con ayuda de IA (Claude). -->
+<title>Mesa de triaje</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  body { margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
+  /* Layout: a fixed top bar with three views (Reclamo, Semana, Día); each view is a
+     two-column work surface at desktop width that stacks on a phone. */
+  :root {
+    --bg: #f6f7f8;
+    --surface: #ffffff;
+    --fg: #1d2229;
+    --muted: #5d6673;
+    --line: #d9dde3;
+    --accent: #1f5f8b;
+    --accent-soft: #e4eef6;
+    --good: #2f7d4f;
+    --warn: #b8741a;
+    --crit: #b4332e;
+    --band: #c9d9e8;
+    --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #15191e; --surface: #1d2329; --fg: #e6e9ec; --muted: #9aa4b0; --line: #333b45;
+      --accent: #7fb3dc; --accent-soft: #233544; --good: #6cc08a; --warn: #e0a24a; --crit: #e2716b;
+      --band: #2d4256; color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #15191e; --surface: #1d2329; --fg: #e6e9ec; --muted: #9aa4b0; --line: #333b45;
+    --accent: #7fb3dc; --accent-soft: #233544; --good: #6cc08a; --warn: #e0a24a; --crit: #e2716b;
+    --band: #2d4256; color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 14px; line-height: 1.45; margin: 0; }
+  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
+  a { color: var(--accent); }
+  h1, h2, h3 { margin: 0; font-weight: 600; text-wrap: balance; }
+  h1 { font-size: 15px; letter-spacing: 0.01em; }
+  h2 { font-size: 17px; }
+  h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 500; }
+  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+  button { font: inherit; }
+
+  .topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line);
+    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 10px;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
+  .brand { display: flex; align-items: baseline; gap: 10px; }
+  .brand small { color: var(--muted); }
+  nav { display: flex; gap: 4px; }
+  nav button { background: none; border: 1px solid transparent; border-radius: 4px; padding: 6px 12px; color: var(--muted); cursor: pointer; }
+  nav button[aria-current="page"] { color: var(--fg); background: var(--accent-soft); border-color: var(--line); }
+  nav button:focus-visible, button:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .demo { margin-left: auto; color: var(--muted); font-size: 12px; }
+
+  main { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 18px 40px; max-width: 1180px; margin: 0 auto; }
+  .view { display: grid; gap: 18px; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
+  .view > * { min-width: 0; }
+  @media (max-width: 820px) { .view { grid-template-columns: minmax(0, 1fr); } }
+  .stack { display: grid; gap: 18px; align-content: start; }
+  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 10px; }
+  .panel header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .meta { color: var(--muted); font-size: 12px; }
+  .narrative { font-size: 14px; line-height: 1.55; max-width: 68ch; white-space: pre-wrap; }
+  .kv { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; font-size: 13px; }
+  .kv dt { color: var(--muted); }
+  .kv dd { margin: 0; }
+
+  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid var(--line); color: var(--muted); }
+  .pill.good { color: var(--good); border-color: var(--good); }
+  .pill.warn { color: var(--warn); border-color: var(--warn); }
+  .pill.crit { color: var(--crit); border-color: var(--crit); }
+  .pill.accent { color: var(--accent); border-color: var(--accent); }
+
+  .bars { display: grid; gap: 6px; }
+  .bar { display: grid; grid-template-columns: minmax(0, 1fr) 120px 56px; gap: 10px; align-items: center; font-size: 13px; }
+  .bar .track { height: 8px; background: var(--accent-soft); border-radius: 2px; overflow: hidden; }
+  .bar .fill { height: 100%; background: var(--accent); }
+  .bar.chosen .fill { background: var(--good); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; font-weight: 500; color: var(--muted); font-size: 12px; letter-spacing: 0.03em; padding: 6px 8px; border-bottom: 1px solid var(--line); }
+  td { padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  td.r, th.r { text-align: right; }
+  .tablewrap { overflow-x: auto; }
+  tr.alarm td:first-child { box-shadow: inset 3px 0 0 var(--crit); }
+  tr.watch td:first-child { box-shadow: inset 3px 0 0 var(--warn); }
+  tr.clickable { cursor: pointer; }
+  tr.clickable:hover td { background: var(--accent-soft); }
+
+  .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .btn { border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 4px; padding: 6px 12px; cursor: pointer; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
+  [hidden] { display: none !important; }
+  #patternTable td.num { white-space: nowrap; }
+  .filters { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; font-size: 13px; }
+  .filters label { display: flex; align-items: center; gap: 6px; }
+  select, textarea, input[type="date"] { font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; }
+  textarea { width: 100%; min-height: 70px; resize: vertical; }
+  .note { font-size: 12px; color: var(--muted); }
+  .toast { font-size: 12px; color: var(--good); min-height: 1.2em; }
+
+  .deadline { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: baseline; }
+  .deadline .big { font-size: 26px; font-weight: 600; }
+
+  .series { width: 100%; height: auto; display: block; }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--muted); }
+  .legend i { display: inline-block; width: 14px; height: 10px; vertical-align: -1px; margin-right: 4px; border-radius: 2px; }
+  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .summary div { border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; display: grid; gap: 2px; }
+  .summary b { font-size: 20px; font-weight: 600; }
+  .summary span { font-size: 12px; color: var(--muted); }
+  .llm { border-left: 3px solid var(--line); padding-left: 12px; font-size: 13px; }
+  details { border-top: 1px solid var(--line); padding-top: 8px; }
+  details summary { cursor: pointer; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; list-style: none; display: flex; align-items: center; gap: 6px; }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::before { content: ""; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform .15s; }
+  details[open] summary::before { transform: rotate(45deg); }
+  details > :not(summary) { margin-top: 8px; }
+  .ico { width: 18px; height: 18px; vertical-align: -4px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+  .legend-list { display: grid; gap: 6px; font-size: 13px; }
+  .legend-list span { display: flex; align-items: center; gap: 8px; }
+  @media (prefers-reduced-motion: reduce) { details summary::before { transition: none; } }
+  @media (prefers-reduced-motion: no-preference) { .toast { transition: opacity .3s; } }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><h1>Mesa de triaje</h1><small>reclamos · prototipo de pantalla</small></div>
+  <nav aria-label="Vistas">
+    <button type="button" data-view="reclamo" aria-current="page">Reclamo</button>
+    <button type="button" data-view="patrones">Patrones que suben</button>
+  </nav>
+  <span class="demo">Prototipo · un reclamo de ejemplo y las semanas de octubre a diciembre de 2024</span>
+</div>
+
+<main>
+  <!-- ============================ RECLAMO ============================ -->
+  <section id="view-reclamo" class="view">
+    <div class="stack">
+      <article class="panel">
+        <header>
+          <div>
+            <h2>Reclamo 10483921</h2>
+            <div class="meta">Recibido el 11 de noviembre de 2024 · Producto: Credit reporting · Empresa: EQUIFAX, INC. · Estado: GA</div>
+          </div>
+          <span class="pill accent">Ejemplo</span>
+        </header>
+        <p class="narrative">I have disputed the same account on my credit report three times since XXXX. The account was opened in XXXX by someone else and I have sent the police report and the identity theft affidavit twice. Each time the bureau says the account was "verified" and it stays on my report. My score dropped more than XXXX points and I was denied a car loan on XX/XX/2024. I am asking that the account be removed and that the investigation be done properly.</p>
+        <dl class="kv">
+          <dt>Patrón semántico</dt><dd>14 · Reporte de crédito, información incorrecta tras disputa <span class="pill">margen del patrón 12.8 %, lectura fiable</span></dd>
+          <dt>Novedad</dt><dd>No. Se parece a los reclamos de ajuste (similitud con el más cercano 0.94).</dd>
+          <dt>Texto compartido</dt><dd>No coincide con ninguna plantilla conocida.</dd>
+        </dl>
+      </article>
+
+      <article class="panel">
+        <header><h3>Motivo sugerido (T1)</h3><span class="meta">TabPFN-3.5 · acierta entre los tres primeros en 96 % de los casos</span></header>
+        <div class="bars" id="t1bars">
+          <div class="bar chosen" data-issue="Problem with a credit reporting company's investigation into an existing problem"><span>Problema con la investigación de una disputa existente</span><div class="track"><div class="fill" style="width:62%"></div></div><span class="num">0.62</span></div>
+          <div class="bar" data-issue="Incorrect information on your report"><span>Información incorrecta en el reporte</span><div class="track"><div class="fill" style="width:24%"></div></div><span class="num">0.24</span></div>
+          <div class="bar" data-issue="Improper use of your report"><span>Uso indebido del reporte</span><div class="track"><div class="fill" style="width:7%"></div></div><span class="num">0.07</span></div>
+        </div>
+        <div class="actions">
+          <button type="button" class="btn primary" id="confirmT1">Confirmar motivo sugerido</button>
+          <label for="otherIssue" class="note">o elegir otro</label>
+          <select id="otherIssue">
+            <option value="">Elegir motivo</option>
+            <option>Información incorrecta en el reporte</option>
+            <option>Uso indebido del reporte</option>
+            <option>Problema con un servicio de monitoreo o protección</option>
+            <option>Robo de identidad o fraude</option>
+          </select>
+          <button type="button" class="btn" id="correctT1">Guardar corrección</button>
+        </div>
+        <div class="toast" id="t1toast" aria-live="polite"></div>
+        <details><summary>Qué pasa con lo que confirmo</summary><p class="note">Se guarda con el reclamo y alimenta la señal de reentrenamiento (caída de Macro-F1 mayor que 5 %).</p></details>
+      </article>
+
+      <article class="panel">
+        <header><h3>Qué suele pasar con reclamos así</h3><span class="meta">T2 y T3, logística sobre TF-IDF; umbrales fijados en calibración</span></header>
+        <div class="summary">
+          <div><b class="num">0.72</b><span>Probabilidad de alguna solución registrada</span><span class="pill good">Probable (umbral 0.30)</span></div>
+          <div><b class="num">0.05</b><span>Probabilidad de compensación monetaria</span><span class="pill">Poco probable (umbral 0.18)</span></div>
+          <div><b class="num">9</b><span>Días hábiles hasta el plazo de respuesta</span><span class="pill warn">Vence el 25 de noviembre</span></div>
+        </div>
+        <details><summary>De dónde salen estas cifras</summary><p class="note">T2 y T3 son regresiones logísticas sobre el texto, con umbrales elegidos en calibración. El plazo sale de la regla de días hábiles con calendario de feriados; no se predice del texto.</p></details>
+      </article>
+    </div>
+
+    <div class="stack">
+      <article class="panel">
+        <header><h3>Cinco reclamos parecidos y su desenlace</h3><span class="meta">Índice FAISS sobre embeddings BGE-large, reclamos de ajuste 2023–2024</span></header>
+        <div class="tablewrap">
+          <table>
+            <thead><tr><th class="r">Similitud</th><th>Fecha</th><th>Motivo registrado</th><th>Respuesta</th></tr></thead>
+            <tbody>
+              <tr><td class="num r">94 %</td><td class="num">2024-08-02</td><td>Investigación de disputa existente</td><td><span title="Cerrado con explicación" aria-label="Cerrado con explicación"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1.5"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg></span></td></tr>
+              <tr><td class="num r">93 %</td><td class="num">2024-05-19</td><td>Investigación de disputa existente</td><td><span title="Cerrado con solución no monetaria" aria-label="Cerrado con solución no monetaria"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><polyline points="8,12.5 11,15.5 16.5,9.5"/></svg></span></td></tr>
+              <tr><td class="num r">92 %</td><td class="num">2023-11-27</td><td>Información incorrecta en el reporte</td><td><span title="Cerrado con explicación" aria-label="Cerrado con explicación"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1.5"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg></span></td></tr>
+              <tr><td class="num r">91 %</td><td class="num">2024-02-14</td><td>Investigación de disputa existente</td><td><span title="Cerrado con solución no monetaria" aria-label="Cerrado con solución no monetaria"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><polyline points="8,12.5 11,15.5 16.5,9.5"/></svg></span></td></tr>
+              <tr><td class="num r">90 %</td><td class="num">2023-09-08</td><td>Investigación de disputa existente</td><td><span title="Cerrado con explicación" aria-label="Cerrado con explicación"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1.5"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg></span></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <details>
+          <summary>Leyenda de respuestas</summary>
+          <div class="legend-list">
+            <span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1.5"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg> Cerrado con explicación: la empresa respondió y no cambió nada.</span>
+            <span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><polyline points="8,12.5 11,15.5 16.5,9.5"/></svg> Cerrado con solución no monetaria: corrigió, retiró o ajustó algo sin pagar.</span>
+            <span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="1.5"/><circle cx="12" cy="12" r="3"/><line x1="6" y1="12" x2="6.5" y2="12"/><line x1="17.5" y1="12" x2="18" y2="12"/></svg> Cerrado con compensación monetaria: hubo un pago al consumidor.</span>
+          </div>
+        </details>
+        <details>
+          <summary>Resumen de precedentes</summary>
+          <div class="llm">
+            <div class="meta">Texto generado a partir de los cinco casos de arriba (ejemplo). No clasifica ni decide.</div>
+            <p>Los cinco casos son disputas repetidas sobre una cuenta que el consumidor atribuye a robo de identidad. En dos de cinco la empresa retiró la cuenta como solución no monetaria; en tres respondió con explicación y la cuenta siguió. Lo que distinguió a los dos retiros: el consumidor adjuntó la denuncia policial y la declaración jurada, como en este reclamo.</p>
+          </div>
+        </details>
+      </article>
+
+      <article class="panel">
+        <header><h3>Derivar</h3></header>
+        <div class="actions">
+          <select id="team"><option>Disputas de reporte de crédito</option><option>Fraude e identidad</option><option>Atención general</option></select>
+          <select id="priority"><option>Prioridad normal</option><option selected>Prioridad alta (plazo en 9 días)</option></select>
+          <button type="button" class="btn primary" id="assign">Derivar</button>
+        </div>
+        <div class="toast" id="assignToast" aria-live="polite"></div>
+      </article>
+    </div>
+  </section>
+
+  <!-- ============================ PATRONES ============================ -->
+  <section id="view-patrones" class="view" hidden>
+    <div class="stack">
+      <article class="panel">
+        <header>
+          <div><h2>Patrones que suben</h2><div class="meta">Observados frente a esperados por patrón en el periodo elegido · intervalo del 80 % · alerta de crecimiento sostenido</div></div>
+          <span class="pill">Datos de calibración 2024; series de demostración salvo las semanas del 4 y 11 de noviembre</span>
+        </header>
+        <form class="filters" id="filters">
+          <label>Ver por <select id="grain"><option value="semana">semana</option><option value="dia">día</option></select></label>
+          <label>Desde <input type="date" id="from" min="2024-10-07" max="2024-12-22" value="2024-11-04"></label>
+          <label>Hasta <input type="date" id="to" min="2024-10-07" max="2024-12-22" value="2024-11-17"></label>
+          <label><input type="checkbox" id="onlyUp" checked> solo los que suben</label>
+          <button type="button" class="btn primary" id="apply">Aplicar</button>
+          <span class="meta" id="rangeNote"></span>
+        </form>
+        <div class="summary" id="rangeSummary"></div>
+        <div class="tablewrap">
+          <table id="patternTable">
+            <thead><tr><th>Patrón</th><th class="r">Observados</th><th class="r">Esperados</th><th class="r">Intervalo 80 %</th><th class="r">Diferencia</th><th>Estado</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <details><summary>Cómo leer esta tabla</summary><p class="note">Esperados e intervalo salen del modelo de conteo (M9 por semana, D-D por día) y se suman sobre el periodo elegido. La diferencia es observados menos esperados; una fila va resaltada cuando los observados superan el intervalo. «Alerta» es la regla semanal de crecimiento sostenido (M11), calibrada para una falsa alarma al mes; por día no hay alerta formal, solo la lectura por encima o dentro del intervalo.</p></details>
+      </article>
+    </div>
+
+    <div class="stack">
+      <article class="panel" id="patternPanel">
+        <header><h3 id="patternTitle">Patrón 14 · Reporte de crédito, información incorrecta</h3><span class="meta" id="patternMeta"></span></header>
+        <svg class="series" id="patternChart" viewBox="0 0 520 200" role="img" aria-label="Observados y esperados del patrón elegido con banda del 80 %"></svg>
+        <div class="legend"><span><i style="background:var(--fg)"></i>Observados</span><span><i style="background:var(--accent)"></i>Esperados</span><span><i style="background:var(--band)"></i>Intervalo del 80 %</span></div>
+        <div id="patternStatus" class="kv"></div>
+        <details>
+          <summary>Lectura de la alerta</summary>
+          <dl class="kv">
+            <dt>Qué dice</dt><dd>El patrón viene por encima de lo esperado varias semanas seguidas y la regla de crecimiento sostenido superó su umbral, fijado para una falsa alarma al mes.</dd>
+            <dt>Fiabilidad del patrón</dt><dd id="boundaryText"></dd>
+            <dt>Cuidado</dt><dd>Tras una ráfaga, lo esperado sube durante dos o tres semanas. Si la semana siguiente vuelve a lo esperado, la alerta se cierra sola.</dd>
+          </dl>
+        </details>
+        <div class="actions">
+          <span class="note">Marcar como</span>
+          <button type="button" class="btn" data-mark="revisada">Revisada</button>
+          <button type="button" class="btn" data-mark="real">Aumento real</button>
+          <button type="button" class="btn" data-mark="eco">Eco de ráfaga</button>
+          <button type="button" class="btn" data-mark="reasignacion">Reasignación</button>
+        </div>
+        <textarea id="alertNote" placeholder="Nota para el equipo (opcional)"></textarea>
+        <div class="toast" id="alertToast" aria-live="polite"></div>
+        <div class="actions"><button type="button" class="btn" id="openComplaints">Ver los reclamos del patrón en el periodo</button></div>
+      </article>
+    </div>
+  </section>
+</main>
+
+<script>
+  (function () {
+    // ---------- navigation ----------
+    var views = ["reclamo", "patrones"];
+    var buttons = document.querySelectorAll("nav button");
+    function show(name) {
+      if (views.indexOf(name) < 0) name = "reclamo";
+      views.forEach(function (v) { document.getElementById("view-" + v).hidden = v !== name; });
+      buttons.forEach(function (b) {
+        if (b.dataset.view === name) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
+      });
+    }
+    buttons.forEach(function (b) { b.addEventListener("click", function () { show(b.dataset.view); }); });
+    show((location.hash || "").replace("#", ""));
+
+    function remember(key, value) { try { localStorage.setItem("mesa:" + key, JSON.stringify(value)); } catch (e) {} }
+    function recall(key) { try { return JSON.parse(localStorage.getItem("mesa:" + key)); } catch (e) { return null; } }
+    function flash(id, text) { document.getElementById(id).textContent = text; }
+    function fmt(n) { return Math.round(n).toLocaleString("es-PE"); }
+
+    // ---------- reclamo ----------
+    document.getElementById("confirmT1").addEventListener("click", function () {
+      remember("t1:10483921", { motivo: "Problema con la investigación de una disputa existente", fuente: "confirmado" });
+      flash("t1toast", "Motivo confirmado y guardado con el reclamo.");
+    });
+    document.getElementById("correctT1").addEventListener("click", function () {
+      var choice = document.getElementById("otherIssue").value;
+      if (!choice) { flash("t1toast", "Elige un motivo antes de guardar la corrección."); return; }
+      remember("t1:10483921", { motivo: choice, fuente: "corregido" });
+      flash("t1toast", "Corrección guardada: " + choice + ".");
+    });
+    document.getElementById("assign").addEventListener("click", function () {
+      var team = document.getElementById("team").value, prio = document.getElementById("priority").value;
+      remember("derivacion:10483921", { equipo: team, prioridad: prio });
+      flash("assignToast", "Derivado a " + team + " con " + prio.toLowerCase() + ".");
+    });
+    var savedT1 = recall("t1:10483921");
+    if (savedT1 && savedT1.motivo) flash("t1toast", "Guardado antes: " + savedT1.motivo + " (" + savedT1.fuente + ").");
+
+    // ---------- demo data: 8 patterns, 11 weeks (2024-10-07 .. 2024-12-16) ----------
+    var PATTERNS = [
+      { id: 14, name: "Reporte de crédito, información incorrecta", base: 3600, boundary: 0.128 },
+      { id: 19, name: "Cobros no reconocidos en tarjeta", base: 1480, boundary: 0.094 },
+      { id: 3,  name: "Deuda que no reconozco", base: 2980, boundary: 0.672 },
+      { id: 8,  name: "Problemas con el pago de hipoteca", base: 1590, boundary: 0.22 },
+      { id: 4,  name: "Cobranza de deuda ya pagada", base: 430, boundary: 0.756 },
+      { id: 36, name: "Cierre de cuenta sin aviso", base: 780, boundary: 0.18 },
+      { id: 11, name: "Problemas al abrir o cerrar una cuenta", base: 1250, boundary: 0.31 },
+      { id: 17, name: "Cargos o intereses inesperados", base: 640, boundary: 0.41 }
+    ];
+    var WEEKS = []; var d0 = new Date("2024-10-07T00:00:00");
+    for (var w = 0; w < 11; w++) { var d = new Date(d0); d.setDate(d0.getDate() + 7 * w); WEEKS.push(d.toISOString().slice(0, 10)); }
+    function seeded(i) { var x = Math.sin(i * 9301 + 49297) * 233280; return x - Math.floor(x); }
+    // weekly expected, observed and band; real values for 14 and 19 on their alert weeks
+    var weekly = {};
+    PATTERNS.forEach(function (p, pi) {
+      weekly[p.id] = WEEKS.map(function (wk, wi) {
+        var trend = p.id === 14 ? 1 + 0.045 * Math.max(0, wi - 3) : 1;
+        var expected = p.base * trend;
+        var noise = (seeded(pi * 31 + wi) - 0.5) * 0.12;
+        var observed = expected * (1 + noise);
+        var sd = Math.sqrt(expected + expected * expected / 40);
+        var row = { week: wk, expected: expected, observed: observed, lo: expected - 1.28 * sd, hi: expected + 1.28 * sd, alarm: false };
+        if (p.id === 14 && wi >= 4) row.observed = expected * (1 + 0.06 + 0.02 * (wi - 4));
+        if (p.id === 14 && wk === "2024-11-11") { row.observed = 4247; row.expected = 3676; row.lo = 3310; row.hi = 4050; row.alarm = true; }
+        if (p.id === 19 && wk === "2024-11-04") { row.observed = 1863; row.expected = 1475; row.lo = 1320; row.hi = 1640; row.alarm = true; }
+        return row;
+      });
+    });
+    // daily: 77 days (2024-10-07 .. 2024-12-22), weekly total spread by a day-of-week profile
+    var DOW = [0.90, 1.42, 1.38, 1.30, 1.22, 1.02, 0.76]; // mon..sun share of 1/7 each, sum = 7
+    var daily = {};
+    PATTERNS.forEach(function (p, pi) {
+      daily[p.id] = [];
+      weekly[p.id].forEach(function (wrow, wi) {
+        for (var k = 0; k < 7; k++) {
+          var d = new Date(wrow.week + "T00:00:00"); d.setDate(d.getDate() + k);
+          var expected = wrow.expected / 7 * DOW[k];
+          var sd = Math.sqrt(expected + expected * expected / 20);
+          var observed = wrow.observed / 7 * DOW[k] * (1 + (seeded(pi * 97 + wi * 7 + k) - 0.5) * 0.25);
+          daily[p.id].push({ day: d.toISOString().slice(0, 10), expected: expected, observed: observed, lo: Math.max(0, expected - 1.28 * sd), hi: expected + 1.28 * sd, alarm: false });
+        }
+      });
+    });
+
+    // ---------- filtering and table ----------
+    var state = { pattern: 14 };
+    function rowsInRange(id, grain, from, to) {
+      var src = grain === "semana" ? weekly[id] : daily[id];
+      return src.filter(function (r) { var key = r.week || r.day; return key >= from && key <= to; });
+    }
+    function render() {
+      var grain = document.getElementById("grain").value;
+      var from = document.getElementById("from").value, to = document.getElementById("to").value;
+      if (from > to) { var t = from; from = to; to = t; document.getElementById("from").value = from; document.getElementById("to").value = to; }
+      if (grain === "semana") { from = WEEKS.filter(function (w) { return w <= from; }).pop() || WEEKS[0]; }
+      var onlyUp = document.getElementById("onlyUp").checked;
+      var rows = PATTERNS.map(function (p) {
+        var rs = rowsInRange(p.id, grain, from, to);
+        var sum = function (k) { return rs.reduce(function (a, r) { return a + r[k]; }, 0); };
+        var observed = sum("observed"), expected = sum("expected"), lo = sum("lo"), hi = sum("hi");
+        return { p: p, n: rs.length, observed: observed, expected: expected, lo: lo, hi: hi, diff: observed - expected,
+                 alarm: rs.some(function (r) { return r.alarm; }), above: observed > hi };
+      }).filter(function (r) { return r.n > 0 && (!onlyUp || r.diff > 0); })
+        .sort(function (a, b) { return (b.diff / b.expected) - (a.diff / a.expected); });
+      var body = document.querySelector("#patternTable tbody"); body.innerHTML = "";
+      rows.forEach(function (r) {
+        var tr = document.createElement("tr"); tr.className = "clickable" + (r.alarm ? " alarm" : r.above ? " watch" : "");
+        tr.dataset.pattern = r.p.id;
+        var pct = (100 * r.diff / r.expected);
+        var status = r.alarm ? '<span class="pill crit">Alerta de crecimiento</span>' : r.above ? '<span class="pill warn">Por encima del intervalo</span>' : "Dentro de lo esperado";
+        tr.innerHTML = "<td>" + r.p.id + " · " + r.p.name + "</td><td class='num r'>" + fmt(r.observed) + "</td><td class='num r'>" + fmt(r.expected) +
+          "</td><td class='num r'>" + fmt(r.lo) + " – " + fmt(r.hi) + "</td><td class='num r'>" + (r.diff >= 0 ? "+" : "−") + fmt(Math.abs(r.diff)) + " (" + (pct >= 0 ? "+" : "−") + Math.abs(pct).toFixed(1) + " %)</td><td>" + status + "</td>";
+        tr.addEventListener("click", function () { state.pattern = r.p.id; drawPattern(grain, from, to); document.getElementById("patternPanel").scrollIntoView({ behavior: "smooth", block: "start" }); });
+        body.appendChild(tr);
+      });
+      var units = grain === "semana" ? "semanas" : "días";
+      var n = rows.length ? rows[0].n : 0;
+      document.getElementById("rangeNote").textContent = n ? n + " " + units + " en el periodo" : "Sin datos en el periodo";
+      var alarms = rows.filter(function (r) { return r.alarm; }).length, above = rows.filter(function (r) { return !r.alarm && r.above; }).length;
+      var all = PATTERNS.length;
+      document.getElementById("rangeSummary").innerHTML =
+        "<div><b class='num'>" + alarms + "</b><span>Patrones con alerta de crecimiento</span></div>" +
+        "<div><b class='num'>" + above + "</b><span>Por encima del intervalo sin alerta</span></div>" +
+        "<div><b class='num'>" + (all - alarms - above) + "</b><span>Dentro de lo esperado</span></div>";
+      if (!rows.some(function (r) { return r.p.id === state.pattern; }) && rows.length) state.pattern = rows[0].p.id;
+      drawPattern(grain, from, to);
+    }
+
+    // ---------- chart ----------
+    function drawPattern(grain, from, to) {
+      var p = PATTERNS.filter(function (x) { return x.id === state.pattern; })[0];
+      var rs = rowsInRange(p.id, grain, from, to);
+      var svg = document.getElementById("patternChart");
+      document.getElementById("patternTitle").textContent = "Patrón " + p.id + " · " + p.name;
+      document.getElementById("patternMeta").textContent = rs.length + (grain === "semana" ? " semanas" : " días") + " · " + from + " a " + to;
+      if (!rs.length) { svg.innerHTML = ""; return; }
+      var W = 520, H = 200, left = 52, right = 10, top = 14, bottom = 26;
+      var max = Math.max.apply(null, rs.map(function (r) { return Math.max(r.observed, r.hi); })) * 1.08, min = 0;
+      var x = function (i) { return left + (rs.length === 1 ? (W - left - right) / 2 : i * (W - left - right) / (rs.length - 1)); };
+      var y = function (v) { return top + (H - top - bottom) * (1 - (v - min) / (max - min)); };
+      var ticks = 4, out = [];
+      for (var t = 0; t <= ticks; t++) { var v = min + (max - min) * t / ticks; out.push('<line x1="' + left + '" y1="' + y(v) + '" x2="' + (W - right) + '" y2="' + y(v) + '" stroke="var(--line)"/><text x="4" y="' + (y(v) + 3) + '" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--muted)">' + fmt(v) + '</text>'); }
+      var band = rs.map(function (r, i) { return x(i) + "," + y(r.hi); }).concat(rs.map(function (r, i) { return x(i) + "," + y(r.lo); }).reverse()).join(" ");
+      out.push('<polygon points="' + band + '" fill="var(--band)" opacity="0.7"/>');
+      out.push('<polyline points="' + rs.map(function (r, i) { return x(i) + "," + y(r.expected); }).join(" ") + '" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 3"/>');
+      out.push('<polyline points="' + rs.map(function (r, i) { return x(i) + "," + y(r.observed); }).join(" ") + '" fill="none" stroke="var(--fg)" stroke-width="1.8"/>');
+      rs.forEach(function (r, i) { if (r.alarm || r.observed > r.hi) out.push('<circle cx="' + x(i) + '" cy="' + y(r.observed) + '" r="3.5" fill="' + (r.alarm ? "var(--crit)" : "var(--warn)") + '"/>'); });
+      var first = rs[0].week || rs[0].day, last = rs[rs.length - 1].week || rs[rs.length - 1].day;
+      out.push('<text x="' + left + '" y="' + (H - 8) + '" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--muted)">' + first + '</text>');
+      out.push('<text x="' + (W - right) + '" y="' + (H - 8) + '" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--muted)" text-anchor="end">' + last + '</text>');
+      svg.innerHTML = out.join("");
+      var alarms = rs.filter(function (r) { return r.alarm; });
+      var status = document.getElementById("patternStatus");
+      status.innerHTML = alarms.length
+        ? "<dt>Estado</dt><dd><span class='pill crit'>Alerta de crecimiento</span> en " + alarms.map(function (r) { return r.week || r.day; }).join(", ") + "</dd>"
+        : "<dt>Estado</dt><dd>" + (rs.some(function (r) { return r.observed > r.hi; }) ? "<span class='pill warn'>Por encima del intervalo</span> en algún periodo; sin alerta de crecimiento sostenido." : "Dentro de lo esperado en todo el periodo.") + "</dd>";
+      document.getElementById("boundaryText").textContent = p.boundary > 0.3
+        ? "Baja: " + Math.round(p.boundary * 100) + " % de sus reclamos están cerca de otro patrón; una subida puede ser reasignación, conviene mirar los reclamos antes de actuar."
+        : "Buena: solo " + Math.round(p.boundary * 100) + " % de sus reclamos están cerca de otro patrón; la subida es del patrón.";
+      var saved = recall("alerta:" + p.id);
+      document.querySelectorAll("[data-mark]").forEach(function (b) { b.setAttribute("aria-pressed", saved && saved.estado === b.dataset.mark ? "true" : "false"); });
+      document.getElementById("alertNote").value = saved && saved.nota ? saved.nota : "";
+    }
+
+    document.getElementById("apply").addEventListener("click", render);
+    document.getElementById("grain").addEventListener("change", render);
+    document.getElementById("onlyUp").addEventListener("change", render);
+    document.getElementById("filters").addEventListener("submit", function (e) { e.preventDefault(); render(); });
+    document.querySelectorAll("[data-mark]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        document.querySelectorAll("[data-mark]").forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+        remember("alerta:" + state.pattern, { estado: b.dataset.mark, nota: document.getElementById("alertNote").value });
+        flash("alertToast", "Patrón " + state.pattern + " marcado como «" + b.textContent + "».");
+      });
+    });
+    document.getElementById("openComplaints").addEventListener("click", function () {
+      flash("alertToast", "En el producto, esto abre la lista de reclamos del patrón " + state.pattern + " en el periodo, con su motivo y su desenlace.");
+    });
+    render();
+  })();
+</script>
+
+</body>
+</html>

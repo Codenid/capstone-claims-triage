@@ -30,6 +30,7 @@ El código vive fuera de esta carpeta porque comparte módulos con las etapas
 | Componentes congelados que usa | `docs/registro/models_plan.md` §32.2 y [`docs/decisiones/0005-modelado-y-cierre.md`](../docs/decisiones/0005-modelado-y-cierre.md) |
 | Job de clúster | `scripts/hpc/pipeline_score.slurm` |
 | Pruebas | `tests/test_pipeline_core.py` |
+| Prototipo de pantallas del observatorio (PB-25) | [`prototipo_pantallas/mesa-de-triaje.html`](prototipo_pantallas/mesa-de-triaje.html): ficha del reclamo y «patrones que suben» con filtro de fechas; capturas `reclamo.png` y `patrones.png` |
 | Evidencia de la prueba de punta a punta | `reports/pipeline/demo_2024-11-04/score.json` (GPU, TabPFN) y `reports/pipeline/demo_2024-11-04_cpu/score.json` (CPU, lineal de respaldo) |
 
 ## Cómo se ejecuta
