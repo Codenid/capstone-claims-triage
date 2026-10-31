@@ -461,7 +461,11 @@ def daily_facts() -> dict[str, Any]:
         )
     counts.sort(key=lambda c: c["wis"])
     winner_id = challenge["winner"]["model_id"]
+    backtests = sorted(
+        glob.glob(str(REPORTS / "daily_counts" / winner_id / "*-full-*" / "backtest.png"))
+    )
     return {
+        "backtest_figure": backtests[-1] if backtests else None,
         "panel": panel,
         "counts": counts,
         "composition": composition,

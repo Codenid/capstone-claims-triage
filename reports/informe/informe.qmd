@@ -36,6 +36,16 @@ F = facts.build()
 import shutil
 
 shutil.copytree(facts.REPORTS / "patterns" / "series", Path("figuras") / "series", dirs_exist_ok=True)
+# The daily backtest figure of D-D (eight patterns, in Git): keep the first four
+# panels so the page stays legible.
+from PIL import Image
+
+Path("figuras").mkdir(exist_ok=True)
+with Image.open(F["diario"]["backtest_figure"]) as image:
+    panels = 4
+    image.crop((0, 0, image.width, int(image.height * panels / 8))).save(
+        Path("figuras") / "diario_backtest.png"
+    )
 DATOS, CLAS, SEM = F["datos"], F["clasificadores"], F["semantico"]
 SEMANAL, COMP, ALERTAS, DIARIO = F["semanal"], F["composicion"], F["alertas"], F["diario"]
 CATALOGO, TABLA, CIERRE = F["catalogo"], F["tabla"], F["cierre"]

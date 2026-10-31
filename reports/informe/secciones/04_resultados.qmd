@@ -342,6 +342,8 @@ verlo: su muestreador satura la profundidad de árbol en las dos
 parametrizaciones probadas y una corrida completa no cabe en las 8 horas por
 trabajo del clúster.
 
+![Predicción diaria de D-D en los últimos 120 días de ajuste y calibración para los cuatro patrones más grandes: observados (negro), mediana predictiva (azul) y bandas del 50 %, 80 % y 95 %. El ciclo semanal domina y las bandas se ensanchan en los patrones pequeños.](figuras/diario_backtest.png){#fig-diario-series width=100%}
+
 La Dirichlet-multinomial diaria (D-E, κ =
 `{python} i(DIARIO["composition"]["posterior"]["kappa_p50"])`, IC
 [`{python} i(DIARIO["composition"]["posterior"]["kappa_p025"])`,
