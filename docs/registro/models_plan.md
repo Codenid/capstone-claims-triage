@@ -2778,6 +2778,17 @@ los de §31.1; (8) participaciones dinámicas con FFBS y Pólya-gamma en lugar
 de NUTS. Las
 dos primeras no cambian modelos; las demás necesitan entrada propia aquí.
 
+**Estudio de sensibilidad de PB-17 (2026-10-30, Winston Flores, MLE; decisión
+`docs/decisiones/0011-sensibilidad-deduplicacion-ajuste.md`).** Dos cohortes
+reales de ajuste para T1, la original y una sin repeticiones de texto, producto
+y etiqueta (647,354 de 1,067,194 filas), con regresión logística y bosque
+aleatorio sobre 20,000 ejemplos y la representación BGE + PCA congelada, en seis
+corridas padre y doce hijas de MLflow (`experimentos/pb17/`,
+`configs/pb17_cierre.yaml`). Cumple la rúbrica del curso de dos versiones de
+datos y barridos anidados; es exploratorio: no cambia el campeón ni los
+componentes de §32.2, no consulta validación ni abre 2026, y sus candidatos no
+entran a la tabla de §32.2 ni compiten con TabPFN por la regla de §25.2.
+
 ### 32.5 Pre-registro de D-11 v2: alerta diaria con ventana de 3 días
 
 Registrado el 2026-10-21, antes de correrlo, como primer candidato tras
