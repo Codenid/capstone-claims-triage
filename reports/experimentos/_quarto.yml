@@ -1,0 +1,18 @@
+project:
+  type: default
+  render:
+    - experimentos.qmd
+
+lang: es
+
+execute:
+  echo: false
+  warning: false
+  freeze: false
+
+format:
+  html:
+    minimal: true
+    embed-resources: false
+    include-in-header: header.html
+    toc: false

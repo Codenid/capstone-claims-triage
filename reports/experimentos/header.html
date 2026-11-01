@@ -1,0 +1,50 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+<style>
+  :root { --bg: #f6f7f8; --surface: #fff; --fg: #1d2229; --muted: #5d6673; --line: #d9dde3; --accent: #1f5f8b; --accent-soft: #e4eef6;
+          --win: #2f7d4f; --win-soft: #e3f1e8; --base: #8a93a0; --cand: #7fb2d9; --rej: #b3261e; --rej-soft: #fbe5e3; --warn: #b26a00; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: "IBM Plex Sans", system-ui, sans-serif; font-size: 15px; line-height: 1.5; padding: 24px 16px 60px; }
+  body > * { max-width: 1040px; margin-left: auto; margin-right: auto; }
+  header#title-block-header { margin-bottom: 18px; }
+  h1.title { font-size: 28px; font-weight: 600; margin: 0 0 4px; }
+  .subtitle { color: var(--muted); font-size: 16px; margin: 0 0 6px; }
+  .quarto-title-meta, .date, .author { color: var(--muted); font-size: 13px; }
+  h2 { font-size: 20px; font-weight: 600; margin: 34px 0 10px; padding-top: 18px; border-top: 1px solid var(--line); }
+  h3 { font-size: 16px; font-weight: 600; margin: 20px 0 8px; }
+  p { max-width: 76ch; margin: 0 0 10px; }
+  code { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .92em; background: var(--accent-soft); padding: 1px 5px; border-radius: 3px; }
+  pre code { background: none; padding: 0; }
+  pre { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; overflow-x: auto; font-size: 13px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; margin: 12px 0; }
+  .stat { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 12px 0; }
+  .stat div { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; }
+  .stat b { display: block; font-size: 22px; font-weight: 600; font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  .stat span { font-size: 12px; color: var(--muted); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; background: var(--surface); }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; position: sticky; top: 0; background: var(--surface); }
+  td.r, th.r { text-align: right; font-variant-numeric: tabular-nums; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12.5px; }
+  .tablewrap { overflow: auto; max-height: 520px; border: 1px solid var(--line); border-radius: 6px; margin: 10px 0; }
+  .tag { display: inline-block; border-radius: 999px; padding: 1px 9px; font-size: 12px; border: 1px solid; white-space: nowrap; }
+  .tag.win { color: var(--win); border-color: var(--win); background: var(--win-soft); }
+  .tag.rej { color: var(--rej); border-color: var(--rej); background: var(--rej-soft); }
+  .tag.base { color: var(--muted); border-color: var(--line); }
+  .tag.cand { color: var(--accent); border-color: var(--accent); }
+  .flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; margin: 10px 0; }
+  .flow .node { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; min-width: 150px; flex: 1 1 150px; }
+  .flow .node b { display: block; font-size: 13.5px; }
+  .flow .node small { color: var(--muted); font-size: 12px; display: block; overflow-wrap: anywhere; }
+  .flow .node.data { border-left: 4px solid var(--win); }
+  .flow .node.stage { border-left: 4px solid var(--accent); }
+  .flow .node.out { border-left: 4px solid var(--warn); }
+  .filter { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 10px 0; font-size: 13.5px; }
+  .filter input, .filter select { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: var(--fg); }
+  .note { font-size: 12.5px; color: var(--muted); }
+  .plot { width: 100%; min-height: 320px; margin: 8px 0 14px; }
+  nav.toc-inline { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; }
+  nav.toc-inline a { color: var(--accent); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 3px 11px; font-size: 13px; background: var(--surface); }
+  details { margin: 8px 0; }
+  summary { cursor: pointer; color: var(--muted); font-size: 12.5px; }
+</style>

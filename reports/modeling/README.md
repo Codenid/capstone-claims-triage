@@ -8,6 +8,14 @@ está en [`docs/registro/models_plan.md`](../../docs/registro/models_plan.md).
 Los archivos no se movieron: muchas rutas están fijadas en
 `configs/modeling.yaml` y en el código que verifica resultados congelados.
 
+## Vista interactiva
+
+[`reports/experimentos/experimentos.html`](../experimentos/experimentos.html)
+(Quarto) muestra en una sola página los datos y sus versiones, las corridas de
+MLflow, qué se probó y qué ganó por tarea, los modelos finales y la validación.
+Se regenera con `quarto render` en `reports/experimentos/`; las corridas se
+leen de `mlflow_runs.json`, exportado con `scripts/export_mlflow_runs.py`.
+
 ## Estados
 
 | Estado | Significado |

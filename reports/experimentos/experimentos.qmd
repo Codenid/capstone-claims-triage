@@ -1,0 +1,277 @@
+---
+title: "Experimentos del proyecto: datos, modelos y resultados"
+subtitle: "Triaje de reclamos · todo lo que se corrió, con qué datos y por qué ganó lo que ganó"
+date: today
+date-format: "D [de] MMMM [de] YYYY"
+---
+
+```{python}
+#| output: asis
+import json
+import re
+from pathlib import Path
+
+import pandas as pd
+import yaml
+from IPython.display import HTML, display
+
+ROOT = Path.cwd()
+while not (ROOT / "dvc.yaml").exists():
+    ROOT = ROOT.parent
+
+COMPARISON = ROOT / "etapa_4_5_modelado_evaluacion/resultados/comparacion_modelos.csv"
+RUNS = ROOT / "reports/modeling/mlflow_runs.json"
+PLAN = ROOT / "docs/registro/models_plan.md"
+EXPERIMENT = yaml.safe_load((ROOT / "etapa_4_5_modelado_evaluacion/experimento.yaml").read_text("utf-8"))
+
+table = pd.read_csv(COMPARISON)
+runs = json.loads(RUNS.read_text("utf-8")) if RUNS.exists() else None
+raw_pointer = yaml.safe_load((ROOT / "data/raw/cfpb_reclamos_narrativa.parquet.dvc").read_text("utf-8"))["outs"][0]
+input_contract = json.loads((ROOT / "reports/modeling/input_contract.json").read_text("utf-8"))
+dvc_stages = yaml.safe_load((ROOT / "dvc.yaml").read_text("utf-8"))["stages"]
+artifact_pointers = []
+for pointer in sorted((ROOT / "artifacts").rglob("*.dvc")):
+    for out in yaml.safe_load(pointer.read_text("utf-8")).get("outs", []):
+        artifact_pointers.append({"ruta": str(pointer.relative_to(ROOT)).replace("\\", "/"), "mb": out.get("size", 0) / 1e6, "archivos": out.get("nfiles", 1), "md5": out.get("md5", "")[:8]})
+report_pointers = sum(1 for _ in (ROOT / "reports").rglob("*.dvc"))
+
+n_runs = len(runs["runs"]) if runs else int(re.search(r"(\d+) corridas", (ROOT / "etapa_4_5_modelado_evaluacion/experimento.yaml").read_text("utf-8")).group(1))
+candidates = table[table["rol"].str.startswith("candidato")]["modelo"].nunique()
+stages = table["etapa"].nunique()
+fmt = lambda x: f"{x:,.0f}"
+
+display(HTML(f"""
+<nav class="toc-inline">
+  <a href="#datos">1 · Datos y versiones</a><a href="#mlflow">2 · Corridas en MLflow</a>
+  <a href="#resultados">3 · Qué se probó y qué ganó</a><a href="#finales">4 · Modelos finales</a>
+  <a href="#validacion">5 · Validación</a><a href="#reproducir">6 · Cómo reproducir</a>
+</nav>
+<div class="stat">
+  <div><b>{fmt(input_contract['eligible_complete']['train_2023_2024']['T1'])}</b><span>reclamos de 2023–2024 elegibles para T1 (tabla datos-v1)</span></div>
+  <div><b>{n_runs}</b><span>corridas en MLflow, un solo experimento</span></div>
+  <div><b>{candidates}</b><span>modelos candidatos distintos con métrica registrada</span></div>
+  <div><b>{stages}</b><span>etapas de modelado comparadas</span></div>
+  <div><b>{len(artifact_pointers) + 1 + report_pointers}</b><span>punteros DVC (datos, modelos y tablas de resultados)</span></div>
+</div>
+<p class="note">Todas las cifras de esta página se leen al renderizar desde <code>etapa_4_5_modelado_evaluacion/resultados/comparacion_modelos.csv</code>, <code>reports/modeling/mlflow_runs.json</code>, <code>dvc.yaml</code>, los punteros <code>.dvc</code> y <code>docs/registro/models_plan.md</code>. Nada está escrito a mano. Página generada con Quarto y ayuda de IA (Claude).</p>
+"""))
+```
+
+## 1 · Datos y versiones {#datos}
+
+Una sola fuente, un solo linaje. El archivo crudo entra por DVC, pasa por seis etapas reproducibles (`dvc repro`) y sale como la tabla preparada que usan todos los modelos. Cada corrida de MLflow lleva el hash de esa tabla, así que se sabe exactamente con qué datos se obtuvo cada métrica.
+
+```{python}
+#| output: asis
+nodes = [f"<div class='node data'><b>Crudo CFPB</b><small>{raw_pointer['path']}</small><small>{raw_pointer['size']/1e9:.2f} GB · md5 {raw_pointer['md5'][:8]}</small></div>"]
+for name, stage in dvc_stages.items():
+    desc = stage.get("desc", "").split("·")[0].strip()
+    outs = stage.get("outs", [])
+    out = outs[0] if isinstance(outs[0], str) else list(outs[0].keys())[0]
+    nodes.append(f"<div class='node stage'><b>{desc}</b><small><code>{name}</code></small><small>→ {out}</small></div>")
+nodes.append(f"<div class='node out'><b>Tabla preparada</b><small>data/processed/prepared.parquet</small><small>versión <code>{EXPERIMENT['datos']['version_datos']}</code> · md5 {input_contract['dvc_md5'][:8]}</small></div>")
+display(HTML("<div class='flow'>" + "".join(nodes) + "</div>"))
+
+periods = EXPERIMENT["conjuntos"]
+rows = "".join(f"<tr><td>{k}</td><td>{v}</td></tr>" for k, v in periods.items() if k != "regla")
+display(HTML(f"""
+<div class='card'><h3 style='margin-top:0'>Periodos: quién decide qué</h3>
+<table><thead><tr><th>Conjunto</th><th>Fechas y uso</th></tr></thead><tbody>{rows}</tbody></table>
+<p class='note' style='margin-top:8px'>Regla para reemplazar un modelo: {periods['regla']}. La validación se abrió una sola vez; los resultados posteriores se reportan como «ya consultada».</p></div>
+"""))
+
+big = sorted(artifact_pointers, key=lambda r: -r["mb"])[:10]
+rows = "".join(f"<tr><td><code>{r['ruta']}</code></td><td class='r'>{r['mb']:,.0f}</td><td class='r'>{r['archivos']}</td><td class='r'>{r['md5']}</td></tr>" for r in big)
+display(HTML(f"""
+<details><summary>Los diez artefactos más grandes en DVC ({sum(r['mb'] for r in artifact_pointers)/1e3:.1f} GB en total)</summary>
+<div class='tablewrap'><table><thead><tr><th>Puntero</th><th class='r'>MB</th><th class='r'>Archivos</th><th class='r'>md5</th></tr></thead><tbody>{rows}</tbody></table></div></details>
+"""))
+```
+
+## 2 · Corridas en MLflow {#mlflow}
+
+```{python}
+#| output: asis
+if runs is None:
+    display(HTML("""<div class='card'><b>Falta la exportación de MLflow.</b> Corre <code>uv run --no-sync python scripts/export_mlflow_runs.py</code> con las credenciales de DagsHub y vuelve a renderizar; esta sección mostrará la línea de tiempo y la tabla de las corridas.</div>"""))
+else:
+    df = pd.json_normalize(runs["runs"])
+    df["start"] = pd.to_datetime(df["start_time_utc"])
+    df["stage"] = df["tags.stage"].fillna("—")
+    df["target"] = df["tags.target"].fillna("—")
+    df["split"] = df["tags.split"].fillna("—")
+    df["model"] = df["params.model_id"].fillna(df["run_name"])
+    metric_cols = [c for c in df.columns if c.startswith("metrics.")]
+    primary = {"T1": "macro_f1", "T2": "average_precision", "T3": "average_precision", "T4": "average_precision", "M9": "wis", "M9D": "wis", "M10": "log_score", "M11": "tasa_de_deteccion", "M11D": "tasa_de_deteccion"}
+    def primary_metric(row):
+        for key, name in primary.items():
+            if str(row["stage"]).startswith(key) or str(row["target"]).startswith(key):
+                cands = [c for c in metric_cols if name in c]
+                if cands:
+                    vals = [row[c] for c in cands if pd.notna(row[c])]
+                    if vals:
+                        return f"{name} = {vals[0]:.3f}"
+        vals = [(c.replace('metrics.', ''), row[c]) for c in metric_cols if pd.notna(row[c])]
+        return f"{vals[0][0]} = {vals[0][1]:.3f}" if vals else "—"
+    df["primaria"] = df.apply(primary_metric, axis=1)
+    by_stage = df.groupby("stage").size().sort_values(ascending=False)
+    display(HTML(f"<p>{len(df)} corridas en el experimento <code>{runs['experiment']}</code> ({runs['tracking_host']}), exportadas el {runs['exported_at_utc'][:10]}. Cada punto es una corrida; el color es la etapa. Pasa el cursor para ver el modelo y su métrica principal.</p>"))
+    traces = []
+    for stage, g in df.groupby("stage"):
+        traces.append({"type": "scatter", "mode": "markers", "name": stage, "x": g["start"].dt.strftime("%Y-%m-%dT%H:%M").tolist(), "y": [stage] * len(g),
+                       "text": (g["run_name"] + "<br>" + g["model"].astype(str) + "<br>" + g["primaria"] + "<br>split: " + g["split"]).tolist(), "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}})
+    layout = {"height": 420, "margin": {"l": 110, "r": 10, "t": 10, "b": 40}, "xaxis": {"title": "fecha de la corrida"}, "yaxis": {"title": "", "categoryorder": "array", "categoryarray": by_stage.index.tolist()[::-1]}, "showlegend": False, "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)", "font": {"family": "IBM Plex Sans, system-ui, sans-serif"}}
+    display(HTML(f"<div id='runs-timeline' class='plot'></div><script>Plotly.newPlot('runs-timeline', {json.dumps(traces)}, {json.dumps(layout)}, {{responsive: true, displaylogo: false}});</script>"))
+    rows = "".join(
+        f"<tr data-stage='{row['stage']}' data-split='{row['split']}'><td class='r'>{row['start']:%Y-%m-%d}</td><td><code>{row['run_name']}</code></td><td>{row['stage']}</td><td>{row['target']}</td><td>{row['split']}</td><td>{row['model']}</td><td class='r'>{row['primaria']}</td><td class='r'>{str(row.get('tags.git_commit') or '')[:7]}</td></tr>"
+        for _, row in df.sort_values("start", ascending=False).iterrows()
+    )
+    stage_options = "".join(f"<option value='{s}'>{s} ({n})</option>" for s, n in by_stage.items())
+    display(HTML(f"""
+<div class='filter'><label>Buscar <input id='runs-q' type='search' placeholder='modelo, corrida, split…'></label>
+<label>Etapa <select id='runs-stage'><option value=''>todas</option>{stage_options}</select></label><span class='note' id='runs-n'></span></div>
+<div class='tablewrap'><table id='runs-table'><thead><tr><th class='r'>Fecha</th><th>Corrida</th><th>Etapa</th><th>Tarea</th><th>Split</th><th>Modelo</th><th class='r'>Métrica principal</th><th class='r'>Commit</th></tr></thead><tbody>{rows}</tbody></table></div>
+<script>
+(function(){{var q=document.getElementById('runs-q'),s=document.getElementById('runs-stage'),rows=document.querySelectorAll('#runs-table tbody tr'),n=document.getElementById('runs-n');
+function apply(){{var t=q.value.toLowerCase(),st=s.value,k=0;rows.forEach(function(r){{var ok=(!st||r.dataset.stage===st)&&(!t||r.textContent.toLowerCase().indexOf(t)>=0);r.style.display=ok?'':'none';if(ok)k++;}});n.textContent=k+' de '+rows.length+' corridas';}}
+q.addEventListener('input',apply);s.addEventListener('change',apply);apply();}})();
+</script>"""))
+```
+
+## 3 · Qué se probó y qué ganó {#resultados}
+
+Cada gráfico compara, en calibración, a los candidatos de una tarea contra su referencia. Verde es el ganador vigente, gris la referencia, rojo lo rechazado por la regla. La regla es la misma en todas las tareas: el retador debe mejorar la métrica principal al menos 5 % relativo y el intervalo bootstrap del 95 % de la diferencia (pareado por semanas) debe quedar entero a su favor.
+
+```{python}
+#| output: asis
+cal = table[table["conjunto"].str.startswith("calibracion_2024")].copy()
+cal["decision"] = cal["decision"].fillna("")
+LOWER_IS_BETTER = {"wis", "wis_plug_in", "alertas_por_mes"}
+# (título, filas, métrica, texto que identifica al ganador vigente, qué pasó con la tarea)
+GROUPS = [
+    ("T1 · motivo del reclamo (Macro-F1)", cal[(cal["tarea"] == "T1")], "macro_f1", "TabPFN-3.5 (PCA 100", "Cuatro relevos: regla por producto → TF-IDF → BGE + producto → TabPFN-3.5 en contexto. Cada uno cumplió la regla contra el anterior; las dos ablaciones de TabPFN no."),
+    ("T2 · solución registrada (AP)", cal[(cal["tarea"] == "T2")], "average_precision", "tfidf_text", "TF-IDF solo texto: añadir el producto o usar BGE no suma el 5 % exigido, así que gana el más simple."),
+    ("T3 · compensación monetaria (AP)", cal[(cal["tarea"] == "T3")], "average_precision", "tfidf_text", "Mismo criterio que T2."),
+    ("T4 · respuesta no oportuna (AP)", cal[(cal["tarea"] == "T4")], "average_precision", None, "Ningún modelo útil: en validación la regla de plazo con feriados lo hizo mejor y T4 salió del triaje."),
+    ("M9 · conteo semanal por patrón (WIS, menor es mejor)", cal[cal["tarea"].str.startswith("conteo semanal")], "wis", "(C-A)", "Gana la binomial negativa jerárquica con memoria que decae (C-A): −30 % frente al Poisson de 4 semanas y −6.5 % frente a la versión sin memoria. Los modelos fundacionales de series (Chronos-2, TimesFM) no la alcanzan."),
+    ("M10 · composición semanal (log score, mayor es mejor)", cal[cal["tarea"].str.contains(r"composici.n semanal")], "log_score", "dirichlet_multinomial_rolling_4", "La Dirichlet-multinomial de 4 semanas asigna mucha más probabilidad a la composición observada que la multinomial; la versión estática falló una comprobación predictiva."),
+    ("D-D · conteo diario por patrón (WIS, menor es mejor)", cal[cal["tarea"] == "conteo diario"], "wis", "D-D:", "Los cuatro candidatos superan al Poisson de 7 días; el efecto de día de semana es lo que más aporta. D-D y D-A empatan y la regla «el de mejor WIS» elige D-D."),
+    ("D-E · composición diaria (log score, mayor es mejor)", cal[cal["tarea"] == "composición diaria"], "log_score", "D-E:", "Aceptada: da la señal diaria de mezcla rara."),
+    ("C-PAT-INC · patrón por vecinos (acuerdo con las etiquetas congeladas)", cal[cal["etapa"] == "C-PAT-INC"], "acuerdo_con_etiquetas_congeladas", None, "El sustituto determinista de UMAP acuerda menos con las etiquetas congeladas que UMAP consigo mismo: no se adopta y el patrón queda declarado como etiqueta blanda."),
+]
+ROLE_RANK = {"ganador": 0, "candidato": 1, "sensibilidad": 2, "referencia": 3, "baseline": 3}
+def rank(role):
+    role = str(role)
+    for key, value in ROLE_RANK.items():
+        if role.startswith(key):
+            return value
+    return 4
+COLORS = {"win": "#2f7d4f", "cand": "#7fb2d9", "base": "#8a93a0", "rej": "#b3261e"}
+def kind(model, role, decision, winner):
+    role = str(role); decision = str(decision)
+    if winner and winner in str(model):
+        return "win"
+    if role.startswith("baseline") or role.startswith("referencia") or "(referencia)" in role:
+        return "base"
+    if decision.startswith("no ") or decision.startswith("rejected"):
+        return "rej"
+    return "cand"
+def chip(model, role, decision, winner):
+    k = kind(model, role, decision, winner)
+    labels = {"win": "ganador vigente", "base": "referencia", "rej": str(decision) if str(decision) not in {"", "nan"} else "rechazado", "cand": "candidato aceptado" if str(decision) in {"accepted", "reemplaza", "elegido", "confirmado"} else "candidato"}
+    return f"<span class='tag {k}'>{labels[k]}</span>"
+def short(name, n=48):
+    name = str(name)
+    return name if len(name) <= n else name[: n - 1] + "…"
+display(HTML("<p class='note'><span class='tag win'>ganador vigente</span> <span class='tag cand'>candidato</span> (aceptado o no superó al vigente) <span class='tag rej'>rechazado por la regla</span> <span class='tag base'>referencia</span></p>"))
+k = 0
+for title, g, metric, winner, verdict in GROUPS:
+    g = g[g["metrica"] == metric].dropna(subset=["valor"]).copy()
+    if g.empty:
+        continue
+    g["rank"] = g["rol"].map(rank)
+    g = g.sort_values("rank").drop_duplicates(subset=["modelo"]).sort_values("valor", ascending=metric in LOWER_IS_BETTER)
+    k += 1
+    kinds = [kind(m, r, d, winner) for m, r, d in zip(g["modelo"], g["rol"], g["decision"])]
+    colors = [COLORS[x] for x in kinds]
+    hover = [f"{m}<br>{metric} = {v:.3f}" + (f"<br>ganancia {gr:+.1%} IC [{lo:.3f}, {hi:.3f}]" if pd.notna(gr) else "") for m, v, gr, lo, hi in zip(g["modelo"], g["valor"], g["ganancia_relativa"], g["ic95_inferior"], g["ic95_superior"])]
+    trace = [{"type": "bar", "orientation": "h", "x": g["valor"].tolist(), "y": [short(m) for m in g["modelo"]], "marker": {"color": colors}, "text": hover, "hoverinfo": "text", "texttemplate": "%{x:.3f}", "textposition": "outside" if (g["valor"] >= 0).all() else "inside", "cliponaxis": False}]
+    layout = {"height": 60 + 28 * len(g), "margin": {"l": 10, "r": 70, "t": 6, "b": 30}, "xaxis": {"title": metric}, "yaxis": {"automargin": True, "autorange": "reversed"}, "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)", "font": {"family": "IBM Plex Sans, system-ui, sans-serif", "size": 12}}
+    rows = "".join(f"<tr><td>{m}</td><td class='r'>{v:.3f}</td><td class='r'>{'' if pd.isna(gr) else f'{gr:+.1%}'}</td><td class='r'>{'' if pd.isna(lo) else f'[{lo:.3f}, {hi:.3f}]'}</td><td>{chip(m, r, d, winner)}</td></tr>" for m, v, gr, lo, hi, r, d in zip(g["modelo"], g["valor"], g["ganancia_relativa"], g["ic95_inferior"], g["ic95_superior"], g["rol"], g["decision"]))
+    display(HTML(f"""<div class='card'><h3 style='margin-top:0'>{title}</h3><p class='note'>{verdict}</p><div id='g{k}' class='plot' style='min-height:{60 + 28 * len(g)}px'></div>
+<script>Plotly.newPlot('g{k}', {json.dumps(trace)}, {json.dumps(layout)}, {{responsive: true, displaylogo: false}});</script>
+<details><summary>Tabla con la ganancia relativa y el intervalo bootstrap</summary><div class='tablewrap'><table><thead><tr><th>Modelo</th><th class='r'>{metric}</th><th class='r'>Ganancia</th><th class='r'>IC 95 %</th><th>Decisión</th></tr></thead><tbody>{rows}</tbody></table></div></details></div>"""))
+```
+
+### Alertas: detectar sin avisar de más
+
+Las reglas de alerta se juzgan con ráfagas inyectadas: qué fracción detectan y cuántas veces avisan sin que haya nada. El presupuesto fijado antes de correr es una falsa alarma al mes para la regla semanal y cuatro para la diaria; ninguna regla diaria llegó al 50 % de detección exigido, así que la alerta vive en la semana.
+
+```{python}
+#| output: asis
+alerts = table[table["metrica"].isin(["tasa_de_deteccion", "alertas_por_mes"])].copy()
+alerts["decision"] = alerts["decision"].fillna("")
+scen = alerts[alerts["metrica"] == "tasa_de_deteccion"].copy()
+scen["escenario"] = scen["tarea"].str.replace(r".*escenario ", "", regex=True)
+scen["regla"] = scen["etapa"] + " · " + scen["modelo"].astype(str)
+pivot = scen.pivot_table(index="regla", columns="escenario", values="valor", aggfunc="first")
+order = [c for c in ["growth_10", "growth_20", "step_50", "step_100", "burst_x2_3d", "burst_x3_1d", "burst_x3_3d", "rise_x1_5_7d", "none"] if c in pivot.columns]
+pivot = pivot[order]
+header = "".join(f"<th class='r'>{c}</th>" for c in order)
+rows = ""
+for regla, r in pivot.iterrows():
+    cells = "".join(f"<td class='r'>{'' if pd.isna(v) else f'{v:.0%}'}</td>" for v in r.values)
+    rows += f"<tr><td>{regla}</td>{cells}</tr>"
+real = alerts[alerts["metrica"] == "alertas_por_mes"].copy()
+real_rows = "".join(f"<tr><td>{e} · {m}</td><td>{c}</td><td class='r'>{v:.2f}</td><td>{chip(m, r, d, 'CUSUM de M11 sobre C-A' if e == 'M11' else None)}</td></tr>" for e, m, c, v, r, d in zip(real["etapa"], real["modelo"], real["conjunto"], real["valor"], real["rol"], real["decision"]))
+display(HTML(f"""
+<div class='card'><h3 style='margin-top:0'>Detección por escenario (fracción de ráfagas detectadas; «none» es la tasa de falsas alarmas)</h3>
+<div class='tablewrap'><table><thead><tr><th>Regla</th>{header}</tr></thead><tbody>{rows}</tbody></table></div>
+<p class='note'>growth_10 / growth_20: crecimiento semanal de 10 % y 20 % durante 8 semanas; step: salto de 50 % y 100 %; burst: ráfaga diaria ×2 de 3 días, ×3 de 1 o 3 días; rise: ×1.5 durante 7 días.</p></div>
+<details><summary>Alertas reales por mes en ajuste y calibración</summary><div class='tablewrap'><table><thead><tr><th>Regla</th><th>Conjunto</th><th class='r'>Alertas / mes</th><th>Decisión</th></tr></thead><tbody>{real_rows}</tbody></table></div></details>
+"""))
+```
+
+## 4 · Modelos finales {#finales}
+
+Lo que quedó vigente al cerrar el modelado (2026-10-21), con su corrida congelada, su hash de DVC y su identificador en MLflow. Es la tabla §32.2 del registro de pre-registro, leída del archivo.
+
+```{python}
+#| output: asis
+text = PLAN.read_text("utf-8")
+block = text[text.index("### 32.2"):text.index("### 32.3")]
+lines = [l for l in block.splitlines() if l.startswith("|")]
+def cells(line):
+    return [c.strip() for c in line.strip().strip("|").split("|")]
+def md(s):
+    s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
+    return re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", s)
+header = "".join(f"<th>{md(c)}</th>" for c in cells(lines[0]))
+rows = "".join("<tr>" + "".join(f"<td>{md(c)}</td>" for c in cells(l)) + "</tr>" for l in lines[2:])
+display(HTML(f"<div class='tablewrap' style='max-height:none'><table><thead><tr>{header}</tr></thead><tbody>{rows}</tbody></table></div>"))
+```
+
+## 5 · Validación: consultada una vez {#validacion}
+
+El periodo 2025-H1 se abrió una sola vez (2026-10-01) para confirmar los ganadores de ese momento; todo lo posterior se reporta como «ya consultada» y no decide nada. Estas son las cifras de validación de la tabla comparativa.
+
+```{python}
+#| output: asis
+val = table[table["conjunto"].str.startswith("validacion")].copy()
+val["decision"] = val["decision"].fillna("")
+rows = "".join(f"<tr><td>{e}</td><td>{t}</td><td>{m}</td><td>{me}</td><td class='r'>{v:.3f}</td><td>{chip(m, r, d, None)}</td></tr>" for e, t, m, me, v, r, d in zip(val["etapa"], val["tarea"], val["modelo"], val["metrica"], val["valor"], val["rol"], val["decision"]))
+display(HTML(f"<div class='tablewrap'><table><thead><tr><th>Etapa</th><th>Tarea</th><th>Modelo</th><th>Métrica</th><th class='r'>Valor</th><th>Decisión</th></tr></thead><tbody>{rows}</tbody></table></div>"))
+```
+
+## 6 · Cómo reproducir {#reproducir}
+
+```bash
+uv sync --frozen
+uv run dvc pull                                   # datos y modelos desde DagsHub (pide acceso)
+uv run dvc repro                                  # P1–P6: de crudo a tabla preparada
+uv run python -m src.evaluation.comparison_table  # regenera comparacion_modelos.csv desde reports/modeling/
+uv run --no-sync python scripts/export_mlflow_runs.py   # exporta las corridas de MLflow (credenciales)
+cd reports/experimentos && quarto render          # esta página
+```
+
+Los modelos se entrenaron en el clúster Khipu con los jobs de `scripts/hpc/`; cada carpeta de `reports/modeling/` guarda la regla fijada antes de correr (`decision.md`), los diagnósticos y las métricas de cada corrida. El informe completo está en `reports/informe/informe.pdf`.

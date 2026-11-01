@@ -1,0 +1,1452 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="es" xml:lang="es"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.8.27">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Experimentos del proyecto: datos, modelos y resultados</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+.display.math{display: block; text-align: center; margin: 0.5rem auto;}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&amp;family=IBM+Plex+Mono:wght@400;500&amp;display=swap">
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="https://cdn.plot.ly/plotly-2.35.2.min.js" charset="utf-8"></script>
+<style>
+  :root { --bg: #f6f7f8; --surface: #fff; --fg: #1d2229; --muted: #5d6673; --line: #d9dde3; --accent: #1f5f8b; --accent-soft: #e4eef6;
+          --win: #2f7d4f; --win-soft: #e3f1e8; --base: #8a93a0; --cand: #7fb2d9; --rej: #b3261e; --rej-soft: #fbe5e3; --warn: #b26a00; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: "IBM Plex Sans", system-ui, sans-serif; font-size: 15px; line-height: 1.5; padding: 24px 16px 60px; }
+  body > * { max-width: 1040px; margin-left: auto; margin-right: auto; }
+  header#title-block-header { margin-bottom: 18px; }
+  h1.title { font-size: 28px; font-weight: 600; margin: 0 0 4px; }
+  .subtitle { color: var(--muted); font-size: 16px; margin: 0 0 6px; }
+  .quarto-title-meta, .date, .author { color: var(--muted); font-size: 13px; }
+  h2 { font-size: 20px; font-weight: 600; margin: 34px 0 10px; padding-top: 18px; border-top: 1px solid var(--line); }
+  h3 { font-size: 16px; font-weight: 600; margin: 20px 0 8px; }
+  p { max-width: 76ch; margin: 0 0 10px; }
+  code { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .92em; background: var(--accent-soft); padding: 1px 5px; border-radius: 3px; }
+  pre code { background: none; padding: 0; }
+  pre { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 14px; overflow-x: auto; font-size: 13px; }
+  .card { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; margin: 12px 0; }
+  .stat { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin: 12px 0; }
+  .stat div { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; }
+  .stat b { display: block; font-size: 22px; font-weight: 600; font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  .stat span { font-size: 12px; color: var(--muted); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; background: var(--surface); }
+  th, td { text-align: left; padding: 7px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-weight: 500; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; position: sticky; top: 0; background: var(--surface); }
+  td.r, th.r { text-align: right; font-variant-numeric: tabular-nums; font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12.5px; }
+  .tablewrap { overflow: auto; max-height: 520px; border: 1px solid var(--line); border-radius: 6px; margin: 10px 0; }
+  .tag { display: inline-block; border-radius: 999px; padding: 1px 9px; font-size: 12px; border: 1px solid; white-space: nowrap; }
+  .tag.win { color: var(--win); border-color: var(--win); background: var(--win-soft); }
+  .tag.rej { color: var(--rej); border-color: var(--rej); background: var(--rej-soft); }
+  .tag.base { color: var(--muted); border-color: var(--line); }
+  .tag.cand { color: var(--accent); border-color: var(--accent); }
+  .flow { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; margin: 10px 0; }
+  .flow .node { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 8px 12px; min-width: 150px; flex: 1 1 150px; }
+  .flow .node b { display: block; font-size: 13.5px; }
+  .flow .node small { color: var(--muted); font-size: 12px; display: block; overflow-wrap: anywhere; }
+  .flow .node.data { border-left: 4px solid var(--win); }
+  .flow .node.stage { border-left: 4px solid var(--accent); }
+  .flow .node.out { border-left: 4px solid var(--warn); }
+  .filter { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin: 10px 0; font-size: 13.5px; }
+  .filter input, .filter select { font: inherit; padding: 6px 8px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); color: var(--fg); }
+  .note { font-size: 12.5px; color: var(--muted); }
+  .plot { width: 100%; min-height: 320px; margin: 8px 0 14px; }
+  nav.toc-inline { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 0; }
+  nav.toc-inline a { color: var(--accent); text-decoration: none; border: 1px solid var(--line); border-radius: 999px; padding: 3px 11px; font-size: 13px; background: var(--surface); }
+  details { margin: 8px 0; }
+  summary { cursor: pointer; color: var(--muted); font-size: 12.5px; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+</head>
+
+<body>
+
+
+<header id="title-block-header">
+<h1 class="title">Experimentos del proyecto: datos, modelos y resultados</h1>
+<p class="subtitle">Triaje de reclamos · todo lo que se corrió, con qué datos y por qué ganó lo que ganó</p>
+
+<p class="date">31 de octubre de 2026</p>
+</header>
+
+
+
+<nav class="toc-inline">
+  <a href="#datos">1 · Datos y versiones</a><a href="#mlflow">2 · Corridas en MLflow</a>
+  <a href="#resultados">3 · Qué se probó y qué ganó</a><a href="#finales">4 · Modelos finales</a>
+  <a href="#validacion">5 · Validación</a><a href="#reproducir">6 · Cómo reproducir</a>
+</nav>
+<div class="stat">
+  <div><b>1,301,794</b><span>reclamos de 2023–2024 elegibles para T1 (tabla datos-v1)</span></div>
+  <div><b>67</b><span>corridas en MLflow, un solo experimento</span></div>
+  <div><b>32</b><span>modelos candidatos distintos con métrica registrada</span></div>
+  <div><b>18</b><span>etapas de modelado comparadas</span></div>
+  <div><b>119</b><span>punteros DVC (datos, modelos y tablas de resultados)</span></div>
+</div>
+<p class="note">Todas las cifras de esta página se leen al renderizar desde <code>etapa_4_5_modelado_evaluacion/resultados/comparacion_modelos.csv</code>, <code>reports/modeling/mlflow_runs.json</code>, <code>dvc.yaml</code>, los punteros <code>.dvc</code> y <code>docs/registro/models_plan.md</code>. Nada está escrito a mano. Página generada con Quarto y ayuda de IA (Claude).</p>
+<h2 id="datos">1 · Datos y versiones</h2>
+<p>Una sola fuente, un solo linaje. El archivo crudo entra por DVC, pasa por seis etapas reproducibles (<code>dvc repro</code>) y sale como la tabla preparada que usan todos los modelos. Cada corrida de MLflow lleva el hash de esa tabla, así que se sabe exactamente con qué datos se obtuvo cada métrica.</p>
+<div class="flow"><div class="node data"><b>Crudo CFPB</b><small>cfpb_reclamos_narrativa.parquet</small><small>1.62 GB · md5 68f4560a</small></div><div class="node stage"><b>P1</b><small><code>type_data</code></small><small>→ data/interim/typed.parquet</small></div><div class="node stage"><b>P2</b><small><code>normalize_text</code></small><small>→ data/interim/normalized.parquet</small></div><div class="node stage"><b>P3</b><small><code>apply_taxonomy</code></small><small>→ data/interim/taxonomy.parquet</small></div><div class="node stage"><b>P4</b><small><code>build_targets</code></small><small>→ data/interim/targets_periods.parquet</small></div><div class="node stage"><b>P5</b><small><code>finalize_prepared</code></small><small>→ data/processed/prepared.parquet</small></div><div class="node stage"><b>P6</b><small><code>document_prepared</code></small><small>→ docs/diccionario/diccionario.csv</small></div><div class="node out"><b>Tabla preparada</b><small>data/processed/prepared.parquet</small><small>versión <code>datos-v1</code> · md5 d189a3ae</small></div></div>
+<div class="card"><h3 style="margin-top:0">Periodos: quién decide qué</h3>
+
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Conjunto</th>
+<th data-quarto-table-cell-role="th">Fechas y uso</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>ajuste</td>
+<td>2023-01-01 a 2024-09-30</td>
+</tr>
+<tr class="even">
+<td>calibracion</td>
+<td>2024-10-01 a 2024-12-31</td>
+</tr>
+<tr class="odd">
+<td>validacion</td>
+<td>2025-01-01 a 2025-06-30</td>
+</tr>
+<tr class="even">
+<td>test_final</td>
+<td>2026 completo, sellado</td>
+</tr>
+</tbody>
+</table>
+
+<p class="note" style="margin-top:8px">Regla para reemplazar un modelo: ≥5 % de ganancia relativa y bootstrap semanal pareado 95 % a favor. La validación se abrió una sola vez; los resultados posteriores se reportan como «ya consultada».</p></div>
+
+<details><summary>Los diez artefactos más grandes en DVC (12.1 GB en total)</summary>
+<div class="tablewrap">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Puntero</th>
+<th class="r" data-quarto-table-cell-role="th">MB</th>
+<th class="r" data-quarto-table-cell-role="th">Archivos</th>
+<th class="r" data-quarto-table-cell-role="th">md5</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>artifacts/models/bge_full.dvc</code></td>
+<td class="r">8,286</td>
+<td class="r">12</td>
+<td class="r">3ff36a29</td>
+</tr>
+<tr class="even">
+<td><code>artifacts/models/bge_sample.dvc</code></td>
+<td class="r">1,091</td>
+<td class="r">15</td>
+<td class="r">009e3b35</td>
+</tr>
+<tr class="odd">
+<td><code>artifacts/models/weekly_counts.dvc</code></td>
+<td class="r">1,033</td>
+<td class="r">333</td>
+<td class="r">3f9fa011</td>
+</tr>
+<tr class="even">
+<td><code>artifacts/models/semantic_space.dvc</code></td>
+<td class="r">742</td>
+<td class="r">12</td>
+<td class="r">08662a82</td>
+</tr>
+<tr class="odd">
+<td><code>artifacts/models/clustering_comparison.dvc</code></td>
+<td class="r">346</td>
+<td class="r">28</td>
+<td class="r">425408aa</td>
+</tr>
+<tr class="even">
+<td><code>artifacts/models/weekly_patterns.dvc</code></td>
+<td class="r">255</td>
+<td class="r">17</td>
+<td class="r">87be2a97</td>
+</tr>
+<tr class="odd">
+<td><code>artifacts/models/representation_comparison.dvc</code></td>
+<td class="r">126</td>
+<td class="r">18</td>
+<td class="r">ecf6c926</td>
+</tr>
+<tr class="even">
+<td><code>artifacts/models/daily_counts.dvc</code></td>
+<td class="r">122</td>
+<td class="r">144</td>
+<td class="r">1f048446</td>
+</tr>
+<tr class="odd">
+<td><code>artifacts/models/tfidf.dvc</code></td>
+<td class="r">105</td>
+<td class="r">7</td>
+<td class="r">94536b94</td>
+</tr>
+<tr class="even">
+<td><code>artifacts/models/negative_binomial.dvc</code></td>
+<td class="r">15</td>
+<td class="r">4</td>
+<td class="r">ada511fc</td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<h2 id="mlflow">2 · Corridas en MLflow</h2>
+<div class="card"><b>Falta la exportación de MLflow.</b> Corre <code>uv run --no-sync python scripts/export_mlflow_runs.py</code> con las credenciales de DagsHub y vuelve a renderizar; esta sección mostrará la línea de tiempo y la tabla de las corridas.</div>
+<h2 id="resultados">3 · Qué se probó y qué ganó</h2>
+<p>Cada gráfico compara, en calibración, a los candidatos de una tarea contra su referencia. Verde es el ganador vigente, gris la referencia, rojo lo rechazado por la regla. La regla es la misma en todas las tareas: el retador debe mejorar la métrica principal al menos 5 % relativo y el intervalo bootstrap del 95 % de la diferencia (pareado por semanas) debe quedar entero a su favor.</p>
+<p class="note"><span class="tag win">ganador vigente</span> <span class="tag cand">candidato</span> (aceptado o no superó al vigente) <span class="tag rej">rechazado por la regla</span> <span class="tag base">referencia</span></p>
+<div class="card"><h3 style="margin-top:0">T1 · motivo del reclamo (Macro-F1)</h3><p class="note">Cuatro relevos: regla por producto → TF-IDF → BGE + producto → TabPFN-3.5 en contexto. Cada uno cumplió la regla contra el anterior; las dos ablaciones de TabPFN no.</p><div id="g1" class="plot" style="min-height:340px"></div>
+<script>Plotly.newPlot('g1', [{"type": "bar", "orientation": "h", "x": [0.270637, 0.267883, 0.239745, 0.23961, 0.214242, 0.192223, 0.158184, 0.140622, 0.076161, 0.006302], "y": ["TabPFN-3.5 (PCA 100 + producto)", "TabPFN-3.5 (PCA 256 + producto)", "bge_product", "bge_product_m5_sample", "tfidf_product", "TabPFN-3.5 (BGE 1,024 + producto)", "bge_text", "tfidf_text", "product_rule", "baseline global_frequency"], "marker": {"color": ["#2f7d4f", "#b3261e", "#7fb2d9", "#7fb2d9", "#7fb2d9", "#b3261e", "#7fb2d9", "#7fb2d9", "#8a93a0", "#8a93a0"]}, "text": ["TabPFN-3.5 (PCA 100 + producto)<br>macro_f1 = 0.271<br>ganancia +12.9% IC [0.027, 0.035]", "TabPFN-3.5 (PCA 256 + producto)<br>macro_f1 = 0.268<br>ganancia -1.0% IC [-0.006, 0.001]", "bge_product<br>macro_f1 = 0.240<br>ganancia +11.9% IC [0.023, 0.029]", "bge_product_m5_sample<br>macro_f1 = 0.240", "tfidf_product<br>macro_f1 = 0.214<br>ganancia +52.4% IC [0.071, 0.078]", "TabPFN-3.5 (BGE 1,024 + producto)<br>macro_f1 = 0.192<br>ganancia -29.0% IC [-0.085, -0.073]", "bge_text<br>macro_f1 = 0.158<br>ganancia -26.2% IC [-0.061, -0.053]", "tfidf_text<br>macro_f1 = 0.141<br>ganancia +84.6% IC [0.061, 0.069]", "product_rule<br>macro_f1 = 0.076", "baseline global_frequency<br>macro_f1 = 0.006"], "hoverinfo": "text", "texttemplate": "%{x:.3f}", "textposition": "outside", "cliponaxis": false}], {"height": 340, "margin": {"l": 10, "r": 70, "t": 6, "b": 30}, "xaxis": {"title": "macro_f1"}, "yaxis": {"automargin": true, "autorange": "reversed"}, "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)", "font": {"family": "IBM Plex Sans, system-ui, sans-serif", "size": 12}}, {responsive: true, displaylogo: false});</script>
+<details><summary>Tabla con la ganancia relativa y el intervalo bootstrap</summary><div class="tablewrap">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th class="r" data-quarto-table-cell-role="th">macro_f1</th>
+<th class="r" data-quarto-table-cell-role="th">Ganancia</th>
+<th class="r" data-quarto-table-cell-role="th">IC 95 %</th>
+<th data-quarto-table-cell-role="th">Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>TabPFN-3.5 (PCA 100 + producto)</td>
+<td class="r">0.271</td>
+<td class="r">+12.9%</td>
+<td class="r">[0.027, 0.035]</td>
+<td><span class="tag win">ganador vigente</span></td>
+</tr>
+<tr class="even">
+<td>TabPFN-3.5 (PCA 256 + producto)</td>
+<td class="r">0.268</td>
+<td class="r">-1.0%</td>
+<td class="r">[-0.006, 0.001]</td>
+<td><span class="tag rej">no reemplaza</span></td>
+</tr>
+<tr class="odd">
+<td>bge_product</td>
+<td class="r">0.240</td>
+<td class="r">+11.9%</td>
+<td class="r">[0.023, 0.029]</td>
+<td><span class="tag cand">candidato aceptado</span></td>
+</tr>
+<tr class="even">
+<td>bge_product_m5_sample</td>
+<td class="r">0.240</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>tfidf_product</td>
+<td class="r">0.214</td>
+<td class="r">+52.4%</td>
+<td class="r">[0.071, 0.078]</td>
+<td><span class="tag cand">candidato aceptado</span></td>
+</tr>
+<tr class="even">
+<td>TabPFN-3.5 (BGE 1,024 + producto)</td>
+<td class="r">0.192</td>
+<td class="r">-29.0%</td>
+<td class="r">[-0.085, -0.073]</td>
+<td><span class="tag rej">no reemplaza</span></td>
+</tr>
+<tr class="odd">
+<td>bge_text</td>
+<td class="r">0.158</td>
+<td class="r">-26.2%</td>
+<td class="r">[-0.061, -0.053]</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>tfidf_text</td>
+<td class="r">0.141</td>
+<td class="r">+84.6%</td>
+<td class="r">[0.061, 0.069]</td>
+<td><span class="tag cand">candidato aceptado</span></td>
+</tr>
+<tr class="odd">
+<td>product_rule</td>
+<td class="r">0.076</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="even">
+<td>baseline global_frequency</td>
+<td class="r">0.006</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+</tbody>
+</table>
+</div></details></div>
+<div class="card"><h3 style="margin-top:0">T2 · solución registrada (AP)</h3><p class="note">TF-IDF solo texto: añadir el producto o usar BGE no suma el 5 % exigido, así que gana el más simple.</p><div id="g2" class="plot" style="min-height:228px"></div>
+<script>Plotly.newPlot('g2', [{"type": "bar", "orientation": "h", "x": [0.61194, 0.610361, 0.60938, 0.605607, 0.453571, 0.391229], "y": ["tfidf_product", "bge_product", "tfidf_text", "bge_text", "product_rule", "baseline global_frequency"], "marker": {"color": ["#7fb2d9", "#7fb2d9", "#2f7d4f", "#7fb2d9", "#8a93a0", "#8a93a0"]}, "text": ["tfidf_product<br>average_precision = 0.612<br>ganancia +0.4% IC [0.002, 0.003]", "bge_product<br>average_precision = 0.610<br>ganancia +0.2% IC [-0.003, 0.006]", "tfidf_text<br>average_precision = 0.609<br>ganancia +34.4% IC [0.148, 0.164]", "bge_text<br>average_precision = 0.606<br>ganancia -0.6% IC [-0.008, 0.001]", "product_rule<br>average_precision = 0.454", "baseline global_frequency<br>average_precision = 0.391"], "hoverinfo": "text", "texttemplate": "%{x:.3f}", "textposition": "outside", "cliponaxis": false}], {"height": 228, "margin": {"l": 10, "r": 70, "t": 6, "b": 30}, "xaxis": {"title": "average_precision"}, "yaxis": {"automargin": true, "autorange": "reversed"}, "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)", "font": {"family": "IBM Plex Sans, system-ui, sans-serif", "size": 12}}, {responsive: true, displaylogo: false});</script>
+<details><summary>Tabla con la ganancia relativa y el intervalo bootstrap</summary><div class="tablewrap">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th class="r" data-quarto-table-cell-role="th">average_precision</th>
+<th class="r" data-quarto-table-cell-role="th">Ganancia</th>
+<th class="r" data-quarto-table-cell-role="th">IC 95 %</th>
+<th data-quarto-table-cell-role="th">Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tfidf_product</td>
+<td class="r">0.612</td>
+<td class="r">+0.4%</td>
+<td class="r">[0.002, 0.003]</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>bge_product</td>
+<td class="r">0.610</td>
+<td class="r">+0.2%</td>
+<td class="r">[-0.003, 0.006]</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>tfidf_text</td>
+<td class="r">0.609</td>
+<td class="r">+34.4%</td>
+<td class="r">[0.148, 0.164]</td>
+<td><span class="tag win">ganador vigente</span></td>
+</tr>
+<tr class="even">
+<td>bge_text</td>
+<td class="r">0.606</td>
+<td class="r">-0.6%</td>
+<td class="r">[-0.008, 0.001]</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>product_rule</td>
+<td class="r">0.454</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="even">
+<td>baseline global_frequency</td>
+<td class="r">0.391</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+</tbody>
+</table>
+</div></details></div>
+<div class="card"><h3 style="margin-top:0">T3 · compensación monetaria (AP)</h3><p class="note">Mismo criterio que T2.</p><div id="g3" class="plot" style="min-height:228px"></div>
+<script>Plotly.newPlot('g3', [{"type": "bar", "orientation": "h", "x": [0.369878, 0.363951, 0.351157, 0.334717, 0.173889, 0.021951], "y": ["tfidf_product", "tfidf_text", "bge_product", "bge_text", "product_rule", "baseline global_frequency"], "marker": {"color": ["#7fb2d9", "#2f7d4f", "#7fb2d9", "#7fb2d9", "#8a93a0", "#8a93a0"]}, "text": ["tfidf_product<br>average_precision = 0.370<br>ganancia +1.6% IC [0.001, 0.012]", "tfidf_text<br>average_precision = 0.364<br>ganancia +109.3% IC [0.177, 0.203]", "bge_product<br>average_precision = 0.351<br>ganancia -3.5% IC [-0.025, 0.002]", "bge_text<br>average_precision = 0.335<br>ganancia -8.0% IC [-0.039, -0.017]", "product_rule<br>average_precision = 0.174", "baseline global_frequency<br>average_precision = 0.022"], "hoverinfo": "text", "texttemplate": "%{x:.3f}", "textposition": "outside", "cliponaxis": false}], {"height": 228, "margin": {"l": 10, "r": 70, "t": 6, "b": 30}, "xaxis": {"title": "average_precision"}, "yaxis": {"automargin": true, "autorange": "reversed"}, "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)", "font": {"family": "IBM Plex Sans, system-ui, sans-serif", "size": 12}}, {responsive: true, displaylogo: false});</script>
+<details><summary>Tabla con la ganancia relativa y el intervalo bootstrap</summary><div class="tablewrap">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th class="r" data-quarto-table-cell-role="th">average_precision</th>
+<th class="r" data-quarto-table-cell-role="th">Ganancia</th>
+<th class="r" data-quarto-table-cell-role="th">IC 95 %</th>
+<th data-quarto-table-cell-role="th">Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tfidf_product</td>
+<td class="r">0.370</td>
+<td class="r">+1.6%</td>
+<td class="r">[0.001, 0.012]</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>tfidf_text</td>
+<td class="r">0.364</td>
+<td class="r">+109.3%</td>
+<td class="r">[0.177, 0.203]</td>
+<td><span class="tag win">ganador vigente</span></td>
+</tr>
+<tr class="odd">
+<td>bge_product</td>
+<td class="r">0.351</td>
+<td class="r">-3.5%</td>
+<td class="r">[-0.025, 0.002]</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>bge_text</td>
+<td class="r">0.335</td>
+<td class="r">-8.0%</td>
+<td class="r">[-0.039, -0.017]</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>product_rule</td>
+<td class="r">0.174</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="even">
+<td>baseline global_frequency</td>
+<td class="r">0.022</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+</tbody>
+</table>
+</div></details></div>
+<div class="card"><h3 style="margin-top:0">T4 · respuesta no oportuna (AP)</h3><p class="note">Ningún modelo útil: en validación la regla de plazo con feriados lo hizo mejor y T4 salió del triaje.</p><div id="g4" class="plot" style="min-height:228px"></div>
+<script>Plotly.newPlot('g4', [{"type": "bar", "orientation": "h", "x": [0.055059, 0.047135, 0.041693, 0.03128, 0.030535, 0.005566], "y": ["tfidf_product", "tfidf_text", "bge_product", "product_rule", "bge_text", "baseline global_frequency"], "marker": {"color": ["#7fb2d9", "#7fb2d9", "#7fb2d9", "#8a93a0", "#7fb2d9", "#8a93a0"]}, "text": ["tfidf_product<br>average_precision = 0.055<br>ganancia +16.8% IC [0.003, 0.015]", "tfidf_text<br>average_precision = 0.047<br>ganancia +50.7% IC [0.004, 0.025]", "bge_product<br>average_precision = 0.042<br>ganancia -24.3% IC [-0.019, -0.008]", "product_rule<br>average_precision = 0.031", "bge_text<br>average_precision = 0.031<br>ganancia -44.5% IC [-0.031, -0.019]", "baseline global_frequency<br>average_precision = 0.006"], "hoverinfo": "text", "texttemplate": "%{x:.3f}", "textposition": "outside", "cliponaxis": false}], {"height": 228, "margin": {"l": 10, "r": 70, "t": 6, "b": 30}, "xaxis": {"title": "average_precision"}, "yaxis": {"automargin": true, "autorange": "reversed"}, "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)", "font": {"family": "IBM Plex Sans, system-ui, sans-serif", "size": 12}}, {responsive: true, displaylogo: false});</script>
+<details><summary>Tabla con la ganancia relativa y el intervalo bootstrap</summary><div class="tablewrap">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th class="r" data-quarto-table-cell-role="th">average_precision</th>
+<th class="r" data-quarto-table-cell-role="th">Ganancia</th>
+<th class="r" data-quarto-table-cell-role="th">IC 95 %</th>
+<th data-quarto-table-cell-role="th">Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>tfidf_product</td>
+<td class="r">0.055</td>
+<td class="r">+16.8%</td>
+<td class="r">[0.003, 0.015]</td>
+<td><span class="tag cand">candidato aceptado</span></td>
+</tr>
+<tr class="even">
+<td>tfidf_text</td>
+<td class="r">0.047</td>
+<td class="r">+50.7%</td>
+<td class="r">[0.004, 0.025]</td>
+<td><span class="tag cand">candidato aceptado</span></td>
+</tr>
+<tr class="odd">
+<td>bge_product</td>
+<td class="r">0.042</td>
+<td class="r">-24.3%</td>
+<td class="r">[-0.019, -0.008]</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>product_rule</td>
+<td class="r">0.031</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="odd">
+<td>bge_text</td>
+<td class="r">0.031</td>
+<td class="r">-44.5%</td>
+<td class="r">[-0.031, -0.019]</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>baseline global_frequency</td>
+<td class="r">0.006</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+</tbody>
+</table>
+</div></details></div>
+<div class="card"><h3 style="margin-top:0">M9 · conteo semanal por patrón (WIS, menor es mejor)</h3><p class="note">Gana la binomial negativa jerárquica con memoria que decae (C-A): −30 % frente al Poisson de 4 semanas y −6.5 % frente a la versión sin memoria. Los modelos fundacionales de series (Chronos-2, TimesFM) no la alcanzan.</p><div id="g5" class="plot" style="min-height:312px"></div>
+<script>Plotly.newPlot('g5', [{"type": "bar", "orientation": "h", "x": [30.296187, 31.951337, 32.418099, 36.017225, 40.701635, 43.056395, 47.718581, 64.882853, 138.950112], "y": ["Binomial negativa jer\u00e1rquica con memoria que de\u2026", "Espacio de estados, paseo aleatorio (C-B)", "Binomial negativa, 4 semanas, jer\u00e1rquica v3", "Chronos-2 zero-shot", "TimesFM 3.0 zero-shot", "b1_rolling_4", "Binomial negativa, participaciones de 4 semanas\u2026", "b1_rolling_13", "baseline"], "marker": {"color": ["#2f7d4f", "#b3261e", "#7fb2d9", "#b3261e", "#b3261e", "#8a93a0", "#b3261e", "#8a93a0", "#8a93a0"]}, "text": ["Binomial negativa jer\u00e1rquica con memoria que decae (C-A)<br>wis = 30.296<br>ganancia +29.6% IC [-15.993, -9.503]", "Espacio de estados, paseo aleatorio (C-B)<br>wis = 31.951<br>ganancia +1.4% IC [-2.580, 1.570]", "Binomial negativa, 4 semanas, jer\u00e1rquica v3<br>wis = 32.418<br>ganancia +24.7% IC [-13.649, -7.624]", "Chronos-2 zero-shot<br>wis = 36.017<br>ganancia -11.1% IC [-0.995, 9.032]", "TimesFM 3.0 zero-shot<br>wis = 40.702<br>ganancia +1.6% IC [-4.774, 3.550]", "b1_rolling_4<br>wis = 43.056", "Binomial negativa, participaciones de 4 semanas, global<br>wis = 47.719<br>ganancia -10.8% IC [-0.093, 9.445]", "b1_rolling_13<br>wis = 64.883", "baseline<br>wis = 138.950"], "hoverinfo": "text", "texttemplate": "%{x:.3f}", "textposition": "outside", "cliponaxis": false}], {"height": 312, "margin": {"l": 10, "r": 70, "t": 6, "b": 30}, "xaxis": {"title": "wis"}, "yaxis": {"automargin": true, "autorange": "reversed"}, "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)", "font": {"family": "IBM Plex Sans, system-ui, sans-serif", "size": 12}}, {responsive: true, displaylogo: false});</script>
+<details><summary>Tabla con la ganancia relativa y el intervalo bootstrap</summary><div class="tablewrap">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th class="r" data-quarto-table-cell-role="th">wis</th>
+<th class="r" data-quarto-table-cell-role="th">Ganancia</th>
+<th class="r" data-quarto-table-cell-role="th">IC 95 %</th>
+<th data-quarto-table-cell-role="th">Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Binomial negativa jerárquica con memoria que decae (C-A)</td>
+<td class="r">30.296</td>
+<td class="r">+29.6%</td>
+<td class="r">[-15.993, -9.503]</td>
+<td><span class="tag win">ganador vigente</span></td>
+</tr>
+<tr class="even">
+<td>Espacio de estados, paseo aleatorio (C-B)</td>
+<td class="r">31.951</td>
+<td class="r">+1.4%</td>
+<td class="r">[-2.580, 1.570]</td>
+<td><span class="tag rej">no reemplaza</span></td>
+</tr>
+<tr class="odd">
+<td>Binomial negativa, 4 semanas, jerárquica v3</td>
+<td class="r">32.418</td>
+<td class="r">+24.7%</td>
+<td class="r">[-13.649, -7.624]</td>
+<td><span class="tag cand">candidato aceptado</span></td>
+</tr>
+<tr class="even">
+<td>Chronos-2 zero-shot</td>
+<td class="r">36.017</td>
+<td class="r">-11.1%</td>
+<td class="r">[-0.995, 9.032]</td>
+<td><span class="tag rej">no reemplaza</span></td>
+</tr>
+<tr class="odd">
+<td>TimesFM 3.0 zero-shot</td>
+<td class="r">40.702</td>
+<td class="r">+1.6%</td>
+<td class="r">[-4.774, 3.550]</td>
+<td><span class="tag rej">no reemplaza</span></td>
+</tr>
+<tr class="even">
+<td>b1_rolling_4</td>
+<td class="r">43.056</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="odd">
+<td>Binomial negativa, participaciones de 4 semanas, global</td>
+<td class="r">47.719</td>
+<td class="r">-10.8%</td>
+<td class="r">[-0.093, 9.445]</td>
+<td><span class="tag rej">rejected_no_practical_gain</span></td>
+</tr>
+<tr class="even">
+<td>b1_rolling_13</td>
+<td class="r">64.883</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="odd">
+<td>baseline</td>
+<td class="r">138.950</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+</tbody>
+</table>
+</div></details></div>
+<div class="card"><h3 style="margin-top:0">M10 · composición semanal (log score, mayor es mejor)</h3><p class="note">La Dirichlet-multinomial de 4 semanas asigna mucha más probabilidad a la composición observada que la multinomial; la versión estática falló una comprobación predictiva.</p><div id="g6" class="plot" style="min-height:172px"></div>
+<script>Plotly.newPlot('g6', [{"type": "bar", "orientation": "h", "x": [-210.143649, -246.037768, -460.93094, -1770.235168], "y": ["dirichlet_multinomial_rolling_4_v1", "dirichlet_multinomial_static_v1", "b2_rolling_4", "b2_static"], "marker": {"color": ["#2f7d4f", "#b3261e", "#8a93a0", "#8a93a0"]}, "text": ["dirichlet_multinomial_rolling_4_v1<br>log_score = -210.144", "dirichlet_multinomial_static_v1<br>log_score = -246.038", "b2_rolling_4<br>log_score = -460.931", "b2_static<br>log_score = -1770.235"], "hoverinfo": "text", "texttemplate": "%{x:.3f}", "textposition": "inside", "cliponaxis": false}], {"height": 172, "margin": {"l": 10, "r": 70, "t": 6, "b": 30}, "xaxis": {"title": "log_score"}, "yaxis": {"automargin": true, "autorange": "reversed"}, "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)", "font": {"family": "IBM Plex Sans, system-ui, sans-serif", "size": 12}}, {responsive: true, displaylogo: false});</script>
+<details><summary>Tabla con la ganancia relativa y el intervalo bootstrap</summary><div class="tablewrap">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th class="r" data-quarto-table-cell-role="th">log_score</th>
+<th class="r" data-quarto-table-cell-role="th">Ganancia</th>
+<th class="r" data-quarto-table-cell-role="th">IC 95 %</th>
+<th data-quarto-table-cell-role="th">Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>dirichlet_multinomial_rolling_4_v1</td>
+<td class="r">-210.144</td>
+<td class="r"></td>
+<td class="r">[205.134, 295.845]</td>
+<td><span class="tag win">ganador vigente</span></td>
+</tr>
+<tr class="even">
+<td>dirichlet_multinomial_static_v1</td>
+<td class="r">-246.038</td>
+<td class="r"></td>
+<td class="r">[166.609, 263.190]</td>
+<td><span class="tag rej">rejected_predictive</span></td>
+</tr>
+<tr class="odd">
+<td>b2_rolling_4</td>
+<td class="r">-460.931</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="even">
+<td>b2_static</td>
+<td class="r">-1770.235</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+</tbody>
+</table>
+</div></details></div>
+<div class="card"><h3 style="margin-top:0">D-D · conteo diario por patrón (WIS, menor es mejor)</h3><p class="note">Los cuatro candidatos superan al Poisson de 7 días; el efecto de día de semana es lo que más aporta. D-D y D-A empatan y la regla «el de mejor WIS» elige D-D.</p><div id="g7" class="plot" style="min-height:228px"></div>
+<script>Plotly.newPlot('g7', [{"type": "bar", "orientation": "h", "x": [6.946122, 6.959391, 7.173304, 7.69638, 9.26267, 19.617099], "y": ["D-D: binomial negativa diaria, inflaci\u00f3n de cer\u2026", "D-A: binomial negativa diaria con d\u00eda de semana", "D-C: binomial negativa diaria, Fourier y tenden\u2026", "D-B2: binomial negativa diaria sin d\u00eda de semana", "b1_rolling_7", "baseline"], "marker": {"color": ["#2f7d4f", "#7fb2d9", "#7fb2d9", "#7fb2d9", "#8a93a0", "#8a93a0"]}, "text": ["D-D: binomial negativa diaria, inflaci\u00f3n de ceros<br>wis = 6.946<br>ganancia +25.0% IC [-2.702, -1.936]", "D-A: binomial negativa diaria con d\u00eda de semana<br>wis = 6.959<br>ganancia +24.9% IC [-2.689, -1.919]", "D-C: binomial negativa diaria, Fourier y tendencia<br>wis = 7.173<br>ganancia +22.6% IC [-2.505, -1.673]", "D-B2: binomial negativa diaria sin d\u00eda de semana<br>wis = 7.696<br>ganancia +16.9% IC [-1.870, -1.245]", "b1_rolling_7<br>wis = 9.263", "baseline<br>wis = 19.617"], "hoverinfo": "text", "texttemplate": "%{x:.3f}", "textposition": "outside", "cliponaxis": false}], {"height": 228, "margin": {"l": 10, "r": 70, "t": 6, "b": 30}, "xaxis": {"title": "wis"}, "yaxis": {"automargin": true, "autorange": "reversed"}, "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)", "font": {"family": "IBM Plex Sans, system-ui, sans-serif", "size": 12}}, {responsive: true, displaylogo: false});</script>
+<details><summary>Tabla con la ganancia relativa y el intervalo bootstrap</summary><div class="tablewrap">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th class="r" data-quarto-table-cell-role="th">wis</th>
+<th class="r" data-quarto-table-cell-role="th">Ganancia</th>
+<th class="r" data-quarto-table-cell-role="th">IC 95 %</th>
+<th data-quarto-table-cell-role="th">Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>D-D: binomial negativa diaria, inflación de ceros</td>
+<td class="r">6.946</td>
+<td class="r">+25.0%</td>
+<td class="r">[-2.702, -1.936]</td>
+<td><span class="tag win">ganador vigente</span></td>
+</tr>
+<tr class="even">
+<td>D-A: binomial negativa diaria con día de semana</td>
+<td class="r">6.959</td>
+<td class="r">+24.9%</td>
+<td class="r">[-2.689, -1.919]</td>
+<td><span class="tag cand">candidato aceptado</span></td>
+</tr>
+<tr class="odd">
+<td>D-C: binomial negativa diaria, Fourier y tendencia</td>
+<td class="r">7.173</td>
+<td class="r">+22.6%</td>
+<td class="r">[-2.505, -1.673]</td>
+<td><span class="tag cand">candidato aceptado</span></td>
+</tr>
+<tr class="even">
+<td>D-B2: binomial negativa diaria sin día de semana</td>
+<td class="r">7.696</td>
+<td class="r">+16.9%</td>
+<td class="r">[-1.870, -1.245]</td>
+<td><span class="tag cand">candidato aceptado</span></td>
+</tr>
+<tr class="odd">
+<td>b1_rolling_7</td>
+<td class="r">9.263</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="even">
+<td>baseline</td>
+<td class="r">19.617</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+</tbody>
+</table>
+</div></details></div>
+<div class="card"><h3 style="margin-top:0">D-E · composición diaria (log score, mayor es mejor)</h3><p class="note">Aceptada: da la señal diaria de mezcla rara.</p><div id="g8" class="plot" style="min-height:144px"></div>
+<script>Plotly.newPlot('g8', [{"type": "bar", "orientation": "h", "x": [-151.61445, -229.64663, -424.803726], "y": ["D-E: Dirichlet-multinomial diaria", "mn_rolling_7", "dm_static"], "marker": {"color": ["#2f7d4f", "#8a93a0", "#8a93a0"]}, "text": ["D-E: Dirichlet-multinomial diaria<br>log_score = -151.614", "mn_rolling_7<br>log_score = -229.647", "dm_static<br>log_score = -424.804"], "hoverinfo": "text", "texttemplate": "%{x:.3f}", "textposition": "inside", "cliponaxis": false}], {"height": 144, "margin": {"l": 10, "r": 70, "t": 6, "b": 30}, "xaxis": {"title": "log_score"}, "yaxis": {"automargin": true, "autorange": "reversed"}, "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)", "font": {"family": "IBM Plex Sans, system-ui, sans-serif", "size": 12}}, {responsive: true, displaylogo: false});</script>
+<details><summary>Tabla con la ganancia relativa y el intervalo bootstrap</summary><div class="tablewrap">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th class="r" data-quarto-table-cell-role="th">log_score</th>
+<th class="r" data-quarto-table-cell-role="th">Ganancia</th>
+<th class="r" data-quarto-table-cell-role="th">IC 95 %</th>
+<th data-quarto-table-cell-role="th">Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>D-E: Dirichlet-multinomial diaria</td>
+<td class="r">-151.614</td>
+<td class="r"></td>
+<td class="r">[69.082, 87.043]</td>
+<td><span class="tag win">ganador vigente</span></td>
+</tr>
+<tr class="even">
+<td>mn_rolling_7</td>
+<td class="r">-229.647</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="odd">
+<td>dm_static</td>
+<td class="r">-424.804</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+</tbody>
+</table>
+</div></details></div>
+<div class="card"><h3 style="margin-top:0">C-PAT-INC · patrón por vecinos (acuerdo con las etiquetas congeladas)</h3><p class="note">El sustituto determinista de UMAP acuerda menos con las etiquetas congeladas que UMAP consigo mismo: no se adopta y el patrón queda declarado como etiqueta blanda.</p><div id="g9" class="plot" style="min-height:200px"></div>
+<script>Plotly.newPlot('g9', [{"type": "bar", "orientation": "h", "x": [0.905686, 0.85107, 0.843487, 0.832263, 0.79523], "y": ["proyeccion UMAP permutada (referencia)", "voto de 20 vecinos FAISS", "voto de 10 vecinos FAISS", "voto de 5 vecinos FAISS", "voto de 1 vecinos FAISS"], "marker": {"color": ["#8a93a0", "#7fb2d9", "#7fb2d9", "#b3261e", "#7fb2d9"]}, "text": ["proyeccion UMAP permutada (referencia)<br>acuerdo_con_etiquetas_congeladas = 0.906", "voto de 20 vecinos FAISS<br>acuerdo_con_etiquetas_congeladas = 0.851", "voto de 10 vecinos FAISS<br>acuerdo_con_etiquetas_congeladas = 0.843", "voto de 5 vecinos FAISS<br>acuerdo_con_etiquetas_congeladas = 0.832", "voto de 1 vecinos FAISS<br>acuerdo_con_etiquetas_congeladas = 0.795"], "hoverinfo": "text", "texttemplate": "%{x:.3f}", "textposition": "outside", "cliponaxis": false}], {"height": 200, "margin": {"l": 10, "r": 70, "t": 6, "b": 30}, "xaxis": {"title": "acuerdo_con_etiquetas_congeladas"}, "yaxis": {"automargin": true, "autorange": "reversed"}, "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)", "font": {"family": "IBM Plex Sans, system-ui, sans-serif", "size": 12}}, {responsive: true, displaylogo: false});</script>
+<details><summary>Tabla con la ganancia relativa y el intervalo bootstrap</summary><div class="tablewrap">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th class="r" data-quarto-table-cell-role="th">acuerdo_con_etiquetas_congeladas</th>
+<th class="r" data-quarto-table-cell-role="th">Ganancia</th>
+<th class="r" data-quarto-table-cell-role="th">IC 95 %</th>
+<th data-quarto-table-cell-role="th">Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>proyeccion UMAP permutada (referencia)</td>
+<td class="r">0.906</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="even">
+<td>voto de 20 vecinos FAISS</td>
+<td class="r">0.851</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>voto de 10 vecinos FAISS</td>
+<td class="r">0.843</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>voto de 5 vecinos FAISS</td>
+<td class="r">0.832</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag rej">no adoptado</span></td>
+</tr>
+<tr class="odd">
+<td>voto de 1 vecinos FAISS</td>
+<td class="r">0.795</td>
+<td class="r"></td>
+<td class="r"></td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+</tbody>
+</table>
+</div></details></div>
+<h3 id="alertas-detectar-sin-avisar-de-más">Alertas: detectar sin avisar de más</h3>
+<p>Las reglas de alerta se juzgan con ráfagas inyectadas: qué fracción detectan y cuántas veces avisan sin que haya nada. El presupuesto fijado antes de correr es una falsa alarma al mes para la regla semanal y cuatro para la diaria; ninguna regla diaria llegó al 50 % de detección exigido, así que la alerta vive en la semana.</p>
+<div class="card"><h3 style="margin-top:0">Detección por escenario (fracción de ráfagas detectadas; «none» es la tasa de falsas alarmas)</h3>
+<div class="tablewrap">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Regla</th>
+<th class="r" data-quarto-table-cell-role="th">growth_10</th>
+<th class="r" data-quarto-table-cell-role="th">growth_20</th>
+<th class="r" data-quarto-table-cell-role="th">step_50</th>
+<th class="r" data-quarto-table-cell-role="th">step_100</th>
+<th class="r" data-quarto-table-cell-role="th">burst_x2_3d</th>
+<th class="r" data-quarto-table-cell-role="th">burst_x3_1d</th>
+<th class="r" data-quarto-table-cell-role="th">burst_x3_3d</th>
+<th class="r" data-quarto-table-cell-role="th">rise_x1_5_7d</th>
+<th class="r" data-quarto-table-cell-role="th">none</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>C-M11-FARR · CUSUM de M11 sobre C-A (referencia)</td>
+<td class="r">42%</td>
+<td class="r">71%</td>
+<td class="r">32%</td>
+<td class="r">52%</td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r">7%</td>
+</tr>
+<tr class="even">
+<td>C-M11-FARR · memoria reponderada, z0 = 2.0</td>
+<td class="r">25%</td>
+<td class="r">56%</td>
+<td class="r">28%</td>
+<td class="r">49%</td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r">11%</td>
+</tr>
+<tr class="odd">
+<td>C-M11-FARR · memoria reponderada, z0 = 2.58</td>
+<td class="r">23%</td>
+<td class="r">56%</td>
+<td class="r">22%</td>
+<td class="r">44%</td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r">7%</td>
+</tr>
+<tr class="even">
+<td>C-M11-FARR · memoria reponderada, z0 = 3.0</td>
+<td class="r">25%</td>
+<td class="r">58%</td>
+<td class="r">22%</td>
+<td class="r">43%</td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r">6%</td>
+</tr>
+<tr class="odd">
+<td>M11 · cusum</td>
+<td class="r">42%</td>
+<td class="r">71%</td>
+<td class="r">32%</td>
+<td class="r">52%</td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r">7%</td>
+</tr>
+<tr class="even">
+<td>M11 · weekly</td>
+<td class="r">32%</td>
+<td class="r">54%</td>
+<td class="r">36%</td>
+<td class="r">57%</td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r">10%</td>
+</tr>
+<tr class="odd">
+<td>M11D · cusum</td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r">28%</td>
+<td class="r">25%</td>
+<td class="r"></td>
+<td class="r">25%</td>
+<td class="r">6%</td>
+</tr>
+<tr class="even">
+<td>M11D · daily</td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r">35%</td>
+<td class="r">44%</td>
+<td class="r"></td>
+<td class="r">27%</td>
+<td class="r">11%</td>
+</tr>
+<tr class="odd">
+<td>M11D · weekly_cusum</td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r">30%</td>
+<td class="r">29%</td>
+<td class="r"></td>
+<td class="r">31%</td>
+<td class="r">0%</td>
+</tr>
+<tr class="even">
+<td>M11D-V2 · cusum</td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r">22%</td>
+<td class="r">2%</td>
+<td class="r">35%</td>
+<td class="r">19%</td>
+<td class="r">3%</td>
+</tr>
+<tr class="odd">
+<td>M11D-V2 · daily</td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r">21%</td>
+<td class="r">29%</td>
+<td class="r">35%</td>
+<td class="r">10%</td>
+<td class="r">3%</td>
+</tr>
+<tr class="even">
+<td>M11D-V2 · scan</td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r">24%</td>
+<td class="r">10%</td>
+<td class="r">38%</td>
+<td class="r">17%</td>
+<td class="r">2%</td>
+</tr>
+<tr class="odd">
+<td>M11D-V2 · weekly_cusum</td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r"></td>
+<td class="r">30%</td>
+<td class="r">29%</td>
+<td class="r">37%</td>
+<td class="r">31%</td>
+<td class="r">0%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p class="note">growth_10 / growth_20: crecimiento semanal de 10 % y 20 % durante 8 semanas; step: salto de 50 % y 100 %; burst: ráfaga diaria ×2 de 3 días, ×3 de 1 o 3 días; rise: ×1.5 durante 7 días.</p></div>
+<details><summary>Alertas reales por mes en ajuste y calibración</summary><div class="tablewrap">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Regla</th>
+<th data-quarto-table-cell-role="th">Conjunto</th>
+<th class="r" data-quarto-table-cell-role="th">Alertas / mes</th>
+<th data-quarto-table-cell-role="th">Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>M11D · cusum</td>
+<td>ajuste</td>
+<td class="r">8.09</td>
+<td><span class="tag rej">no adoptada</span></td>
+</tr>
+<tr class="even">
+<td>M11D · daily</td>
+<td>ajuste</td>
+<td class="r">13.24</td>
+<td><span class="tag rej">no adoptada</span></td>
+</tr>
+<tr class="odd">
+<td>M11D · cusum</td>
+<td>calibracion_2024_q4</td>
+<td class="r">8.27</td>
+<td><span class="tag rej">no adoptada</span></td>
+</tr>
+<tr class="even">
+<td>M11D · daily</td>
+<td>calibracion_2024_q4</td>
+<td class="r">12.90</td>
+<td><span class="tag rej">no adoptada</span></td>
+</tr>
+<tr class="odd">
+<td>M11D-V2 · daily</td>
+<td>ajuste</td>
+<td class="r">4.05</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>M11D-V2 · scan</td>
+<td>ajuste</td>
+<td class="r">4.00</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>M11D-V2 · cusum</td>
+<td>ajuste</td>
+<td class="r">4.00</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>M11D-V2 · daily</td>
+<td>calibracion_2024_q4</td>
+<td class="r">3.97</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>M11D-V2 · scan</td>
+<td>calibracion_2024_q4</td>
+<td class="r">2.98</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>M11D-V2 · cusum</td>
+<td>calibracion_2024_q4</td>
+<td class="r">3.97</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>M11 · cusum</td>
+<td>calibracion_2024_q4</td>
+<td class="r">1.45</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>M11 · weekly</td>
+<td>calibracion_2024_q4</td>
+<td class="r">1.09</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>M11 · cusum</td>
+<td>validacion_2025_h1 (ya consultada)</td>
+<td class="r">5.22</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>M11 · weekly</td>
+<td>validacion_2025_h1 (ya consultada)</td>
+<td class="r">5.57</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>C-M11-FARR · memoria reponderada, z0 = 2.58</td>
+<td>ajuste</td>
+<td class="r">6.20</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>C-M11-FARR · memoria reponderada, z0 = 2.58</td>
+<td>calibracion_2024_q4</td>
+<td class="r">4.35</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>C-M11-FARR · memoria reponderada, z0 = 2.0</td>
+<td>ajuste</td>
+<td class="r">11.80</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>C-M11-FARR · memoria reponderada, z0 = 2.0</td>
+<td>calibracion_2024_q4</td>
+<td class="r">12.32</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>C-M11-FARR · memoria reponderada, z0 = 3.0</td>
+<td>ajuste</td>
+<td class="r">5.85</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>C-M11-FARR · memoria reponderada, z0 = 3.0</td>
+<td>calibracion_2024_q4</td>
+<td class="r">4.35</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+</tbody>
+</table>
+</div></details>
+<h2 id="finales">4 · Modelos finales</h2>
+<p>Lo que quedó vigente al cerrar el modelado (2026-10-21), con su corrida congelada, su hash de DVC y su identificador en MLflow. Es la tabla §32.2 del registro de pre-registro, leída del archivo.</p>
+<div class="tablewrap" style="max-height:none">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Salida</th>
+<th data-quarto-table-cell-role="th">Componente final</th>
+<th data-quarto-table-cell-role="th">Configuración y corrida congelada</th>
+<th data-quarto-table-cell-role="th">DVC</th>
+<th data-quarto-table-cell-role="th">MLflow</th>
+<th data-quarto-table-cell-role="th">Calibración</th>
+<th data-quarto-table-cell-role="th">Validación 2025-H1</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>T1 motivo (90 clases)</td>
+<td>TabPFN-3.5 en contexto: 20,000 filas de ajuste, PCA 100 de BGE + producto, 8 estimadores</td>
+<td><code>foundation_t1</code> en <code>configs/modeling.yaml</code>; <code>reports/modeling/foundation_t1/</code></td>
+<td><code>bge_full</code> 3ff36a29, <code>semantic_space</code> 08662a82</td>
+<td>b29a0b2a (ablación d07b98c6)</td>
+<td>Macro-F1 0.271</td>
+<td>0.270 (ya consultado)</td>
+</tr>
+<tr class="even">
+<td>T2 solución registrada</td>
+<td>TF-IDF solo texto + logística calibrada, umbral 0.300</td>
+<td><code>artifacts/models/representation_comparison/</code></td>
+<td>ecf6c926</td>
+<td>bb51ccdd</td>
+<td>AP 0.609</td>
+<td>0.570 (§22)</td>
+</tr>
+<tr class="odd">
+<td>T3 compensación</td>
+<td>TF-IDF solo texto, umbral 0.182</td>
+<td>ídem</td>
+<td>ecf6c926</td>
+<td>243949bf</td>
+<td>AP 0.364</td>
+<td>0.270 (§22)</td>
+</tr>
+<tr class="even">
+<td>T4 respuesta no oportuna</td>
+<td>Descartado en §22; lo reemplaza la regla de plazo con feriados</td>
+<td><code>configs/peru_holidays.yaml</code></td>
+<td>—</td>
+<td>c2feae99</td>
+<td>AP 0.078</td>
+<td>rechazado</td>
+</tr>
+<tr class="odd">
+<td>Reclamos parecidos</td>
+<td>FAISS exacto (producto interno) sobre BGE-large normalizado, 120,000 reclamos de ajuste</td>
+<td><code>artifacts/models/semantic_space/</code></td>
+<td>08662a82</td>
+<td>47bacfc5</td>
+<td>similitud mediana 0.924</td>
+<td>0.918</td>
+</tr>
+<tr class="even">
+<td>Patrones semánticos</td>
+<td>PCA 256 → UMAP 15 → k-means k = 40; novedad si distancia &gt; p99 por patrón</td>
+<td><code>artifacts/models/weekly_patterns/</code>, catálogo en <code>cluster_summary.csv</code></td>
+<td><code>clustering</code> 425408aa, <code>weekly_patterns</code> 87be2a97</td>
+<td>19835707, 8a392437 (sensibilidad 5ca3b797)</td>
+<td>0.88 % novedosos</td>
+<td>0.77 %</td>
+</tr>
+<tr class="odd">
+<td>M9 conteo semanal</td>
+<td>C-A: binomial negativa jerárquica, memoria que decae δ = 0.5</td>
+<td><code>configs/weekly_counts/nb_discounted_hierarchical_v1.yaml</code>, corrida <code>20261005T200606.263137Z-full-0aa0a0fb-2348e548</code></td>
+<td><code>weekly_counts</code> 3f9fa011</td>
+<td>8f29cf28 (bloque C 21ec486b)</td>
+<td>WIS 30.30</td>
+<td>129.6 (ya consultado)</td>
+</tr>
+<tr class="even">
+<td>M10 composición semanal</td>
+<td>DM-R4: Dirichlet-multinomial de 4 semanas, κ = 826; señal de mezcla rara p &lt; 0.01</td>
+<td><code>configs/weekly_composition/dirichlet_multinomial_rolling_4_v1.yaml</code>, corrida <code>20261001T015410.667626Z-full-cff27014-1fa6f95c</code></td>
+<td><code>weekly_composition</code> b73cc2d9</td>
+<td>90ac1c09 (señal 2e6d9a23)</td>
+<td>log score −210.1</td>
+<td>−251.7 (§22)</td>
+</tr>
+<tr class="odd">
+<td>M11 alertas persistentes</td>
+<td>CUSUM k = 0.5, h = 3.37 sobre los excesos de C-A; 1 falsa alarma al mes</td>
+<td><code>reports/modeling/persistent_change_c_a/results.json</code></td>
+<td><code>alerts.csv</code>, <code>detection.csv</code></td>
+<td>836c2ce8 (2025-H1: 87c94112)</td>
+<td>1.45 alarmas al mes</td>
+<td>30 alertas en 25 semanas (ya consultado)</td>
+</tr>
+<tr class="even">
+<td>D-D conteo diario</td>
+<td>Binomial negativa con inflación de ceros, δ = 0.8, efecto de día de semana</td>
+<td><code>configs/daily_counts/zinb_daily_hierarchical_v1.yaml</code>, corrida <code>20261008T040100.226680Z-full-2e0a6b9e-2eb7afd9</code></td>
+<td><code>daily_counts</code> 1f048446</td>
+<td>a76cf32a (desafío 2fedeefa)</td>
+<td>WIS 6.95</td>
+<td>14.56 (ya consultado)</td>
+</tr>
+<tr class="odd">
+<td>D-E composición diaria</td>
+<td>Dirichlet-multinomial de 7 días, κ = 261</td>
+<td><code>configs/daily_counts/dirichlet_multinomial_daily_v1.yaml</code></td>
+<td><code>daily_counts</code> 1f048446</td>
+<td>8c4b1cd5</td>
+<td>log score −152</td>
+<td>—</td>
+</tr>
+<tr class="even">
+<td>Alerta diaria</td>
+<td>No adoptada (§28.3); <code>daily.csv</code> del pipeline trae expectativa e intervalos de D-D</td>
+<td><code>reports/modeling/daily_change/</code></td>
+<td>—</td>
+<td>c3bd8c4a</td>
+<td>44 % como máximo</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="validacion">5 · Validación: consultada una vez</h2>
+<p>El periodo 2025-H1 se abrió una sola vez (2026-10-01) para confirmar los ganadores de ese momento; todo lo posterior se reporta como «ya consultada» y no decide nada. Estas son las cifras de validación de la tabla comparativa.</p>
+<div class="tablewrap">
+<table class="caption-top">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th">Etapa</th>
+<th data-quarto-table-cell-role="th">Tarea</th>
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th data-quarto-table-cell-role="th">Métrica</th>
+<th class="r" data-quarto-table-cell-role="th">Valor</th>
+<th data-quarto-table-cell-role="th">Decisión</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>M5F bloque B</td>
+<td>T1</td>
+<td>bge_product</td>
+<td>macro_f1</td>
+<td class="r">0.227</td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="even">
+<td>M5F bloque B</td>
+<td>T1</td>
+<td>TabPFN-3.5 (PCA 100 + producto)</td>
+<td>macro_f1</td>
+<td class="r">0.270</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>M5B §22</td>
+<td>T1</td>
+<td>product_rule</td>
+<td>macro_f1</td>
+<td class="r">0.068</td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="even">
+<td>M5B §22</td>
+<td>T1</td>
+<td>bge_product</td>
+<td>macro_f1</td>
+<td class="r">0.227</td>
+<td><span class="tag cand">candidato aceptado</span></td>
+</tr>
+<tr class="odd">
+<td>M5B §22</td>
+<td>T2</td>
+<td>product_rule</td>
+<td>average_precision</td>
+<td class="r">0.451</td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="even">
+<td>M5B §22</td>
+<td>T2</td>
+<td>tfidf_text</td>
+<td>average_precision</td>
+<td class="r">0.570</td>
+<td><span class="tag cand">candidato aceptado</span></td>
+</tr>
+<tr class="odd">
+<td>M5B §22</td>
+<td>T3</td>
+<td>product_rule</td>
+<td>average_precision</td>
+<td class="r">0.127</td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="even">
+<td>M5B §22</td>
+<td>T3</td>
+<td>tfidf_text</td>
+<td>average_precision</td>
+<td class="r">0.270</td>
+<td><span class="tag cand">candidato aceptado</span></td>
+</tr>
+<tr class="odd">
+<td>M5B §22</td>
+<td>T4</td>
+<td>product_rule</td>
+<td>average_precision</td>
+<td class="r">0.121</td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="even">
+<td>M5B §22</td>
+<td>T4</td>
+<td>tfidf_product</td>
+<td>average_precision</td>
+<td class="r">0.078</td>
+<td><span class="tag rej">no confirmado</span></td>
+</tr>
+<tr class="odd">
+<td>M9 §25.5</td>
+<td>conteo semanal por patrón</td>
+<td>Binomial negativa jerárquica con memoria que decae (C-A)</td>
+<td>wis</td>
+<td class="r">129.609</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>M9 §22</td>
+<td>conteo semanal por patrón</td>
+<td>Binomial negativa, 4 semanas, jerárquica v3</td>
+<td>wis</td>
+<td class="r">133.632</td>
+<td><span class="tag cand">candidato aceptado</span></td>
+</tr>
+<tr class="odd">
+<td>M9 §22</td>
+<td>conteo semanal por patrón</td>
+<td>b1_rolling_4</td>
+<td>wis</td>
+<td class="r">164.225</td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="even">
+<td>M10 §22</td>
+<td>composición semanal</td>
+<td>dirichlet_multinomial_rolling_4_v1</td>
+<td>log_score</td>
+<td class="r">-251.688</td>
+<td><span class="tag cand">candidato aceptado</span></td>
+</tr>
+<tr class="odd">
+<td>M10 §22</td>
+<td>composición semanal</td>
+<td>b2_rolling_4</td>
+<td>log_score</td>
+<td class="r">-3337.898</td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="even">
+<td>M9D §28.2</td>
+<td>conteo diario</td>
+<td>D-D: binomial negativa diaria, inflación de ceros</td>
+<td>wis</td>
+<td class="r">14.556</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>M11</td>
+<td>alertas reales</td>
+<td>cusum</td>
+<td>alertas_por_mes</td>
+<td class="r">5.218</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>M11</td>
+<td>alertas reales</td>
+<td>weekly</td>
+<td>alertas_por_mes</td>
+<td class="r">5.566</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>C-PAT-INC</td>
+<td>patron de reclamos nuevos</td>
+<td>proyeccion UMAP permutada (referencia)</td>
+<td>acuerdo_con_etiquetas_congeladas</td>
+<td class="r">0.938</td>
+<td><span class="tag base">referencia</span></td>
+</tr>
+<tr class="even">
+<td>C-PAT-INC</td>
+<td>patron de reclamos nuevos</td>
+<td>voto de 1 vecinos FAISS</td>
+<td>acuerdo_con_etiquetas_congeladas</td>
+<td class="r">0.783</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>C-PAT-INC</td>
+<td>patron de reclamos nuevos</td>
+<td>voto de 5 vecinos FAISS</td>
+<td>acuerdo_con_etiquetas_congeladas</td>
+<td class="r">0.851</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="even">
+<td>C-PAT-INC</td>
+<td>patron de reclamos nuevos</td>
+<td>voto de 10 vecinos FAISS</td>
+<td>acuerdo_con_etiquetas_congeladas</td>
+<td class="r">0.864</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+<tr class="odd">
+<td>C-PAT-INC</td>
+<td>patron de reclamos nuevos</td>
+<td>voto de 20 vecinos FAISS</td>
+<td>acuerdo_con_etiquetas_congeladas</td>
+<td class="r">0.871</td>
+<td><span class="tag cand">candidato</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="reproducir">6 · Cómo reproducir</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> sync <span class="at">--frozen</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run dvc pull                                   <span class="co"># datos y modelos desde DagsHub (pide acceso)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run dvc repro                                  <span class="co"># P1–P6: de crudo a tabla preparada</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run python <span class="at">-m</span> src.evaluation.comparison_table  <span class="co"># regenera comparacion_modelos.csv desde reports/modeling/</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="ex">uv</span> run <span class="at">--no-sync</span> python scripts/export_mlflow_runs.py   <span class="co"># exporta las corridas de MLflow (credenciales)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="bu">cd</span> reports/experimentos <span class="kw">&amp;&amp;</span> <span class="ex">quarto</span> render          <span class="co"># esta página</span></span></code></pre></div>
+<p>Los modelos se entrenaron en el clúster Khipu con los jobs de <code>scripts/hpc/</code>; cada carpeta de <code>reports/modeling/</code> guarda la regla fijada antes de correr (<code>decision.md</code>), los diagnósticos y las métricas de cada corrida. El informe completo está en <code>reports/informe/informe.pdf</code>.</p>
+
+
+
+
+
+</body></html>
