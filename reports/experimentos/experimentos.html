@@ -135,7 +135,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
 <div class="stat">
   <div><b>1,301,794</b><span>reclamos de 2023–2024 elegibles para T1 (tabla datos-v1)</span></div>
-  <div><b>67</b><span>corridas en MLflow, un solo experimento</span></div>
+  <div><b>87</b><span>corridas en MLflow, un solo experimento</span></div>
   <div><b>32</b><span>modelos candidatos distintos con métrica registrada</span></div>
   <div><b>18</b><span>etapas de modelado comparadas</span></div>
   <div><b>119</b><span>punteros DVC (datos, modelos y tablas de resultados)</span></div>
@@ -251,7 +251,903 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </table>
 </div></details>
 <h2 id="mlflow">2 · Corridas en MLflow</h2>
-<div class="card"><b>Falta la exportación de MLflow.</b> Corre <code>uv run --no-sync python scripts/export_mlflow_runs.py</code> con las credenciales de DagsHub y vuelve a renderizar; esta sección mostrará la línea de tiempo y la tabla de las corridas.</div>
+<p>87 corridas en el experimento <code>claims-triage-modeling</code> (dagshub.com), exportadas el 2026-11-01. Cada punto es una corrida; el color es la etapa. Pasa el cursor para ver el modelo y su métrica principal.</p>
+<div id="runs-timeline" class="plot"></div><script>Plotly.newPlot('runs-timeline', [{"type": "scatter", "mode": "markers", "name": "C-M11-FARR", "x": ["2026-10-21T15:11"], "y": ["C-M11-FARR"], "text": ["m11-farr-v1<br>m11-farr-v1<br>alarms_calibration_cusum_per_month = 4.348<br>split: calibration"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "C-PAT-INC", "x": ["2026-10-20T20:41"], "y": ["C-PAT-INC"], "text": ["c-pat-inc-knn-v1<br>c-pat-inc-knn-v1<br>agreement_knn = 0.832<br>split: calibration"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "FINAL", "x": ["2026-10-01T14:43"], "y": ["FINAL"], "text": ["final-validation-confirmation<br>final-validation-confirmation<br>macro_f1 = 0.231<br>split: validation"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M0", "x": ["2026-09-22T21:11"], "y": ["M0"], "text": ["m0-input-contract<br>m0-input-contract<br>input_size_gib = 1.711<br>split: \u2014"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M1", "x": ["2026-09-23T00:52"], "y": ["M1"], "text": ["m1-experiment-setup<br>m1-experiment-setup<br>numpy_seed_probe = 0.375<br>split: not_applicable"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M10", "x": ["2026-10-01T01:58", "2026-10-01T02:00"], "y": ["M10", "M10"], "text": ["m10-dirichlet_multinomial_rolling_4_v1-20261001T015410.667626Z-full-cff27014-1fa6f95c<br>dirichlet_multinomial_rolling_4_v1<br>log_score = 1.000<br>split: fit_calibration", "m10-dirichlet_multinomial_static_v1-20261001T015447.101243Z-full-f9a73151-bc87c1f1<br>dirichlet_multinomial_static_v1<br>log_score = 1.000<br>split: fit_calibration"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M10D", "x": ["2026-10-08T18:22"], "y": ["M10D"], "text": ["m10d-dirichlet_multinomial_daily_v1-full<br>m10d-dirichlet_multinomial_daily_v1-full<br>log_score = -424.804<br>split: calibration"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M10S", "x": ["2026-10-08T00:59"], "y": ["M10S"], "text": ["m10-mixture-signal<br>m10-mixture-signal<br>calibration_expected_flagged_if_calibrated = 0.120<br>split: calibration"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M11", "x": ["2026-10-01T18:28", "2026-10-01T18:52", "2026-10-21T15:23", "2026-10-21T15:24"], "y": ["M11", "M11", "M11", "M11"], "text": ["m11-persistent-change-fit_calibration<br>m11-persistent-change-fit_calibration<br>alarms_calibration_cusum = 6.000<br>split: fit_calibration", "m11-persistent-change-validation<br>m11-persistent-change-validation<br>alarms_calibration_cusum = 6.000<br>split: validation", "m11-persistent-change-c-a-fit_calibration<br>m11-persistent-change-c-a-fit_calibration<br>alarms_calibration_cusum = 4.000<br>split: fit_calibration", "m11-persistent-change-c-a-validation<br>m11-persistent-change-c-a-validation<br>alarms_calibration_cusum = 4.000<br>split: validation"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M11D", "x": ["2026-10-08T22:00"], "y": ["M11D"], "text": ["m11d-daily-change<br>m11d-daily-change<br>calibration_cusum_per_month = 8.271<br>split: calibration"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M11D-V2", "x": ["2026-10-22T02:32"], "y": ["M11D-V2"], "text": ["m11d-daily-change-v2<br>m11d-daily-change-v2<br>calibration_cusum_per_month = 3.970<br>split: calibration"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M12", "x": ["2026-10-01T20:54"], "y": ["M12"], "text": ["m12-triage-demo<br>m12-triage-demo<br>active_alerts = 11.000<br>split: validation"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M2", "x": ["2026-09-23T01:08"], "y": ["M2"], "text": ["m2-evaluation-contract<br>m2-evaluation-contract<br>calibration_no_shared_rows = 167973.000<br>split: fit_calibration_validation"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M3", "x": ["2026-09-23T01:24", "2026-09-23T01:24", "2026-09-23T01:24", "2026-09-23T01:24", "2026-09-23T01:25", "2026-09-23T01:25", "2026-09-23T01:25", "2026-09-23T01:25"], "y": ["M3", "M3", "M3", "M3", "M3", "M3", "M3", "M3"], "text": ["m3-t1-global_frequency<br>m3-t1-global_frequency<br>macro_f1 = 0.007<br>split: calibration_validation", "m3-t1-product_frequency<br>m3-t1-product_frequency<br>macro_f1 = 0.076<br>split: calibration_validation", "m3-t2-global_frequency<br>m3-t2-global_frequency<br>average_precision = 0.429<br>split: calibration_validation", "m3-t2-product_frequency<br>m3-t2-product_frequency<br>average_precision = 0.480<br>split: calibration_validation", "m3-t3-global_frequency<br>m3-t3-global_frequency<br>average_precision = 0.016<br>split: calibration_validation", "m3-t3-product_frequency<br>m3-t3-product_frequency<br>average_precision = 0.171<br>split: calibration_validation", "m3-t4-global_frequency<br>m3-t4-global_frequency<br>average_precision = 0.004<br>split: calibration_validation", "m3-t4-product_frequency<br>m3-t4-product_frequency<br>average_precision = 0.030<br>split: calibration_validation"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M4", "x": ["2026-09-23T02:08", "2026-09-23T02:09", "2026-09-23T02:09", "2026-09-23T02:09"], "y": ["M4", "M4", "M4", "M4"], "text": ["m4-t1-tfidf-product<br>m4-t1-tfidf-product<br>macro_f1 = 0.222<br>split: calibration_validation", "m4-t2-tfidf-product<br>m4-t2-tfidf-product<br>average_precision = 0.616<br>split: calibration_validation", "m4-t3-tfidf-product<br>m4-t3-tfidf-product<br>average_precision = 0.369<br>split: calibration_validation", "m4-t4-tfidf-product<br>m4-t4-tfidf-product<br>average_precision = 0.055<br>split: calibration_validation"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M5", "x": ["2026-09-24T00:10", "2026-09-24T00:10", "2026-09-24T00:10", "2026-09-24T00:11", "2026-09-24T00:11", "2026-09-24T00:11", "2026-09-24T00:11", "2026-09-24T00:11"], "y": ["M5", "M5", "M5", "M5", "M5", "M5", "M5", "M5"], "text": ["m5-t1-bge_product<br>m5-t1-bge_product<br>macro_f1 = 0.254<br>split: sample_calibration_validation", "m5-t2-bge_product<br>m5-t2-bge_product<br>average_precision = 0.609<br>split: sample_calibration_validation", "m5-t3-bge_product<br>m5-t3-bge_product<br>average_precision = 0.307<br>split: sample_calibration_validation", "m5-t4-bge_product<br>m5-t4-bge_product<br>average_precision = 0.053<br>split: sample_calibration_validation", "m5-t1-tfidf_product<br>m5-t1-tfidf_product<br>macro_f1 = 0.228<br>split: sample_calibration_validation", "m5-t2-tfidf_product<br>m5-t2-tfidf_product<br>average_precision = 0.600<br>split: sample_calibration_validation", "m5-t3-tfidf_product<br>m5-t3-tfidf_product<br>average_precision = 0.324<br>split: sample_calibration_validation", "m5-t4-tfidf_product<br>m5-t4-tfidf_product<br>average_precision = 0.032<br>split: sample_calibration_validation"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M5B", "x": ["2026-09-30T20:16", "2026-09-30T20:16", "2026-09-30T20:16", "2026-09-30T20:16"], "y": ["M5B", "M5B", "M5B", "M5B"], "text": ["m5b-t1-representations<br>m5b-t1-representations<br>macro_f1 = 0.240<br>split: fit_calibration", "m5b-t2-representations<br>m5b-t2-representations<br>average_precision = 0.610<br>split: fit_calibration", "m5b-t3-representations<br>m5b-t3-representations<br>average_precision = 0.351<br>split: fit_calibration", "m5b-t4-representations<br>m5b-t4-representations<br>average_precision = 0.042<br>split: fit_calibration"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M5F", "x": ["2026-10-06T18:52", "2026-10-07T16:12"], "y": ["M5F", "M5F"], "text": ["m5f-foundation-t1<br>m5f-foundation-t1<br>macro_f1 = 0.240<br>split: calibration", "m5f-foundation-t1-ablation<br>m5f-foundation-t1-ablation<br>macro_f1 = 0.271<br>split: calibration"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M6", "x": ["2026-09-24T13:26"], "y": ["M6"], "text": ["m6-semantic-space<br>m6-semantic-space<br>calibration_exact_score_maximum_error = 0.000<br>split: fit_calibration_validation_sample"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M7", "x": ["2026-09-24T16:07", "2026-09-24T19:23", "2026-09-24T19:24", "2026-09-24T19:24"], "y": ["M7", "M7", "M7", "M7"], "text": ["m7-cluster-comparison<br>m7-cluster-comparison<br>cure_future_coverage = 0.958<br>split: fit_sample_calibration_assignment", "m7-cure_k20_r5_c0.5<br>m7-cure_k20_r5_c0.5<br>accepted = 0.000<br>split: fit_sample_calibration_assignment", "m7-hdbscan_mcs500_ms30<br>m7-hdbscan_mcs500_ms30<br>accepted = 0.000<br>split: fit_sample_calibration_assignment", "m7-kmeans_k40<br>m7-kmeans_k40<br>accepted = 1.000<br>split: fit_sample_calibration_assignment"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M7S", "x": ["2026-10-05T19:53"], "y": ["M7S"], "text": ["m7s-space-sensitivity<br>m7s-space-sensitivity<br>lift_pca128_cure_k20_r5_c0.5 = 0.001<br>split: fit_sample_calibration_assignment"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M8A", "x": ["2026-09-25T15:39"], "y": ["M8A"], "text": ["m8a-bge-full<br>m8a-bge-full<br>maximum_norm_error = 0.000<br>split: fit_calibration_validation"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M8B", "x": ["2026-09-25T18:26"], "y": ["M8B"], "text": ["m8b-weekly-patterns<br>m8b-weekly-patterns<br>largest_cluster_fraction = 0.166<br>split: fit_calibration_validation"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M9", "x": ["2026-09-26T19:19", "2026-09-26T19:55", "2026-09-27T00:43", "2026-09-27T01:27", "2026-09-27T04:22", "2026-09-27T04:22", "2026-09-27T15:44", "2026-09-27T16:19", "2026-10-06T18:52", "2026-10-21T15:22"], "y": ["M9", "M9", "M9", "M9", "M9", "M9", "M9", "M9", "M9", "M9"], "text": ["m9-negative-binomial<br>m9-negative-binomial<br>wis = 1.000<br>split: fit_calibration_validation", "m9-negative-binomial-normalized_softmax_v2<br>m9-negative-binomial-normalized_softmax_v2<br>wis = 1.000<br>split: fit_calibration_validation", "m9-poisson_static_pymc_v1-20260927T003211.742368Z-full-b487e2fb-1f4fefe6<br>poisson_static_pymc_v1<br>wis = 1.000<br>split: fit_calibration_validation", "m9-nb_static_global_v3-20260927T011144.681956Z-full-45c908d1-f3a4936c<br>nb_static_global_v3<br>wis = 1.000<br>split: fit_calibration_validation", "m9-b1_rolling_4_v1-20260927T042119.040492Z-full-d869beb9<br>b1_rolling_4_v1<br>wis = 43.115<br>split: calibration", "m9-b1_rolling_13_v1-20260927T042119.040492Z-full-d869beb9<br>b1_rolling_13_v1<br>wis = 64.843<br>split: calibration", "m9-nb_rolling_4_global_v1-20260927T153922.164206Z-full-34f4684f-e1410d83<br>nb_rolling_4_global_v1<br>wis = 138.950<br>split: fit_calibration", "m9-nb_rolling_4_hierarchical_v3-20260927T161316.494762Z-full-a3ecfab3-9105ce1f<br>nb_rolling_4_hierarchical_v3<br>wis = 138.950<br>split: fit_calibration", "m9-block-c-challenge<br>m9-block-c-challenge<br>wis = 32.418<br>split: calibration", "m9-nb_discounted_hierarchical_v1-20261005T200606.263137Z-full-0aa0a0fb-2348e548<br>nb_discounted_hierarchical_v1<br>wis = 138.950<br>split: fit_calibration"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "M9D", "x": ["2026-10-08T16:09", "2026-10-08T16:09", "2026-10-08T16:12", "2026-10-08T16:14", "2026-10-08T21:03"], "y": ["M9D", "M9D", "M9D", "M9D", "M9D"], "text": ["m9d-nb_daily_fourier_v1-full<br>nb_daily_fourier_v1<br>wis = -2.089<br>split: calibration", "m9d-nb_daily_hierarchical_v1-full<br>nb_daily_hierarchical_v1<br>wis = -2.303<br>split: calibration", "m9d-nb_daily_no_dow_v1-full<br>nb_daily_no_dow_v1<br>wis = -1.566<br>split: calibration", "m9d-zinb_daily_hierarchical_v1-full<br>zinb_daily_hierarchical_v1<br>wis = -2.317<br>split: calibration", "m9d-daily-challenge<br>m9d-daily-challenge<br>wis = 7.173<br>split: calibration"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "PB17-CIERRE", "x": ["2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30", "2026-10-30T22:30"], "y": ["PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE", "PB17-CIERRE"], "text": ["pb17-fit-v1-baseline-global<br>pb17-fit-v1-baseline-global<br>macro_f1 = 0.006<br>split: calibration", "pb17-pb17-fit-v1-baseline<br>pb17-pb17-fit-v1-baseline<br>\u2014<br>split: calibration", "pb17-fit-v1-baseline-product<br>pb17-fit-v1-baseline-product<br>macro_f1 = 0.076<br>split: calibration", "pb17-fit-v1-logistic-0.1<br>pb17-fit-v1-logistic-0.1<br>macro_f1 = 0.260<br>split: calibration", "pb17-pb17-fit-v1-logistic<br>pb17-pb17-fit-v1-logistic<br>\u2014<br>split: calibration", "pb17-fit-v1-logistic-1.0<br>pb17-fit-v1-logistic-1.0<br>macro_f1 = 0.250<br>split: calibration", "pb17-fit-v1-random_forest-8<br>pb17-fit-v1-random_forest-8<br>macro_f1 = 0.090<br>split: calibration", "pb17-pb17-fit-v1-random_forest<br>pb17-pb17-fit-v1-random_forest<br>\u2014<br>split: calibration", "pb17-fit-v1-random_forest-16<br>pb17-fit-v1-random_forest-16<br>macro_f1 = 0.131<br>split: calibration", "pb17-fit-v2-dedup-baseline-global<br>pb17-fit-v2-dedup-baseline-global<br>macro_f1 = 0.006<br>split: calibration", "pb17-pb17-fit-v2-dedup-baseline<br>pb17-pb17-fit-v2-dedup-baseline<br>\u2014<br>split: calibration", "pb17-fit-v2-dedup-baseline-product<br>pb17-fit-v2-dedup-baseline-product<br>macro_f1 = 0.076<br>split: calibration", "pb17-fit-v2-dedup-logistic-0.1<br>pb17-fit-v2-dedup-logistic-0.1<br>macro_f1 = 0.287<br>split: calibration", "pb17-pb17-fit-v2-dedup-logistic<br>pb17-pb17-fit-v2-dedup-logistic<br>\u2014<br>split: calibration", "pb17-fit-v2-dedup-logistic-1.0<br>pb17-fit-v2-dedup-logistic-1.0<br>macro_f1 = 0.274<br>split: calibration", "pb17-fit-v2-dedup-random_forest-8<br>pb17-fit-v2-dedup-random_forest-8<br>macro_f1 = 0.101<br>split: calibration", "pb17-pb17-fit-v2-dedup-random_forest<br>pb17-pb17-fit-v2-dedup-random_forest<br>\u2014<br>split: calibration", "pb17-fit-v2-dedup-random_forest-16<br>pb17-fit-v2-dedup-random_forest-16<br>macro_f1 = 0.151<br>split: calibration"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "PIPELINE", "x": ["2026-10-20T20:42"], "y": ["PIPELINE"], "text": ["pipeline-score<br>pipeline-score<br>elapsed_seconds = 691.775<br>split: new"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}, {"type": "scatter", "mode": "markers", "name": "\u2014", "x": ["2026-10-30T21:41", "2026-10-30T21:42"], "y": ["\u2014", "\u2014"], "text": ["campeon-t1-entrega<br>campeon-t1-entrega<br>\u2014<br>split: \u2014", "reporte-final<br>reporte-final<br>calibration_no_shared_text_macro_f1 = 0.271<br>split: \u2014"], "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}}], {"height": 752, "margin": {"l": 110, "r": 10, "t": 10, "b": 40}, "xaxis": {"title": "fecha de la corrida"}, "yaxis": {"title": "", "categoryorder": "array", "categoryarray": ["PIPELINE", "M7S", "M8A", "M8B", "M2", "M6", "C-M11-FARR", "C-PAT-INC", "M0", "FINAL", "M10D", "M1", "M10S", "M11D", "M11D-V2", "M12", "M5F", "\u2014", "M10", "M11", "M4", "M7", "M5B", "M9D", "M3", "M5", "M9", "PB17-CIERRE"], "tickmode": "linear", "dtick": 1}, "showlegend": false, "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)", "font": {"family": "IBM Plex Sans, system-ui, sans-serif"}}, {responsive: true, displaylogo: false});</script>
+<div class="filter"><label>Buscar <input id="runs-q" type="search" placeholder="modelo, corrida, split…"></label>
+<label>Etapa <select id="runs-stage"><option value="">todas</option><option value="PB17-CIERRE">PB17-CIERRE (18)</option><option value="M9">M9 (10)</option><option value="M5">M5 (8)</option><option value="M3">M3 (8)</option><option value="M9D">M9D (5)</option><option value="M5B">M5B (4)</option><option value="M7">M7 (4)</option><option value="M4">M4 (4)</option><option value="M11">M11 (4)</option><option value="M10">M10 (2)</option><option value="—">— (2)</option><option value="M5F">M5F (2)</option><option value="M12">M12 (1)</option><option value="M11D-V2">M11D-V2 (1)</option><option value="M11D">M11D (1)</option><option value="M10S">M10S (1)</option><option value="M1">M1 (1)</option><option value="M10D">M10D (1)</option><option value="FINAL">FINAL (1)</option><option value="M0">M0 (1)</option><option value="C-PAT-INC">C-PAT-INC (1)</option><option value="C-M11-FARR">C-M11-FARR (1)</option><option value="M6">M6 (1)</option><option value="M2">M2 (1)</option><option value="M8B">M8B (1)</option><option value="M8A">M8A (1)</option><option value="M7S">M7S (1)</option><option value="PIPELINE">PIPELINE (1)</option></select></label><span class="note" id="runs-n"></span></div>
+<div class="tablewrap">
+<table id="runs-table" class="caption-top">
+<thead>
+<tr class="header">
+<th class="r" data-quarto-table-cell-role="th">Fecha</th>
+<th data-quarto-table-cell-role="th">Corrida</th>
+<th data-quarto-table-cell-role="th">Etapa</th>
+<th data-quarto-table-cell-role="th">Tarea</th>
+<th data-quarto-table-cell-role="th">Split</th>
+<th data-quarto-table-cell-role="th">Modelo</th>
+<th class="r" data-quarto-table-cell-role="th">Métrica principal</th>
+<th class="r" data-quarto-table-cell-role="th">Commit</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-fit-v2-dedup-random_forest-16</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-fit-v2-dedup-random_forest-16</td>
+<td class="r">macro_f1 = 0.151</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="even" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-pb17-fit-v2-dedup-random_forest</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-pb17-fit-v2-dedup-random_forest</td>
+<td class="r">—</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="odd" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-fit-v2-dedup-random_forest-8</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-fit-v2-dedup-random_forest-8</td>
+<td class="r">macro_f1 = 0.101</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="even" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-fit-v2-dedup-logistic-1.0</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-fit-v2-dedup-logistic-1.0</td>
+<td class="r">macro_f1 = 0.274</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="odd" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-pb17-fit-v2-dedup-logistic</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-pb17-fit-v2-dedup-logistic</td>
+<td class="r">—</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="even" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-fit-v2-dedup-logistic-0.1</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-fit-v2-dedup-logistic-0.1</td>
+<td class="r">macro_f1 = 0.287</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="odd" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-fit-v2-dedup-baseline-product</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-fit-v2-dedup-baseline-product</td>
+<td class="r">macro_f1 = 0.076</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="even" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-fit-v2-dedup-baseline-global</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-fit-v2-dedup-baseline-global</td>
+<td class="r">macro_f1 = 0.006</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="odd" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-pb17-fit-v2-dedup-baseline</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-pb17-fit-v2-dedup-baseline</td>
+<td class="r">—</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="even" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-fit-v1-random_forest-16</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-fit-v1-random_forest-16</td>
+<td class="r">macro_f1 = 0.131</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="odd" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-pb17-fit-v1-random_forest</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-pb17-fit-v1-random_forest</td>
+<td class="r">—</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="even" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-fit-v1-random_forest-8</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-fit-v1-random_forest-8</td>
+<td class="r">macro_f1 = 0.090</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="odd" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-fit-v1-logistic-1.0</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-fit-v1-logistic-1.0</td>
+<td class="r">macro_f1 = 0.250</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="even" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-pb17-fit-v1-logistic</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-pb17-fit-v1-logistic</td>
+<td class="r">—</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="odd" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-fit-v1-logistic-0.1</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-fit-v1-logistic-0.1</td>
+<td class="r">macro_f1 = 0.260</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="even" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-fit-v1-baseline-product</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-fit-v1-baseline-product</td>
+<td class="r">macro_f1 = 0.076</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="odd" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-pb17-fit-v1-baseline</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-pb17-fit-v1-baseline</td>
+<td class="r">—</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="even" data-stage="PB17-CIERRE" data-split="calibration">
+<td class="r">2026-10-30</td>
+<td><code>pb17-fit-v1-baseline-global</code></td>
+<td>PB17-CIERRE</td>
+<td>T1</td>
+<td>calibration</td>
+<td>pb17-fit-v1-baseline-global</td>
+<td class="r">macro_f1 = 0.006</td>
+<td class="r">9d4c82b</td>
+</tr>
+<tr class="odd" data-stage="—" data-split="—">
+<td class="r">2026-10-30</td>
+<td><code>reporte-final</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>reporte-final</td>
+<td class="r">calibration_no_shared_text_macro_f1 = 0.271</td>
+<td class="r">a7856a1</td>
+</tr>
+<tr class="even" data-stage="—" data-split="—">
+<td class="r">2026-10-30</td>
+<td><code>campeon-t1-entrega</code></td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+<td>campeon-t1-entrega</td>
+<td class="r">—</td>
+<td class="r">57e0306</td>
+</tr>
+<tr class="odd" data-stage="M11D-V2" data-split="calibration">
+<td class="r">2026-10-22</td>
+<td><code>m11d-daily-change-v2</code></td>
+<td>M11D-V2</td>
+<td>A1</td>
+<td>calibration</td>
+<td>m11d-daily-change-v2</td>
+<td class="r">calibration_cusum_per_month = 3.970</td>
+<td class="r">d3e1b54</td>
+</tr>
+<tr class="even" data-stage="M11" data-split="validation">
+<td class="r">2026-10-21</td>
+<td><code>m11-persistent-change-c-a-validation</code></td>
+<td>M11</td>
+<td>weekly_cluster_counts</td>
+<td>validation</td>
+<td>m11-persistent-change-c-a-validation</td>
+<td class="r">alarms_calibration_cusum = 4.000</td>
+<td class="r">d3ad4fb</td>
+</tr>
+<tr class="odd" data-stage="M11" data-split="fit_calibration">
+<td class="r">2026-10-21</td>
+<td><code>m11-persistent-change-c-a-fit_calibration</code></td>
+<td>M11</td>
+<td>weekly_cluster_counts</td>
+<td>fit_calibration</td>
+<td>m11-persistent-change-c-a-fit_calibration</td>
+<td class="r">alarms_calibration_cusum = 4.000</td>
+<td class="r">783f33a</td>
+</tr>
+<tr class="even" data-stage="M9" data-split="fit_calibration">
+<td class="r">2026-10-21</td>
+<td><code>m9-nb_discounted_hierarchical_v1-20261005T200606.263137Z-full-0aa0a0fb-2348e548</code></td>
+<td>M9</td>
+<td>weekly_cluster_volume</td>
+<td>fit_calibration</td>
+<td>nb_discounted_hierarchical_v1</td>
+<td class="r">wis = 138.950</td>
+<td class="r">3c427d1</td>
+</tr>
+<tr class="odd" data-stage="C-M11-FARR" data-split="calibration">
+<td class="r">2026-10-21</td>
+<td><code>m11-farr-v1</code></td>
+<td>C-M11-FARR</td>
+<td>weekly_cluster_counts</td>
+<td>calibration</td>
+<td>m11-farr-v1</td>
+<td class="r">alarms_calibration_cusum_per_month = 4.348</td>
+<td class="r">b033a36</td>
+</tr>
+<tr class="even" data-stage="PIPELINE" data-split="new">
+<td class="r">2026-10-20</td>
+<td><code>pipeline-score</code></td>
+<td>PIPELINE</td>
+<td>A1</td>
+<td>new</td>
+<td>pipeline-score</td>
+<td class="r">elapsed_seconds = 691.775</td>
+<td class="r">3cb322d</td>
+</tr>
+<tr class="odd" data-stage="C-PAT-INC" data-split="calibration">
+<td class="r">2026-10-20</td>
+<td><code>c-pat-inc-knn-v1</code></td>
+<td>C-PAT-INC</td>
+<td>A1</td>
+<td>calibration</td>
+<td>c-pat-inc-knn-v1</td>
+<td class="r">agreement_knn = 0.832</td>
+<td class="r">4b09c51</td>
+</tr>
+<tr class="even" data-stage="M11D" data-split="calibration">
+<td class="r">2026-10-08</td>
+<td><code>m11d-daily-change</code></td>
+<td>M11D</td>
+<td>A1</td>
+<td>calibration</td>
+<td>m11d-daily-change</td>
+<td class="r">calibration_cusum_per_month = 8.271</td>
+<td class="r">08b94b5</td>
+</tr>
+<tr class="odd" data-stage="M9D" data-split="calibration">
+<td class="r">2026-10-08</td>
+<td><code>m9d-daily-challenge</code></td>
+<td>M9D</td>
+<td>A1</td>
+<td>calibration</td>
+<td>m9d-daily-challenge</td>
+<td class="r">wis = 7.173</td>
+<td class="r">687af58</td>
+</tr>
+<tr class="even" data-stage="M10D" data-split="calibration">
+<td class="r">2026-10-08</td>
+<td><code>m10d-dirichlet_multinomial_daily_v1-full</code></td>
+<td>M10D</td>
+<td>A1</td>
+<td>calibration</td>
+<td>m10d-dirichlet_multinomial_daily_v1-full</td>
+<td class="r">log_score = -424.804</td>
+<td class="r">efd0e6a</td>
+</tr>
+<tr class="odd" data-stage="M9D" data-split="calibration">
+<td class="r">2026-10-08</td>
+<td><code>m9d-zinb_daily_hierarchical_v1-full</code></td>
+<td>M9D</td>
+<td>A1</td>
+<td>calibration</td>
+<td>zinb_daily_hierarchical_v1</td>
+<td class="r">wis = -2.317</td>
+<td class="r">58f2bdd</td>
+</tr>
+<tr class="even" data-stage="M9D" data-split="calibration">
+<td class="r">2026-10-08</td>
+<td><code>m9d-nb_daily_no_dow_v1-full</code></td>
+<td>M9D</td>
+<td>A1</td>
+<td>calibration</td>
+<td>nb_daily_no_dow_v1</td>
+<td class="r">wis = -1.566</td>
+<td class="r">58f2bdd</td>
+</tr>
+<tr class="odd" data-stage="M9D" data-split="calibration">
+<td class="r">2026-10-08</td>
+<td><code>m9d-nb_daily_hierarchical_v1-full</code></td>
+<td>M9D</td>
+<td>A1</td>
+<td>calibration</td>
+<td>nb_daily_hierarchical_v1</td>
+<td class="r">wis = -2.303</td>
+<td class="r">58f2bdd</td>
+</tr>
+<tr class="even" data-stage="M9D" data-split="calibration">
+<td class="r">2026-10-08</td>
+<td><code>m9d-nb_daily_fourier_v1-full</code></td>
+<td>M9D</td>
+<td>A1</td>
+<td>calibration</td>
+<td>nb_daily_fourier_v1</td>
+<td class="r">wis = -2.089</td>
+<td class="r">58f2bdd</td>
+</tr>
+<tr class="odd" data-stage="M10S" data-split="calibration">
+<td class="r">2026-10-08</td>
+<td><code>m10-mixture-signal</code></td>
+<td>M10S</td>
+<td>A1</td>
+<td>calibration</td>
+<td>m10-mixture-signal</td>
+<td class="r">calibration_expected_flagged_if_calibrated = 0.120</td>
+<td class="r">d43f0ba</td>
+</tr>
+<tr class="even" data-stage="M5F" data-split="calibration">
+<td class="r">2026-10-07</td>
+<td><code>m5f-foundation-t1-ablation</code></td>
+<td>M5F</td>
+<td>T1</td>
+<td>calibration</td>
+<td>m5f-foundation-t1-ablation</td>
+<td class="r">macro_f1 = 0.271</td>
+<td class="r">5b41e6b</td>
+</tr>
+<tr class="odd" data-stage="M9" data-split="calibration">
+<td class="r">2026-10-06</td>
+<td><code>m9-block-c-challenge</code></td>
+<td>M9</td>
+<td>weekly_cluster_counts</td>
+<td>calibration</td>
+<td>m9-block-c-challenge</td>
+<td class="r">wis = 32.418</td>
+<td class="r">783f33a</td>
+</tr>
+<tr class="even" data-stage="M5F" data-split="calibration">
+<td class="r">2026-10-06</td>
+<td><code>m5f-foundation-t1</code></td>
+<td>M5F</td>
+<td>T1</td>
+<td>calibration</td>
+<td>m5f-foundation-t1</td>
+<td class="r">macro_f1 = 0.240</td>
+<td class="r">4d14483</td>
+</tr>
+<tr class="odd" data-stage="M7S" data-split="fit_sample_calibration_assignment">
+<td class="r">2026-10-05</td>
+<td><code>m7s-space-sensitivity</code></td>
+<td>M7S</td>
+<td>A1</td>
+<td>fit_sample_calibration_assignment</td>
+<td>m7s-space-sensitivity</td>
+<td class="r">lift_pca128_cure_k20_r5_c0.5 = 0.001</td>
+<td class="r">95c7d39</td>
+</tr>
+<tr class="even" data-stage="M12" data-split="validation">
+<td class="r">2026-10-01</td>
+<td><code>m12-triage-demo</code></td>
+<td>M12</td>
+<td>triage</td>
+<td>validation</td>
+<td>m12-triage-demo</td>
+<td class="r">active_alerts = 11.000</td>
+<td class="r">541b639</td>
+</tr>
+<tr class="odd" data-stage="M11" data-split="validation">
+<td class="r">2026-10-01</td>
+<td><code>m11-persistent-change-validation</code></td>
+<td>M11</td>
+<td>weekly_cluster_counts</td>
+<td>validation</td>
+<td>m11-persistent-change-validation</td>
+<td class="r">alarms_calibration_cusum = 6.000</td>
+<td class="r">96d275e</td>
+</tr>
+<tr class="even" data-stage="M11" data-split="fit_calibration">
+<td class="r">2026-10-01</td>
+<td><code>m11-persistent-change-fit_calibration</code></td>
+<td>M11</td>
+<td>weekly_cluster_counts</td>
+<td>fit_calibration</td>
+<td>m11-persistent-change-fit_calibration</td>
+<td class="r">alarms_calibration_cusum = 6.000</td>
+<td class="r">6ed379b</td>
+</tr>
+<tr class="odd" data-stage="FINAL" data-split="validation">
+<td class="r">2026-10-01</td>
+<td><code>final-validation-confirmation</code></td>
+<td>FINAL</td>
+<td>T1_T4_M9_M10</td>
+<td>validation</td>
+<td>final-validation-confirmation</td>
+<td class="r">macro_f1 = 0.231</td>
+<td class="r">5f9853d</td>
+</tr>
+<tr class="even" data-stage="M10" data-split="fit_calibration">
+<td class="r">2026-10-01</td>
+<td><code>m10-dirichlet_multinomial_static_v1-20261001T015447.101243Z-full-f9a73151-bc87c1f1</code></td>
+<td>M10</td>
+<td>weekly_cluster_composition</td>
+<td>fit_calibration</td>
+<td>dirichlet_multinomial_static_v1</td>
+<td class="r">log_score = 1.000</td>
+<td class="r">3327da9</td>
+</tr>
+<tr class="odd" data-stage="M10" data-split="fit_calibration">
+<td class="r">2026-10-01</td>
+<td><code>m10-dirichlet_multinomial_rolling_4_v1-20261001T015410.667626Z-full-cff27014-1fa6f95c</code></td>
+<td>M10</td>
+<td>weekly_cluster_composition</td>
+<td>fit_calibration</td>
+<td>dirichlet_multinomial_rolling_4_v1</td>
+<td class="r">log_score = 1.000</td>
+<td class="r">3327da9</td>
+</tr>
+<tr class="even" data-stage="M5B" data-split="fit_calibration">
+<td class="r">2026-09-30</td>
+<td><code>m5b-t4-representations</code></td>
+<td>M5B</td>
+<td>T4</td>
+<td>fit_calibration</td>
+<td>m5b-t4-representations</td>
+<td class="r">average_precision = 0.042</td>
+<td class="r">267135a</td>
+</tr>
+<tr class="odd" data-stage="M5B" data-split="fit_calibration">
+<td class="r">2026-09-30</td>
+<td><code>m5b-t3-representations</code></td>
+<td>M5B</td>
+<td>T3</td>
+<td>fit_calibration</td>
+<td>m5b-t3-representations</td>
+<td class="r">average_precision = 0.351</td>
+<td class="r">267135a</td>
+</tr>
+<tr class="even" data-stage="M5B" data-split="fit_calibration">
+<td class="r">2026-09-30</td>
+<td><code>m5b-t2-representations</code></td>
+<td>M5B</td>
+<td>T2</td>
+<td>fit_calibration</td>
+<td>m5b-t2-representations</td>
+<td class="r">average_precision = 0.610</td>
+<td class="r">267135a</td>
+</tr>
+<tr class="odd" data-stage="M5B" data-split="fit_calibration">
+<td class="r">2026-09-30</td>
+<td><code>m5b-t1-representations</code></td>
+<td>M5B</td>
+<td>T1</td>
+<td>fit_calibration</td>
+<td>m5b-t1-representations</td>
+<td class="r">macro_f1 = 0.240</td>
+<td class="r">267135a</td>
+</tr>
+<tr class="even" data-stage="M9" data-split="fit_calibration">
+<td class="r">2026-09-27</td>
+<td><code>m9-nb_rolling_4_hierarchical_v3-20260927T161316.494762Z-full-a3ecfab3-9105ce1f</code></td>
+<td>M9</td>
+<td>weekly_cluster_volume</td>
+<td>fit_calibration</td>
+<td>nb_rolling_4_hierarchical_v3</td>
+<td class="r">wis = 138.950</td>
+<td class="r">2298783</td>
+</tr>
+<tr class="odd" data-stage="M9" data-split="fit_calibration">
+<td class="r">2026-09-27</td>
+<td><code>m9-nb_rolling_4_global_v1-20260927T153922.164206Z-full-34f4684f-e1410d83</code></td>
+<td>M9</td>
+<td>weekly_cluster_volume</td>
+<td>fit_calibration</td>
+<td>nb_rolling_4_global_v1</td>
+<td class="r">wis = 138.950</td>
+<td class="r">8304231</td>
+</tr>
+<tr class="even" data-stage="M9" data-split="calibration">
+<td class="r">2026-09-27</td>
+<td><code>m9-b1_rolling_13_v1-20260927T042119.040492Z-full-d869beb9</code></td>
+<td>M9</td>
+<td>weekly_cluster_volume</td>
+<td>calibration</td>
+<td>b1_rolling_13_v1</td>
+<td class="r">wis = 64.843</td>
+<td class="r">ec778b8</td>
+</tr>
+<tr class="odd" data-stage="M9" data-split="calibration">
+<td class="r">2026-09-27</td>
+<td><code>m9-b1_rolling_4_v1-20260927T042119.040492Z-full-d869beb9</code></td>
+<td>M9</td>
+<td>weekly_cluster_volume</td>
+<td>calibration</td>
+<td>b1_rolling_4_v1</td>
+<td class="r">wis = 43.115</td>
+<td class="r">ec778b8</td>
+</tr>
+<tr class="even" data-stage="M9" data-split="fit_calibration_validation">
+<td class="r">2026-09-27</td>
+<td><code>m9-nb_static_global_v3-20260927T011144.681956Z-full-45c908d1-f3a4936c</code></td>
+<td>M9</td>
+<td>weekly_cluster_volume</td>
+<td>fit_calibration_validation</td>
+<td>nb_static_global_v3</td>
+<td class="r">wis = 1.000</td>
+<td class="r">81be140</td>
+</tr>
+<tr class="odd" data-stage="M9" data-split="fit_calibration_validation">
+<td class="r">2026-09-27</td>
+<td><code>m9-poisson_static_pymc_v1-20260927T003211.742368Z-full-b487e2fb-1f4fefe6</code></td>
+<td>M9</td>
+<td>weekly_cluster_volume</td>
+<td>fit_calibration_validation</td>
+<td>poisson_static_pymc_v1</td>
+<td class="r">wis = 1.000</td>
+<td class="r">713ee34</td>
+</tr>
+<tr class="even" data-stage="M9" data-split="fit_calibration_validation">
+<td class="r">2026-09-26</td>
+<td><code>m9-negative-binomial-normalized_softmax_v2</code></td>
+<td>M9</td>
+<td>weekly_cluster_volume</td>
+<td>fit_calibration_validation</td>
+<td>m9-negative-binomial-normalized_softmax_v2</td>
+<td class="r">wis = 1.000</td>
+<td class="r">f681a21</td>
+</tr>
+<tr class="odd" data-stage="M9" data-split="fit_calibration_validation">
+<td class="r">2026-09-26</td>
+<td><code>m9-negative-binomial</code></td>
+<td>M9</td>
+<td>weekly_cluster_volume</td>
+<td>fit_calibration_validation</td>
+<td>m9-negative-binomial</td>
+<td class="r">wis = 1.000</td>
+<td class="r">f681a21</td>
+</tr>
+<tr class="even" data-stage="M8B" data-split="fit_calibration_validation">
+<td class="r">2026-09-25</td>
+<td><code>m8b-weekly-patterns</code></td>
+<td>M8B</td>
+<td>A1</td>
+<td>fit_calibration_validation</td>
+<td>m8b-weekly-patterns</td>
+<td class="r">largest_cluster_fraction = 0.166</td>
+<td class="r">f681a21</td>
+</tr>
+<tr class="odd" data-stage="M8A" data-split="fit_calibration_validation">
+<td class="r">2026-09-25</td>
+<td><code>m8a-bge-full</code></td>
+<td>M8A</td>
+<td>semantic_embeddings</td>
+<td>fit_calibration_validation</td>
+<td>m8a-bge-full</td>
+<td class="r">maximum_norm_error = 0.000</td>
+<td class="r">f681a21</td>
+</tr>
+<tr class="even" data-stage="M7" data-split="fit_sample_calibration_assignment">
+<td class="r">2026-09-24</td>
+<td><code>m7-kmeans_k40</code></td>
+<td>M7</td>
+<td>A1</td>
+<td>fit_sample_calibration_assignment</td>
+<td>m7-kmeans_k40</td>
+<td class="r">accepted = 1.000</td>
+<td class="r">77eff42</td>
+</tr>
+<tr class="odd" data-stage="M7" data-split="fit_sample_calibration_assignment">
+<td class="r">2026-09-24</td>
+<td><code>m7-hdbscan_mcs500_ms30</code></td>
+<td>M7</td>
+<td>A1</td>
+<td>fit_sample_calibration_assignment</td>
+<td>m7-hdbscan_mcs500_ms30</td>
+<td class="r">accepted = 0.000</td>
+<td class="r">77eff42</td>
+</tr>
+<tr class="even" data-stage="M7" data-split="fit_sample_calibration_assignment">
+<td class="r">2026-09-24</td>
+<td><code>m7-cure_k20_r5_c0.5</code></td>
+<td>M7</td>
+<td>A1</td>
+<td>fit_sample_calibration_assignment</td>
+<td>m7-cure_k20_r5_c0.5</td>
+<td class="r">accepted = 0.000</td>
+<td class="r">77eff42</td>
+</tr>
+<tr class="odd" data-stage="M7" data-split="fit_sample_calibration_assignment">
+<td class="r">2026-09-24</td>
+<td><code>m7-cluster-comparison</code></td>
+<td>M7</td>
+<td>A1</td>
+<td>fit_sample_calibration_assignment</td>
+<td>m7-cluster-comparison</td>
+<td class="r">cure_future_coverage = 0.958</td>
+<td class="r">a80812e</td>
+</tr>
+<tr class="even" data-stage="M6" data-split="fit_calibration_validation_sample">
+<td class="r">2026-09-24</td>
+<td><code>m6-semantic-space</code></td>
+<td>M6</td>
+<td>A1</td>
+<td>fit_calibration_validation_sample</td>
+<td>m6-semantic-space</td>
+<td class="r">calibration_exact_score_maximum_error = 0.000</td>
+<td class="r">9ad9c31</td>
+</tr>
+<tr class="odd" data-stage="M5" data-split="sample_calibration_validation">
+<td class="r">2026-09-24</td>
+<td><code>m5-t4-tfidf_product</code></td>
+<td>M5</td>
+<td>T4</td>
+<td>sample_calibration_validation</td>
+<td>m5-t4-tfidf_product</td>
+<td class="r">average_precision = 0.032</td>
+<td class="r">9a261e9</td>
+</tr>
+<tr class="even" data-stage="M5" data-split="sample_calibration_validation">
+<td class="r">2026-09-24</td>
+<td><code>m5-t3-tfidf_product</code></td>
+<td>M5</td>
+<td>T3</td>
+<td>sample_calibration_validation</td>
+<td>m5-t3-tfidf_product</td>
+<td class="r">average_precision = 0.324</td>
+<td class="r">9a261e9</td>
+</tr>
+<tr class="odd" data-stage="M5" data-split="sample_calibration_validation">
+<td class="r">2026-09-24</td>
+<td><code>m5-t2-tfidf_product</code></td>
+<td>M5</td>
+<td>T2</td>
+<td>sample_calibration_validation</td>
+<td>m5-t2-tfidf_product</td>
+<td class="r">average_precision = 0.600</td>
+<td class="r">9a261e9</td>
+</tr>
+<tr class="even" data-stage="M5" data-split="sample_calibration_validation">
+<td class="r">2026-09-24</td>
+<td><code>m5-t1-tfidf_product</code></td>
+<td>M5</td>
+<td>T1</td>
+<td>sample_calibration_validation</td>
+<td>m5-t1-tfidf_product</td>
+<td class="r">macro_f1 = 0.228</td>
+<td class="r">9a261e9</td>
+</tr>
+<tr class="odd" data-stage="M5" data-split="sample_calibration_validation">
+<td class="r">2026-09-24</td>
+<td><code>m5-t4-bge_product</code></td>
+<td>M5</td>
+<td>T4</td>
+<td>sample_calibration_validation</td>
+<td>m5-t4-bge_product</td>
+<td class="r">average_precision = 0.053</td>
+<td class="r">9a261e9</td>
+</tr>
+<tr class="even" data-stage="M5" data-split="sample_calibration_validation">
+<td class="r">2026-09-24</td>
+<td><code>m5-t3-bge_product</code></td>
+<td>M5</td>
+<td>T3</td>
+<td>sample_calibration_validation</td>
+<td>m5-t3-bge_product</td>
+<td class="r">average_precision = 0.307</td>
+<td class="r">9a261e9</td>
+</tr>
+<tr class="odd" data-stage="M5" data-split="sample_calibration_validation">
+<td class="r">2026-09-24</td>
+<td><code>m5-t2-bge_product</code></td>
+<td>M5</td>
+<td>T2</td>
+<td>sample_calibration_validation</td>
+<td>m5-t2-bge_product</td>
+<td class="r">average_precision = 0.609</td>
+<td class="r">9a261e9</td>
+</tr>
+<tr class="even" data-stage="M5" data-split="sample_calibration_validation">
+<td class="r">2026-09-24</td>
+<td><code>m5-t1-bge_product</code></td>
+<td>M5</td>
+<td>T1</td>
+<td>sample_calibration_validation</td>
+<td>m5-t1-bge_product</td>
+<td class="r">macro_f1 = 0.254</td>
+<td class="r">9a261e9</td>
+</tr>
+<tr class="odd" data-stage="M4" data-split="calibration_validation">
+<td class="r">2026-09-23</td>
+<td><code>m4-t4-tfidf-product</code></td>
+<td>M4</td>
+<td>T4</td>
+<td>calibration_validation</td>
+<td>m4-t4-tfidf-product</td>
+<td class="r">average_precision = 0.055</td>
+<td class="r">12fa7da</td>
+</tr>
+<tr class="even" data-stage="M4" data-split="calibration_validation">
+<td class="r">2026-09-23</td>
+<td><code>m4-t3-tfidf-product</code></td>
+<td>M4</td>
+<td>T3</td>
+<td>calibration_validation</td>
+<td>m4-t3-tfidf-product</td>
+<td class="r">average_precision = 0.369</td>
+<td class="r">12fa7da</td>
+</tr>
+<tr class="odd" data-stage="M4" data-split="calibration_validation">
+<td class="r">2026-09-23</td>
+<td><code>m4-t2-tfidf-product</code></td>
+<td>M4</td>
+<td>T2</td>
+<td>calibration_validation</td>
+<td>m4-t2-tfidf-product</td>
+<td class="r">average_precision = 0.616</td>
+<td class="r">12fa7da</td>
+</tr>
+<tr class="even" data-stage="M4" data-split="calibration_validation">
+<td class="r">2026-09-23</td>
+<td><code>m4-t1-tfidf-product</code></td>
+<td>M4</td>
+<td>T1</td>
+<td>calibration_validation</td>
+<td>m4-t1-tfidf-product</td>
+<td class="r">macro_f1 = 0.222</td>
+<td class="r">12fa7da</td>
+</tr>
+<tr class="odd" data-stage="M3" data-split="calibration_validation">
+<td class="r">2026-09-23</td>
+<td><code>m3-t4-product_frequency</code></td>
+<td>M3</td>
+<td>T4</td>
+<td>calibration_validation</td>
+<td>m3-t4-product_frequency</td>
+<td class="r">average_precision = 0.030</td>
+<td class="r">1f6574a</td>
+</tr>
+<tr class="even" data-stage="M3" data-split="calibration_validation">
+<td class="r">2026-09-23</td>
+<td><code>m3-t4-global_frequency</code></td>
+<td>M3</td>
+<td>T4</td>
+<td>calibration_validation</td>
+<td>m3-t4-global_frequency</td>
+<td class="r">average_precision = 0.004</td>
+<td class="r">1f6574a</td>
+</tr>
+<tr class="odd" data-stage="M3" data-split="calibration_validation">
+<td class="r">2026-09-23</td>
+<td><code>m3-t3-product_frequency</code></td>
+<td>M3</td>
+<td>T3</td>
+<td>calibration_validation</td>
+<td>m3-t3-product_frequency</td>
+<td class="r">average_precision = 0.171</td>
+<td class="r">1f6574a</td>
+</tr>
+<tr class="even" data-stage="M3" data-split="calibration_validation">
+<td class="r">2026-09-23</td>
+<td><code>m3-t3-global_frequency</code></td>
+<td>M3</td>
+<td>T3</td>
+<td>calibration_validation</td>
+<td>m3-t3-global_frequency</td>
+<td class="r">average_precision = 0.016</td>
+<td class="r">1f6574a</td>
+</tr>
+<tr class="odd" data-stage="M3" data-split="calibration_validation">
+<td class="r">2026-09-23</td>
+<td><code>m3-t2-product_frequency</code></td>
+<td>M3</td>
+<td>T2</td>
+<td>calibration_validation</td>
+<td>m3-t2-product_frequency</td>
+<td class="r">average_precision = 0.480</td>
+<td class="r">1f6574a</td>
+</tr>
+<tr class="even" data-stage="M3" data-split="calibration_validation">
+<td class="r">2026-09-23</td>
+<td><code>m3-t2-global_frequency</code></td>
+<td>M3</td>
+<td>T2</td>
+<td>calibration_validation</td>
+<td>m3-t2-global_frequency</td>
+<td class="r">average_precision = 0.429</td>
+<td class="r">1f6574a</td>
+</tr>
+<tr class="odd" data-stage="M3" data-split="calibration_validation">
+<td class="r">2026-09-23</td>
+<td><code>m3-t1-product_frequency</code></td>
+<td>M3</td>
+<td>T1</td>
+<td>calibration_validation</td>
+<td>m3-t1-product_frequency</td>
+<td class="r">macro_f1 = 0.076</td>
+<td class="r">1f6574a</td>
+</tr>
+<tr class="even" data-stage="M3" data-split="calibration_validation">
+<td class="r">2026-09-23</td>
+<td><code>m3-t1-global_frequency</code></td>
+<td>M3</td>
+<td>T1</td>
+<td>calibration_validation</td>
+<td>m3-t1-global_frequency</td>
+<td class="r">macro_f1 = 0.007</td>
+<td class="r">1f6574a</td>
+</tr>
+<tr class="odd" data-stage="M2" data-split="fit_calibration_validation">
+<td class="r">2026-09-23</td>
+<td><code>m2-evaluation-contract</code></td>
+<td>M2</td>
+<td>evaluation_contract</td>
+<td>fit_calibration_validation</td>
+<td>m2-evaluation-contract</td>
+<td class="r">calibration_no_shared_rows = 167973.000</td>
+<td class="r">8a31e5a</td>
+</tr>
+<tr class="even" data-stage="M1" data-split="not_applicable">
+<td class="r">2026-09-23</td>
+<td><code>m1-experiment-setup</code></td>
+<td>M1</td>
+<td>experiment_setup</td>
+<td>not_applicable</td>
+<td>m1-experiment-setup</td>
+<td class="r">numpy_seed_probe = 0.375</td>
+<td class="r">10ef110</td>
+</tr>
+<tr class="odd" data-stage="M0" data-split="—">
+<td class="r">2026-09-22</td>
+<td><code>m0-input-contract</code></td>
+<td>M0</td>
+<td>input_contract</td>
+<td>—</td>
+<td>m0-input-contract</td>
+<td class="r">input_size_gib = 1.711</td>
+<td class="r">e55efc5</td>
+</tr>
+</tbody>
+</table>
+</div>
+<script>
+(function(){var q=document.getElementById('runs-q'),s=document.getElementById('runs-stage'),rows=document.querySelectorAll('#runs-table tbody tr'),n=document.getElementById('runs-n');
+function apply(){var t=q.value.toLowerCase(),st=s.value,k=0;rows.forEach(function(r){var ok=(!st||r.dataset.stage===st)&&(!t||r.textContent.toLowerCase().indexOf(t)>=0);r.style.display=ok?'':'none';if(ok)k++;});n.textContent=k+' de '+rows.length+' corridas';}
+q.addEventListener('input',apply);s.addEventListener('change',apply);apply();})();
+</script>
 <h2 id="resultados">3 · Qué se probó y qué ganó</h2>
 <p>Cada gráfico compara, en calibración, a los candidatos de una tarea contra su referencia. Verde es el ganador vigente, gris la referencia, rojo lo rechazado por la regla. La regla es la misma en todas las tareas: el retador debe mejorar la métrica principal al menos 5 % relativo y el intervalo bootstrap del 95 % de la diferencia (pareado por semanas) debe quedar entero a su favor.</p>
 <p class="note"><span class="tag win">ganador vigente</span> <span class="tag cand">candidato</span> (aceptado o no superó al vigente) <span class="tag rej">rechazado por la regla</span> <span class="tag base">referencia</span></p>

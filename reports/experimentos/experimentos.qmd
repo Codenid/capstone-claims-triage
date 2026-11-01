@@ -120,7 +120,7 @@ else:
     for stage, g in df.groupby("stage"):
         traces.append({"type": "scatter", "mode": "markers", "name": stage, "x": g["start"].dt.strftime("%Y-%m-%dT%H:%M").tolist(), "y": [stage] * len(g),
                        "text": (g["run_name"] + "<br>" + g["model"].astype(str) + "<br>" + g["primaria"] + "<br>split: " + g["split"]).tolist(), "hoverinfo": "text", "marker": {"size": 10, "opacity": 0.85}})
-    layout = {"height": 420, "margin": {"l": 110, "r": 10, "t": 10, "b": 40}, "xaxis": {"title": "fecha de la corrida"}, "yaxis": {"title": "", "categoryorder": "array", "categoryarray": by_stage.index.tolist()[::-1]}, "showlegend": False, "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)", "font": {"family": "IBM Plex Sans, system-ui, sans-serif"}}
+    layout = {"height": 80 + 24 * len(by_stage), "margin": {"l": 110, "r": 10, "t": 10, "b": 40}, "xaxis": {"title": "fecha de la corrida"}, "yaxis": {"title": "", "categoryorder": "array", "categoryarray": by_stage.index.tolist()[::-1], "tickmode": "linear", "dtick": 1}, "showlegend": False, "paper_bgcolor": "rgba(0,0,0,0)", "plot_bgcolor": "rgba(0,0,0,0)", "font": {"family": "IBM Plex Sans, system-ui, sans-serif"}}
     display(HTML(f"<div id='runs-timeline' class='plot'></div><script>Plotly.newPlot('runs-timeline', {json.dumps(traces)}, {json.dumps(layout)}, {{responsive: true, displaylogo: false}});</script>"))
     rows = "".join(
         f"<tr data-stage='{row['stage']}' data-split='{row['split']}'><td class='r'>{row['start']:%Y-%m-%d}</td><td><code>{row['run_name']}</code></td><td>{row['stage']}</td><td>{row['target']}</td><td>{row['split']}</td><td>{row['model']}</td><td class='r'>{row['primaria']}</td><td class='r'>{str(row.get('tags.git_commit') or '')[:7]}</td></tr>"
