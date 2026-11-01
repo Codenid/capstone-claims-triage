@@ -66,8 +66,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   :root { --bg: #f6f7f8; --surface: #fff; --fg: #1d2229; --muted: #5d6673; --line: #d9dde3; --accent: #1f5f8b; --accent-soft: #e4eef6;
           --win: #2f7d4f; --win-soft: #e3f1e8; --base: #8a93a0; --cand: #7fb2d9; --rej: #b3261e; --rej-soft: #fbe5e3; --warn: #b26a00; }
   * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--fg); font-family: "IBM Plex Sans", system-ui, sans-serif; font-size: 15px; line-height: 1.5; padding: 24px 16px 60px; }
-  body > * { max-width: 1040px; margin-left: auto; margin-right: auto; }
+  html { background: var(--bg); }
+  body { max-width: 1040px; margin: 0 auto; background: var(--bg); color: var(--fg); font-family: "IBM Plex Sans", system-ui, sans-serif; font-size: 15px; line-height: 1.5; padding: 24px 16px 60px; }
   header#title-block-header { margin-bottom: 18px; }
   h1.title { font-size: 28px; font-weight: 600; margin: 0 0 4px; }
   .subtitle { color: var(--muted); font-size: 16px; margin: 0 0 6px; }

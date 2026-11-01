@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conteo diario: cómo fluye la información</title>
+<!-- Animación del flujo de datos del modelo diario D-D (§28.2, src/pipeline/counts.py).
+     Los conteos son de demostración; las reglas, pesos y columnas son los reales.
+     Generada con ayuda de IA (Claude). -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root { --bg: #f6f7f8; --surface: #fff; --fg: #1d2229; --muted: #5d6673; --line: #d9dde3; --accent: #1f5f8b; --accent-soft: #e4eef6;
+          --in: #2f7d4f; --in-soft: #e3f1e8; --mem: #6b4c9a; --mem-soft: #ece6f5; --out: #b26a00; --out-soft: #fbf0dc; --band: #c9dbe9; --crit: #b3261e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font-family: "IBM Plex Sans", system-ui, sans-serif; font-size: 15px; line-height: 1.5; padding: 24px 16px 60px; }
+  main { max-width: 1060px; margin: 0 auto; display: grid; gap: 18px; }
+  h1 { font-size: 24px; font-weight: 600; margin: 0 0 4px; }
+  h2 { font-size: 13px; font-weight: 600; margin: 0 0 8px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+  p { margin: 0 0 8px; max-width: 76ch; }
+  .lead { color: var(--muted); }
+  section { background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 16px 18px; min-width: 0; }
+  .mono, code { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: .92em; }
+  code { background: var(--accent-soft); padding: 1px 5px; border-radius: 3px; }
+  .controls { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+  .btn { border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 4px; padding: 7px 14px; cursor: pointer; font: inherit; font-size: 14px; }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn:disabled { opacity: .4; cursor: default; }
+  input[type=range] { width: 220px; }
+  select { font: inherit; padding: 5px 8px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); }
+  .day { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 15px; font-weight: 500; }
+  .phase { font-size: 14px; color: var(--accent); min-height: 1.4em; }
+
+  .stage { display: grid; grid-template-columns: 1fr 1.2fr 1fr; gap: 14px; align-items: stretch; }
+  @media (max-width: 900px) { .stage { grid-template-columns: 1fr; } }
+  .box { border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px; min-width: 0; position: relative; transition: box-shadow .3s, border-color .3s; }
+  .box.on { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .box.in { border-top: 4px solid var(--in); } .box.mem { border-top: 4px solid var(--mem); } .box.out { border-top: 4px solid var(--out); }
+  .big { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 26px; font-weight: 600; line-height: 1.1; transition: color .3s; }
+  .big.flash { color: var(--accent); }
+  .small { font-size: 12.5px; color: var(--muted); }
+  .kv { display: grid; grid-template-columns: auto 1fr; gap: 3px 10px; font-size: 13px; margin-top: 8px; }
+  .kv dt { color: var(--muted); } .kv dd { margin: 0; font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  svg { width: 100%; height: auto; display: block; }
+  svg text { font-family: "IBM Plex Sans", system-ui, sans-serif; font-size: 11px; fill: var(--fg); }
+  svg .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10px; }
+  svg .muted { fill: var(--muted); }
+  .bar { transition: height .5s ease, y .5s ease, opacity .5s ease; }
+  .token { fill: var(--in); opacity: 0; }
+  .token.go { animation: fly 1s ease forwards; }
+  @keyframes fly { 0% { opacity: 1; transform: translate(0, 0); } 100% { opacity: 0; transform: translate(var(--dx), var(--dy)); } }
+  .arrow { position: absolute; top: 50%; right: -22px; width: 30px; height: 20px; color: var(--line); z-index: 1; transition: color .3s; }
+  .arrow.on { color: var(--accent); }
+  @media (max-width: 900px) { .arrow { display: none; } }
+  .row { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12.5px; background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 8px 10px; overflow-x: auto; white-space: nowrap; }
+  .row b { color: var(--out); font-weight: 600; }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; }
+  th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); }
+  th { color: var(--muted); font-weight: 500; font-size: 11.5px; text-transform: uppercase; letter-spacing: .05em; }
+  td.r, th.r { text-align: right; font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  tr.today td { background: var(--out-soft); }
+  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12.5px; color: var(--muted); }
+  .legend i { display: inline-block; width: 12px; height: 12px; border-radius: 2px; vertical-align: -2px; margin-right: 5px; }
+  @media (prefers-reduced-motion: reduce) { .bar, .box, .big { transition: none; } .token.go { animation: none; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <h1>Conteo diario por patrón: cómo fluye la información cada día</h1>
+    <p class="lead">Pulsa <b>Reproducir</b> y mira un día tras otro: llegan los reclamos del día, se actualiza la memoria del patrón, se calcula lo esperado con su intervalo y se compara con lo observado. Es exactamente lo que hace <code>daily_predictive</code> en <code>src/pipeline/counts.py</code>; nada se reentrena.</p>
+  </header>
+
+  <section>
+    <div class="controls">
+      <button type="button" class="btn primary" id="play">▶ Reproducir</button>
+      <button type="button" class="btn" id="prev">◀ Día anterior</button>
+      <button type="button" class="btn" id="next">Día siguiente ▶</button>
+      <label>Velocidad <select id="speed"><option value="1">normal</option><option value="2">rápida</option><option value="0.5">lenta</option></select></label>
+      <label>Patrón <select id="pattern"><option value="0">14 · Reporte de crédito (grande, ~160 al día)</option><option value="1">4 · Cobranza de deuda ya pagada (chico, ~6 al día, con días en cero)</option></select></label>
+      <span class="day" id="dayLabel"></span>
+    </div>
+    <div class="phase" id="phase"></div>
+  </section>
+
+  <section>
+    <div class="stage">
+      <!-- 1 entrada -->
+      <div class="box in" id="boxIn">
+        <h2>1 · Llega el día</h2>
+        <div class="small">Total de reclamos del día (todos los patrones)</div>
+        <div class="big" id="nd">—</div>
+        <div class="small" style="margin-top:6px">De ellos, del patrón elegido (se sabe al final del día)</div>
+        <div class="big" id="obs">—</div>
+        <dl class="kv"><dt>día de semana</dt><dd id="dow">—</dd><dt>factor del patrón ese día</dt><dd id="factor">—</dd></dl>
+        <svg class="arrow" viewBox="0 0 30 20" id="arrow1"><path d="M0,10 H22 M16,4 L22,10 L16,16" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      </div>
+      <!-- 2 memoria -->
+      <div class="box mem" id="boxMem">
+        <h2>2 · Memoria del patrón (días previos, peso ×0.8 por día)</h2>
+        <svg id="memChart" viewBox="0 0 420 150" role="img" aria-label="Conteos de los días previos con su peso"></svg>
+        <dl class="kv"><dt>suma ponderada del patrón</dt><dd id="memNum">—</dd><dt>suma ponderada de los totales</dt><dd id="memDen">—</dd><dt>participación reciente r</dt><dd id="share">—</dd></dl>
+        <svg class="arrow" viewBox="0 0 30 20" id="arrow2"><path d="M0,10 H22 M16,4 L22,10 L16,16" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      </div>
+      <!-- 3 salida -->
+      <div class="box out" id="boxOut">
+        <h2>3 · Lo esperado para hoy</h2>
+        <div class="small">N del día × r × factor del día, renormalizado</div>
+        <div class="big" id="expected">—</div>
+        <div class="small" style="margin-top:6px">Intervalo del 80 % (ruido aprendido del patrón)</div>
+        <div class="big" id="interval">—</div>
+        <dl class="kv"><dt>observado</dt><dd id="obs2">—</dd><dt>lectura</dt><dd id="verdict">—</dd></dl>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>La serie que se va construyendo</h2>
+    <svg id="series" viewBox="0 0 1000 260" role="img" aria-label="Observados, esperados e intervalo del 80 % día a día"></svg>
+    <div class="legend"><span><i style="background:var(--fg)"></i>Observado</span><span><i style="background:var(--out)"></i>Esperado</span><span><i style="background:var(--band)"></i>Intervalo 80 %</span><span><i style="background:var(--crit)"></i>Fuera del intervalo</span></div>
+  </section>
+
+  <section>
+    <h2>La fila que sale a <code>daily.csv</code> hoy</h2>
+    <div class="row" id="csvRow">period,cluster_id,observed,expected,model_p10,model_p90,scored</div>
+    <details style="margin-top:10px"><summary class="small">Todas las filas hasta hoy</summary>
+      <div style="overflow-x:auto;margin-top:8px"><table id="rows"><thead><tr><th>period</th><th class="r">observed</th><th class="r">expected</th><th class="r">p10</th><th class="r">p90</th><th>lectura</th></tr></thead><tbody></tbody></table></div>
+    </details>
+  </section>
+
+  <section>
+    <h2>Qué está fijo y qué cambia</h2>
+    <p><b>Fijo</b> (aprendido una vez con 639 días, archivo <code>posterior.nc</code> en DVC): el factor por día de semana del patrón, cuánto ruido tiene (ancho del intervalo) y su probabilidad de días en cero. <b>Cambia cada día</b>: la memoria, que es solo la suma de los conteos anteriores con pesos 1, 0.8, 0.64, … Catorce días suman el 96 % del peso; lo de hace un mes pesa 0.1 %.</p>
+    <p class="small">Por eso, tras una ráfaga, lo esperado sube durante unos días (la memoria la absorbe) y luego vuelve: es el «eco» que verás en la serie si reproduces los 28 días del patrón 14. Los conteos son de demostración; las reglas, pesos y columnas son los reales.</p>
+  </section>
+</main>
+
+<script>
+(function () {
+  // ------------------------------------------------------------ demo data
+  var DOW = ["lun", "mar", "mié", "jue", "vie", "sáb", "dom"];
+  var TOTAL_PROFILE = [1700, 1850, 1800, 1750, 1650, 950, 720];
+  var PATTERNS = [
+    { id: 14, base: 0.088, factor: [0.00, 0.04, 0.03, 0.01, -0.03, -0.12, -0.20], alpha: 12, pi: 0.01, burst: { from: 12, to: 14, mult: 1.9 } },
+    { id: 4,  base: 0.0035, factor: [0.02, 0.05, 0.02, 0.00, -0.04, -0.15, -0.25], alpha: 3, pi: 0.18, burst: null }
+  ];
+  var DAYS = 28, START = new Date("2024-10-21T00:00:00");
+  function seeded(i) { var x = Math.sin(i * 9301 + 49297) * 233280; return x - Math.floor(x); }
+  function dateOf(i) { var d = new Date(START); d.setDate(d.getDate() + i); return d.toISOString().slice(0, 10); }
+  function buildPanel(p, pi) {
+    var rows = [];
+    for (var i = 0; i < DAYS; i++) {
+      var w = i % 7, total = Math.round(TOTAL_PROFILE[w] * (1 + (seeded(i + 7) - 0.5) * 0.12));
+      var mean = total * p.base * Math.exp(p.factor[w]);
+      if (p.burst && i >= p.burst.from && i <= p.burst.to) mean *= p.burst.mult;
+      var count = Math.round(mean * (1 + (seeded(i * 13 + pi * 101) - 0.5) * (p.id === 4 ? 0.9 : 0.3)));
+      if (p.id === 4 && seeded(i * 17 + 3) < p.pi) count = 0;
+      rows.push({ i: i, date: dateOf(i), dow: w, total: total, count: Math.max(0, count) });
+    }
+    return rows;
+  }
+  var panels = PATTERNS.map(buildPanel);
+
+  // ------------------------------------------------------------ the model (same arithmetic as the pipeline)
+  function memory(rows, day, delta) {
+    var num = 0, den = 0, parts = [];
+    for (var k = 1; k <= day; k++) {
+      var r = rows[day - k], w = Math.pow(delta, k - 1);
+      num += w * r.count; den += w * r.total; parts.push({ row: r, w: w });
+    }
+    return { num: num, den: den, share: (num + 1) / (den + 40), parts: parts };
+  }
+  function predict(p, rows, day) {
+    var m = memory(rows, day, 0.8), r = rows[day];
+    var w = m.share * Math.exp(p.factor[r.dow]), share = w / (w + (1 - m.share));
+    var mu = r.total * share, expected = (1 - p.pi) * mu;
+    var variance = (1 - p.pi) * (mu + mu * mu / p.alpha) + p.pi * (1 - p.pi) * mu * mu, sd = Math.sqrt(variance);
+    var lo = Math.max(0, expected - 1.2816 * sd), hi = expected + 1.2816 * sd;
+    return { m: m, share: share, mu: mu, expected: expected, sd: sd, lo: lo, hi: hi, factor: Math.exp(p.factor[r.dow]) };
+  }
+  var fmt = function (x, d) { return Number(x).toLocaleString("es-PE", { maximumFractionDigits: d || 0, minimumFractionDigits: d || 0 }); };
+
+  // ------------------------------------------------------------ state
+  var pi = 0, day = 7, phase = 0, playing = false, timer = null;
+  var $ = function (id) { return document.getElementById(id); };
+  function speed() { return 900 / parseFloat($("speed").value); }
+
+  // ------------------------------------------------------------ renderers
+  function renderMemory(p, rows, d, highlightNew) {
+    var svg = $("memChart"), W = 420, H = 150, left = 8, bottom = 28, top = 10;
+    var parts = memory(rows, d, 0.8).parts.slice(0, 14);
+    var max = Math.max.apply(null, rows.map(function (r) { return r.count; })) * 1.05 || 1;
+    var bw = (W - left - 8) / 14, out = [];
+    parts.forEach(function (pt, idx) {
+      var x = W - 8 - (idx + 1) * bw + 2, h = Math.max(1, (H - top - bottom) * pt.row.count / max), wh = h * pt.w;
+      out.push('<rect class="bar" x="' + x + '" y="' + (H - bottom - h) + '" width="' + (bw - 4) + '" height="' + h + '" fill="var(--mem-soft)"/>');
+      out.push('<rect class="bar" x="' + x + '" y="' + (H - bottom - wh) + '" width="' + (bw - 4) + '" height="' + wh + '" fill="var(--mem)" opacity="' + (highlightNew && idx === 0 ? 1 : 0.85) + '"/>');
+      if (idx % 2 === 0) out.push('<text x="' + (x + (bw - 4) / 2) + '" y="' + (H - bottom + 11) + '" class="mono muted" text-anchor="middle">' + pt.row.date.slice(5) + '</text>');
+      out.push('<text x="' + (x + (bw - 4) / 2) + '" y="' + (H - bottom + 23) + '" class="mono" text-anchor="middle" font-size="8.5">' + pt.w.toFixed(2) + '</text>');
+      out.push('<text x="' + (x + (bw - 4) / 2) + '" y="' + (H - bottom - h - 3) + '" class="mono muted" text-anchor="middle">' + pt.row.count + '</text>');
+    });
+    out.push('<text x="' + left + '" y="' + (top + 2) + '" class="muted">claro: conteo del día · oscuro: lo que pesa hoy (ayer 1, anteayer 0.8, luego 0.64…)</text>');
+    svg.innerHTML = out.join("");
+  }
+  function renderSeries(p, rows, d, showObs) {
+    var svg = $("series"), W = 1000, H = 260, left = 50, right = 14, top = 14, bottom = 36;
+    var preds = []; for (var i = 7; i <= d; i++) preds.push({ i: i, pr: predict(p, rows, i), row: rows[i] });
+    var max = Math.max.apply(null, preds.map(function (q) { return Math.max(q.pr.hi, q.row.count); }).concat(rows.map(function (r) { return r.count; }))) * 1.1 || 1;
+    var x = function (i) { return left + (i - 7) * (W - left - right) / (DAYS - 8); };
+    var y = function (v) { return top + (H - top - bottom) * (1 - v / max); };
+    var out = [];
+    for (var t = 0; t <= 4; t++) { var v = max * t / 4; out.push('<line x1="' + left + '" y1="' + y(v) + '" x2="' + (W - right) + '" y2="' + y(v) + '" stroke="var(--line)"/><text x="4" y="' + (y(v) + 3) + '" class="mono muted">' + fmt(v) + '</text>'); }
+    for (var i = 7; i < DAYS; i++) { if (rows[i].dow === 0) out.push('<line x1="' + x(i) + '" y1="' + top + '" x2="' + x(i) + '" y2="' + (H - bottom) + '" stroke="var(--line)" stroke-dasharray="2 3"/><text x="' + (x(i) + 3) + '" y="' + (H - bottom + 14) + '" class="mono muted">' + rows[i].date.slice(5) + '</text>'); }
+    if (preds.length > 1) {
+      var band = preds.map(function (q) { return x(q.i) + "," + y(q.pr.hi); }).concat(preds.map(function (q) { return x(q.i) + "," + y(q.pr.lo); }).reverse()).join(" ");
+      out.push('<polygon points="' + band + '" fill="var(--band)" opacity="0.7"/>');
+      out.push('<polyline points="' + preds.map(function (q) { return x(q.i) + "," + y(q.pr.expected); }).join(" ") + '" fill="none" stroke="var(--out)" stroke-width="2"/>');
+    }
+    preds.forEach(function (q, idx) {
+      var last = idx === preds.length - 1;
+      if (last && !showObs) { out.push('<circle cx="' + x(q.i) + '" cy="' + y(q.pr.expected) + '" r="5" fill="var(--out)"/>'); return; }
+      var outside = q.row.count > q.pr.hi || q.row.count < q.pr.lo;
+      out.push('<circle cx="' + x(q.i) + '" cy="' + y(q.row.count) + '" r="' + (last ? 5.5 : 3.5) + '" fill="' + (outside ? "var(--crit)" : "var(--fg)") + '"/>');
+    });
+    if (p.burst) { out.push('<rect x="' + x(p.burst.from) + '" y="' + top + '" width="' + (x(p.burst.to) - x(p.burst.from)) + '" height="' + (H - top - bottom) + '" fill="var(--crit)" opacity="0.06"/><text x="' + (x(p.burst.from) + 3) + '" y="' + (top + 12) + '" class="muted">ráfaga de 3 días (demo)</text>'); }
+    out.push('<text x="' + (W - right) + '" y="' + (H - 6) + '" class="mono muted" text-anchor="end">días ' + rows[7].date + ' → ' + rows[DAYS - 1].date + '</text>');
+    svg.innerHTML = out.join("");
+  }
+  function renderRows(p, rows, d) {
+    var body = $("rows").querySelector("tbody"), html = "";
+    for (var i = 7; i <= d; i++) {
+      var pr = predict(p, rows, i), r = rows[i], read = r.count > pr.hi ? "por encima" : r.count < pr.lo ? "por debajo" : "dentro";
+      html += "<tr" + (i === d ? " class='today'" : "") + "><td class='mono'>" + r.date + "</td><td class='r'>" + r.count + "</td><td class='r'>" + fmt(pr.expected, 1) + "</td><td class='r'>" + fmt(pr.lo) + "</td><td class='r'>" + fmt(pr.hi) + "</td><td>" + read + "</td></tr>";
+    }
+    body.innerHTML = html;
+  }
+  function setOn(id, on) { $(id).classList.toggle("on", !!on); }
+  function flash(id, text) { var el = $(id); el.textContent = text; el.classList.add("flash"); setTimeout(function () { el.classList.remove("flash"); }, 600); }
+
+  // phases: 0 memory ready · 1 the day arrives (N) · 2 expected + interval · 3 observed vs expected · 4 memory updated
+  var PHASES = [
+    "Antes de empezar el día: la memoria del patrón ya está calculada con los días anteriores.",
+    "① Llega el día: se cuentan los reclamos de hoy. Lo único que se usa ahora es el total N; el patrón de cada reclamo lo asigna el paso de patrones.",
+    "② y ③ Lo esperado: N × participación reciente × factor del día de la semana, renormalizado. El intervalo sale del ruido aprendido del patrón.",
+    "④ Al final del día se sabe cuántos fueron del patrón y se compara con lo esperado: dentro o fuera del intervalo del 80 %.",
+    "⑤ La memoria se actualiza para mañana: todo lo anterior se multiplica por 0.8 y se suma lo de hoy. Nada se reentrena."
+  ];
+  function render() {
+    var p = PATTERNS[pi], rows = panels[pi], r = rows[day], pr = predict(p, rows, day);
+    $("dayLabel").textContent = r.date + " (" + DOW[r.dow] + ") · día " + (day - 6) + " de " + (DAYS - 7);
+    $("phase").textContent = PHASES[phase];
+    setOn("boxIn", phase === 1 || phase === 3); setOn("boxMem", phase === 0 || phase === 4); setOn("boxOut", phase === 2 || phase === 3);
+    setOn("arrow1", phase === 2); setOn("arrow2", phase === 2);
+    $("nd").textContent = phase >= 1 ? fmt(r.total) : "—";
+    $("dow").textContent = DOW[r.dow];
+    $("factor").textContent = phase >= 1 ? "×" + pr.factor.toFixed(2) : "—";
+    $("obs").textContent = phase >= 3 ? fmt(r.count) : "— (aún no se sabe)";
+    var m = phase >= 4 ? memory(rows, day + 1, 0.8) : pr.m;
+    $("memNum").textContent = fmt(m.num, 1); $("memDen").textContent = fmt(m.den, 1); $("share").textContent = (100 * m.share).toFixed(2) + " %";
+    renderMemory(p, rows, phase >= 4 ? Math.min(day + 1, DAYS - 1) : day, phase >= 4);
+    $("expected").textContent = phase >= 2 ? fmt(pr.expected, 1) : "—";
+    $("interval").textContent = phase >= 2 ? fmt(pr.lo) + " – " + fmt(pr.hi) : "—";
+    $("obs2").textContent = phase >= 3 ? fmt(r.count) : "—";
+    $("verdict").textContent = phase >= 3 ? (r.count > pr.hi ? "por encima del intervalo" : r.count < pr.lo ? "por debajo del intervalo" : "dentro de lo esperado") : "—";
+    renderSeries(p, rows, day, phase >= 3);
+    $("csvRow").innerHTML = "period,cluster_id,observed,expected,model_p10,model_p90,scored<br>" +
+      (phase >= 2 ? "<b>" + r.date + "</b>," + p.id + "," + (phase >= 3 ? r.count : "") + ",<b>" + pr.expected.toFixed(1) + "</b>,<b>" + pr.lo.toFixed(1) + "</b>,<b>" + pr.hi.toFixed(1) + "</b>,true" : "(todavía no hay fila para hoy)");
+    renderRows(p, rows, phase >= 3 ? day : day - 1);
+    $("prev").disabled = day <= 7 && phase === 0; $("next").disabled = day >= DAYS - 1 && phase >= 4;
+  }
+  function step(dir) {
+    if (dir > 0) { if (phase < 4) phase++; else if (day < DAYS - 1) { day++; phase = 0; } else { stop(); return; } }
+    else { if (phase > 0) phase--; else if (day > 7) { day--; phase = 4; } }
+    render();
+  }
+  function tick() { step(1); if (playing) timer = setTimeout(tick, speed() * (phase === 0 ? 0.6 : 1)); }
+  function play() { playing = true; $("play").textContent = "❚❚ Pausa"; timer = setTimeout(tick, speed()); }
+  function stop() { playing = false; $("play").textContent = "▶ Reproducir"; clearTimeout(timer); }
+  $("play").addEventListener("click", function () { if (playing) stop(); else { if (day >= DAYS - 1 && phase >= 4) { day = 7; phase = 0; render(); } play(); } });
+  $("next").addEventListener("click", function () { stop(); step(1); });
+  $("prev").addEventListener("click", function () { stop(); step(-1); });
+  $("pattern").addEventListener("change", function () { stop(); pi = +this.value; day = 7; phase = 0; render(); });
+  var h = /^#p(\d)d(\d+)f(\d)$/.exec(location.hash || "");  // e.g. #p0d14f3: patrón 0, día 14, fase 3
+  if (h) { pi = Math.min(1, +h[1]); $("pattern").value = String(pi); day = Math.min(DAYS - 1, Math.max(7, +h[2])); phase = Math.min(4, +h[3]); }
+  render();
+})();
+</script>
+</body>
+</html>
