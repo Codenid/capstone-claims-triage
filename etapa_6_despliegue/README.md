@@ -31,7 +31,6 @@ El código vive fuera de esta carpeta porque comparte módulos con las etapas
 | Job de clúster | `scripts/hpc/pipeline_score.slurm` |
 | Pruebas | `tests/test_pipeline_core.py` |
 | Animación del conteo diario | [`flujo_diario.html`](flujo_diario.html): día a día, cómo llegan los reclamos, cómo se actualiza la memoria del patrón y cómo salen lo esperado, el intervalo y la fila de `daily.csv` |
-| Flujo de datos para quien despliega | [`flujo_de_datos.html`](flujo_de_datos.html): qué entra, qué archivo congelado se lee, qué sale, cuántas fechas mira cada modelo y cada cuánto reentrenar; con un día del modelo diario como ejemplo |
 | Prototipo de pantallas del observatorio (PB-25) | [`prototipo_pantallas/mesa-de-triaje.html`](prototipo_pantallas/mesa-de-triaje.html): ficha del reclamo y «patrones que suben» con filtro de fechas; capturas `reclamo.png` y `patrones.png` |
 | Evidencia de la prueba de punta a punta | `reports/pipeline/demo_2024-11-04/score.json` (GPU, TabPFN) y `reports/pipeline/demo_2024-11-04_cpu/score.json` (CPU, lineal de respaldo) |
 
