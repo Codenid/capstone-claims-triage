@@ -1,3 +1,7 @@
+```{=typst}
+#pagebreak(weak: true)
+```
+
 # CONCLUSIONES
 
 Las conclusiones responden al objetivo general y a los seis objetivos

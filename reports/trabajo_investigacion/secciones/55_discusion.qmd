@@ -266,8 +266,7 @@ quedan como hipótesis para la siguiente fase.
   y de compensación miden lo que la empresa respondió, no lo que el cliente
   merecía. Ninguna salida detecta fraude.
 - **Taxonomía sin revisión del negocio.** El mapa canónico de productos y
-  motivos es una propuesta congelada
-  (`{python} DATOS["versions"]["taxonomy_status"]`); un banco tendría que
+  motivos es una propuesta congelada; un banco tendría que
   revisarlo antes de usar el motivo sugerido.
 - **Validación consultada.** Todo lo decidido después del 1 de octubre de
   2026 se eligió con ajuste y calibración, pero su cifra de 2025-H1 se

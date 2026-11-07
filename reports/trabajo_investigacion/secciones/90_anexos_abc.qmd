@@ -31,9 +31,12 @@ for p in sorted(CATALOGO, key=lambda p: p["cluster_id"]):
 
 ## Anexo B. Tabla completa de candidatos
 
-Reproducción de la tabla comparativa del repositorio (anexo F): cada candidato con su métrica principal, su referencia, la ganancia relativa
-con el intervalo del bootstrap y la decisión. Las filas sin decisión son
-referencias o cifras informativas.
+Reproducción de la tabla comparativa del repositorio (anexo F): cada
+candidato con su rol entre paréntesis, el conjunto donde se midió, su
+métrica principal, la ganancia relativa con el intervalo del *bootstrap* y
+la decisión. Las filas sin decisión son referencias o cifras informativas.
+La fila de encabezado se repite cuando la tabla continúa en la página
+siguiente.
 
 ```{python}
 #| label: anexo-tabla
@@ -54,16 +57,43 @@ def gain(value):
     except ValueError:
         return str(value)
 
+METRICA = {
+    "macro_f1": "Macro-F1", "average_precision": "AP", "wis": "WIS", "wis_plug_in": "WIS (plug-in)",
+    "log_score": "log score", "tasa_de_deteccion": "tasa de detección", "alertas_por_mes": "alertas por mes",
+    "acuerdo_con_etiquetas_congeladas": "acuerdo con etiquetas congeladas", "neighbour_lift": "lift de vecinos",
+}
+DECISION = {
+    "accepted": "aceptado", "rejected_no_practical_gain": "rechazado: sin ganancia práctica",
+    "rejected_predictive": "rechazado: predictivo",
+}
+CONJUNTO = {
+    "calibracion_2024_q4": "calibración 2024-Q4", "calibracion simulada": "calibración simulada",
+    "validacion_2025_h1 (ya consultada)": "validación 2025-H1 (ya consultada)",
+}
+
+def md_table_widths(headers, rows, align, widths):
+    """Tabla pipe cuya línea separadora fija el ancho relativo de cada columna."""
+    marks = {"l": (":", ""), "r": ("", ":"), "c": (":", ":")}
+    sep = "|" + "|".join(marks[a][0] + "-" * w + marks[a][1] for a, w in zip(align, widths)) + "|"
+    lines = ["| " + " | ".join(headers) + " |", sep]
+    lines += ["| " + " | ".join(str(c) for c in row) + " |" for row in rows]
+    return "\n".join(lines)
+
 rows = []
 for r in TABLA:
-    interval = "—"
+    ganancia = gain(r["ganancia_relativa"])
     if r["ic95_inferior"] not in ("", None) and r["ic95_superior"] not in ("", None):
-        interval = f'[{float(r["ic95_inferior"]):+.3f}, {float(r["ic95_superior"]):+.3f}]'
+        ganancia += f' [{float(r["ic95_inferior"]):+.3f}, {float(r["ic95_superior"]):+.3f}]'
+    modelo = r["modelo"].replace("_", " ") + (f' ({r["rol"]})' if r["rol"] else "")
     rows.append([
-        r["etapa"], r["tarea"], r["modelo"], r["rol"], r["conjunto"].replace("_", " "),
-        r["metrica"], cell(r["valor"]), gain(r["ganancia_relativa"]), interval, r["decision"] or "—",
+        r["etapa"], r["tarea"].replace("_", " "), modelo, CONJUNTO.get(r["conjunto"], r["conjunto"]),
+        METRICA.get(r["metrica"], r["metrica"].replace("_", " ")), cell(r["valor"]),
+        ganancia, DECISION.get(r["decision"], r["decision"]) or "—",
     ])
-print(md_table(["Etapa", "Tarea", "Modelo", "Rol", "Conjunto", "Métrica", "Valor", "Ganancia", "IC 95 %", "Decisión"], rows, "llllllrrll"))
+print(md_table_widths(
+    ["Etapa", "Tarea", "Modelo (rol)", "Conjunto", "Métrica", "Valor", "Ganancia [IC 95 %]", "Decisión"],
+    rows, "lllllrll", [8, 13, 20, 12, 12, 7, 16, 12],
+))
 ```
 
 ## Anexo C. Reglas pre-registradas

@@ -1,6 +1,7 @@
 project:
   type: default
   pre-render: python build_bib.py
+  post-render: python fix_docx.py
   render:
     - trabajo.qmd
 

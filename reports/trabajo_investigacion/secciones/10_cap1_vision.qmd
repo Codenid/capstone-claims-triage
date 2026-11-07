@@ -1,3 +1,7 @@
+```{=typst}
+#pagebreak(weak: true)
+```
+
 # CAPÍTULO I. VISIÓN DEL PROYECTO
 
 ## 1.1 Problema y oportunidad

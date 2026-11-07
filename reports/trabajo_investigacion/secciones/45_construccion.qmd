@@ -78,8 +78,7 @@ La taxonomía de productos y motivos cambió de nombres entre periodos:
 mapean a `{python} DATOS["taxonomy"]["productos_canonicos"]` productos y
 `{python} DATOS["taxonomy"]["motivos_canonicos"]` motivos canónicos con un
 mapa congelado el `{python} DATOS["versions"]["taxonomy_freeze_date"]`. Ese
-mapa es una propuesta sin revisión del negocio
-(`{python} DATOS["versions"]["taxonomy_status"]`). En ajuste aparecen
+mapa es una propuesta sin revisión del negocio. En ajuste aparecen
 `{python} DATOS["t1_motives"]` motivos, muchos raros, lo que justifica
 Macro-F1 como métrica de T1.
 
@@ -292,7 +291,7 @@ compiten sobre esa serie. El **CUSUM** [@page1954cusum] acumula los excesos
 que superan una referencia $k$ y avisa cuando la acumulación supera $h$:
 
 $$
-C_{j,t} = \max\!\left(0,\; C_{j,t-1} + z_{j,t} - k\right), \qquad C_{j,0} = 0,
+C_{j,t} = \max\left(0,\; C_{j,t-1} + z_{j,t} - k\right), \qquad C_{j,0} = 0,
 \qquad \text{alarma si } C_{j,t} > h,
 $$ {#eq-cusum}
 

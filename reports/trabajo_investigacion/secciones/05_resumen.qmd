@@ -31,11 +31,9 @@ se traslada a un banco; las cifras no.
 tabular en contexto; patrones semánticos; binomial negativa; CUSUM;
 pre-registro; CFPB.
 
-```{=openxml}
-<w:p><w:r><w:br w:type="page"/></w:r></w:p>
-```
+
 ```{=typst}
-#pagebreak()
+#pagebreak(weak: true)
 ```
 
 # ABSTRACT {.unnumbered}
@@ -71,9 +69,3 @@ choices. The method transfers to a bank; the figures do not.
 **KEYWORDS:** complaint triage; text classification; in-context tabular
 model; semantic patterns; negative binomial; CUSUM; pre-registration; CFPB.
 
-```{=openxml}
-<w:p><w:r><w:br w:type="page"/></w:r></w:p>
-```
-```{=typst}
-#pagebreak()
-```

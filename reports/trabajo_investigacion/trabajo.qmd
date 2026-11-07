@@ -83,6 +83,15 @@ def captions(kind):
     return found
 ```
 
+```{=typst}
+// Las tablas con título pueden continuar en la página siguiente; Typst repite
+// la fila de encabezado. Cada título de nivel 1 lleva delante un
+// #pagebreak(weak: true) explícito (Pandoc envuelve los títulos sin numerar en
+// un bloque y Typst no admite saltos dentro de contenedores); en Word lo hace el
+// estilo Título 1 con salto de página anterior.
+#show figure: set block(breakable: true)
+```
+
 {{< include secciones/00_portada.qmd >}}
 
 {{< include secciones/05_resumen.qmd >}}
@@ -109,19 +118,25 @@ def captions(kind):
 
 {{< include secciones/70_conclusiones.qmd >}}
 
+```{=typst}
+#pagebreak(weak: true)
+```
+
 # REFERENCIAS BIBLIOGRÁFICAS {.unnumbered}
 
 ::: {#refs}
 :::
 
-```{=openxml}
-<w:p><w:r><w:br w:type="page"/></w:r></w:p>
-```
 ```{=typst}
-#pagebreak()
+#pagebreak(weak: true)
 ```
 
 # ANEXOS {.unnumbered}
+
+```{=typst}
+// Las tablas de los anexos van a 8 puntos.
+#show table: set text(size: 8pt)
+```
 
 {{< include secciones/90_anexos_abc.qmd >}}
 

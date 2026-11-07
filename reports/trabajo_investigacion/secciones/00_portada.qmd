@@ -145,9 +145,6 @@ Anexo E. Declaración de uso de inteligencia artificial
 
 Anexo F. Repositorio, trazabilidad e historial de versiones
 
-```{=openxml}
-<w:p><w:r><w:br w:type="page"/></w:r></w:p>
-```
 ```{=typst}
-#pagebreak()
+#pagebreak(weak: true)
 ```

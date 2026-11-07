@@ -1,3 +1,7 @@
+```{=typst}
+#pagebreak(weak: true)
+```
+
 # CAPÍTULO II. ANÁLISIS Y FUNDAMENTOS DEL PROYECTO
 
 ## 2.1 Antecedentes y revisión de literatura
