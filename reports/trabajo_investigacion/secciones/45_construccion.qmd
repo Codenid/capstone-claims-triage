@@ -7,9 +7,8 @@ cada reclamo con narrativa cuando el consumidor lo autoriza: fecha de
 recepción, producto, motivo, empresa, estado, respuesta de la empresa y si la
 respuesta fue oportuna. La tabla preparada tiene `{python} i(DATOS["rows"])`
 filas y `{python} DATOS["columns"]` columnas
-(`{python} n(DATOS["size_gib"], 2)` GiB), con hash MD5
-`{python} DATOS["md5"][:12]`… fijado en DVC; ese hash acompaña cada corrida
-registrada en MLflow.
+(`{python} n(DATOS["size_gib"], 2)` GiB), con un hash de contenido fijado en
+DVC; ese hash acompaña cada corrida registrada en MLflow.
 
 ```{python}
 #| label: tbl-periodos
@@ -47,23 +46,24 @@ plt.show()
 filas comparten su narrativa normalizada con otra; hay
 `{python} i(DATOS["distinct_texts"])` textos distintos en
 `{python} i(DATOS["rows"])` reclamos. Muchas narrativas son plantillas de
-gestores de reclamos de crédito. Un modelo que memorice plantillas parece mejor
-de lo que es, así que toda decisión se toma en la vista **sin texto
-compartido**, que excluye de calibración y validación las narrativas ya vistas
-en ajuste.
+gestores de reclamos de crédito. Un modelo que memorice plantillas parece
+mejor de lo que es, así que toda decisión se toma en la vista **sin texto
+compartido**, que excluye de calibración y validación las narrativas ya
+vistas en ajuste.
 
-**Deriva temporal.** Lo que se reclama y cómo responden las empresas cambia de
-un año a otro: la fracción de reclamos con alguna solución registrada pasó de
-`{python} n(DATOS["drift"]["pct_T2_entrenamiento"], 1)` % en ajuste a
-`{python} n(DATOS["drift"]["pct_T2_validacion"], 1)` % en validación. Evaluar con datos del mismo periodo engaña; por eso los periodos
-se cortan por fecha y se evalúa hacia adelante.
+**Deriva temporal.** Lo que se reclama y cómo responden las empresas cambia
+de un año a otro: la fracción de reclamos con alguna solución registrada pasó
+de `{python} n(DATOS["drift"]["pct_T2_entrenamiento"], 1)` % en ajuste a
+`{python} n(DATOS["drift"]["pct_T2_validacion"], 1)` % en validación.
+Evaluar con datos del mismo periodo engaña; por eso los periodos se cortan
+por fecha y se evalúa hacia adelante.
 
 #### Preparación
 
-La preparación corre como cinco etapas de DVC con parámetros en
-`params.yaml`, cada una con su hash de salida, y termina en un diccionario de
-datos con `{python} DATOS["dictionary"]["columnas"]` columnas descritas
-(cobertura `{python} n(DATOS["dictionary"]["cobertura_pct"], 0)` %).
+La preparación corre como cinco etapas versionadas con sus parámetros, cada
+una con el hash de su salida, y termina en un diccionario de datos con
+`{python} DATOS["dictionary"]["columnas"]` columnas descritas (cobertura
+`{python} n(DATOS["dictionary"]["cobertura_pct"], 0)` %).
 
 ```{python}
 #| label: tbl-etapas
@@ -77,19 +77,20 @@ La taxonomía de productos y motivos cambió de nombres entre periodos:
 `{python} DATOS["taxonomy"]["motivos_originales"]` motivos originales se
 mapean a `{python} DATOS["taxonomy"]["productos_canonicos"]` productos y
 `{python} DATOS["taxonomy"]["motivos_canonicos"]` motivos canónicos con un
-mapa congelado al `{python} DATOS["versions"]["taxonomy_freeze_date"]`. Ese
+mapa congelado el `{python} DATOS["versions"]["taxonomy_freeze_date"]`. Ese
 mapa es una propuesta sin revisión del negocio
 (`{python} DATOS["versions"]["taxonomy_status"]`). En ajuste aparecen
-`{python} DATOS["t1_motives"]` motivos, muchos raros, lo que justifica Macro-F1 como métrica de T1.
+`{python} DATOS["t1_motives"]` motivos, muchos raros, lo que justifica
+Macro-F1 como métrica de T1.
 
-Los cuatro objetivos se derivan de columnas de la CFPB: T1 es el motivo
-canónico; T2 es «alguna solución registrada» (respuesta cerrada con
+Las cuatro tareas de predicción se derivan de columnas de la CFPB: T1 es el
+motivo canónico; T2 es «alguna solución registrada» (respuesta cerrada con
 explicación, con alivio no monetario o monetario); T3 es «compensación
 monetaria»; T4 es «respuesta no oportuna». Las tasas de positivos en ajuste
 son `{python} n(DATOS["positives"]["pct_positivos_T2_conocidos"], 1)` % para
 T2, `{python} n(DATOS["positives"]["pct_positivos_T3_conocidos"], 1)` % para
 T3 y `{python} n(DATOS["positives"]["pct_positivos_T4"], 1)` % para T4. No se
-remuestrea: la métrica principal de T2–T4 es la precisión promedio, que no
+remuestrea: la métrica principal de T2 a T4 es la precisión promedio, que no
 depende del umbral.
 
 ```{python}
@@ -101,11 +102,36 @@ Markdown(md_table(["Problema", "Tratamiento"], rows))
 
 ### 4.5.2 Componentes del modelo y protocolo de evaluación
 
+#### Nomenclatura
+
+Cada componente y cada candidato tiene un código corto, heredado del
+registro de pre-registro, que se usa en las tablas y figuras de este
+documento. La tabla siguiente los define; en el texto se prefiere el nombre
+descriptivo.
+
+```{python}
+#| label: tbl-componentes
+#| tbl-cap: "Códigos usados en el documento y su significado."
+rows = [
+    ["T1, T2, T3, T4", "Tareas de predicción: motivo, alguna solución registrada, compensación monetaria, respuesta fuera de plazo"],
+    ["M9", "Conteo semanal por patrón: expectativa e intervalos"],
+    ["M10", "Composición semanal: cómo se reparte el total de la semana entre los 40 patrones"],
+    ["M11", "Alerta semanal de aumento persistente sobre los excesos de M9"],
+    ["NB-R4-H v3", "Candidato de M9 con binomial negativa jerárquica y participación de las cuatro semanas previas con igual peso (vigente antes del bloque C)"],
+    ["C-A, C-B", "Candidatos de M9 del bloque C: memoria que decae (C-A) y espacio de estados con innovaciones t de Student (C-B)"],
+    ["DM-R4, DM-V1", "Candidatos de M10: Dirichlet-multinomial con participaciones de cuatro semanas (DM-R4) o fijas (DM-V1)"],
+    ["D-A a D-E", "Candidatos diarios: binomial negativa con día de semana (D-A), espacio de estados (D-B), sin día de semana (D-B2), Fourier y tendencia (D-C), D-A con inflación de ceros (D-D), Dirichlet-multinomial diaria (D-E)"],
+    ["D-11", "Regla de alerta diaria, análoga a M11, en dos versiones"],
+    ["Bloques A, B y C", "Rondas de sensibilidad posteriores a la primera confirmación: espacio semántico y agrupamiento (A), T1 con modelos tabulares fundacionales (B), memoria del conteo semanal (C)"],
+]
+Markdown(md_table(["Código", "Significado"], rows))
+```
+
 #### Protocolo de evaluación
 
 Las decisiones de este protocolo se fijaron antes de entrenar y no se
 cambiaron después; están escritas, con fecha, en el registro de pre-registro
-del repositorio (`docs/registro/models_plan.md`). El anexo C las resume.
+(anexo C y anexo F).
 
 ```{python}
 #| label: tbl-ventanas
@@ -119,176 +145,215 @@ Markdown(md_table(["Ventana", "Fechas", "Filas (completa)", "Filas (sin texto co
 ```
 
 - **Tres periodos por fecha.** El sistema predecirá reclamos futuros, así que
-  se ajusta en el pasado, se decide en calibración y se confirma en validación.
-- **Validación se abre una vez.** Los modelos se eligen solo en calibración.
-  Validación (2025-H1) se abrió el 2026-10-01 con todo congelado y confirmó
-  T1–T3, M9 y M10. Las rondas posteriores (bloques A, B, C y el bloque diario)
-  también se decidieron solo con ajuste y calibración, pero sus cifras de
-  validación se reportan como **ya consultadas**: no son evidencia limpia. No
-  queda otro periodo intacto: 2025-H2 se contaminó en un experimento anterior
-  y 2026 es parcial y se reserva sellado.
-- **Regla de reemplazo.** Un candidato reemplaza al vigente solo si mejora la
-  métrica principal al menos
-  `{python} pct(CLAS["rule"]["minimum_relative_gain"], 0)` y un bootstrap
-  pareado por semanas (`{python} i(CLAS["rule"]["bootstrap_draws"])`
-  remuestreos, semilla `{python} CLAS["rule"]["seed"]`) deja el intervalo del
-  95 % entero a su favor. Con 12 semanas de calibración, una mejora pequeña
-  puede ser azar o una sola semana rara.
+  se ajusta en el pasado, se decide en calibración y se confirma en
+  validación.
+- **La validación se abre una vez.** Los modelos se eligen solo en
+  calibración. La validación (2025-H1) se abrió el 1 de octubre de 2026 con
+  todo congelado y confirmó T1, T2, T3, M9 y M10. Las rondas posteriores
+  (bloques A, B y C y el bloque diario) también se decidieron solo con ajuste
+  y calibración, pero sus cifras de validación se reportan como **ya
+  consultadas**: no son evidencia limpia. No queda otro periodo intacto:
+  2025-H2 se contaminó en un experimento anterior y 2026 es parcial y se
+  reserva sellado.
+- **Regla de reemplazo.** La de la sección 4.2: mejora relativa de al menos
+  `{python} pct(CLAS["rule"]["minimum_relative_gain"], 0)` y el intervalo
+  del *bootstrap* pareado por semanas
+  (`{python} i(CLAS["rule"]["bootstrap_draws"])` remuestreos, semilla
+  `{python} CLAS["rule"]["seed"]`) entero a favor. Con 12 semanas de
+  calibración, una mejora pequeña puede ser azar o una sola semana rara.
 - **Orden de complejidad.** Los candidatos se prueban del más simple al más
   complejo; cada uno reemplaza al anterior solo si cumple la regla.
-- **Modelos bayesianos en tres pasos.** Revisión de priors por simulación
-  predictiva, piloto corto y corrida completa, con diagnósticos de
-  convergencia (R-hat ≤ 1.01, sin divergencias) y cobertura de intervalos
+- **Modelos bayesianos en tres pasos.** Revisión de los priors por
+  simulación predictiva, piloto corto y corrida completa, con diagnósticos de
+  convergencia (R-hat ≤ 1.01, sin divergencias) y cobertura de los intervalos
   dentro de rangos fijados.
-- **Trazabilidad.** Cada corrida registra en MLflow el commit, el hash de
-  datos, la semilla y las métricas; los artefactos grandes van por DVC.
+- **Trazabilidad.** Cada corrida registra en MLflow la versión del código, el
+  hash de los datos, la semilla y las métricas; los artefactos grandes se
+  versionan con DVC.
 
-#### Clasificadores T1–T3
+#### Clasificadores (T1 a T4)
 
-La métrica principal es Macro-F1 para T1 (90 motivos, muchos raros) y
-precisión promedio (AP) para T2 y T3, siempre en la vista sin texto
-compartido. La referencia es la **regla por producto**: el motivo o la tasa de
-positivos más frecuente de cada producto en ajuste.
+La métrica principal es Macro-F1 para T1 (90 motivos, muchos raros) y la
+precisión promedio para T2, T3 y T4, siempre en la vista sin texto
+compartido. La referencia es la **regla por producto**: el motivo o la tasa
+de positivos más frecuente de cada producto en ajuste.
 
-Las representaciones compiten en orden de complejidad: TF-IDF del texto, TF-IDF
-más el producto, embeddings BGE-large [@xiao2023bge] del texto y BGE más el
-producto, cada una con un clasificador lineal calibrado. Para T1 se añadió un
-bloque posterior con **TabPFN-3.5** [@hollmann2025tabpfn], un modelo tabular
-en contexto que no se entrena: recibe `{python} i(TABPFN["context_rows"])`
-filas de contexto (`{python} TABPFN["context_classes"]` clases presentes), con
-los embeddings reducidos a `{python} TABPFN["pca"]` componentes de PCA más el
-producto, y predice en `{python} TABPFN["estimators"]` estimadores promediados.
-Una ablación pre-registrada probó 256 componentes y los 1,024 valores sin PCA.
-Usar TabPFN como cabeza sobre un codificador congelado tiene respaldo
-reciente fuera de este dominio [@zhang2026tabpfnhead], y la tolerancia de los
-embeddings a perder dimensiones explica por qué una PCA corta basta
-[@takeshita2025dimensions]. Sobre narrativas de la CFPB la literatura usa
-TF-IDF o embeddings con cabezas lineales y clases gruesas [@bastani2019lda;
-@roumeliotis2025reasoning]; no encontramos trabajos con TabPFN en este dato.
-
-T4 (respuesta no oportuna) se evaluó con el mismo protocolo y se descartó al
-confirmarlo en validación; lo reemplaza una regla de plazo con feriados.
+Se compararon cinco representaciones del texto, en orden de complejidad,
+cada una con un clasificador lineal calibrado: TF-IDF del texto, TF-IDF más
+el producto, *embeddings* BGE-large [@xiao2023bge] del texto y BGE más el
+producto; y, para T1, un modelo tabular en contexto, **TabPFN-3.5**
+[@hollmann2025tabpfn], que no se entrena: recibe
+`{python} i(TABPFN["context_rows"])` filas de ajuste como contexto
+(`{python} TABPFN["context_classes"]` clases presentes), con los
+*embeddings* comprimidos a `{python} TABPFN["pca"]` componentes principales
+más el producto, y promedia `{python} TABPFN["estimators"]` estimadores. Una
+ablación pre-registrada probó la misma cabeza con 256 componentes y con los
+1,024 valores sin comprimir. El antecedente de usar un modelo tabular en
+contexto como cabeza sobre un codificador congelado está fuera de este
+dominio [@zhang2026tabpfnhead], y la tolerancia de los *embeddings* a perder
+dimensiones [@takeshita2025dimensions] es lo que hace plausible la
+compresión.
 
 #### Reclamos parecidos y patrones semánticos
 
-Cada narrativa se representa con un embedding BGE-large de 1,024 dimensiones
-(`{python} SEM["bge_model"]`), normalizado. Un índice exacto de producto
-interno (FAISS, [@douze2024faiss]) sobre `{python} i(SEM["faiss_rows"])`
-reclamos de ajuste devuelve los diez más parecidos.
+Cada narrativa se representa con un *embedding* BGE-large de 1,024
+dimensiones (`{python} SEM["bge_model"]`), normalizado. Un índice exacto de
+producto interno (FAISS, [@douze2024faiss]) sobre
+`{python} i(SEM["faiss_rows"])` reclamos de ajuste devuelve los diez más
+parecidos.
 
 Los **patrones** son una partición del espacio semántico: PCA ajustado solo
 con filas de ajuste (`{python} SEM["pca_components"]` componentes conservan
 `{python} pct(SEM["pca_variance"])` de la varianza), UMAP a
-`{python} SEM["umap_components"]` dimensiones [@mcinnes2018umap] y k-means.
-Se compararon `{python} SEM["candidate_count"]` configuraciones de k-means,
+`{python} SEM["umap_components"]` dimensiones [@mcinnes2018umap] y k-medias.
+Se compararon `{python} SEM["candidate_count"]` configuraciones de k-medias,
 HDBSCAN y CURE con criterios de aceptación fijados antes: tamaño del grupo
-mayor, fracción de ruido, silhouette, estabilidad entre submuestras
-(ARI ≥ `{python} SEM["acceptance"]["minimum_stability_ari"]`) y cobertura de
-reclamos futuros (≥ `{python} pct(SEM["acceptance"]["minimum_future_coverage"], 0)`).
-La tubería es la de BERTopic [@grootendorst2022bertopic] con k-means en el
-último paso: HDBSCAN, la opción habitual, dejó la mitad de los reclamos como
-ruido en nuestros datos. Un reclamo es **novedoso** si su distancia al centro
-asignado supera el
-percentil `{python} int(SEM["novelty_quantile"] * 100)` de las distancias de
-ajuste. Una ronda de sensibilidad (bloque A) repitió la partición en
-`{python} SEM["sensitivity_spaces"]` espacios alternativos (PCA 128/256/512,
-UMAP 5/10/15/30 y otras semillas) para saber si otro espacio daba grupos
+mayor, fracción de ruido, *silhouette*, estabilidad entre submuestras (ARI,
+el índice de Rand ajustado, ≥
+`{python} SEM["acceptance"]["minimum_stability_ari"]`) y cobertura de
+reclamos futuros (≥
+`{python} pct(SEM["acceptance"]["minimum_future_coverage"], 0)`). La cadena es
+la de BERTopic [@grootendorst2022bertopic] con el algoritmo de agrupamiento
+como variable de diseño. Un reclamo es **novedoso** si su distancia al centro
+asignado supera el percentil
+`{python} int(SEM["novelty_quantile"] * 100)` de las distancias de ajuste.
+El bloque A repitió la partición en `{python} SEM["sensitivity_spaces"]`
+espacios alternativos (PCA de 128, 256 y 512 componentes; UMAP de 5, 10, 15 y
+30 dimensiones; otras semillas) para saber si otro espacio daba grupos
 mejores.
 
 #### Conteo semanal por patrón (M9)
 
-Para saber si un patrón recibe más reclamos de lo normal hace falta cuántos se
-esperaban. El conteo semanal de cada patrón se modela como *total de la
-semana × participación esperada* con una **binomial negativa** por patrón, que
-admite más variación que la Poisson. La participación esperada de la familia
-ganadora usa una **memoria que decae**: cada semana pesa δ veces la siguiente
-más reciente (δ elegido en ajuste entre valores fijados). Los candidatos se
-comparan por el **WIS** (*weighted interval score*, [@bracher2021wis]): la
-media, sobre los intervalos de 50 %, 80 % y 95 % y la mediana, del error
-absoluto de la mediana más la penalización por intervalos anchos o que no
-cubren el valor observado. Menor es mejor. Se exige además cobertura de 70–90
-% para el intervalo de 80 % y de 88–99 % para el de 95 %.
+Para saber si un patrón recibe más reclamos de lo normal hace falta cuántos
+se esperaban. El conteo semanal $y_{j,t}$ del patrón $j$ en la semana $t$ se
+modela como el total de la semana $N_t$ por una participación esperada
+$r_{j,t}$, con una **binomial negativa** por patrón, que admite más variación
+que la Poisson. En la familia ganadora la participación esperada usa una
+**memoria que decae**: cada semana pasada pesa $\delta$ veces lo que pesa la
+siguiente más reciente,
 
-La descomposición «total de la semana × composición» tiene un antecedente
-formal en el marco Dirichlet-multinomial-Poisson para conteos por causa
-[@nigri2026dmp], y el protocolo de evaluación es el de los concursos de
-pronóstico epidemiológico [@cramer2022ensemble]. Los modelos se escriben en
-PyMC [@abrilpla2023pymc] y se muestrean con NUTS en NumPyro sobre el clúster
-Khipu; la referencia es una Poisson con la
-participación de las cuatro semanas previas. Además de las variantes
-bayesianas se probaron dos modelos fundacionales de series de tiempo sin
-entrenamiento, Chronos-2 [@ansari2024chronos] y TimesFM [@das2024timesfm].
+$$
+r_{j,t} = \frac{\sum_{k \ge 1} \delta^{\,k-1}\, y_{j,t-k} + 1}{\sum_{k \ge 1} \delta^{\,k-1}\, N_{t-k} + 40},
+\qquad
+\mu_{j,t} = N_t \, r_{j,t},
+\qquad
+y_{j,t} \sim \mathrm{BinNeg}(\mu_{j,t}, \alpha_j),
+$$ {#eq-memoria}
+
+donde $\alpha_j$ es la dispersión de cada patrón, con un prior jerárquico
+común, y el 1 y el 40 son un suavizado mínimo para que ningún patrón tenga
+participación cero. El descuento $\delta$ se eligió en ajuste entre valores
+fijados. Con $\delta = 0.5$, el valor elegido, la semana anterior pesa 1, la
+que le precede 0.5, luego 0.25 y así sucesivamente: las cuatro últimas
+semanas reúnen 94 % del peso, de modo que el modelo mira en la práctica un
+mes hacia atrás con énfasis en las dos últimas semanas. Los candidatos se
+comparan por el WIS [@bracher2021wis] en las 12 semanas de calibración, con
+cobertura exigida de 70 % a 90 % para el intervalo de 80 % y de 88 % a 99 %
+para el de 95 %.
+
+La descomposición en total y composición tiene antecedente formal en el
+marco Dirichlet-multinomial-Poisson [@nigri2026dmp]. Los modelos se escriben
+en PyMC [@abrilpla2023pymc] y se muestrean con NUTS en NumPyro sobre el
+clúster; la referencia es una Poisson con la participación de las cuatro
+semanas previas. Además de las variantes bayesianas (cuatro semanas con igual
+peso, memoria que decae, espacio de estados) se probaron dos modelos
+fundacionales de series de tiempo sin entrenamiento, Chronos-2
+[@ansari2024chronos] y TimesFM [@das2024timesfm].
 
 #### Composición semanal (M10)
 
-M9 pregunta «¿este patrón trajo más de lo esperado?»; M10 pregunta «¿la mezcla
-de la semana es rara?». Una **Dirichlet-multinomial** modela el vector de
-conteos de los 40 patrones condicionado al total de la semana, con
-participaciones de cuatro semanas y una concentración global κ: cuanto mayor
-κ, más se parece la composición de cada semana a la esperada. Se evalúa por el
-**log score conjunto** (logaritmo de la probabilidad asignada a la composición
-observada, sumado en calibración) contra una multinomial de cuatro semanas.
-Sobre el modelo aceptado se derivó una señal semanal de **mezcla rara**: un
-p-valor predictivo posterior del log score de cada semana, con aviso si
-p < `{python} COMP["signal"]["alert_p_value"]`.
+M9 pregunta si un patrón trajo más de lo esperado; M10 pregunta si la mezcla
+de la semana es rara. Una **Dirichlet-multinomial** [@mosimann1962compound]
+modela el vector de conteos de los 40 patrones condicionado al total de la
+semana, con participaciones de cuatro semanas y una concentración global
+$\kappa$: cuanto mayor $\kappa$, más se parece la composición de cada semana
+a la esperada. Se evalúa por el *log score* conjunto contra una multinomial
+de cuatro semanas. Sobre el modelo aceptado se deriva una señal semanal de
+**mezcla rara**: un p-valor predictivo posterior del *log score* de cada
+semana, con aviso si p < `{python} COMP["signal"]["alert_p_value"]`.
 
-#### Alertas de aumento persistente (M11)
+#### Alerta de aumento persistente (M11)
 
-Cada semana y patrón recibe un **exceso** z: el score normal de la mid-PIT del
-conteo observado en la predictiva de M9, es decir, la posición del observado
-dentro de la distribución predicha, transformada para que sea
-aproximadamente N(0, 1) si el modelo está calibrado. Dos reglas compiten: un
-**CUSUM** [@page1954cusum] que acumula los excesos
-(k = `{python} ALERTAS["settings"]["cusum_k"]`) y avisa cuando supera h, y una
-regla que avisa si el exceso de una sola semana supera z\*, las dos reglas
-clásicas de la vigilancia de conteos [@salmon2016surveillance;
-@robertson2016cusum]. Los umbrales se fijan por simulación de series N(0, 1) para un presupuesto de
-`{python} ALERTAS["settings"]["false_alarms_per_month"]` falsa alarma al mes en
-total sobre los 40 patrones. La detección se mide inyectando crecimientos
+Cada semana y patrón recibe un **exceso** $z_{j,t}$: la posición del conteo
+observado dentro de la distribución predictiva de M9, transformada a la
+escala de una normal estándar. Si $F_{j,t}$ es la función de distribución
+predictiva, el exceso usa la mitad del escalón que corresponde al valor
+observado (la *mid-PIT*, que evita el sesgo de los conteos discretos):
+
+$$
+u_{j,t} = \tfrac{1}{2}\left[F_{j,t}(y_{j,t} - 1) + F_{j,t}(y_{j,t})\right],
+\qquad
+z_{j,t} = \Phi^{-1}(u_{j,t}),
+$$ {#eq-exceso}
+
+de modo que $z_{j,t}$ es aproximadamente normal estándar si el modelo está
+calibrado, positivo cuando se observa más de lo esperado. Dos reglas
+compiten sobre esa serie. El **CUSUM** [@page1954cusum] acumula los excesos
+que superan una referencia $k$ y avisa cuando la acumulación supera $h$:
+
+$$
+C_{j,t} = \max\!\left(0,\; C_{j,t-1} + z_{j,t} - k\right), \qquad C_{j,0} = 0,
+\qquad \text{alarma si } C_{j,t} > h,
+$$ {#eq-cusum}
+
+con $k$ = `{python} ALERTAS["settings"]["cusum_k"]`. La **regla de una
+semana** avisa si el exceso de una sola semana supera $z^{*}$. Son las dos
+reglas clásicas de la vigilancia de conteos [@salmon2016surveillance;
+@robertson2016cusum]. Los umbrales $h$ y $z^{*}$ se fijan por simulación de
+series normales estándar para un presupuesto de
+`{python} ALERTAS["settings"]["false_alarms_per_month"]` falsa alarma al mes
+en total sobre los 40 patrones. La detección se mide inyectando crecimientos
 sostenidos de 10 % y 20 % semanal y escalones de 50 % y 100 % en los conteos
 de calibración, con un horizonte de
-`{python} ALERTAS["settings"]["horizon_weeks"]` semanas. CUSUM se adopta si
-detecta al menos
+`{python} ALERTAS["settings"]["horizon_weeks"]` semanas. El CUSUM se adopta
+si detecta al menos
 `{python} pct(ALERTAS["settings"]["minimum_detection_gain"], 0)` más que la
 regla semanal en los dos crecimientos.
 
 #### Bloque diario
 
 El bloque diario se pre-registró como prueba aparte: el semanal sirve para
-acciones preventivas y correctivas; el diario, para decisiones rápidas del día
-a día. El panel tiene `{python} i(DIARIO["panel"]["rows"])` filas
+acciones preventivas y correctivas; el diario, para decisiones rápidas del
+día a día. El panel tiene `{python} i(DIARIO["panel"]["rows"])` filas
 (`{python} DIARIO["panel"]["days"]["fit"]` días de ajuste,
 `{python} DIARIO["panel"]["days"]["calibration"]` de calibración y
 `{python} DIARIO["panel"]["days"]["validation"]` de validación, sin huecos)
-con un total medio diario de `{python} i(DIARIO["panel"]["mean_daily_total"]["fit"])`
-reclamos en ajuste y `{python} i(DIARIO["panel"]["mean_daily_total"]["calibration"])`
-en calibración. Los candidatos de conteo (D-A a D-D) son binomiales
-negativas que condicionan en el total del día con memoria que decae
-(δ = `{python} DIARIO["share_selection"]["chosen"]["discount"]`, elegido en ajuste) y
-distintas formas del ciclo semanal; D-B es un espacio de estados y D-E la
-Dirichlet-multinomial diaria. La regla diaria de alerta D-11 repite el diseño
-de M11 con un presupuesto, aprobado por el equipo, de
+con un total medio diario de
+`{python} i(DIARIO["panel"]["mean_daily_total"]["fit"])` reclamos en ajuste y
+`{python} i(DIARIO["panel"]["mean_daily_total"]["calibration"])` en
+calibración. Los candidatos de conteo (D-A a D-D) son binomiales negativas
+que condicionan en el total del día con la misma memoria que decae de
+@eq-memoria, ahora en días
+($\delta$ = `{python} DIARIO["share_selection"]["chosen"]["discount"]`,
+elegido en ajuste: ayer pesa 1, anteayer 0.8, luego 0.64, y los últimos 14
+días reúnen 96 % del peso), y distintas formas del ciclo semanal; D-B es un
+espacio de estados y D-E la Dirichlet-multinomial diaria. La regla diaria
+D-11 repite el diseño de M11 con un presupuesto, aprobado por el equipo, de
 `{python} DIARIO["change"]["settings"]["false_alarms_per_month"]` falsas
-alarmas al mes sobre 40 patrones y ráfagas inyectadas de ×2 durante 3 días, ×3
-durante 1 día y ×1.5 durante 7 días. Se adopta solo si detecta al menos
+alarmas al mes sobre 40 patrones y ráfagas inyectadas de ×2 durante 3 días,
+×3 durante 1 día y ×1.5 durante 7 días. Se adopta solo si detecta al menos
 `{python} pct(DIARIO["change"]["settings"]["minimum_detection"], 0)` de las
-dos primeras ráfagas con mediana de retraso de a lo más
+dos primeras ráfagas con una mediana de retraso de a lo más
 `{python} DIARIO["change"]["settings"]["maximum_median_delay"]` días.
 
-#### Cierre: pipeline y candidatos posteriores
+#### Cierre: *pipeline* y candidatos de la revisión de literatura
 
-El pipeline de inferencia fija la cadena de componentes vigentes (hashes de
-DVC y claves de corrida) y puntúa tablas nuevas sin reajustar; su prueba de
-punta a punta usa dos semanas de calibración ya consultadas. Los candidatos
-probados después del cierre se decidieron con reglas escritas antes de
-correrlos: un sustituto de la proyección UMAP por voto de vecinos (criterio:
-acuerdo con las etiquetas congeladas al menos igual al de la proyección
-consigo misma), la reponderación de las semanas con exceso en la memoria de
-M11 (misma simulación de M11: detección que no baje más de 5 puntos y menos
-alarmas reales) y una alerta diaria con ventana de tres días y umbrales
-empíricos (la regla de D-11 más el presupuesto comprobado en calibración).
-Dos comprobaciones sin cambio de modelo, la curva del WIS frente al descuento
-de C-A y la masa de frontera de cada patrón, completan el cierre. El
-contraste con la literatura se hizo con Asta Theorizer por etapas, validando
-el equipo la lista de papers y las teorías antes de cada paso.
-
+El *pipeline* de inferencia fija la cadena de componentes vigentes (hashes de
+los artefactos y claves de corrida) y puntúa tablas nuevas sin reajustar; su
+prueba de punta a punta usa dos semanas de calibración ya consultadas. Los
+candidatos que la revisión de literatura dejó abiertos se decidieron con
+reglas escritas antes de correrlos: (a) un sustituto determinista de la
+proyección UMAP por voto, ponderado por similitud, de los vecinos más
+parecidos en el índice, con el criterio de adoptarlo si coincide con las
+etiquetas congeladas al menos tanto como la proyección consigo misma; (b) la
+reponderación de las semanas con exceso en la memoria de M9, con la misma
+simulación de M11 y el criterio de que la detección no baje más de 5 puntos
+y las alarmas reales bajen; y (c) una segunda versión de la alerta diaria,
+con una ventana de tres días y umbrales empíricos tomados de los excesos
+reales de ajuste, con la regla de D-11 más el presupuesto comprobado en
+calibración. Dos comprobaciones sin cambio de modelo completan el cierre: la
+curva del WIS frente al descuento $\delta$ de la memoria semanal y la masa de
+frontera de cada patrón (la fracción de sus reclamos que están casi a la
+misma distancia de otro centro). El contraste con la literatura se hizo con
+Asta Theorizer por etapas, validando el equipo la lista de trabajos y las
+teorías antes de cada paso.

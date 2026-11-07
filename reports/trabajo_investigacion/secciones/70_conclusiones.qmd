@@ -1,64 +1,100 @@
 # CONCLUSIONES
 
-Las conclusiones responden, en orden, al objetivo general y a los siete
-objetivos específicos del capítulo I.
+Las conclusiones responden al objetivo general y a los seis objetivos
+específicos del capítulo I, y cierran con lo que el trabajo significa para
+el área de reclamos de un banco: qué cambia, qué no se puede prometer y en
+qué se diferencia de lo que existe.
 
-1. **Objetivo general.** Se construyó y evaluó, de forma reproducible y con
-   reglas fijadas antes de ver los resultados, un prototipo de triaje que
-   entrega evidencia útil en cada una de sus cinco salidas, y se documentó
-   con la misma calidad lo que funcionó y lo que no. El pipeline puntúa una
-   tabla nueva de dos semanas en `{python} n(CIERRE["pipeline"]["gpu_minutes"], 0)`
-   minutos con GPU sin reentrenar nada.
-2. **Tabla preparada (OE1).** Seis etapas de DVC dejan una tabla de
-   `{python} i(DATOS["rows"])` reclamos con texto normalizado, taxonomía
-   congelada, objetivos T1–T4 y tres ventanas por fecha, con diccionario e
-   informe de limpieza generados por el pipeline; la vista sin texto
-   compartido (`{python} n(DATOS["shared_pct"], 1)` % de narrativas repetidas)
-   fue decisiva para evitar métricas optimistas.
-3. **Clasificadores (OE2).** El motivo se predice mejor con un modelo tabular
-   en contexto sobre embeddings reducidos que con clasificadores entrenados:
-   Macro-F1 `{python} n(TABPFN["macro_f1"])` frente a
-   `{python} n(T1["rule_calibration"])` de la regla por producto y
+**Objetivo general.** Se construyó y evaluó, de forma reproducible y con
+reglas fijadas antes de ver los resultados, un sistema de apoyo al triaje
+cuyas cinco salidas entregan evidencia útil a la persona que tipifica,
+deriva y vigila reclamos. Cada decisión de modelado tiene su regla escrita
+antes y su evidencia después, y lo que no funcionó quedó documentado con la
+misma calidad que lo que funcionó. El sistema no decide: sugiere, estima y
+avisa.
+
+1. **Motivo del reclamo.** El texto, combinado con el producto, sugiere el
+   motivo con más acierto que la regla por producto, y lo hace mejor con un
+   modelo que no se entrena, que recibe veinte mil ejemplos como contexto,
+   que con cualquier clasificador entrenado: Macro-F1
+   `{python} n(TABPFN["macro_f1"])` frente a
+   `{python} n(T1["rule_calibration"])` de la regla y
    `{python} n(T1["candidates"]["bge_product"])` del mejor modelo entrenado,
-   con la ventaja mantenida en 2025-H1. Para solución y compensación bastan
-   modelos lineales sobre TF-IDF; la respuesta fuera de plazo no se predice
-   del texto y la reemplaza una regla de plazo.
-4. **Espacio semántico y patrones (OE3).** Un espacio BGE con PCA y UMAP
-   sostiene la búsqueda de reclamos parecidos (similitud mediana
-   `{python} n(SEM["faiss"]["top1_similarity_median"])`) y una partición en 40
-   patrones con cobertura futura de `{python} pct(SEM["kmeans"]["future_coverage"], 0)`
-   y una regla de novedad. El patrón es una etiqueta blanda cerca de las
-   fronteras: la proyección cambia la asignación de alrededor del 9 % de los
-   reclamos según el lote, y el sustituto determinista probado no alcanzó su
-   regla.
-5. **Conteo, composición y alertas semanales (OE4).** Una binomial negativa
-   jerárquica con memoria corta predice el volumen semanal por patrón con
+   con la ventaja mantenida en el semestre siguiente. En la práctica, el
+   motivo correcto está entre las tres opciones que ve la persona en
+   `{python} pct(TABPFN["top_three"], 0)` de los reclamos, y eso es lo que
+   convierte una lectura completa en una confirmación.
+2. **Solución, compensación y plazo.** El texto anticipa si un reclamo
+   terminará con una solución registrada y con compensación mejor que la
+   regla por producto, y basta un modelo lineal sobre las palabras del texto
+   para lograrlo. La respuesta fuera de plazo, en cambio, no está en el
+   texto: depende de la empresa y de su carga, y la hipótesis se refutó en
+   validación. Esa tarea sale del sistema y la reemplaza una regla de plazo
+   en días hábiles.
+3. **Espacio semántico y patrones.** El espacio de *embeddings* recupera
+   reclamos parecidos que comparten producto y motivo, y admite una
+   partición en 40 patrones que es estable entre submuestras y cubre casi
+   todos los reclamos futuros. La hipótesis se sostuvo con un matiz que
+   importa para el uso: el patrón de un reclamo es una etiqueta blanda cerca
+   de las fronteras, porque la proyección cambia la asignación de cerca de
+   uno de cada diez reclamos según el lote. El sistema mide esa fragilidad
+   por patrón y la muestra junto a cada alerta.
+4. **Conteo y alerta semanal.** Una binomial negativa con memoria corta
+   predice el volumen semanal de cada patrón con
    `{python} pct(SEMANAL["c_a_vs_poisson"]["wis_gain"], 0)` menos error que
    la referencia Poisson y gana a alternativas más complejas, incluidos dos
-   modelos fundacionales de series; la Dirichlet-multinomial describe la
-   composición y da una señal de mezcla rara; un CUSUM sobre los excesos, con
-   una falsa alarma al mes fijada por simulación, detecta crecimientos de
-   10 % y 20 % semanal en `{python} pct(ALERTAS["detection"]["growth_10"]["cusum"]["detected"], 0)`
-   y `{python} pct(ALERTAS["detection"]["growth_20"]["cusum"]["detected"], 0)`
-   de los casos.
-6. **Bloque diario (OE5).** La arquitectura funciona a resolución de día para
-   el conteo (`{python} pct(DIARIO["winner"]["wis_gain"], 0)` menos error que
-   la referencia, con el día de semana como pieza principal), pero ninguna de
-   las dos versiones de la alerta diaria alcanzó la detección exigida con el
-   presupuesto de falsas alarmas: la alerta vive en la semana.
-7. **Trazabilidad (OE6).** Cada decisión tiene su regla escrita antes y su
-   evidencia después: `{python} len(TABLA)` filas en la tabla comparativa, 87
-   corridas en MLflow con commit y hash de datos, artefactos por DVC y un
-   registro de pre-registro. Dos candidatos mejores en apariencia se
-   rechazaron por la regla del bootstrap, un componente se retiró al
-   confirmarlo y los tres candidatos del cierre se rechazaron por reglas
-   escritas antes de correrlos.
-8. **Pipeline, cierre y literatura (OE7).** El pipeline de inferencia ajusta
-   una vez y puntúa muchas veces; el contraste con la literatura respalda las
-   elecciones centrales (memoria corta en el conteo semanal, exclusión del
-   espacio de estados diario, rechazo de la reponderación) y señala qué
-   habría hecho distinto, que es el roadmap del capítulo VI.
-9. **Alcance de la evidencia.** Las etiquetas de la CFPB aproximan las de un
-   banco y las cifras no se trasladan; el método sí. La evidencia de negocio
-   (stakeholders, dimensionamiento, viabilidad financiera) es documental y
-   está marcada como pendiente de los Product Lead en este documento.
+   modelos fundacionales de series. Sobre sus excesos, una regla acumulada
+   con una falsa alarma al mes detecta
+   `{python} pct(ALERTAS["detection"]["growth_10"]["cusum"]["detected"], 0)`
+   de los crecimientos de 10 % semanal y
+   `{python} pct(ALERTAS["detection"]["growth_20"]["cusum"]["detected"], 0)`
+   de los de 20 %. Su límite es el eco de las ráfagas: una semana muy
+   concentrada en un patrón produce alertas en las semanas siguientes, y la
+   corrección clásica de la literatura empeora el problema con una memoria
+   corta.
+5. **Resolución diaria.** La arquitectura funciona a escala de día para el
+   conteo, con `{python} pct(DIARIO["winner"]["wis_gain"], 0)` menos error
+   que la referencia y el día de la semana como pieza principal, pero no
+   para la alerta: con el presupuesto de falsas alarmas respetado, ninguna
+   regla diaria distingue una ráfaga del ruido de un patrón. La hipótesis se
+   sostuvo a medias y la alerta vive en la semana.
+6. **Pipeline de inferencia.** Un *pipeline* ajustado una vez puntúa dos
+   semanas de reclamos nuevos en
+   `{python} n(CIERRE["pipeline"]["gpu_minutes"], 0)` minutos con GPU sin
+   reentrenar nada, reproduce la alerta congelada y escribe las señales que
+   dicen cuándo volver a entrenar.
+
+**Impacto en el área de reclamos de un banco.** Lo que cambia en el trabajo
+diario es concreto. La persona que hoy lee cada reclamo completo para
+tipificarlo pasa a confirmar una de tres opciones, con los casos parecidos y
+su desenlace a la vista. La jefatura que hoy vigila el total de reclamos
+pasa a ver, cada semana, qué patrones reciben más de lo que el propio
+historial hace esperar, con una lista corta de alertas revisables en lugar
+de una intuición tardía. Y el equipo de datos sabe cuándo reentrenar,
+porque el sistema lo dice. El impacto en horas y en plazos vencidos no se
+midió, porque no hubo acceso a una entidad, y es lo primero que la
+siguiente fase debe medir con el registro de lo que la persona confirma o
+corrige.
+
+**Limitaciones.** Las cifras de este trabajo describen los reclamos
+públicos de la CFPB y no se trasladan a un banco peruano: sus categorías,
+sus volúmenes y su taxonomía son otros, y el método tendría que repetirse
+con datos propios. El componente que más aporta tiene una licencia de uso
+no comercial que habría que negociar. La alerta semanal arrastra el eco de
+las ráfagas y la alerta diaria no se pudo entregar con un presupuesto
+garantizado. El patrón es una etiqueta blanda y la taxonomía de motivos no
+tiene revisión del negocio. Y no hubo usuarios: la evidencia sobre
+stakeholders, dimensionamiento y viabilidad financiera es documental y
+queda pendiente de los Product Lead.
+
+**Ventajas frente a lo que existe.** Las herramientas comerciales de
+atención al cliente clasifican texto; los trabajos académicos sobre la CFPB
+clasifican con pocas clases gruesas; la vigilancia por totales no ve los
+patrones. La diferencia de este trabajo no es un modelo sino el conjunto:
+cinco salidas sobre el mismo reclamo y el mismo flujo, elegidas con reglas
+escritas antes de correr y evaluadas hacia adelante en el tiempo, una
+alerta con un presupuesto declarado de falsas alarmas, un *pipeline* que
+puntúa sin reentrenar y un contraste con la literatura que respalda las
+elecciones centrales y señala, con cita, qué probar después. Esa
+trazabilidad es lo que permite que una entidad adopte el método con
+confianza y lo mida con sus propios datos.

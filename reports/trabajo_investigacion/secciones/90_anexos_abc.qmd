@@ -3,7 +3,7 @@
 Cada patrón se describe con su producto principal, su tamaño en ajuste, los
 términos que lo distinguen (TF-IDF del patrón frente al resto) y su serie
 semanal con las bandas de M9 y las alertas de M11. Los ejemplos completos, con
-fragmentos de narrativa, están en `reports/modeling/patterns/catalogo.html`.
+fragmentos de narrativa, están en el catálogo interactivo enlazado en el anexo F.
 
 ```{python}
 #| label: anexo-catalogo
@@ -31,8 +31,7 @@ for p in sorted(CATALOGO, key=lambda p: p["cluster_id"]):
 
 ## Anexo B. Tabla completa de candidatos
 
-Reproducción de `etapa_4_5_modelado_evaluacion/resultados/comparacion_modelos.csv`:
-cada candidato con su métrica principal, su referencia, la ganancia relativa
+Reproducción de la tabla comparativa del repositorio (anexo F): cada candidato con su métrica principal, su referencia, la ganancia relativa
 con el intervalo del bootstrap y la decisión. Las filas sin decisión son
 referencias o cifras informativas.
 
@@ -69,9 +68,9 @@ print(md_table(["Etapa", "Tarea", "Modelo", "Rol", "Conjunto", "Métrica", "Valo
 
 ## Anexo C. Reglas pre-registradas
 
-Resumen de las reglas escritas en `docs/registro/models_plan.md` antes de
-correr cada etapa. El registro completo, con fechas y la evidencia de cada
-decisión, es un documento de bitácora del repositorio.
+Resumen de las reglas escritas en el registro de pre-registro antes de correr
+cada etapa. El registro completo, con fechas y la evidencia de cada decisión,
+está enlazado en el anexo F.
 
 ```{python}
 #| label: anexo-reglas

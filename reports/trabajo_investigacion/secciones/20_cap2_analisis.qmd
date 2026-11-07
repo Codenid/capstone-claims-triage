@@ -2,127 +2,207 @@
 
 ## 2.1 Antecedentes y revisión de literatura
 
-La revisión se hizo en dos momentos y con dos herramientas, y las dos quedan
-registradas en el repositorio. Antes del cierre del modelado se usó Asta Paper
-Finder para cinco búsquedas por componente (clasificación de narrativas de
-reclamos, agrupamiento de texto, pronóstico de conteos cortos, vigilancia de
-cambios y modelos fundacionales de series); el veredicto por componente está
-en `docs/literatura/revision_asta.md` y dio origen a los candidatos del
-cierre. Después del cierre se usó Asta Theorizer para contrastar cuatro
-preguntas con unos 30 papers cada una, formar teorías y evaluar su novedad;
-el resultado se resume en la sección 5.5 y respalda
-`{python} CIERRE["theorizer"]["totals"]["theories"]` teorías con
-`{python} CIERRE["theorizer"]["totals"]["judgments"]` juicios de novedad.
+```{python}
+#| label: literatura-totales
+TH = CIERRE["theorizer"]
+TH_PAPERS = sum(q["papers"] for q in TH["questions"].values())
+TH_FINDINGS = sum(q["with_findings"] for q in TH["questions"].values())
+TH_EVIDENCE = TH["totals"]["evidence_papers"]
+```
+
+La revisión cubre cinco frentes, uno por componente del sistema propuesto:
+la clasificación de narrativas de reclamos, el descubrimiento de patrones en
+texto, el pronóstico de conteos cortos por categoría, la vigilancia de
+cambios y el protocolo de evaluación. Se hizo con dos herramientas de
+búsqueda asistida por modelos de lenguaje, descritas en la sección 4.3:
+Asta Paper Finder [@ai2paperfinder2025; @bragg2025astabench], con cinco
+búsquedas que dejaron una treintena de trabajos tabulados por componente, y
+Asta Theorizer [@jansen2026theorizer], con cuatro preguntas que recuperaron
+`{python} TH_PAPERS` trabajos, extrajeron hallazgos de `{python} TH_FINDINGS`
+de ellos y dejaron `{python} TH_EVIDENCE` cuyos hallazgos sostienen alguna de
+las teorías formadas; esos `{python} TH_EVIDENCE` trabajos son los que se
+citan en el capítulo V. El equipo validó la lista de trabajos y las teorías
+en cada etapa. Las dos revisiones completas, con sus tablas, están
+enlazadas en el anexo F.
 
 **Clasificación de narrativas de reclamos.** Los trabajos sobre la base de
-la CFPB usan representaciones de bolsa de palabras o embeddings con cabezas
-lineales y clases gruesas, con fines de tipificación y de predicción de la
-respuesta de la empresa [@bastani2019lda; @roumeliotis2025reasoning;
-@wang2026cfpbrelief]. No encontramos trabajos que usen un modelo tabular en
-contexto sobre embeddings reducidos, que es lo que ganó aquí para el motivo
-(T1). El antecedente directo de esa elección está fuera del dominio: usar
-TabPFN como cabeza sobre un codificador congelado [@zhang2026tabpfnhead] y la
-tolerancia de los embeddings a perder dimensiones [@takeshita2025dimensions].
-Las tendencias que señala la literatura reciente para T1 son el blanqueo de
-los embeddings, la curación del contexto con mínimos por clase y el ajuste
-fino ligero [@bergstrom2026comet; @tanna2026finetuning; @qu2025tabicl].
+reclamos de la CFPB representan el texto como bolsa de palabras (*bag of
+words*, el recuento de las palabras que aparecen en cada texto) o como
+*embeddings* (vectores numéricos que resumen el significado del texto,
+calculados por una red neuronal entrenada con grandes volúmenes de texto), y
+sobre esa representación ajustan un clasificador lineal con pocas clases
+gruesas, para tipificar el reclamo o para anticipar la respuesta de la
+empresa [@bastani2019lda; @roumeliotis2025reasoning; @wang2026cfpbrelief].
+Fuera de ese dominio, la literatura reciente combina un codificador de texto
+congelado con una cabeza de decisión que no se entrena: un modelo tabular en
+contexto, es decir, un modelo que recibe una tabla de ejemplos etiquetados
+como contexto y predice los casos nuevos sin ajustar parámetros
+[@hollmann2025tabpfn; @qu2025tabicl; @grinsztajn2025tabpfn25]. Usar uno de
+esos modelos como cabeza sobre *embeddings* congelados funciona en catorce
+conjuntos de datos de imagen, texto y audio [@zhang2026tabpfnhead], y los
+*embeddings* de texto toleran perder hasta la mitad de sus dimensiones con
+una pérdida pequeña de exactitud [@takeshita2025dimensions], lo que justifica
+comprimirlos antes de entregarlos a la cabeza. Las tendencias que señala esa
+literatura son el blanqueo de los *embeddings* (centrar y reescalar las
+dimensiones para que ninguna domine) antes de comprimirlos, la curación del
+contexto con un mínimo de ejemplos por clase y el ajuste fino ligero del
+modelo tabular [@bergstrom2026comet; @tanna2026finetuning].
 
-**Patrones semánticos.** La tubería de referencia para descubrir temas en
-texto con embeddings es BERTopic: embedding, reducción con UMAP y
-agrupamiento [@grootendorst2022bertopic; @mcinnes2018umap]. Su limitación
-conocida, y confirmada en este proyecto, es que la proyección no es
-determinista y que HDBSCAN deja mucho texto como ruido. La literatura
-propone anclar los patrones a prototipos fijos o a un codificador paramétrico
-[@sainburg2020parametric]; aquí se midió el problema (sección 5.5) y se dejó
-esa salida como trabajo futuro.
+**Descubrimiento de patrones en texto.** El flujo de trabajo de referencia
+para descubrir temas en texto con *embeddings* es BERTopic
+[@grootendorst2022bertopic]: calcular *embeddings*, reducirlos con UMAP (una
+técnica que proyecta vectores de muchas dimensiones a pocas conservando la
+vecindad) [@mcinnes2018umap] y agruparlos (*clustering*) con HDBSCAN, un
+algoritmo que deja fuera de todo grupo los puntos que considera ruido;
+Top2Vec sigue la misma secuencia [@angelov2020top]. La limitación conocida de
+esa cadena es que la proyección UMAP depende del grafo de vecinos del lote
+que se proyecta y no es determinista [@ghojogh2021uniform], por lo que
+asignar un documento nuevo a un grupo existente es un problema en sí mismo.
+Las soluciones documentadas son anclar los grupos a prototipos fijos en un
+espacio fijo, entrenar una proyección paramétrica [@sainburg2020parametric],
+extender la proyección con puntos de referencia [@long2017landmark] o
+agrupar de forma incremental creando grupos nuevos cuando aparecen
+[@pattnayak2026incremental; @bahri2020efficient]. Existen índices de
+estabilidad de los grupos [@tarekegn2024large] y detectores de deriva sobre
+particiones de k-medias [@liu2020concept], pero casi no hay trabajos sobre
+cómo la inestabilidad de las etiquetas se propaga a los conteos por grupo
+cuando esos conteos se vigilan en el tiempo.
 
-**Pronóstico de conteos cortos.** Para series semanales de 40 patrones con
-dos años de historia, la evidencia favorece modelos de conteo bien
-especificados con una línea base regularizada sobre estados latentes mal
-identificados [@berry2018dcmm; @chapados2014hnbss], y advierte que la
-inferencia con NUTS sobre trayectorias latentes de composición se atasca; la
-salida es marginalizar o muestrear por bloques [@linderman2015polyagamma;
-@silverman2019mln; @saxena2024mlndlm]. La descomposición «total × composición»
-tiene antecedente formal en el marco Dirichlet-multinomial-Poisson
-[@nigri2026dmp]. Los modelos fundacionales de series, Chronos-2 y TimesFM
-[@ansari2024chronos; @das2024timesfm], no ganan a esa referencia en series
-cortas y ruidosas, como reportan los benchmarks recientes [@gupta2025tsfm]. El
-protocolo de evaluación por WIS y cobertura es el de los concursos de
-pronóstico epidemiológico [@bracher2021wis; @cramer2022ensemble].
+**Pronóstico de conteos cortos por categoría.** Para conteos
+sobredispersos (con más variación que la de una Poisson) la práctica
+publicada usa la binomial negativa, con jerarquías que comparten
+información entre categorías y con estados latentes que evolucionan en el
+tiempo [@chapados2014hnbss; @berry2018dcmm; @aktekin2016sequential]. Cuando
+las categorías comparten un total conocido, la descomposición en total y
+composición tiene un marco formal, el Dirichlet-multinomial-Poisson
+[@nigri2026dmp], cuya pieza de composición es la distribución
+Dirichlet-multinomial [@mosimann1962compound]. Las versiones dinámicas de la
+composición (logístico-normales multinomiales) exigen una inferencia
+especializada: muestrear la trayectoria entera o colapsar bloques del
+modelo, porque los muestreadores generales se atascan
+[@linderman2015polyagamma; @silverman2019mln; @saxena2024mlndlm]. La
+alternativa clásica a un estado latente es una memoria que decae con un
+factor de descuento, cuyo valor equilibra adaptación y estabilidad
+[@west1997bayesian]. El protocolo de evaluación de pronósticos
+probabilísticos viene de los concursos de pronóstico epidemiológico: el
+*weighted interval score* y la cobertura de los intervalos
+[@bracher2021wis], los ensambles de modelos [@cramer2022ensemble] y la
+puntuación en escala logarítmica para que las series grandes no dominen
+[@bosse2023transformed]. Los modelos fundacionales de series de tiempo,
+entrenados con millones de series y usados sin ajuste, como Chronos
+[@ansari2024chronos] y TimesFM [@das2024timesfm], no superan a referencias
+simples en series cortas y ruidosas según los comparativos recientes
+[@gupta2025tsfm].
 
-**Vigilancia de cambios.** Las dos reglas clásicas sobre residuos de un
-modelo de conteo son el CUSUM y el umbral de un periodo [@page1954cusum;
-@salmon2016surveillance; @robertson2016cusum]. La corrección de la línea
-base frente a brotes pasados, reponderar los periodos anómalos
-[@farrington1996outbreak; @noufaily2013improved], funciona con líneas base
-de años; con una memoria corta se realimenta, como se mostró aquí; la
-alternativa es la cuarentena discreta de los periodos con alarma
-[@dorea2013syndromic]. Para ráfagas de pocos días la literatura señala
-ventanas móviles cortas [@gopaluni2025rolling; @bedubourg2017evaluation].
+**Vigilancia de cambios.** La detección de aumentos en series de conteos
+tiene dos reglas clásicas sobre los residuos de un modelo de referencia: la
+suma acumulada (*cumulative sum*, CUSUM), que acumula los excesos
+sucesivos y avisa cuando la acumulación supera un umbral [@page1954cusum],
+y la regla de un periodo, que avisa cuando un solo periodo supera un umbral.
+Ambas están implementadas en los paquetes de vigilancia epidemiológica
+[@salmon2016surveillance], se comparan con el presupuesto de falsas alarmas
+como eje común [@robertson2016cusum] y se evalúan inyectando brotes
+simulados en series reales [@enki2016comparison; @bedubourg2017evaluation;
+@hutwagner2005comparing]. El problema de que un brote pasado contamine la
+línea base tiene una corrección clásica: reducir el peso de los periodos
+anómalos al estimarla [@farrington1996outbreak; @noufaily2013improved],
+diseñada para líneas base de varios años ajustadas por regresión
+[@zareie2023outbreak]. La alternativa es la cuarentena discreta: no usar los
+periodos con alarma y guardar en su lugar el valor límite
+[@dorea2013syndromic]. Para ráfagas de pocos días, la literatura recomienda
+ventanas móviles cortas [@gopaluni2025rolling].
 
-**Lo que la revisión cambió en el proyecto.** La revisión previa al cierre
-produjo tres candidatos con regla escrita antes de correr (sustituto
-determinista de la proyección, reponderación de la línea base de M11 y
-alerta diaria de tres días), y los tres se rechazaron por su regla. El
-contraste posterior confirmó que las elecciones centrales (memoria corta en
-el conteo semanal, exclusión del espacio de estados diario, rechazo de la
-reponderación) coinciden con lo que la literatura predice, y dejó ocho
-hipótesis para la siguiente fase (capítulo VI).
+**Protocolo de evaluación y reproducibilidad.** La fuga de información, usar
+al entrenar información que no estaría disponible al decidir, es la causa
+más frecuente de resultados que no se reproducen [@kapoor2023leakage]; la
+respuesta es evaluar hacia adelante en el tiempo y fijar el plan de
+evaluación antes de ver los datos, como formalizan las plataformas de
+pre-registro de pronósticos [@meyer2025tsarena]. La reproducibilidad
+computacional exige que cada cifra se trace a una versión del código y de
+los datos [@peng2011reproducible], y la deuda técnica propia de los sistemas
+de aprendizaje automático se contiene separando el ajuste de la puntuación
+[@sculley2015debt].
+
+**Lo que la literatura deja abierto.** Tres vacíos guían este trabajo. No se
+encontraron trabajos que usen un modelo tabular en contexto sobre narrativas
+de reclamos con decenas de motivos desbalanceados: las cifras publicadas son
+con cinco o seis clases gruesas. No se encontraron trabajos que evalúen la
+estabilidad temporal de los patrones de texto ni su cobertura de documentos
+futuros, ni que estudien cómo la inestabilidad de la asignación se traslada
+a conteos vigilados. Y la corrección clásica de la línea base está evaluada
+con memorias de años, no con memorias de pocas semanas como las que piden
+las series cortas.
 
 ## 2.2 Bases teóricas y conceptuales
 
-- **CRISP-DM.** El proyecto siguió las seis fases del proceso estándar de
-  minería de datos [@chapman2000crispdm], con dos adaptaciones: un registro
-  de pre-registro que fija la regla de decisión antes de cada corrida, y una
-  fase de cierre que prueba por regla los candidatos abiertos y contrasta el
-  conjunto con la literatura.
-- **Fuga de información y evaluación hacia adelante.** La fuga, usar al
-  entrenar información que no estaría disponible al decidir, es la causa más
-  frecuente de resultados que no se reproducen [@kapoor2023leakage]. Aquí se
-  trata variable por variable y con tres ventanas por fecha; la validación se
-  abre una sola vez.
-- **Reproducibilidad computacional.** Cada cifra se traza a un commit, una
-  versión de datos y una corrida [@peng2011reproducible], con DVC para los
-  artefactos y MLflow para los experimentos; la deuda técnica propia de los
-  sistemas de aprendizaje automático [@sculley2015debt] se contiene con un
-  pipeline que ajusta una vez y puntúa muchas veces.
-- **Clasificación con muchas clases desbalanceadas.** Macro-F1 pondera por
-  igual los 90 motivos, muchos raros; la precisión promedio (AP) evalúa T2 y
-  T3 sin depender de un umbral. Un modelo tabular en contexto (TabPFN-3.5)
-  predice a partir de un conjunto de ejemplos sin ajustar parámetros
-  [@hollmann2025tabpfn].
-- **Representación semántica.** Embeddings BGE-large [@xiao2023bge]
-  normalizados, búsqueda exacta por producto interno con FAISS
-  [@douze2024faiss], reducción con PCA y UMAP y partición con k-means.
-- **Modelos bayesianos de conteo.** Binomial negativa jerárquica por patrón
-  con memoria que decae, Dirichlet-multinomial para la composición, escritos
-  en PyMC [@abrilpla2023pymc] y muestreados con NUTS; revisión de priors por
-  simulación predictiva y diagnósticos de convergencia antes de leer
-  resultados.
-- **Puntuación de pronósticos probabilísticos.** WIS (*weighted interval
-  score*) y cobertura de intervalos [@bracher2021wis]; log score conjunto
-  para la composición.
-- **Detección de cambios con presupuesto de falsas alarmas.** Exceso
-  normalizado por la mid-PIT de la predictiva, CUSUM y regla de un periodo con
-  umbrales fijados por simulación para una falsa alarma al mes; detección
-  medida con escenarios inyectados.
+- **CRISP-DM.** Proceso estándar de seis fases para proyectos de minería de
+  datos: comprensión del negocio, comprensión de los datos, preparación,
+  modelado, evaluación y despliegue [@chapman2000crispdm]. Aquí se adapta con
+  un registro de pre-registro, que fija la regla de decisión antes de cada
+  corrida, y una fase de cierre que prueba por regla los candidatos abiertos.
+- **Fuga de información y evaluación hacia adelante.** Para que una
+  evaluación imite el uso real, el modelo se ajusta con el pasado, se elige
+  en un periodo posterior (calibración) y se confirma una sola vez en un
+  periodo aún posterior (validación) que no se vuelve a usar
+  [@kapoor2023leakage]. Cada variable se revisa para saber si estaría
+  disponible al decidir.
+- **Representación del texto.** TF-IDF pondera cada palabra por su
+  frecuencia en el texto y su rareza en el conjunto; los *embeddings* son
+  vectores de cientos de dimensiones que colocan cerca textos de significado
+  parecido. El análisis de componentes principales (PCA) comprime esos
+  vectores conservando la mayor parte de su variación; UMAP los proyecta a
+  pocas dimensiones conservando la vecindad; k-medias (*k-means*) los
+  reparte en un número fijo de grupos alrededor de centros.
+- **Modelo tabular en contexto.** Un modelo entrenado de antemano sobre
+  millones de problemas tabulares sintéticos que, dado un conjunto de
+  ejemplos etiquetados, predice los casos nuevos sin ajustar parámetros
+  [@hollmann2025tabpfn]. Su límite práctico es cuántas filas y cuántas
+  columnas puede recibir como contexto.
+- **Métricas de clasificación.** Macro-F1 promedia el F1 de cada clase con el
+  mismo peso, de modo que los motivos raros pesan tanto como los frecuentes.
+  La precisión promedio (AP) resume la curva de precisión y exhaustividad de
+  una tarea binaria sin depender de un umbral.
+- **Modelos bayesianos de conteo.** La binomial negativa describe conteos con
+  más variación que la Poisson; una versión jerárquica comparte información
+  entre categorías. La Dirichlet-multinomial [@mosimann1962compound]
+  describe cómo se reparte un total conocido entre categorías cuando esa
+  partición varía de un periodo a otro. Los modelos se escriben en PyMC
+  [@abrilpla2023pymc] y se muestrean con el algoritmo NUTS (*No-U-Turn
+  Sampler*); antes de leer resultados se revisan los diagnósticos de
+  convergencia.
+- **Puntuación de pronósticos probabilísticos.** El *weighted interval
+  score* (WIS) combina el error de la mediana con la anchura de los
+  intervalos y una penalización por los valores observados que quedan fuera
+  de ellos; menor es mejor [@bracher2021wis]. La cobertura es la fracción de
+  observaciones que caen dentro del intervalo nominal. El *log score* es el
+  logaritmo de la probabilidad que el modelo asignó a lo observado.
+- **Exceso y detección de cambios.** Dado un pronóstico probabilístico, el
+  exceso de un periodo es la posición del valor observado dentro de la
+  distribución predicha, transformada a una escala normal estándar. Sobre
+  esa serie de excesos, el CUSUM [@page1954cusum] acumula lo que supera una
+  referencia y avisa al cruzar un umbral; los umbrales se fijan por
+  simulación para un presupuesto de falsas alarmas, el número de alarmas que
+  se acepta por mes cuando no pasa nada.
+- **Reproducibilidad computacional.** Cada cifra se traza a una versión del
+  código, una versión de los datos y una corrida [@peng2011reproducible],
+  con un sistema de control de versiones para datos y artefactos (DVC) y un
+  registro de experimentos (MLflow).
 
 ## 2.3 Análisis del mercado, industria o contexto
 
 El contexto es la atención de reclamos en entidades financieras reguladas.
-En el Perú, las empresas supervisadas por la SBS deben atender los reclamos
-de sus usuarios dentro de plazos regulados y reportarlos; la gestión diaria
-la realiza un equipo de atención que lee, tipifica, deriva y vigila los
-plazos. El proyecto se diseñó para ese equipo, con una regla de plazo en días
-hábiles y calendario de feriados peruanos (`configs/peru_holidays.yaml`)
-como sustituto del indicador de oportunidad de la CFPB, que no se pudo
-predecir del texto.
+En el Perú, las empresas supervisadas por la Superintendencia de Banca,
+Seguros y AFP (SBS) deben atender los reclamos de sus usuarios dentro de
+plazos regulados y reportarlos; la gestión diaria la realiza un equipo de
+atención que lee, tipifica, deriva y vigila los plazos. El proyecto se
+diseñó para ese equipo, con una regla de plazo en días hábiles y calendario
+de feriados peruanos como sustituto del indicador de oportunidad de la CFPB.
 
 Como un banco peruano no comparte sus reclamos, el prototipo se construyó
 sobre los reclamos públicos de la CFPB de Estados Unidos [@cfpb2026]:
 `{python} i(DATOS["rows"])` reclamos con narrativa entre 2015 y 2026, de los
 cuales `{python} i(DATOS["period_rows"]["train_2023_2024"])` corresponden a
-2023–2024. Es un mercado distinto, con productos y motivos propios, pero
+2023 y 2024. Es un mercado distinto, con productos y motivos propios, pero
 comparte la estructura del problema: texto libre, taxonomía que cambia con
 el tiempo, desbalance fuerte entre motivos y volumen que crece.
 
@@ -137,39 +217,46 @@ el contexto sin dimensionarlo.
 ## 2.4 Benchmarking y competencia
 
 La solución compite contra tres cosas: cómo se decide hoy, las herramientas
-que ya existen y el estado del arte académico.
+que ya existen en el mercado y el estado del arte académico. La tabla
+siguiente resume cada alternativa, su limitación conocida y en qué se
+diferencia la propuesta; ninguna cifra de este proyecto aparece aquí, porque
+los resultados se presentan en el capítulo V.
 
 ```{python}
 #| label: tbl-alternativas
-#| tbl-cap: "Mapa de alternativas: contra qué compite el prototipo y por qué no alcanzan. Las filas del statu quo y de las herramientas comerciales son evidencia documental declarada, no observación en una entidad."
+#| tbl-cap: "Mapa de alternativas: contra qué compite la propuesta, su limitación conocida y el diferenciador. Las filas del statu quo y de las herramientas comerciales son evidencia documental declarada, no observación en una entidad."
 rows = [
-    ["Statu quo: lectura y tipificación manual, una por una", "La persona lee cada reclamo, elige el motivo y deriva", "No ve el conjunto: un aumento de un tipo de reclamo se nota tarde; la tipificación varía entre personas", "SUPUESTO declarado"],
-    ["Regla por producto (referencia del proyecto)", "Asignar a cada producto su motivo más frecuente", f'Macro-F1 {n(T1["rule_calibration"])} en calibración frente a {n(TABPFN["macro_f1"])} del modelo vigente', "dato: tabla comparativa"],
-    ["Clasificador lineal entrenado (TF-IDF o embeddings)", "Lo que usa la literatura sobre la CFPB", f'Macro-F1 {n(T1["candidates"]["bge_product"])} con BGE + producto; TabPFN-3.5 lo supera en {signed_pct(TABPFN["gain"])}', "dato: tabla comparativa"],
-    ["Gestores de reclamos comerciales con tipificación asistida", "Módulos de clasificación de texto dentro de plataformas de atención", "No publican su evaluación en datos comparables; no incluyen vigilancia de patrones con presupuesto de falsas alarmas", "SUPUESTO declarado; PENDIENTE PL: nombrar dos plataformas con fuente"],
-    ["Vigilancia por totales (sin patrones)", "Mirar el volumen total de reclamos por semana", "Un patrón que crece queda oculto en el total; aquí se vigila cada patrón con su expectativa", "dato: diseño de M9–M11"],
-    ["Estado del arte: BERTopic + HDBSCAN para temas", "Tubería estándar de temas con embeddings", "En estos datos deja la mitad de los reclamos como ruido; la proyección no es determinista", "dato: resultados de M7 y §31.1"],
+    ["*Statu quo*: lectura y tipificación manual, una por una", "La persona lee cada reclamo, elige el motivo y deriva", "No ve el conjunto: un aumento de un tipo de reclamo se nota tarde; la tipificación varía entre personas", "SUPUESTO declarado"],
+    ["Reglas por producto", "Asignar a cada producto su motivo o su desenlace más frecuente", "Ignora el texto; es la referencia mínima que cualquier modelo debe superar", "Diseño del protocolo de evaluación"],
+    ["Gestores de reclamos comerciales con tipificación asistida", "Módulos de clasificación de texto dentro de plataformas de atención al cliente", "No publican su evaluación en datos comparables; no incluyen vigilancia de patrones con presupuesto de falsas alarmas", "SUPUESTO declarado; PENDIENTE PL: nombrar dos plataformas con fuente"],
+    ["Vigilancia por totales", "Mirar el volumen total de reclamos por semana", "Un patrón que crece queda oculto en el total", "Diseño: cada patrón se vigila contra su propia expectativa"],
+    ["Clasificadores publicados sobre la CFPB", "TF-IDF o *embeddings* con cabeza lineal y cinco o seis clases gruesas [@bastani2019lda; @roumeliotis2025reasoning; @wang2026cfpbrelief]", "Clases gruesas; no abordan decenas de motivos desbalanceados ni la reutilización de texto", "Revisión de literatura (2.1)"],
+    ["Descubrimiento de temas con BERTopic", "*Embeddings*, UMAP y HDBSCAN [@grootendorst2022bertopic]", "Deja como ruido los documentos que no agrupa; la proyección no es determinista", "Revisión de literatura (2.1)"],
+    ["Vigilancia epidemiológica clásica", "CUSUM y regla de un periodo sobre una línea base de años [@farrington1996outbreak; @salmon2016surveillance]", "Sus correcciones suponen líneas base largas; no están evaluadas con memorias de pocas semanas", "Revisión de literatura (2.1)"],
 ]
-Markdown(md_table(["Alternativa", "Qué hace", "Por qué no alcanza", "Tipo de evidencia"], rows))
+Markdown(md_table(["Alternativa", "Qué hace", "Limitación conocida", "Tipo de evidencia"], rows))
 ```
 
-El diferenciador del prototipo no es un modelo, sino el conjunto: cinco
+El diferenciador de la propuesta no es un modelo sino el conjunto: cinco
 salidas sobre el mismo reclamo y el mismo flujo, con reglas de decisión
 escritas antes de correr, un presupuesto explícito de falsas alarmas y un
-pipeline que puntúa sin reentrenar. El riesgo del entorno es la licencia no
-comercial del componente que más aporta (TabPFN-3.5), que obliga a negociar
-o a usar el clasificador lineal de respaldo.
+*pipeline* que puntúa sin reentrenar. Los riesgos del entorno son dos: la
+licencia de uso no comercial del modelo tabular en contexto que se evalúa
+como clasificador de motivo, que obligaría a negociarla o a usar el
+clasificador lineal de respaldo, y la transferencia a reclamos de una
+entidad, que exige repetir la preparación y la evaluación con su propia
+taxonomía.
 
 ## 2.5 Datos, recursos y viabilidad
 
 ```{python}
 #| label: tbl-inventario
-#| tbl-cap: "Inventario de datos: fuente, unidad de análisis, volumen, periodo, objetivos, acceso y restricción de uso."
+#| tbl-cap: "Inventario de datos: fuente, unidad de análisis, volumen, periodo, uso, acceso y restricción de uso."
 rows = [
-    ["Reclamos públicos de la CFPB con narrativa", "Un reclamo (`Complaint ID` único)", f'{i(DATOS["rows"])} filas, {DATOS["columns"]} columnas, {n(DATOS["size_gib"], 2)} GiB', "2015-03 a 2026-07", "Motivo (T1), solución registrada (T2), compensación (T3), respuesta no oportuna (T4), fecha de recepción para los conteos", "Público, sin registro; narrativas publicadas con autorización del consumidor y anonimizadas por la CFPB; md5 " + DATOS["md5"][:12] + "… en DVC"],
-    ["Calendario de feriados del Perú", "Un día", "un archivo YAML por año", "2026", "Regla de plazo en días hábiles", "Fuente pública (gob.pe); se actualiza cada año"],
-    ["Modelo BGE-large (Hugging Face)", "—", "1.3 GB", "versión fija", "Embeddings del texto", "Licencia MIT; caché local, sin descarga en el clúster"],
-    ["Pesos de TabPFN-3.5 (Prior Labs)", "—", "~1 GB", "versión fija", "Clasificador de motivo", "Licencia no comercial: válida para esta evaluación académica; uso con un banco requiere licencia"],
+    ["Reclamos públicos de la CFPB con narrativa", "Un reclamo (identificador único)", f'{i(DATOS["rows"])} filas, {DATOS["columns"]} columnas, {n(DATOS["size_gib"], 2)} GiB', "2015-03 a 2026-07", "Motivo, solución registrada, compensación, respuesta no oportuna y fecha de recepción para los conteos", "Público, sin registro; narrativas publicadas con autorización del consumidor y anonimizadas por la CFPB; versión fijada por su hash en DVC"],
+    ["Calendario de feriados del Perú", "Un día", "un archivo por año", "2026", "Regla de plazo en días hábiles", "Fuente pública (gob.pe); se actualiza cada año"],
+    ["Modelo de *embeddings* BGE-large", "—", "1.3 GB", "versión fija", "*Embeddings* del texto", "Licencia MIT; caché local, sin descarga en el clúster"],
+    ["Pesos de TabPFN-3.5", "—", "~1 GB", "versión fija", "Clasificador de motivo", "Licencia no comercial: válida para esta evaluación académica; uso con un banco requiere licencia"],
 ]
 Markdown(md_table(["Fuente", "Unidad", "Volumen", "Periodo", "Para qué", "Acceso y permiso"], rows))
 ```
@@ -177,42 +264,42 @@ Markdown(md_table(["Fuente", "Unidad", "Volumen", "Periodo", "Para qué", "Acces
 Los datos alcanzan para el objetivo con dos salvedades que se repiten en todo
 el documento: las etiquetas de la CFPB aproximan, no igualan, las categorías
 internas de un banco, y las cifras obtenidas no se trasladan a otra entidad;
-el método sí. La viabilidad técnica quedó demostrada en la construcción: el
-entrenamiento completo corrió en el clúster Khipu de UTEC (cola estándar,
-hasta 8 horas por trabajo, GPU para embeddings y TabPFN) y el pipeline de
-inferencia puntúa dos semanas de reclamos
-(`{python} i(CIERRE["pipeline"]["rows"])`) en
-`{python} n(CIERRE["pipeline"]["gpu_minutes"], 0)` minutos con GPU o
-`{python} n(CIERRE["pipeline"]["cpu_minutes"] / 60, 1)` horas en CPU con el
-clasificador de respaldo. La viabilidad operativa y financiera se reevalúa en
-el capítulo VI.
+el método sí. Los recursos de cómputo son el clúster Khipu de UTEC (cola
+estándar de hasta 8 horas por trabajo, con GPU para los *embeddings* y para
+el modelo tabular en contexto) para el ajuste, y un equipo común para la
+puntuación, que por diseño no reentrena nada. La viabilidad operativa se
+evalúa en el capítulo VI y la financiera queda para la siguiente fase del
+proyecto.
 
 ## 2.6 Consideraciones normativas, éticas y de privacidad
 
 - **Datos personales.** Los datos son públicos y la CFPB publica cada
-  narrativa solo con autorización del consumidor y tras anonimizarla
-  (las marcas «XXXX» del texto). El proyecto no cruza los reclamos con otras
+  narrativa solo con autorización del consumidor y tras anonimizarla (las
+  marcas «XXXX» del texto). El proyecto no cruza los reclamos con otras
   fuentes ni intenta reidentificar. Si el prototipo se usara con reclamos de
   una entidad peruana, aplicaría la Ley 29733 de Protección de Datos
   Personales y su reglamento [@ley29733; @ds016-2024-jus]: haría falta
   autorización escrita de uso, anonimización de las narrativas antes de
   cualquier procesamiento fuera de la entidad y un registro del tratamiento.
-- **Sesgo y uso de variables sensibles.** `State`, `ZIP code` y `Tags` (que
-  marca adultos mayores y personal militar) no entran como variables de
-  ningún modelo; se conservan solo para auditoría. El texto puede contener
-  rasgos del reclamante, y por eso ninguna salida decide: la persona revisa.
-- **Límites de uso del modelo.** Ninguna salida detecta fraude, mide el
-  plazo interno del banco ni evalúa a un empleado. T2 y T3 describen lo que
-  la empresa respondió históricamente, no lo que el cliente merecía. Las
-  alertas son para revisión humana con un presupuesto de falsas alarmas
-  declarado.
+- **Sesgo y variables sensibles.** El estado, el código postal y las marcas
+  que identifican a adultos mayores y personal militar no entran como
+  variables de ningún modelo; se conservan solo para auditoría. El texto
+  puede contener rasgos del reclamante, y por eso ninguna salida decide: la
+  persona revisa.
+- **Límites de uso del modelo.** Ninguna salida detecta fraude, mide el plazo
+  interno del banco ni evalúa a un empleado. Las probabilidades de solución
+  y de compensación describen lo que la empresa respondió históricamente, no
+  lo que el cliente merecía. Las alertas son para revisión humana, con un
+  presupuesto de falsas alarmas declarado.
 - **Licencias de terceros.** TabPFN-3.5 y TimesFM 3.0 tienen licencia de uso
   no comercial; su lectura debe validarla una persona experta antes de
   cualquier uso fuera de este contexto académico. El resto de componentes
   (BGE, PyMC, FAISS, UMAP) es de código abierto con licencias permisivas.
 - **Gobernanza.** El diseño sigue las prácticas del marco de gestión de
-  riesgos de IA del NIST [@nist2023airmf]: trazabilidad de cada cifra,
-  documentación de límites, revisión humana de cada decisión y señales de
-  reentrenamiento que avisan cuando el modelo deja de describir los datos.
+  riesgos de inteligencia artificial del NIST [@nist2023airmf]: trazabilidad
+  de cada cifra, documentación de límites, revisión humana de cada decisión
+  y señales de reentrenamiento que avisan cuando el modelo deja de describir
+  los datos.
 - **Uso de inteligencia artificial en el trabajo.** Se declara en el anexo E,
-  conforme a la política de la institución del autor principal.
+  conforme a la política de uso aceptable de la institución del autor
+  principal.

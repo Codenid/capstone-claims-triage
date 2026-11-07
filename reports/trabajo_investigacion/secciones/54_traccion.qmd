@@ -3,16 +3,17 @@
 No aplica en el sentido de usuarios o pilotos: el prototipo no se ha puesto
 frente a un equipo de atención real. La evidencia de interés disponible es
 interna y documental: la revisión del informe por los cuatro integrantes del
-equipo (registrada en el issue de conformidad del repositorio del curso), la
-reproducción del pipeline por un segundo integrante desde su propia rama, y
-el observatorio levantado por el ML Engineer sobre las salidas congeladas. La
-adopción se medirá en la siguiente fase con el registro del feedback humano
-(motivos confirmados o corregidos, alertas marcadas como revisadas, reales,
-eco o reasignación).
+equipo (registrada en el repositorio del curso), la reproducción del
+*pipeline* por un segundo integrante desde su propia rama, y el observatorio
+levantado por el ingeniero de aprendizaje automático del equipo sobre las
+salidas congeladas. La adopción se medirá en la siguiente fase con el
+registro de lo que la persona confirma o corrige (motivos confirmados o
+corregidos, alertas marcadas como revisadas, reales, eco o reasignación).
 
 ## 5.5 Discusión de resultados
 
-La discusión tiene tres partes: el cierre del modelado, con el pipeline, los
-tres candidatos rechazados por regla y el contraste con la literatura
-(5.5.1); qué se eligió, qué no funcionó y qué se aprendió (5.5.2); y las
-expectativas y límites que un usuario del prototipo debe conocer (5.5.3).
+La discusión tiene cuatro partes: qué se eligió y por qué (5.5.1); qué no
+funcionó y por qué, incluidos los candidatos del cierre (5.5.2); qué dice la
+literatura de lo encontrado (5.5.3); y qué puede esperar quien use el
+sistema y qué límites debe conocer (5.5.4). Las cifras que se citan están en
+la sección 5.3.

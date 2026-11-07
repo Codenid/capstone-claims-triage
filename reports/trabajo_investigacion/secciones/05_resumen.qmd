@@ -1,32 +1,35 @@
 # RESUMEN {.unnumbered}
 
-Un banco recibe reclamos en texto libre y debe tipificarlos, atenderlos a
-tiempo y notar cuándo algo nuevo está pasando. Este trabajo construye y
-evalúa un prototipo reproducible que apoya a la persona que hace ese triaje
-con cinco salidas: el motivo más probable, la probabilidad de que el reclamo
-termine con solución y con compensación, los reclamos históricos parecidos,
-el patrón semántico al que pertenece y, cada semana y cada día, qué patrones
-reciben más reclamos de lo esperado. Se siguió CRISP-DM con dos
-adaptaciones: pre-registro de la regla de decisión antes de cada corrida y
-evaluación hacia adelante con una validación de un solo uso. Se usaron
+Un banco recibe reclamos escritos y debe decidir de qué trata cada uno,
+atenderlo a tiempo y notar cuándo algo nuevo está pasando. Este trabajo
+construye y evalúa un sistema de apoyo al triaje que entrega a la persona
+que hace ese trabajo cinco salidas: el motivo más probable del reclamo, la
+probabilidad de que termine con solución y con compensación, los reclamos
+históricos parecidos, el patrón semántico al que pertenece y, cada semana y
+cada día, qué patrones reciben más reclamos de lo esperado. Se siguió
+CRISP-DM con dos adaptaciones: la regla de decisión de cada modelo se
+escribió antes de correrlo y la evaluación fue hacia adelante en el tiempo,
+con una validación de un solo uso. Se usaron
 `{python} i(DATOS["rows"])` reclamos públicos de la CFPB y una vista que
-excluye el texto reutilizado. Un modelo tabular en contexto (TabPFN-3.5)
-sugiere el motivo entre 90 clases con Macro-F1
-`{python} n(TABPFN["macro_f1"])` frente a `{python} n(T1["rule_calibration"])`
-de la regla por producto; modelos lineales estiman solución y compensación;
-40 patrones sobre embeddings organizan el flujo; una binomial negativa
-jerárquica con memoria corta predice el volumen semanal con
+excluye el texto reutilizado. Un modelo tabular en contexto, que no se
+entrena, sugiere el motivo entre 90 clases con Macro-F1
+`{python} n(TABPFN["macro_f1"])` frente a
+`{python} n(T1["rule_calibration"])` de la regla por producto; modelos
+lineales estiman la solución y la compensación; 40 patrones sobre
+*embeddings* organizan el flujo; una binomial negativa con memoria corta
+predice el volumen semanal con
 `{python} pct(SEMANAL["c_a_vs_poisson"]["wis_gain"], 0)` menos error que la
-referencia Poisson, y un CUSUM detecta crecimientos de 20 % semanal en
+referencia, y una regla acumulada detecta crecimientos de 20 % semanal en
 `{python} pct(ALERTAS["detection"]["growth_20"]["cusum"]["detected"], 0)` de
-los casos con una falsa alarma al mes. El conteo diario funciona; la alerta
-diaria no alcanzó la detección exigida y se declara como límite. Un pipeline
-puntúa reclamos nuevos sin reentrenar y el contraste con la literatura
-respalda las elecciones centrales. El método se traslada a un banco; las
-cifras no.
+los casos con una falsa alarma al mes. La respuesta fuera de plazo no se
+anticipa del texto y la alerta diaria no alcanzó la detección exigida; ambos
+límites se declaran. Un *pipeline* puntúa reclamos nuevos sin reentrenar y
+el contraste con la literatura respalda las elecciones centrales. El método
+se traslada a un banco; las cifras no.
 
-**PALABRAS CLAVES:** triaje de reclamos; clasificación de texto; TabPFN;
-patrones semánticos; binomial negativa; CUSUM; pre-registro; CFPB.
+**PALABRAS CLAVES:** triaje de reclamos; clasificación de texto; modelo
+tabular en contexto; patrones semánticos; binomial negativa; CUSUM;
+pre-registro; CFPB.
 
 ```{=openxml}
 <w:p><w:r><w:br w:type="page"/></w:r></w:p>
@@ -40,33 +43,33 @@ patrones semánticos; binomial negativa; CUSUM; pre-registro; CFPB.
 **HUMAN-IN-THE-LOOP TRIAGE OF FINANCIAL COMPLAINTS: SUGGESTED ISSUE,
 HISTORICAL OUTCOMES, SEMANTIC PATTERNS AND ALERTS ON CFPB PUBLIC COMPLAINTS**
 
-A bank receives free-text complaints and must classify them, answer them on
-time and notice when something new is happening. This work builds and
-evaluates a reproducible triage prototype that supports the person doing
-that work with five outputs: the most likely issue, the probability that the
+A bank receives written complaints and must decide what each one is about,
+answer it on time and notice when something new is happening. This work
+builds and evaluates a triage support system that gives the person doing
+that work five outputs: the most likely issue, the probability that the
 complaint ends with relief and with monetary relief, similar historical
 complaints, the semantic pattern it belongs to and, every week and every
 day, which patterns receive more complaints than expected. CRISP-DM was
-followed with two adaptations: the decision rule of every run was
-pre-registered, and evaluation was forward in time with a single-use
+followed with two adaptations: the decision rule of every model was written
+before running it, and evaluation was forward in time with a single-use
 validation period. `{python} i(DATOS["rows"])` public CFPB complaints were
-used, with a view that excludes reused text. An in-context tabular model
-(TabPFN-3.5) suggests the issue among 90 classes with macro-F1
+used, with a view that excludes reused text. An in-context tabular model,
+which is not trained, suggests the issue among 90 classes with macro-F1
 `{python} n(TABPFN["macro_f1"])` against `{python} n(T1["rule_calibration"])`
 for the product rule; linear models estimate relief and monetary relief; 40
-patterns over embeddings organize the flow; a hierarchical negative binomial
-with short memory forecasts weekly volume per pattern with
+patterns over embeddings organize the flow; a negative binomial with short
+memory forecasts weekly volume per pattern with
 `{python} pct(SEMANAL["c_a_vs_poisson"]["wis_gain"], 0)` less error than the
-Poisson reference, and a CUSUM detects 20 % weekly growth in
+reference, and a cumulative-sum rule detects 20 % weekly growth in
 `{python} pct(ALERTAS["detection"]["growth_20"]["cusum"]["detected"], 0)` of
-simulated cases at one false alarm per month. Daily counts work; the daily
-alert did not reach the required detection and is declared as a limit. A
-pipeline scores new complaints without retraining, and a contrast with the
-literature supports the central choices. The method transfers to a bank;
-the figures do not.
+simulated cases at one false alarm per month. Untimely response cannot be
+anticipated from the text and the daily alert did not reach the required
+detection; both limits are declared. A pipeline scores new complaints
+without retraining, and a contrast with the literature supports the central
+choices. The method transfers to a bank; the figures do not.
 
-**KEYWORDS:** complaint triage; text classification; TabPFN; semantic
-patterns; negative binomial; CUSUM; pre-registration; CFPB.
+**KEYWORDS:** complaint triage; text classification; in-context tabular
+model; semantic patterns; negative binomial; CUSUM; pre-registration; CFPB.
 
 ```{=openxml}
 <w:p><w:r><w:br w:type="page"/></w:r></w:p>

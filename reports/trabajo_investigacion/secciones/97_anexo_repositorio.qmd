@@ -4,22 +4,49 @@
 #| label: tbl-repositorio
 #| tbl-cap: "Dónde está el código, los datos y los resultados, y con qué versión se renderizó este documento."
 rows = [
-    ["Repositorio del curso", "`https://github.com/utec-dsia/pi1-262-g1`, rama `modeling` (código, documentación, informes); rama `entrega` (prototipo del observatorio)"],
-    ["Repositorio de desarrollo", "`https://github.com/Codenid/capstone-claims-triage`, rama `Modeling/pipaber`, con el historial completo de commits"],
+    ["Repositorio del curso", "https://github.com/utec-dsia/pi1-262-g1, rama `modeling` (código, documentación, informes); rama `entrega` (prototipo del observatorio)"],
+    ["Repositorio de desarrollo", "https://github.com/Codenid/capstone-claims-triage, rama `Modeling/pipaber`, con el historial completo de commits"],
     ["Commit de este render", f"`{GIT_SHA}` ({GIT_DATE})"],
-    ["Etiqueta congelada", "PENDIENTE: etiqueta del 15 de noviembre de 2026 (code freeze) y su SHA"],
-    ["Datos y artefactos", "DVC con remoto en DagsHub (`WinzCode/capstone-claims-triage`); 119 punteros; tabla preparada `datos-v1`, md5 " + DATOS["md5"][:12] + "…"],
-    ["Experimentos", "MLflow en DagsHub, experimento `claims-triage-modeling`, 87 corridas; exportación en `reports/modeling/mlflow_runs.json` y página interactiva en `reports/experimentos/`"],
-    ["Registro de decisiones", "`docs/registro/models_plan.md` (pre-registro, §1–§32) y `docs/decisiones/0001`–`0008`"],
-    ["Entorno y semillas", "`pyproject.toml` y `uv.lock`; semilla 42 en `configs/modeling.yaml`; jobs de clúster en `scripts/hpc/`"],
-    ["Instrucciones de ejecución", "`README.md`, `etapa_6_despliegue/README.md` y `docs/pipeline.md`"],
+    ["Etiqueta congelada", "PENDIENTE: etiqueta del 15 de noviembre de 2026 (congelamiento del código) y su SHA"],
+    ["Datos y artefactos", "DVC con remoto en DagsHub (`WinzCode/capstone-claims-triage`); 119 punteros; tabla preparada `datos-v1`, hash " + DATOS["md5"][:12] + "…"],
+    ["Experimentos", "MLflow en DagsHub, experimento `claims-triage-modeling`, 87 corridas; exportación y página interactiva en el repositorio (tabla siguiente)"],
+    ["Entorno y semillas", "Dependencias fijadas (`pyproject.toml`, `uv.lock`); semilla 42; trabajos de clúster en `scripts/hpc/`"],
     ["Historial de versiones del informe", "Git: `reports/informe/` (informe de cierre, P2–P4) y `reports/trabajo_investigacion/` (este documento); cada render deja su commit en esta tabla"],
     ["Estilo de citado", "IEEE, según los lineamientos de estilo de citado del programa para la Maestría en Ciencia de Datos e Inteligencia Artificial; el informe de cierre de `reports/informe/` conserva APA 7 como pide la rúbrica del P4"],
 ]
 Markdown(md_table(["Elemento", "Dónde"], rows))
 ```
 
-Cómo regenerar este documento desde un clon limpio:
+La tabla siguiente ubica la evidencia de cada fase y cada afirmación de este
+documento. Todas las rutas son relativas a la raíz del repositorio del curso
+en la rama `modeling`: `https://github.com/utec-dsia/pi1-262-g1/tree/modeling/`.
+
+```{python}
+#| label: tbl-evidencia
+#| tbl-cap: "Evidencia en el repositorio por fase y por tema, como rutas relativas a la raíz de la rama modeling del repositorio del curso."
+rows = [
+    ["Comprensión del negocio: alcance, tareas y fugas", "`docs/decisiones/0001-alcance-y-fugas.md`; `etapa_1_2_comprension/`"],
+    ["Análisis exploratorio", "`notebooks/01_eda.ipynb`; `docs/resumen-eda.md`"],
+    ["Preparación de datos", "`dvc.yaml`; `params.yaml`; `docs/diccionario/`; `reports/preparation/`"],
+    ["Catálogo de modelos y resultados por etapa", "`docs/modelos.md`; `reports/modeling/`"],
+    ["Registro de pre-registro (reglas con fecha, §1–§32)", "`docs/registro/models_plan.md`"],
+    ["Decisiones de diseño", "`docs/decisiones/0001` a `0008`"],
+    ["Tabla comparativa de candidatos (anexo B)", "`etapa_4_5_modelado_evaluacion/resultados/comparacion_modelos.csv`"],
+    ["Catálogo interactivo de los 40 patrones (anexo A)", "`reports/modeling/patterns/catalogo.html`"],
+    ["Revisión de literatura con Paper Finder (2.1)", "`docs/literatura/revision_asta.md`"],
+    ["Contraste con la literatura con Theorizer (5.3.2 y 5.5.3)", "`docs/literatura/theorizer_pb24.md`; `reports/modeling/theorizer_pb24.json`"],
+    ["Exportación de MLflow y página interactiva de experimentos", "`reports/modeling/mlflow_runs.json`; `reports/experimentos/experimentos.html`"],
+    ["Pipeline de inferencia y guía de uso (3.2)", "`src/pipeline/`; `docs/pipeline.md`"],
+    ["Pruebas unitarias", "`tests/`"],
+    ["Animación del flujo diario y prototipo de pantallas", "`etapa_6_despliegue/flujo_diario.html`; `etapa_6_despliegue/prototipo_pantallas/`"],
+    ["Observatorio", "`prototipo/` (rama `entrega`)"],
+    ["Informe de cierre del curso (P4, APA 7)", "`reports/informe/`"],
+    ["Este documento (fuente Quarto, Word y PDF)", "`reports/trabajo_investigacion/`"],
+]
+Markdown(md_table(["Tema", "Ruta"], rows))
+```
+
+Cómo regenerar este documento desde una copia limpia del repositorio:
 
 ```bash
 uv sync --frozen

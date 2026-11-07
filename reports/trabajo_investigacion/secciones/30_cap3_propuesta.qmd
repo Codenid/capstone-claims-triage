@@ -2,122 +2,146 @@
 
 ## 3.1 Descripción de la solución
 
-La solución es una **mesa de triaje asistida**: un sistema que, para cada
-reclamo escrito que llega, entrega evidencia a la persona que lo atiende y,
-para el conjunto de reclamos de la semana y del día, muestra qué patrones
-reciben más de lo esperado. No decide: sugiere, estima y avisa; la decisión
-queda en la persona, y lo que ella confirma o corrige se guarda.
+La solución es un **sistema de apoyo al triaje**: para cada reclamo escrito
+que llega, entrega evidencia a la persona que lo atiende y, para el conjunto
+de reclamos de la semana y del día, muestra qué patrones reciben más de lo
+esperado. No decide: sugiere, estima y avisa; la decisión queda en la
+persona, y lo que ella confirma o corrige se guarda para mejorar el sistema.
+
+Las salidas se organizan alrededor de cuatro tareas de predicción, que en
+adelante se nombran con un código corto: sugerir el motivo del reclamo
+(T1), anticipar si tendrá alguna solución registrada (T2), anticipar si
+tendrá compensación monetaria (T3) y anticipar si la respuesta llegará fuera
+de plazo (T4). Las tres primeras son salidas del sistema; la cuarta se
+evaluó con el mismo protocolo y su resultado se presenta en el capítulo V.
 
 ```{python}
 #| label: tbl-salidas
-#| tbl-cap: "Las cinco salidas del prototipo, el componente que las produce, su cifra vigente en calibración y para qué sirve a la persona que hace el triaje."
+#| tbl-cap: "Las cinco salidas del sistema, el componente que produce cada una y para qué le sirve a la persona que hace el triaje."
 rows = [
-    ["Motivo sugerido (T1)", "TabPFN-3.5 sobre PCA 100 de BGE + producto", f'Macro-F1 {n(TABPFN["macro_f1"])}; acierta entre los tres primeros en {pct(TABPFN["top_three"], 0)}', "Reduce lectura y derivaciones erradas; la persona confirma o corrige"],
-    ["Probabilidad de solución registrada (T2) y de compensación (T3)", "Logística calibrada sobre TF-IDF del texto", f'AP {n(T2["candidates"][T2["selected"]])} y {n(T3["candidates"][T3["selected"]])}', "Priorizar y anticipar la respuesta"],
-    ["Reclamos parecidos", "Índice FAISS sobre embeddings BGE", f'similitud mediana {n(SEM["faiss"]["top1_similarity_median"])}', "Ver cómo terminaron casos similares"],
-    ["Patrón semántico y novedad", "PCA 256 → UMAP 15 → k-means 40; novedad si distancia > p99", f'{pct(SEM["novelty"]["calibration"]["novel_fraction"], 2)} novedosos en calibración', "Organizar el flujo; detectar lo que no se parece a nada conocido"],
-    ["Patrones que suben (semana y día)", "M9 (C-A) y D-D para lo esperado e intervalos; M11 (CUSUM) para la alerta semanal; M10 para la mezcla rara", f'WIS {n(SEMANAL["c_a"]["wis"], 1)} semanal y {n(DIARIO["winner"]["wis"], 2)} diario; {n(ALERTAS["real"]["calibration"]["cusum_per_month"], 1)} alertas al mes', "Actuar sobre un aumento sostenido antes de que crezca"],
+    ["Motivo sugerido (T1)", "Modelo tabular en contexto sobre los *embeddings* comprimidos del texto más el producto; devuelve los tres motivos más probables", "Reduce lectura y derivaciones erradas; la persona confirma o corrige"],
+    ["Probabilidad de solución registrada (T2) y de compensación (T3)", "Clasificadores lineales calibrados sobre el texto", "Priorizar y anticipar la respuesta"],
+    ["Reclamos parecidos", "Índice de vecinos sobre los *embeddings*", "Ver cómo terminaron casos similares"],
+    ["Patrón semántico y novedad", "Partición del espacio semántico en 40 patrones; un reclamo es novedoso si queda lejos de todos los centros", "Organizar el flujo; detectar lo que no se parece a nada conocido"],
+    ["Patrones que suben (semana y día)", "Modelos bayesianos de conteo para la expectativa y los intervalos; regla acumulada para la alerta semanal; modelo de composición para la mezcla rara", "Actuar sobre un aumento sostenido antes de que crezca"],
 ]
-Markdown(md_table(["Salida", "Componente", "Cifra vigente (calibración)", "Para qué"], rows))
+Markdown(md_table(["Salida", "Componente", "Para qué"], rows))
 ```
 
-El producto tiene dos modos de uso: **por lotes**, que puntúa cada día la
-tabla de reclamos nuevos y alimenta el observatorio (patrones que suben), y
-**por reclamo**, que devuelve la ficha de un reclamo cuando la persona lo abre.
-Una capa de lenguaje natural, prevista para la siguiente fase, solo explica y
+El sistema tiene dos modos de uso. **Por lotes**, puntúa cada día la tabla de
+reclamos nuevos y alimenta el observatorio de patrones que suben. **Por
+reclamo**, devuelve la ficha de un reclamo cuando la persona lo abre. Una
+capa de lenguaje natural, prevista para la siguiente fase, solo explica y
 redacta a partir de las salidas de los modelos; no clasifica ni decide
 (sección 3.4).
 
 ## 3.2 Arquitectura o diseño funcional
 
-El pipeline se divide en dos momentos: **ajustar una vez** y **puntuar
-muchas veces** (figura @fig-arquitectura). El ajuste corre en el clúster
-Khipu y deja cada componente congelado en DVC con su clave de corrida y su
-hash; la puntuación carga esos archivos y aplica aritmética, sin reentrenar.
+El *pipeline* separa dos momentos: **ajustar una vez** y **puntuar muchas
+veces** (@fig-arquitectura). El ajuste corre en el clúster y deja cada
+componente congelado, con la versión de los datos y la clave de la corrida
+que lo produjo. La puntuación carga esos componentes y aplica aritmética a
+los reclamos nuevos, sin reentrenar nada; por eso corre en un equipo común.
 
 ```{python}
 #| label: fig-arquitectura
-#| fig-cap: "Arquitectura mínima del prototipo: datos por DVC, componentes congelados con su corrida en MLflow, pipeline de puntuación y las dos salidas (ficha del reclamo y observatorio). Los límites de cómputo son los de la prueba de punta a punta."
+#| fig-cap: "Arquitectura del sistema. Arriba, el ajuste, que corre una vez en el clúster y deja componentes congelados. Abajo, la puntuación, que carga esos componentes y procesa cada lote de reclamos nuevos sin reentrenar; sus dos salidas son la ficha por reclamo y la vista de patrones que suben."
 import matplotlib.patches as patches
-fig, ax = plt.subplots(figsize=(6.3, 3.6))
+fig, ax = plt.subplots(figsize=(6.3, 3.3))
 ax.set_xlim(0, 100); ax.set_ylim(0, 60); ax.axis("off"); ax.grid(False)
-def box(x, y, w, h, title, body, color):
-    ax.add_patch(patches.FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.4,rounding_size=1.2", linewidth=1, edgecolor=color, facecolor="white"))
-    ax.text(x + 1.2, y + h - 2.6, title, fontsize=8, fontweight="bold", color=color, va="top")
-    ax.text(x + 1.2, y + h - 7.2, body, fontsize=6.8, va="top", linespacing=1.3)
+
+def box(x, y, w, h, text, color, bold=False):
+    ax.add_patch(patches.FancyBboxPatch((x, y), w, h, boxstyle="round,pad=0.3,rounding_size=1.5", linewidth=1.2, edgecolor=color, facecolor="white"))
+    ax.text(x + w / 2, y + h / 2, text, ha="center", va="center", fontsize=8.2, color="#1f2933", fontweight="bold" if bold else "normal", linespacing=1.25)
+
 def arrow(x1, y1, x2, y2):
-    ax.annotate("", xy=(x2, y2), xytext=(x1, y1), arrowprops=dict(arrowstyle="->", lw=0.9, color="#52606d"))
-box(1, 38, 30, 20, "Datos (DVC, DagsHub)", "Crudo CFPB 1.6 GB → P1–P6 → tabla preparada\n(datos-v1, md5 " + DATOS["md5"][:8] + ")\nhistoria de conteos semanal y diaria", VERDE)
-box(35, 38, 30, 20, "Ajuste, una vez (Khipu)", "T1 contexto · T2/T3 · BGE+PCA+UMAP+k-means\nFAISS · M9 · M10 · M11 · D-D\n" + str(len(TABLA)) + " filas de comparación; 87 corridas en MLflow", AZUL)
-box(69, 38, 30, 20, "Congelado (DVC)", "posterior.nc, .joblib, índice FAISS,\numbrales y claves de corrida;\n13.7 GB en total", "#6b4c9a")
-box(18, 8, 44, 22, "Puntuar, muchas veces (src/pipeline score)", "tabla nueva (4 columnas) → P1–P3 → embeddings →\npatrón y novedad → T2/T3 → T1 → vecinos →\nconteos semana/día → señales de reentrenamiento\n" + f'{i(CIERRE["pipeline"]["rows"])} reclamos: {n(CIERRE["pipeline"]["gpu_minutes"], 0)} min GPU · {n(CIERRE["pipeline"]["cpu_minutes"] / 60, 1)} h CPU', NARANJA)
-box(66, 8, 33, 22, "Salidas", "complaints.csv: ficha por reclamo\nweekly.csv, daily.csv, mixture.csv: patrones\nscore.json: alertas y señales\nObservatorio (Streamlit) y API por reclamo", "#b3261e")
-arrow(16, 38, 40, 31); arrow(69, 48, 65, 48); arrow(84, 38, 62, 30); arrow(62, 19, 66, 19)
-ax.text(1, 2, "Límites: embeddings y TabPFN requieren GPU para lotes grandes; en CPU, clasificador lineal de respaldo. Sin reentrenamiento en la puntuación.", fontsize=6.5, color="#52606d")
+    ax.annotate("", xy=(x2, y2), xytext=(x1, y1), arrowprops=dict(arrowstyle="-|>", lw=1.1, color="#52606d", shrinkA=0, shrinkB=0))
+
+# banda superior: ajustar una vez
+ax.add_patch(patches.Rectangle((1, 33), 98, 26, facecolor="#eef3f8", edgecolor="none"))
+ax.text(3, 56.5, "AJUSTAR UNA VEZ  ·  clúster con GPU", fontsize=8, color=AZUL, fontweight="bold", va="center")
+box(3, 36, 20, 16, "Reclamos\nhistóricos\n(versionados)", AZUL)
+box(27, 36, 20, 16, "Preparación:\ntexto, taxonomía,\nperiodos", AZUL)
+box(51, 36, 22, 16, "Componentes:\nclasificadores, espacio\nsemántico, conteos", AZUL)
+box(77, 36, 20, 16, "Componentes\ncongelados\n(versionados)", AZUL, bold=True)
+arrow(23, 44, 27, 44); arrow(47, 44, 51, 44); arrow(73, 44, 77, 44)
+
+# banda inferior: puntuar muchas veces
+ax.add_patch(patches.Rectangle((1, 1), 98, 29, facecolor="#fdf3e7", edgecolor="none"))
+ax.text(3, 27.5, "PUNTUAR MUCHAS VECES  ·  equipo común, cada día", fontsize=8, color=NARANJA, fontweight="bold", va="center")
+box(3, 5, 20, 17, "Reclamos\nnuevos\n(4 columnas)", NARANJA)
+box(31, 5, 30, 17, "Pipeline de puntuación\n(nueve pasos en orden fijo,\nsin reentrenar)", NARANJA, bold=True)
+box(69, 5, 28, 17, "Ficha por reclamo\n\nPatrones que suben\n(semana y día)", NARANJA)
+arrow(23, 13.5, 31, 13.5); arrow(61, 13.5, 69, 13.5)
+arrow(87, 36, 50, 22)
+ax.text(70, 30.5, "carga los componentes", fontsize=7, color="#52606d", ha="center", va="center", style="italic")
 plt.show()
 ```
 
-El flujo de puntuación tiene nueve pasos en orden fijo: preparación
-(esquema, texto, taxonomía congelada), embeddings BGE-large, patrón y
-novedad, T2 y T3, T1, vecinos, conteos semanales con M9, M10 y M11, conteos
-diarios con D-D, y resumen con las señales de reentrenamiento. Cada paso lee
-un archivo congelado concreto y escribe columnas concretas; la guía de uso y
-límites está en `docs/pipeline.md` y una animación del flujo diario en
-`etapa_6_despliegue/flujo_diario.html`.
+El flujo de puntuación tiene nueve pasos en orden fijo: (1) preparación del
+lote (esquema, texto normalizado, taxonomía congelada); (2) *embeddings* del
+texto; (3) patrón y novedad; (4) probabilidades de solución y compensación;
+(5) motivo sugerido; (6) reclamos parecidos; (7) conteos semanales con la
+expectativa, el exceso, la alerta y la mezcla rara; (8) conteos diarios con
+su expectativa; y (9) resumen con las señales de reentrenamiento. Cada paso
+lee un componente congelado concreto y escribe columnas concretas. La guía
+de uso y una animación del flujo diario están enlazadas en el anexo F.
 
 ## 3.3 Requisitos funcionales y no funcionales
 
 ```{python}
 #| label: tbl-requisitos
-#| tbl-cap: "Requisitos del prototipo y cómo se cumplen o verifican."
+#| tbl-cap: "Requisitos del sistema y cómo se cumplen o verifican."
 rows = [
-    ["RF1", "Recibir una tabla de reclamos con cuatro columnas obligatorias (id, fecha, producto, narrativa) y rechazar filas inválidas", "Contrato de entrada `src/pipeline/contract.py`; pruebas unitarias"],
-    ["RF2", "Entregar por reclamo el motivo top-3 con probabilidad, T2/T3, patrón, novedad y cinco vecinos", "`complaints.csv` y `.parquet` del pipeline"],
-    ["RF3", "Entregar por semana y día lo esperado, el intervalo y el estado (alerta, por encima, dentro)", "`weekly.csv`, `daily.csv`; vista «patrones que suben» del prototipo de pantallas"],
+    ["RF1", "Recibir una tabla de reclamos con cuatro columnas obligatorias (identificador, fecha, producto, narrativa) y rechazar las filas inválidas", "Contrato de entrada con pruebas unitarias"],
+    ["RF2", "Entregar por reclamo los tres motivos más probables con su probabilidad, las probabilidades de solución y compensación, el patrón, la novedad y cinco reclamos parecidos", "Tabla de salida por reclamo"],
+    ["RF3", "Entregar por semana y por día lo esperado, el intervalo y el estado de cada patrón (alerta, por encima, dentro)", "Tablas semanal y diaria; vista «patrones que suben» del prototipo de pantallas"],
     ["RF4", "Registrar lo que la persona confirma o corrige y marcar cada alerta (revisada, real, eco, reasignación)", "Diseño de la ficha del reclamo; implementación en la siguiente fase"],
-    ["RF5", "Avisar cuándo reentrenar", "`signals` en `score.json`: novedad > 3 %, cobertura 80 % < 70 %, mezcla rara, caída de Macro-F1 > 5 %"],
-    ["RNF1", "Reproducible por un tercero desde un clon limpio", "`uv sync --frozen`, `dvc pull`, `python -m src.pipeline fit`; CI del repositorio en verde"],
-    ["RNF2", "Trazable: cada cifra apunta a un commit, una versión de datos y una corrida", "Etiquetas de MLflow (`git_commit`, `datos_md5`, `run_key`); manifiesto de hashes en `score.json`"],
-    ["RNF3", "Latencia de lote: dos semanas de reclamos en menos de una hora con GPU", f'{n(CIERRE["pipeline"]["gpu_minutes"], 0)} minutos en la prueba de punta a punta'],
-    ["RNF4", "Sin datos ni credenciales en Git; artefactos grandes por DVC", "Guard de datos del repositorio del curso en cada push"],
-    ["RNF5", "Revisión humana obligatoria: ninguna salida ejecuta una acción", "Diseño del producto; límites declarados en el README del prototipo"],
+    ["RF5", "Avisar cuándo reentrenar", "Señales en el resumen de cada puntuación: reclamos novedosos por encima de 3 %, cobertura del intervalo de 80 % por debajo de 70 %, mezcla rara, caída del Macro-F1 mayor de 5 %"],
+    ["RNF1", "Reproducible por un tercero desde una copia limpia del repositorio", "Instalación fija del entorno, descarga de los artefactos versionados y un comando de ajuste; integración continua del repositorio"],
+    ["RNF2", "Trazable: cada cifra apunta a una versión del código, una versión de los datos y una corrida", "Etiquetas de cada corrida en el registro de experimentos; manifiesto con el hash de cada archivo usado en cada puntuación"],
+    ["RNF3", "Latencia de lote: dos semanas de reclamos en menos de una hora con GPU", "Prueba de punta a punta (capítulo V)"],
+    ["RNF4", "Sin datos ni credenciales en el repositorio; artefactos grandes versionados aparte", "Verificación automática en cada publicación del repositorio del curso"],
+    ["RNF5", "Revisión humana obligatoria: ninguna salida ejecuta una acción", "Diseño del producto; límites declarados en la documentación del prototipo"],
 ]
 Markdown(md_table(["Id", "Requisito", "Cómo se cumple o verifica"], rows))
 ```
 
 ## 3.4 Evolución de producto o roadmap de solución
 
-- **Fase actual (MVP, noviembre de 2026).** Pipeline de puntuación por
-  lotes probado de punta a punta; observatorio en Streamlit con el motivo
-  sugerido, la expectativa semanal con bandas, las alertas de M11 y el
-  catálogo de patrones; prototipo de pantallas con la ficha del reclamo y la
-  vista fusionada «patrones que suben» (semana y día con filtro de fechas).
-- **Siguiente fase (Capstone II).** Ficha completa en el observatorio (T2/T3,
-  vecinos con desenlace, novedad y fiabilidad del patrón); registro del
-  feedback humano; API por reclamo; capa de lenguaje natural con LangGraph
-  que resume precedentes, explica una alerta y redacta un borrador de
-  respuesta a partir de las salidas, con revisión humana obligatoria; alerta
-  multiescala (semanal más suma móvil de cuatro semanas) y cuarentena de las
-  semanas con alarma.
-- **Escalamiento.** Transferencia a reclamos propios de una entidad:
-  repetir preparación, protocolo y rondas de candidatos con la taxonomía
-  revisada por el negocio; reentrenamiento trimestral de los modelos de conteo
-  y por señal de los clasificadores y patrones.
+- **Fase actual (MVP, noviembre de 2026).** *Pipeline* de puntuación por
+  lotes probado de punta a punta; observatorio con el motivo sugerido, la
+  expectativa semanal con bandas, las alertas y el catálogo de patrones;
+  prototipo de pantallas con la ficha del reclamo y la vista «patrones que
+  suben» (semana y día con filtro de fechas).
+- **Siguiente fase (Capstone II).** Ficha completa en el observatorio
+  (solución y compensación, vecinos con desenlace, novedad y fiabilidad del
+  patrón); registro de lo que la persona confirma o corrige; servicio por
+  reclamo; capa de lenguaje natural que resume precedentes, explica una
+  alerta y redacta un borrador de respuesta a partir de las salidas, con
+  revisión humana obligatoria; alerta en dos escalas (semanal y suma móvil
+  de cuatro semanas) y cuarentena de las semanas con alarma.
+- **Escalamiento.** Transferencia a reclamos propios de una entidad: repetir
+  preparación, protocolo y rondas de candidatos con la taxonomía revisada por
+  el negocio; reentrenamiento trimestral de los modelos de conteo y por señal
+  de los clasificadores y patrones.
 
 ## 3.5 Modelo de negocio o sostenibilidad de la solución
 
 El valor de la solución está en tres efectos sobre el equipo de atención:
-menos tiempo de lectura y menos derivaciones erradas por reclamo (T1 y
-vecinos), mejor priorización (T2 y T3) y detección temprana de aumentos
-sostenidos por patrón (M9–M11), que hoy se notan tarde. Operativamente se
-sostiene con un pipeline que no reentrena en producción, corre en un equipo
-común para lotes moderados y tiene reglas claras de cuándo volver a entrenar.
+menos tiempo de lectura y menos derivaciones erradas por reclamo (motivo
+sugerido y reclamos parecidos), mejor priorización (solución y compensación)
+y detección temprana de aumentos sostenidos por patrón, que hoy se notan
+tarde. Operativamente se sostiene con un *pipeline* que no reentrena en
+producción, corre en un equipo común para lotes moderados y tiene reglas
+claras de cuándo volver a entrenar.
 
 ::: {custom-style="Aviso"}
 PENDIENTE (Product Lead): modelo de negocio y pagador. Hace falta el bloque 10
-del one-pager: quién paga (gerencia de atención al cliente o de riesgo
+del *one-pager*: quién paga (gerencia de atención al cliente o de riesgo
 operativo, por ejemplo), qué costo evita (horas de lectura y derivaciones
 erradas por reclamo, multas por plazos vencidos) y bajo qué modalidad se
 sostiene (licencia interna, servicio). Cada cifra debe ir etiquetada como dato
-o supuesto con su fuente; la viabilidad financiera se trata en la sección 6.2.
+o supuesto con su fuente. La viabilidad financiera se desarrolla en la
+siguiente fase (Capstone II).
 :::

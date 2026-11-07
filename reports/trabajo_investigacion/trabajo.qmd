@@ -45,6 +45,10 @@ with Image.open(F["diario"]["backtest_figure"]) as image:
     panels = 4
     image.crop((0, 0, image.width, int(image.height * panels / 8))).save(Path("figuras") / "diario_backtest.png")
 DATOS, CLAS, SEM = F["datos"], F["clasificadores"], F["semantico"]
+# Patrón de la ráfaga de enero de 2025: el que tiene alerta de M11 esa semana y más reclamos en ajuste.
+_rafaga = [p for p in F["catalogo"] if "2025-01-13" in (p.get("alert_weeks") or {}).get("validation", [])]
+PATRON_RAFAGA = max(_rafaga or F["catalogo"], key=lambda p: p["fit_rows"])
+shutil.copy(Path("figuras") / PATRON_RAFAGA["image"], Path("figuras") / "patron_rafaga.png")
 SEMANAL, COMP, ALERTAS, DIARIO = F["semanal"], F["composicion"], F["alertas"], F["diario"]
 CATALOGO, TABLA, CIERRE = F["catalogo"], F["tabla"], F["cierre"]
 T1, T2, T3, T4 = (CLAS["tasks"][t] for t in ("T1", "T2", "T3", "T4"))
@@ -66,14 +70,16 @@ ORDER = [
     "60_cap6_implementacion.qmd", "70_conclusiones.qmd",
 ]
 def captions(kind):
+    """Captions of labelled tables or figures, in document order."""
     found = []
+    chunk = re.compile(r"^#\| " + kind + r"-cap: \"(.*)\"$", flags=re.M)
+    image = re.compile(r"^!\[(.*?)\]\(.*?\)\{#fig-", flags=re.M)
     for name in ORDER:
         text = (HERE / "secciones" / name).read_text(encoding="utf-8")
-        for m in re.finditer(r"^#\| " + kind + r"-cap: \"(.*)\"$", text, flags=re.M):
-            found.append(m.group(1))
+        hits = [(m.start(), m.group(1)) for m in chunk.finditer(text)]
         if kind == "fig":
-            for m in re.finditer(r"^!\[(.*?)\]\(.*?\)\{#fig-", text, flags=re.M):
-                found.append(m.group(1))
+            hits += [(m.start(), m.group(1)) for m in image.finditer(text)]
+        found.extend(caption for _, caption in sorted(hits))
     return found
 ```
 

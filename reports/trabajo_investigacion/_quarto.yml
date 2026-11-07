@@ -28,6 +28,7 @@ format:
     fig-height: 3.3
     fig-dpi: 200
   typst:
+    citeproc: true
     papersize: a4
     margin:
       x: 2.5cm
