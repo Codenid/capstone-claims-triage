@@ -29,9 +29,9 @@ AUTORES
 :::
 
 ::: {custom-style="PortadaTexto"}
-Piero Palacios Bernuy (ORCID: PENDIENTE)
+Piero Palacios Bernuy (ORCID: 0000-0001-6729-4080)
 
-Winston Flores (ORCID: PENDIENTE)
+Winston Flores (ORCID: 0009-0003-6837-3292)
 
 Gianmarco Mejía (ORCID: PENDIENTE)
 
@@ -43,7 +43,7 @@ ASESOR
 :::
 
 ::: {custom-style="PortadaTexto"}
-PENDIENTE: nombres y apellidos (ORCID: XXXX-XXXX-XXXX-XXXX)
+Heider Sánchez Enriquez (ORCID: 0000-0002-6022-9697)
 
 Lima – Perú
 
