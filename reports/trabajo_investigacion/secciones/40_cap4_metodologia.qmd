@@ -1,0 +1,107 @@
+# CAPÍTULO IV. METODOLOGÍA Y DESARROLLO DEL PROYECTO
+
+## 4.1 Tipo y enfoque de investigación
+
+Es una investigación **aplicada y tecnológica**, de enfoque **cuantitativo**:
+construye un artefacto (el prototipo de triaje) y lo evalúa con métricas
+definidas antes de correr, sobre datos reales y con validación hacia
+adelante en el tiempo. Tiene además un componente **exploratorio**: las
+rondas de candidatos preguntan qué familia de modelos funciona en cada
+componente, y el contraste con la literatura pregunta qué habría hecho
+distinto el estado del arte. No es experimental con usuarios: no hubo acceso
+a un equipo de atención real, y la evidencia de negocio es documental y se
+declara así.
+
+## 4.2 Diseño metodológico
+
+El proyecto siguió CRISP-DM [@chapman2000crispdm] en seis fases y tres
+sprints del curso, con dos adaptaciones que dan rigor al método:
+
+1. **Pre-registro.** Antes de correr cada modelo se escribió en
+   `docs/registro/models_plan.md`, con fecha, la regla con la que se
+   decidiría: métrica, referencia, umbral de mejora y qué pasa si falla. El
+   anexo C resume esas reglas. La decisión posterior fue mecánica.
+2. **Evaluación hacia adelante con validación de un solo uso.** Tres
+   ventanas por fecha (ajuste 2023-01 a 2024-09, calibración 2024-Q4,
+   validación 2025-H1); se decide en calibración y la validación se abrió una
+   sola vez (2026-10-01). Lo decidido después reporta su cifra de validación
+   como «ya consultada».
+3. **Regla común de reemplazo.** Un candidato reemplaza al vigente solo si
+   mejora la métrica principal al menos
+   `{python} pct(CLAS["rule"]["minimum_relative_gain"], 0)` y el intervalo del
+   95 % de un bootstrap pareado por semanas queda entero a su favor; los
+   candidatos compiten del más simple al más complejo.
+4. **Trazabilidad.** DVC para datos y artefactos, MLflow para corridas (un
+   experimento, 87 corridas con commit, hash de datos y semilla), y un
+   registro de decisiones (`docs/decisiones/`).
+5. **Cierre y contraste.** Una fase final que construyó el pipeline, probó
+   por regla los candidatos abiertos y contrastó el conjunto con la
+   literatura mediante Asta Theorizer.
+
+```{python}
+#| label: tbl-crispdm
+#| tbl-cap: "Fases de CRISP-DM, qué se hizo en cada una y dónde está la evidencia en el repositorio."
+rows = [
+    ["1. Comprensión del negocio", "Decisión de triaje, cuatro objetivos T1–T4 con sus límites de interpretación, alcance y fugas", "`docs/decisiones/0001-alcance-y-fugas.md`, `etapa_1_2_comprension/`"],
+    ["2. Comprensión de los datos", "EDA E0–E10: volumen, periodos, texto compartido, deriva de la taxonomía, faltantes y fugas variable por variable", "`notebooks/01_eda.ipynb`, `docs/resumen-eda.md`"],
+    ["3. Preparación", "Seis etapas de DVC (P1–P6): tipado, normalización del texto, taxonomía congelada, objetivos y periodos, tabla final, diccionario e informe de limpieza", "`dvc.yaml`, `params.yaml`, `docs/diccionario/`, `reports/preparation/`"],
+    ["4. Modelado", "Clasificadores T1–T4, espacio semántico y patrones, conteo y composición semanal, alertas, bloque diario; 18 etapas comparadas", "`docs/modelos.md`, `reports/modeling/`, MLflow"],
+    ["5. Evaluación", "Protocolo pre-registrado, tabla comparativa de " + str(len(TABLA)) + " filas, confirmación única en validación, cierre y contraste con la literatura", "`etapa_4_5_modelado_evaluacion/`, `docs/registro/models_plan.md` §22–§32"],
+    ["6. Despliegue", "Pipeline ajustar-una-vez / puntuar-muchas-veces, prueba de punta a punta, observatorio, prototipo de pantallas, animación del flujo diario", "`src/pipeline/`, `docs/pipeline.md`, `etapa_6_despliegue/`, `prototipo/`"],
+]
+Markdown(md_table(["Fase", "Qué se hizo", "Evidencia"], rows))
+```
+
+## 4.3 Técnicas e instrumentos de recolección
+
+- **Dataset público.** Reclamos con narrativa de la CFPB [@cfpb2026],
+  entregado por el curso y conservado sin modificar en DVC; es la única
+  fuente de datos del proyecto.
+- **Análisis exploratorio reproducible.** Un notebook con 46 celdas
+  ejecutadas (E0–E10) que fija los hallazgos que guiaron la preparación:
+  texto compartido, desbalance, deriva de taxonomía y volumen por periodo.
+- **Experimentos registrados.** Cada corrida de modelado escribe un
+  `run.json` con parámetros, métricas y etiquetas, publicado en MLflow; los
+  resultados tabulares van por DVC y la tabla comparativa se regenera con un
+  comando.
+- **Simulación.** Los umbrales de alerta se fijan simulando series sin
+  cambio para un presupuesto de falsas alarmas, y la detección se mide
+  inyectando crecimientos y ráfagas en los conteos de calibración.
+- **Revisión de literatura asistida.** Asta Paper Finder (cinco búsquedas
+  por componente) y Asta Theorizer (cuatro preguntas, unos 30 papers cada
+  una, teorías y juicios de novedad), con validación del equipo en cada
+  etapa.
+- **Evidencia de usuarios.** No hubo entrevistas ni pruebas con usuarios; el
+  diseño de las pantallas se basó en la decisión de triaje descrita en el
+  capítulo I y se declara como evidencia documental.
+
+::: {custom-style="Aviso"}
+PENDIENTE (Product Lead): si existen entrevistas o fichas anonimizadas de
+stakeholders del one-pager, incorporarlas aquí y en el anexo C de la rúbrica
+del P4 (evidencia de stakeholders). Hasta entonces, la evidencia es
+documental y se declara así.
+:::
+
+## 4.4 Alcance del prototipo, MVP o solución
+
+**Incluye.** Preparación reproducible de la tabla; cinco salidas por reclamo
+y por periodo (motivo, T2/T3, vecinos, patrón y novedad, patrones que suben
+por semana y por día); pipeline que puntúa tablas nuevas sin reentrenar;
+observatorio y prototipo de pantallas; señales de reentrenamiento; registro
+de decisiones y de experimentos.
+
+**No incluye.** Detección de fraude; medición del plazo interno del banco
+(T4 se descartó y lo reemplaza una regla de plazo con feriados); una alerta
+diaria con presupuesto garantizado (dos versiones probadas, ninguna alcanzó
+la detección exigida); la capa de lenguaje natural y el registro del feedback
+humano (diseñados, previstos para Capstone II); la transferencia a datos de
+una entidad peruana; una interfaz con usuarios reales.
+
+## 4.5 Construcción o implementación
+
+La construcción se describe en dos partes: los datos y su preparación
+(4.5.1) y los componentes del modelo con su protocolo de evaluación (4.5.2).
+Las herramientas fueron Python 3.12 con `uv` para el entorno, DVC con
+DagsHub como remoto, MLflow, PyMC con NumPyro para los modelos bayesianos,
+scikit-learn, FAISS, UMAP, TabPFN-3.5 y el clúster Khipu de UTEC (SLURM,
+GPU) para el entrenamiento; Quarto para los informes.

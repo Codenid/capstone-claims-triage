@@ -1,0 +1,64 @@
+# CONCLUSIONES
+
+Las conclusiones responden, en orden, al objetivo general y a los siete
+objetivos específicos del capítulo I.
+
+1. **Objetivo general.** Se construyó y evaluó, de forma reproducible y con
+   reglas fijadas antes de ver los resultados, un prototipo de triaje que
+   entrega evidencia útil en cada una de sus cinco salidas, y se documentó
+   con la misma calidad lo que funcionó y lo que no. El pipeline puntúa una
+   tabla nueva de dos semanas en `{python} n(CIERRE["pipeline"]["gpu_minutes"], 0)`
+   minutos con GPU sin reentrenar nada.
+2. **Tabla preparada (OE1).** Seis etapas de DVC dejan una tabla de
+   `{python} i(DATOS["rows"])` reclamos con texto normalizado, taxonomía
+   congelada, objetivos T1–T4 y tres ventanas por fecha, con diccionario e
+   informe de limpieza generados por el pipeline; la vista sin texto
+   compartido (`{python} n(DATOS["shared_pct"], 1)` % de narrativas repetidas)
+   fue decisiva para evitar métricas optimistas.
+3. **Clasificadores (OE2).** El motivo se predice mejor con un modelo tabular
+   en contexto sobre embeddings reducidos que con clasificadores entrenados:
+   Macro-F1 `{python} n(TABPFN["macro_f1"])` frente a
+   `{python} n(T1["rule_calibration"])` de la regla por producto y
+   `{python} n(T1["candidates"]["bge_product"])` del mejor modelo entrenado,
+   con la ventaja mantenida en 2025-H1. Para solución y compensación bastan
+   modelos lineales sobre TF-IDF; la respuesta fuera de plazo no se predice
+   del texto y la reemplaza una regla de plazo.
+4. **Espacio semántico y patrones (OE3).** Un espacio BGE con PCA y UMAP
+   sostiene la búsqueda de reclamos parecidos (similitud mediana
+   `{python} n(SEM["faiss"]["top1_similarity_median"])`) y una partición en 40
+   patrones con cobertura futura de `{python} pct(SEM["kmeans"]["future_coverage"], 0)`
+   y una regla de novedad. El patrón es una etiqueta blanda cerca de las
+   fronteras: la proyección cambia la asignación de alrededor del 9 % de los
+   reclamos según el lote, y el sustituto determinista probado no alcanzó su
+   regla.
+5. **Conteo, composición y alertas semanales (OE4).** Una binomial negativa
+   jerárquica con memoria corta predice el volumen semanal por patrón con
+   `{python} pct(SEMANAL["c_a_vs_poisson"]["wis_gain"], 0)` menos error que
+   la referencia Poisson y gana a alternativas más complejas, incluidos dos
+   modelos fundacionales de series; la Dirichlet-multinomial describe la
+   composición y da una señal de mezcla rara; un CUSUM sobre los excesos, con
+   una falsa alarma al mes fijada por simulación, detecta crecimientos de
+   10 % y 20 % semanal en `{python} pct(ALERTAS["detection"]["growth_10"]["cusum"]["detected"], 0)`
+   y `{python} pct(ALERTAS["detection"]["growth_20"]["cusum"]["detected"], 0)`
+   de los casos.
+6. **Bloque diario (OE5).** La arquitectura funciona a resolución de día para
+   el conteo (`{python} pct(DIARIO["winner"]["wis_gain"], 0)` menos error que
+   la referencia, con el día de semana como pieza principal), pero ninguna de
+   las dos versiones de la alerta diaria alcanzó la detección exigida con el
+   presupuesto de falsas alarmas: la alerta vive en la semana.
+7. **Trazabilidad (OE6).** Cada decisión tiene su regla escrita antes y su
+   evidencia después: `{python} len(TABLA)` filas en la tabla comparativa, 87
+   corridas en MLflow con commit y hash de datos, artefactos por DVC y un
+   registro de pre-registro. Dos candidatos mejores en apariencia se
+   rechazaron por la regla del bootstrap, un componente se retiró al
+   confirmarlo y los tres candidatos del cierre se rechazaron por reglas
+   escritas antes de correrlos.
+8. **Pipeline, cierre y literatura (OE7).** El pipeline de inferencia ajusta
+   una vez y puntúa muchas veces; el contraste con la literatura respalda las
+   elecciones centrales (memoria corta en el conteo semanal, exclusión del
+   espacio de estados diario, rechazo de la reponderación) y señala qué
+   habría hecho distinto, que es el roadmap del capítulo VI.
+9. **Alcance de la evidencia.** Las etiquetas de la CFPB aproximan las de un
+   banco y las cifras no se trasladan; el método sí. La evidencia de negocio
+   (stakeholders, dimensionamiento, viabilidad financiera) es documental y
+   está marcada como pendiente de los Product Lead en este documento.

@@ -1,0 +1,39 @@
+project:
+  type: default
+  pre-render: python build_bib.py
+  render:
+    - trabajo.qmd
+
+lang: es
+bibliography: bibliografia.bib
+csl: recursos/ieee.csl
+number-sections: false
+toc: false
+crossref:
+  fig-title: Figura
+  tbl-title: Tabla
+  fig-prefix: figura
+  tbl-prefix: tabla
+  eq-prefix: ecuación
+
+execute:
+  echo: false
+  warning: false
+  freeze: false
+
+format:
+  docx:
+    reference-doc: recursos/plantilla.docx
+    fig-width: 6.3
+    fig-height: 3.3
+    fig-dpi: 200
+  typst:
+    papersize: a4
+    margin:
+      x: 2.5cm
+      y: 2.5cm
+    mainfont: Arial
+    fontsize: 11pt
+    fig-width: 6.3
+    fig-height: 3.3
+    keep-typ: true

@@ -1,0 +1,153 @@
+# CAPÍTULO I. VISIÓN DEL PROYECTO
+
+## 1.1 Problema y oportunidad
+
+Un banco regulado recibe cada día reclamos escritos por sus clientes. Una
+persona del equipo de atención los lee uno por uno, decide de qué tratan, los
+deriva al equipo que corresponde y vigila los plazos. Esa misma persona es la
+primera que podría notar cuándo una campaña, un producto o un fallo operativo
+empieza a generar reclamos nuevos, pero lo nota tarde, porque el volumen
+diario no deja ver el conjunto. La decisión que hoy sale mal es doble: la
+tipificación de cada reclamo, que depende de quién lo lee, y la detección de
+un aumento sostenido en un tipo de reclamo, que hoy no tiene una expectativa
+contra la cual compararse.
+
+Los datos muestran por qué el problema es difícil. En los reclamos públicos
+de la CFPB [@cfpb2026], `{python} n(DATOS["shared_pct"], 1)` % de las
+narrativas comparten texto con otra (plantillas de gestores de reclamos), la
+taxonomía de motivos cambió de nombres entre periodos
+(`{python} DATOS["taxonomy"]["motivos_originales"]` motivos originales
+reducidos a `{python} DATOS["taxonomy"]["motivos_canonicos"]` canónicos), el
+volumen crece año a año y en ajuste aparecen
+`{python} DATOS["t1_motives"]` motivos distintos, muchos raros. Un sistema
+que clasifique por frecuencia o que memorice plantillas parece funcionar y no
+funciona.
+
+La oportunidad es apoyar las tres decisiones del triaje sin reemplazar a la
+persona: **qué es este reclamo** (el motivo más probable y los tres más
+probables), **qué suele pasar con reclamos así** (si casos parecidos
+terminaron con una solución registrada o con compensación) y **qué está
+cambiando** (qué patrones de reclamos reciben más de lo esperado esta semana
+y hoy). El sistema entrega evidencia; la decisión queda en la persona.
+
+**Por qué este proyecto y qué cambió desde el pitch.** El proyecto se eligió
+de la cartera del curso por tener un dataset público grande, con texto libre
+y etiquetas de desenlace, que permite construir y evaluar el método completo
+sin acceso a datos de una entidad. Desde la formulación inicial cambiaron
+dos cosas por la evidencia: la respuesta fuera de plazo (T4) salió del triaje
+porque no se predice del texto, y la alerta diaria pasó de salida prometida a
+límite declarado porque no alcanzó la detección exigida con el presupuesto
+de falsas alarmas. Se mantuvo lo central: las tres decisiones, la revisión
+humana y la evaluación hacia adelante con reglas escritas antes.
+
+::: {custom-style="Aviso"}
+PENDIENTE (Product Lead): criterio de elección del proyecto de la cartera
+(anexo A del P4) y resumen de la retroalimentación recibida en el pitch en
+vivo, el P1 y el P2, con lo que se cambió y lo que se mantuvo por argumento.
+:::
+
+## 1.2 Usuarios, clientes y casos de uso
+
+```{python}
+#| label: tbl-stakeholders
+#| tbl-cap: "Roles alrededor de la decisión de triaje. Los cargos son los de una entidad financiera tipo y se declaran como supuesto; la participación de cada rol en este proyecto fue documental."
+rows = [
+    ["Dueño del problema", "Jefatura de atención al cliente", "Que los reclamos se tipifiquen bien y se atiendan a tiempo; que un aumento se note antes", "SUPUESTO: no hubo acceso a una entidad"],
+    ["Usuario", "Analista de triaje (lee, tipifica, deriva, vigila plazos)", "Menos lectura, menos derivaciones erradas, una lista corta de patrones que suben", "Diseño de la ficha y de la vista «patrones que suben» a partir de la decisión descrita"],
+    ["Pagador", "Gerencia de atención al cliente o de riesgo operativo", "Costo evitado en horas y en plazos vencidos; detección temprana", "PENDIENTE PL: bloque 10 del one-pager"],
+    ["Afectado", "El cliente que reclama", "Respuesta más rápida y mejor dirigida; ninguna decisión automática sobre su caso", "Ninguna salida decide; revisión humana obligatoria"],
+    ["Equipo de datos", "Responsable de los modelos", "Señales claras de cuándo reentrenar; trazabilidad", "Diseño del pipeline y de las señales"],
+]
+Markdown(md_table(["Rol", "Cargo", "Qué gana", "Cómo participó"], rows))
+```
+
+Casos de uso principales: (1) **ficha del reclamo**, al abrir un reclamo la
+persona ve el motivo sugerido con sus tres opciones y las confirma o
+corrige, las probabilidades de solución y compensación, el patrón y su
+fiabilidad, y cinco reclamos parecidos con su desenlace; (2) **patrones que
+suben**, cada semana y cada día una tabla con lo observado, lo esperado, el
+intervalo y el estado (alerta, por encima, dentro) por patrón, con filtro de
+fechas; (3) **revisión de una alerta**, marcarla como revisada, aumento real,
+eco de una ráfaga o reasignación; (4) **operación**, puntuar el lote diario y
+atender las señales de reentrenamiento.
+
+## 1.3 Objetivo general
+
+Construir y evaluar, de forma reproducible y con reglas fijadas antes de ver
+los resultados, un prototipo de triaje de reclamos que sugiera el motivo,
+estime resultados históricos, encuentre reclamos parecidos y detecte
+patrones semánticos cuyo volumen aumenta, de modo que la persona que hace el
+triaje decida con mejor evidencia.
+
+## 1.4 Objetivos específicos
+
+1. **OE1.** Preparar una tabla única de reclamos con texto normalizado,
+   taxonomía canónica congelada, objetivos T1–T4 y periodos temporales de
+   ajuste, calibración y validación, documentada con su diccionario.
+2. **OE2.** Elegir, con un protocolo de evaluación hacia adelante y una
+   vista sin texto compartido, los clasificadores de motivo (T1), solución
+   (T2) y compensación (T3), y decidir si el de respuesta fuera de plazo (T4)
+   aporta algo.
+3. **OE3.** Construir un espacio semántico de reclamos (embeddings, PCA,
+   UMAP, índice de vecinos) y una partición en patrones estable en el tiempo,
+   con una regla de novedad.
+4. **OE4.** Modelar el conteo semanal y la composición semanal de los
+   patrones con modelos bayesianos comparados contra referencias simples, y
+   derivar una regla de alerta de aumento persistente con un presupuesto de
+   falsas alarmas.
+5. **OE5.** Probar, como bloque aparte y pre-registrado, si la misma
+   arquitectura funciona a resolución diaria y si una regla de alerta diaria
+   aporta sobre la semanal.
+6. **OE6.** Registrar cada decisión, su regla y su evidencia en MLflow, DVC y
+   un registro de pre-registro, de modo que otra persona pueda reproducir el
+   resultado.
+7. **OE7.** Entregar un pipeline de inferencia que ajuste una vez y puntúe
+   muchas veces, cerrar el modelado probando por regla los candidatos
+   abiertos y contrastar el conjunto con la literatura.
+
+## 1.5 Propuesta de valor y KPIs de éxito
+
+**Propuesta de valor.** Para la persona que hace el triaje, una mesa de
+trabajo que le dice qué es cada reclamo, qué suele pasar con reclamos así y
+qué está cambiando, con cifras que vienen de modelos evaluados hacia
+adelante y con un presupuesto declarado de falsas alarmas; frente a la
+lectura manual y a la vigilancia por totales, convierte un flujo de texto en
+evidencia revisable cada día.
+
+```{python}
+#| label: tbl-kpis
+#| tbl-cap: "Indicadores de éxito del proyecto: métrica, referencia a vencer, criterio de éxito fijado antes de correr, resultado alcanzado y plazo. El KPI de negocio queda pendiente de los Product Lead."
+rows = [
+    ["Motivo (T1)", "Macro-F1 en calibración sin texto compartido", f'regla por producto, {n(T1["rule_calibration"])}', "≥ 5 % relativo sobre el vigente con IC del bootstrap a favor", f'{n(TABPFN["macro_f1"])} ({signed_pct(TABPFN["gain"])} sobre el mejor entrenado)', "Sprint 3 (31-oct-2026)"],
+    ["Solución (T2) y compensación (T3)", "Precisión promedio", f'{n(T2["rule_calibration"])} y {n(T3["rule_calibration"])}', "misma regla", f'{n(T2["candidates"][T2["selected"]])} y {n(T3["candidates"][T3["selected"]])}', "Sprint 3"],
+    ["Patrones", "Estabilidad (ARI) y cobertura futura", "criterios fijados", f'ARI ≥ {SEM["acceptance"]["minimum_stability_ari"]}, cobertura ≥ {pct(SEM["acceptance"]["minimum_future_coverage"], 0)}', f'ARI {n(SEM["kmeans"]["stability_ari"], 2)}, cobertura {pct(SEM["kmeans"]["future_coverage"], 0)}', "Sprint 3"],
+    ["Conteo semanal (M9)", "WIS en calibración", f'Poisson de 4 semanas, {n(SEMANAL["reference_wis"], 1)}', "≥ 5 % menos WIS con IC a favor; cobertura 80 % en 70–90 %", f'{n(SEMANAL["c_a"]["wis"], 1)} ({pct(SEMANAL["c_a_vs_poisson"]["wis_gain"], 0)} menos)', "Sprint 3"],
+    ["Alertas (M11)", "Detección de crecimientos de 10 % y 20 % con 1 falsa alarma al mes", "regla de una semana", "CUSUM gana por ≥ 5 puntos en ambos", f'{pct(ALERTAS["detection"]["growth_10"]["cusum"]["detected"], 0)} y {pct(ALERTAS["detection"]["growth_20"]["cusum"]["detected"], 0)}', "Sprint 3"],
+    ["Conteo diario (D-D)", "WIS diario", f'Poisson de 7 días, {n(DIARIO["winner"]["baseline_wis"], 2)}', "misma regla", f'{n(DIARIO["winner"]["wis"], 2)} ({pct(DIARIO["winner"]["wis_gain"], 0)} menos)', "Sprint 3"],
+    ["Pipeline", "Puntuar dos semanas sin reentrenar", "—", "corre de extremo a extremo y reproduce la alarma congelada", f'{n(CIERRE["pipeline"]["gpu_minutes"], 0)} min GPU; alarma reproducida', "Sprint 3"],
+    ["KPI de negocio", "Minutos de lectura por reclamo y derivaciones erradas; aumentos detectados antes", "cómo se decide hoy", "PENDIENTE PL", "se mide en la siguiente fase con el feedback humano", "Capstone II"],
+]
+Markdown(md_table(["Indicador", "Métrica", "Referencia", "Criterio de éxito", "Alcanzado", "Plazo"], rows))
+```
+
+## 1.6 Hipótesis o tesis del proyecto
+
+La tesis es que, con datos públicos y reglas fijadas de antemano, se puede
+construir un prototipo de triaje cuyas salidas sean útiles y cuyos límites
+estén medidos. Se desagrega en ocho hipótesis, probadas en el capítulo V:
+
+- **H1.** El motivo del reclamo se puede sugerir del texto con más acierto
+  que con la regla por producto.
+- **H2.** La solución registrada y la compensación se estiman del texto por
+  encima de la regla por producto.
+- **H3.** La respuesta fuera de plazo se predice del texto.
+- **H4.** Un espacio semántico de embeddings sostiene vecinos útiles y una
+  partición en patrones estable en el tiempo.
+- **H5.** El conteo semanal por patrón se predice mejor con un modelo
+  bayesiano de conteo que con una referencia Poisson.
+- **H6.** Un CUSUM sobre los excesos del modelo semanal detecta crecimientos
+  sostenidos con una falsa alarma al mes.
+- **H7.** La misma arquitectura funciona a resolución diaria, incluida la
+  alerta.
+- **H8.** Un pipeline que ajusta una vez puntúa reclamos nuevos sin
+  reentrenar y reproduce los resultados congelados.

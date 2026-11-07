@@ -1,0 +1,18 @@
+## 5.4 Tracción o evidencia de adopción (si aplica)
+
+No aplica en el sentido de usuarios o pilotos: el prototipo no se ha puesto
+frente a un equipo de atención real. La evidencia de interés disponible es
+interna y documental: la revisión del informe por los cuatro integrantes del
+equipo (registrada en el issue de conformidad del repositorio del curso), la
+reproducción del pipeline por un segundo integrante desde su propia rama, y
+el observatorio levantado por el ML Engineer sobre las salidas congeladas. La
+adopción se medirá en la siguiente fase con el registro del feedback humano
+(motivos confirmados o corregidos, alertas marcadas como revisadas, reales,
+eco o reasignación).
+
+## 5.5 Discusión de resultados
+
+La discusión tiene tres partes: el cierre del modelado, con el pipeline, los
+tres candidatos rechazados por regla y el contraste con la literatura
+(5.5.1); qué se eligió, qué no funcionó y qué se aprendió (5.5.2); y las
+expectativas y límites que un usuario del prototipo debe conocer (5.5.3).

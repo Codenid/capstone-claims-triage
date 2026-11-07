@@ -1,0 +1,144 @@
+# CAPÍTULO VI. IMPLEMENTACIÓN, VIABILIDAD Y SIGUIENTE FASE
+
+## 6.1 Viabilidad operativa y tecnológica
+
+El prototipo separa el cómputo caro del cómputo diario. El **ajuste** de
+todos los componentes corrió en el clúster Khipu de UTEC (SLURM, cola
+estándar de hasta 8 horas por trabajo, GPU para embeddings y TabPFN); la
+corrida más larga de los modelos vigentes fue de 71 minutos (conteo diario)
+y la prueba de punta a punta del pipeline de 12 minutos con GPU. La
+**puntuación** no reentrena: carga los archivos congelados y aplica
+aritmética; en CPU solo el paso de embeddings es costoso (3 horas para dos
+semanas con 16 núcleos), y el clasificador de motivo cae al lineal de
+respaldo si no hay pesos de TabPFN.
+
+```{python}
+#| label: tbl-operacion
+#| tbl-cap: "Qué hace falta para operar el prototipo y cada cuánto reentrenar cada componente, según las señales que el propio pipeline escribe en score.json."
+rows = [
+    ["Artefactos congelados (DVC)", "13.7 GB en total; para puntuar bastan ~2.5 GB: espacio semántico, patrones, clasificadores, corridas vigentes de M9, M10 y D-D, historia de conteos", "Una vez; se reemplazan al reentrenar"],
+    ["Fuera de DVC", "Modelo BGE-large (1.3 GB, público) y pesos de TabPFN-3.5 (~1 GB, licencia no comercial)", "Una vez"],
+    ["M9, M10, M11 y D-D", "Reentrenar con ventana móvil", "Cada trimestre, o antes si la cobertura del 80 % en las últimas 12 semanas baja de 70 %"],
+    ["Patrones y novedad", "Rehacer M6 → M7 → M8B; cambia el catálogo", "Solo si los novedosos superan 3 %; como máximo una vez al año"],
+    ["T1 (contexto de TabPFN)", "Renovar las 20,000 filas de contexto con reclamos recientes", "Si Macro-F1 cae más de 5 % relativo (requiere motivo real en la tabla)"],
+    ["T2 y T3", "Reentrenar y reelegir umbrales en calibración", "Cada 6 meses"],
+    ["Índice de vecinos", "Reconstruir con el último año", "Cada trimestre"],
+    ["Calendario de feriados", "Actualizar el YAML", "Cada año"],
+]
+Markdown(md_table(["Pieza", "Qué implica", "Cada cuánto"], rows))
+```
+
+Para una entidad, la infraestructura mínima es un servidor con GPU para el
+lote nocturno (o CPU con el clasificador de respaldo), almacenamiento para
+los artefactos y un servicio ligero para la ficha por reclamo; el
+observatorio ya corre en Streamlit sobre los archivos del pipeline. Las
+capacidades requeridas son un responsable de datos que vigile las señales de
+reentrenamiento y un equipo de atención que use las salidas y registre su
+feedback.
+
+## 6.2 Viabilidad financiera
+
+Los costos conocidos del proyecto son de cómputo y de licencias. El
+entrenamiento usó horas del clúster académico sin costo para el equipo; una
+estimación de mercado del cómputo equivalente, de las licencias y del
+servicio en producción requiere cifras que el equipo de Product Lead debe
+aportar.
+
+```{python}
+#| label: tbl-costos
+#| tbl-cap: "Partidas de costo y de valor identificadas. Cada cifra se etiqueta como dato o supuesto; las marcadas PENDIENTE las completa el Product Lead."
+rows = [
+    ["Cómputo de entrenamiento", "Khipu (UTEC): ~20 horas-GPU y ~40 horas-CPU en total para los modelos vigentes y sus candidatos", "dato aproximado del registro de jobs; costo monetario en nube: PENDIENTE PL"],
+    ["Cómputo de puntuación", "Lote diario de ~2,500 reclamos: minutos de GPU o ~15 minutos de CPU", "supuesto derivado de la prueba de punta a punta (35,265 reclamos en 12 min GPU)"],
+    ["Licencia de TabPFN-3.5", "Uso no comercial gratuito; uso con un banco requiere licencia de Prior Labs", "dato (licencia); precio: PENDIENTE PL"],
+    ["Operación y mantenimiento", "Un responsable de datos a tiempo parcial; reentrenamientos trimestrales", "supuesto"],
+    ["Valor: tiempo de lectura y derivaciones erradas evitadas", "Frecuencia × costo del error × población", "PENDIENTE PL: dimensionamiento del one-pager (bloque 2 y pitch)"],
+    ["Valor: detección temprana de aumentos", "Alertas revisables al mes y acción preventiva", "PENDIENTE PL: costo de un aumento no detectado"],
+]
+Markdown(md_table(["Partida", "Descripción", "Tipo de evidencia"], rows))
+```
+
+::: {custom-style="Aviso"}
+PENDIENTE (Product Lead): completar la viabilidad financiera con las cifras
+del one-pager (bloque 10) y del pitch: inversión inicial, costo anual,
+ahorro esperado y escenarios. Un supuesto declarado es aceptable; una cifra
+sin fuente, no.
+:::
+
+## 6.3 Roadmap y siguientes pasos
+
+La siguiente fase prioriza por costo y por lo que el contraste con la
+literatura señaló como más probable de funcionar:
+
+1. **Producto (Capstone II, primera prioridad).** Ficha completa del reclamo
+   en el observatorio con T2/T3, vecinos con desenlace, novedad y fiabilidad
+   del patrón; vista «patrones que suben» por semana y día con filtro de
+   fechas; registro del feedback humano desde el primer día; API por
+   reclamo; capa de lenguaje natural con LangGraph que explica y redacta a
+   partir de las salidas, con revisión humana obligatoria.
+2. **Alertas.** Alerta multiescala con un solo presupuesto (regla semanal más
+   suma móvil de cuatro semanas) y cuarentena discreta de las semanas con
+   alarma [@dorea2013syndromic], que no se realimenta como la reponderación.
+3. **Patrón anclado.** Mezcla gaussiana o prototipos fijos en el espacio PCA,
+   o un codificador paramétrico [@sainburg2020parametric], para que la
+   asignación de un reclamo nuevo sea determinista y traiga su probabilidad;
+   obliga a rehacer los paneles y a reevaluar M9–M11.
+4. **T1.** Blanquear los embeddings antes de PCA y TabPFN, y construir el
+   contexto con mínimos por clase y vecinos recuperados; validación experta
+   de la licencia; ajuste fino y ensamble como alternativas.
+5. **Conteos.** Participaciones dinámicas con inferencia por bloques (FFBS con
+   Pólya-gamma) solo si el panel crece; ensamble de cuantiles de los
+   candidatos semanales [@cramer2022ensemble].
+6. **Datos.** Prueba final sellada en 2026 cuando la base de la CFPB
+   complete ese año; transferencia a reclamos propios de una entidad con la
+   taxonomía revisada por el negocio y los mismos criterios.
+
+## 6.4 Cronograma o diagrama de Gantt
+
+```{python}
+#| label: fig-gantt
+#| fig-cap: "Cronograma del proyecto por fase (2026), con las fechas de los sprints del curso y del cierre del modelado, y la siguiente fase prevista."
+import datetime as dt
+phases = [
+    ("Comprensión del negocio y EDA", "2026-09-01", "2026-09-17", GRIS),
+    ("Preparación de datos (DVC)", "2026-09-17", "2026-09-30", GRIS),
+    ("Clasificadores T1–T4 y espacio semántico", "2026-09-22", "2026-10-01", AZUL),
+    ("Conteos, composición y alertas semanales", "2026-09-27", "2026-10-06", AZUL),
+    ("Confirmación única en validación", "2026-10-01", "2026-10-02", NARANJA),
+    ("Bloque diario", "2026-10-07", "2026-10-09", AZUL),
+    ("Pipeline y cierre del modelado", "2026-10-15", "2026-10-21", AZUL),
+    ("Contraste con la literatura (Theorizer)", "2026-10-21", "2026-10-24", VERDE),
+    ("Informe, experimentos y prototipo de pantallas", "2026-10-24", "2026-11-07", VERDE),
+    ("Congelamiento del código (etiqueta)", "2026-11-15", "2026-11-16", NARANJA),
+    ("Demo en vivo", "2026-11-21", "2026-11-22", NARANJA),
+    ("Siguiente fase: producto y alertas (Capstone II)", "2026-12-01", "2027-03-31", "#b3261e"),
+]
+fig, ax = plt.subplots(figsize=(6.3, 3.6))
+for k, (label, start, end, color) in enumerate(reversed(phases)):
+    s, e = dt.date.fromisoformat(start), dt.date.fromisoformat(end)
+    ax.barh(k, (e - s).days, left=s, color=color, height=0.6)
+ax.set_yticks(range(len(phases)), [p[0] for p in reversed(phases)], fontsize=7)
+ax.set_xlim(dt.date(2026, 8, 25), dt.date(2027, 4, 5))
+for d, text in ((dt.date(2026, 9, 30), "cierre sprint 1"), (dt.date(2026, 10, 31), "cierre sprint 3"), (dt.date(2026, 11, 15), "code freeze")):
+    ax.axvline(d, color="black", linewidth=0.6, linestyle="--")
+    ax.text(d, len(phases) - 0.4, text, fontsize=6.5, rotation=90, va="top", ha="right")
+ax.grid(axis="y", visible=False)
+fig.autofmt_xdate()
+plt.show()
+```
+
+## 6.5 Riesgos y estrategias de mitigación
+
+```{python}
+#| label: tbl-riesgos
+#| tbl-cap: "Riesgos de implementación y sostenibilidad, con probabilidad, impacto, disparador y mitigación. El plan B de datos es el propio dataset público."
+rows = [
+    ["Deriva de los datos: la mezcla de reclamos cambia y los modelos de conteo dejan de cubrir", "Alta", "Medio", "Cobertura del 80 % de M9 en las últimas 12 semanas por debajo de 70 %, o novedosos por encima de 3 %", "Reentrenamiento trimestral con ventana móvil; las señales están en cada puntuación"],
+    ["Patrón blando: un reclamo cerca de una frontera cambia de patrón según el lote (≈ 9 %)", "Cierta", "Medio", "Alarma de M11 en un patrón con masa de frontera alta", "Mostrar la fiabilidad del patrón junto a cada alarma; patrón anclado en la siguiente fase"],
+    ["Licencia de TabPFN-3.5 no disponible para uso comercial", "Media", "Alto para T1", "Negativa o costo inasumible de la licencia", "Clasificador lineal de respaldo ya integrado (`t1_model = linear`, Macro-F1 " + n(T1["candidates"]["bge_product"]) + "); validación experta de la licencia antes de proponerlo"],
+    ["Eco de las ráfagas: alertas que son eco y no novedad", "Alta en periodos con ráfagas", "Medio", "Varias alertas seguidas en el mismo patrón tras una semana muy concentrada", "Marcar la alerta como «eco» en la revisión; cuarentena de semanas con alarma en la siguiente fase"],
+    ["Transferencia: las etiquetas de la CFPB no son las de un banco", "Cierta", "Alto", "Uso con datos propios", "Repetir preparación, protocolo y rondas con la taxonomía revisada; el método se traslada, las cifras no"],
+    ["Datos: sin acceso a reclamos de una entidad", "Cierta hoy", "Medio", "No se consigue autorización de uso", "Plan B: seguir con el dataset público de la CFPB, declarado como tal; prueba sellada en 2026"],
+]
+Markdown(md_table(["Riesgo", "Probabilidad", "Impacto", "Disparador", "Mitigación"], rows))
+```

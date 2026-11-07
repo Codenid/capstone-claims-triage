@@ -1,0 +1,68 @@
+# CAPÍTULO V. VALIDACIÓN Y RESULTADOS
+
+## 5.1 Framework de validación y experimentos
+
+Las hipótesis del proyecto (sección 1.6) se validaron con experimentos cuya
+regla de decisión se escribió antes de correrlos. El marco tiene cuatro
+piezas:
+
+1. **Tres ventanas por fecha y vista sin texto compartido.** Ajuste 2023-01
+   a 2024-09, calibración 2024-Q4 (`{python} i(DATOS["row_counts"]["calibration"]["no_shared_text"])`
+   reclamos sin texto compartido), validación 2025-H1 abierta una sola vez.
+   `{python} n(DATOS["shared_pct"], 1)` % de las narrativas comparten texto
+   con otra; esa vista evita que las plantillas inflen las métricas.
+2. **Una referencia y una métrica principal por tarea.** Regla por producto
+   y Macro-F1 (T1) o AP (T2–T4); Poisson de cuatro semanas y WIS (M9);
+   multinomial de cuatro semanas y log score (M10); regla de una semana y
+   tasa de detección con presupuesto de una falsa alarma al mes (M11); Poisson
+   de siete días y WIS (conteo diario).
+3. **Regla de reemplazo y orden de complejidad.** Mejora relativa de al
+   menos `{python} pct(CLAS["rule"]["minimum_relative_gain"], 0)` con el
+   intervalo del bootstrap pareado por semanas a favor; del modelo más simple
+   al más complejo.
+4. **Escenarios inyectados para las alertas.** Crecimientos de 10 % y 20 %
+   semanal y escalones de 50 % y 100 % para M11; ráfagas ×2 de tres días, ×3
+   de un día y ×1.5 de siete días para la regla diaria; 1,000 ráfagas por
+   escenario.
+
+```{python}
+#| label: tbl-hipotesis
+#| tbl-cap: "Hipótesis del proyecto, experimento que las prueba y veredicto. El detalle de cada cifra está en la sección 5.3."
+rows = [
+    ["H1. El motivo se puede sugerir del texto mejor que con la regla por producto", "Escalera T1: regla → TF-IDF → BGE → TabPFN-3.5, con bootstrap", f'Se sostuvo: Macro-F1 {n(TABPFN["macro_f1"])} frente a {n(T1["rule_calibration"])}; se mantiene en 2025-H1'],
+    ["H2. La solución y la compensación se estiman del texto", "T2 y T3 con la misma escalera", f'Se sostuvo con modelos simples: AP {n(T2["final_model"])} y {n(T3["final_model"])} en 2025-H1 frente a la regla'],
+    ["H3. La respuesta fuera de plazo se predice del texto", "T4, confirmación en validación", f'Se refutó: AP {n(T4["final_model"])} frente a {n(T4["final_rule"])} de la regla; lo reemplaza una regla de plazo'],
+    ["H4. Un espacio semántico sostiene vecinos útiles y patrones estables", "FAISS; 12 configuraciones de agrupamiento con criterios fijados; 9 espacios alternativos", f'Se sostuvo con matiz: k-means 40 pasa los criterios; la proyección cambia el patrón de ~9 % de los reclamos según el lote'],
+    ["H5. El conteo semanal por patrón se predice mejor con un modelo bayesiano que con Poisson", "Nueve candidatos por WIS en calibración", f'Se sostuvo: C-A, {pct(SEMANAL["c_a_vs_poisson"]["wis_gain"], 0)} menos WIS que la referencia; gana a tres alternativas más complejas'],
+    ["H6. Un CUSUM sobre los excesos detecta crecimientos sostenidos con una falsa alarma al mes", "Simulación de umbrales y escenarios inyectados", f'Se sostuvo: {pct(ALERTAS["detection"]["growth_20"]["cusum"]["detected"], 0)} de los crecimientos de 20 %; límite declarado: eco de las ráfagas'],
+    ["H7. La misma arquitectura funciona a resolución diaria, incluida la alerta", "Bloque diario pre-registrado: cinco candidatos y dos versiones de la alerta", f'Parcial: el conteo sí ({pct(DIARIO["winner"]["wis_gain"], 0)} menos WIS); la alerta no (detección < 50 % con el presupuesto)'],
+    ["H8. El pipeline puntúa reclamos nuevos sin reentrenar y reproduce los resultados congelados", "Prueba de punta a punta sobre dos semanas", f'Se sostuvo: cobertura 80 % de M9 {pct(CIERRE["pipeline"]["coverage_80"], 0)}; reproduce la alarma de M11'],
+]
+Markdown(md_table(["Hipótesis", "Experimento", "Veredicto"], rows))
+```
+
+## 5.2 Validación funcional, técnica u operativa
+
+- **Funcional.** El pipeline corre de extremo a extremo sobre una tabla con
+  las cuatro columnas obligatorias y devuelve las cinco salidas; la prueba de
+  punta a punta usó `{python} i(CIERRE["pipeline"]["rows"])` reclamos de dos
+  semanas de calibración y reprodujo la alarma que la corrida congelada de
+  M11 había dado en esas semanas.
+- **Técnica.** Pruebas unitarias del contrato de entrada, de los conteos y
+  de cada modelo (`tests/`); integración continua del repositorio del curso
+  con un guard que rechaza datos y credenciales en Git; diagnósticos de
+  convergencia en todos los modelos bayesianos aceptados (R-hat ≤ 1.01, sin
+  divergencias); cobertura de intervalos dentro de los rangos fijados.
+- **Operativa.** Tiempos medidos: `{python} n(CIERRE["pipeline"]["gpu_minutes"], 0)`
+  minutos con GPU y `{python} n(CIERRE["pipeline"]["cpu_minutes"] / 60, 1)`
+  horas en CPU para dos semanas; `fit` comprueba la cadena congelada y
+  escribe un manifiesto con el hash de cada archivo usado; señales de
+  reentrenamiento calculadas en cada puntuación.
+- **Reproducibilidad.** Todo el modelado se repite desde un clon limpio
+  con `uv sync --frozen`, `dvc pull` y los jobs de `scripts/hpc/`; la tabla
+  comparativa y esta memoria se regeneran con un comando cada una.
+
+## 5.3 Resultados y métricas alcanzadas
+
+Los resultados se presentan por componente, en el orden en que compitieron,
+con la cifra de calibración que decidió y la de validación cuando existe.

@@ -1,0 +1,126 @@
+---
+# Sin bloque de título: la portada sigue la plantilla de la Escuela de Posgrado
+# y se escribe en secciones/00_portada.qmd.
+keywords: [triaje, reclamos, CFPB, TabPFN, binomial negativa, CUSUM, PyMC, pre-registro]
+---
+
+```{python}
+#| label: setup
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+HERE = Path(".").resolve()
+INFORME = HERE.parent / "informe"
+sys.path.insert(0, str(INFORME))
+import facts
+from facts import n, i, pct, signed_pct, ic, md_table
+from IPython.display import Markdown
+
+import matplotlib
+import matplotlib.pyplot as plt
+
+matplotlib.rcParams.update(
+    {
+        "font.family": "sans-serif",
+        "font.sans-serif": ["Arial", "DejaVu Sans"],
+        "font.size": 9,
+        "axes.spines.top": False,
+        "axes.spines.right": False,
+        "axes.grid": True,
+        "grid.alpha": 0.25,
+        "axes.titlesize": 10,
+        "figure.constrained_layout.use": True,
+    }
+)
+F = facts.build()
+import shutil
+
+Path("figuras").mkdir(exist_ok=True)
+shutil.copytree(facts.REPORTS / "patterns" / "series", Path("figuras") / "series", dirs_exist_ok=True)
+from PIL import Image
+
+with Image.open(F["diario"]["backtest_figure"]) as image:
+    panels = 4
+    image.crop((0, 0, image.width, int(image.height * panels / 8))).save(Path("figuras") / "diario_backtest.png")
+DATOS, CLAS, SEM = F["datos"], F["clasificadores"], F["semantico"]
+SEMANAL, COMP, ALERTAS, DIARIO = F["semanal"], F["composicion"], F["alertas"], F["diario"]
+CATALOGO, TABLA, CIERRE = F["catalogo"], F["tabla"], F["cierre"]
+T1, T2, T3, T4 = (CLAS["tasks"][t] for t in ("T1", "T2", "T3", "T4"))
+TABPFN = CLAS["tabpfn"]
+AZUL, GRIS, NARANJA, VERDE = "#2F5D8A", "#9AA5B1", "#D9822B", "#3C8D5A"
+
+def git(*args):
+    try:
+        return subprocess.run(["git", *args], capture_output=True, text=True, cwd=HERE, check=True).stdout.strip()
+    except Exception:
+        return "—"
+GIT_SHA = git("rev-parse", "--short", "HEAD")
+GIT_DATE = git("log", "-1", "--format=%cd", "--date=short")
+
+# Índices de tablas y figuras: se leen de las secciones en el orden en que se incluyen.
+ORDER = [
+    "10_cap1_vision.qmd", "20_cap2_analisis.qmd", "30_cap3_propuesta.qmd", "40_cap4_metodologia.qmd",
+    "45_construccion.qmd", "50_cap5_validacion.qmd", "53_resultados.qmd", "54_traccion.qmd", "55_discusion.qmd",
+    "60_cap6_implementacion.qmd", "70_conclusiones.qmd",
+]
+def captions(kind):
+    found = []
+    for name in ORDER:
+        text = (HERE / "secciones" / name).read_text(encoding="utf-8")
+        for m in re.finditer(r"^#\| " + kind + r"-cap: \"(.*)\"$", text, flags=re.M):
+            found.append(m.group(1))
+        if kind == "fig":
+            for m in re.finditer(r"^!\[(.*?)\]\(.*?\)\{#fig-", text, flags=re.M):
+                found.append(m.group(1))
+    return found
+```
+
+{{< include secciones/00_portada.qmd >}}
+
+{{< include secciones/05_resumen.qmd >}}
+
+{{< include secciones/10_cap1_vision.qmd >}}
+
+{{< include secciones/20_cap2_analisis.qmd >}}
+
+{{< include secciones/30_cap3_propuesta.qmd >}}
+
+{{< include secciones/40_cap4_metodologia.qmd >}}
+
+{{< include secciones/45_construccion.qmd >}}
+
+{{< include secciones/50_cap5_validacion.qmd >}}
+
+{{< include secciones/53_resultados.qmd >}}
+
+{{< include secciones/54_traccion.qmd >}}
+
+{{< include secciones/55_discusion.qmd >}}
+
+{{< include secciones/60_cap6_implementacion.qmd >}}
+
+{{< include secciones/70_conclusiones.qmd >}}
+
+# REFERENCIAS BIBLIOGRÁFICAS {.unnumbered}
+
+::: {#refs}
+:::
+
+```{=openxml}
+<w:p><w:r><w:br w:type="page"/></w:r></w:p>
+```
+```{=typst}
+#pagebreak()
+```
+
+# ANEXOS {.unnumbered}
+
+{{< include secciones/90_anexos_abc.qmd >}}
+
+{{< include secciones/92_anexo_rubrica.qmd >}}
+
+{{< include secciones/95_declaracion_ia.qmd >}}
+
+{{< include secciones/97_anexo_repositorio.qmd >}}

@@ -1,0 +1,7 @@
+/.quarto/
+/trabajo_files/
+/figuras/
+/trabajo.html
+/trabajo.typ
+**/*.quarto_ipynb
+bibliografia.bib

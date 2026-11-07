@@ -1,0 +1,153 @@
+```{=typst}
+#set align(center)
+```
+
+::: {custom-style="PortadaTitulo"}
+UNIVERSIDAD DE INGENIERÍA Y TECNOLOGÍA
+:::
+
+::: {custom-style="PortadaTexto"}
+ESCUELA DE POSGRADO
+:::
+
+::: {custom-style="Centrado"}
+![](recursos/utec_posgrado.png){width=6.5in}
+:::
+
+::: {custom-style="PortadaTitulo"}
+TRIAJE DE RECLAMOS FINANCIEROS CON REVISIÓN HUMANA: MOTIVO SUGERIDO, RESULTADOS HISTÓRICOS, PATRONES SEMÁNTICOS Y ALERTAS SOBRE LOS RECLAMOS PÚBLICOS DE LA CFPB
+:::
+
+::: {custom-style="PortadaTexto"}
+TRABAJO DE INVESTIGACIÓN
+
+Para optar el grado de Maestro en Ciencia de Datos e Inteligencia Artificial
+:::
+
+::: {custom-style="PortadaTitulo"}
+AUTORES
+:::
+
+::: {custom-style="PortadaTexto"}
+Piero Palacios Bernuy (ORCID: PENDIENTE)
+
+Winston Flores (ORCID: PENDIENTE)
+
+Gianmarco Mejía (ORCID: PENDIENTE)
+
+Edgard Froylan Inga Quillas (ORCID: PENDIENTE)
+:::
+
+::: {custom-style="PortadaTitulo"}
+ASESOR
+:::
+
+::: {custom-style="PortadaTexto"}
+PENDIENTE: nombres y apellidos (ORCID: XXXX-XXXX-XXXX-XXXX)
+
+Lima – Perú
+
+2026
+:::
+
+```{=typst}
+#set align(left)
+```
+
+```{=openxml}
+<w:p><w:r><w:br w:type="page"/></w:r></w:p>
+```
+```{=typst}
+#pagebreak()
+```
+
+::: {custom-style="PortadaTitulo"}
+DEDICATORIA
+:::
+
+::: {custom-style="Aviso"}
+PENDIENTE (equipo): texto de la dedicatoria, en cursiva según la plantilla.
+:::
+
+```{=openxml}
+<w:p><w:r><w:br w:type="page"/></w:r></w:p>
+```
+```{=typst}
+#pagebreak()
+```
+
+::: {custom-style="PortadaTitulo"}
+AGRADECIMIENTOS
+:::
+
+::: {custom-style="Aviso"}
+PENDIENTE (equipo): agradecimientos. Sugerencia: al asesor del curso, al equipo del clúster Khipu de UTEC por el cómputo, y a la CFPB por publicar los datos.
+:::
+
+```{=openxml}
+<w:p><w:r><w:br w:type="page"/></w:r></w:p>
+```
+```{=typst}
+#pagebreak()
+```
+
+::: {custom-style="PortadaTitulo"}
+TABLA DE CONTENIDO
+:::
+
+```{=openxml}
+<w:sdt><w:sdtPr><w:docPartObj><w:docPartGallery w:val="Table of Contents"/><w:docPartUnique/></w:docPartObj></w:sdtPr><w:sdtContent><w:p><w:r><w:fldChar w:fldCharType="begin" w:dirty="true"/></w:r><w:r><w:instrText xml:space="preserve"> TOC \o "1-2" \h \z \u</w:instrText></w:r><w:r><w:fldChar w:fldCharType="separate"/></w:r><w:r><w:t>Tabla de contenido: en Word, clic derecho y «Actualizar campos» (o F9) para generarla con los números de página.</w:t></w:r><w:r><w:fldChar w:fldCharType="end"/></w:r></w:p></w:sdtContent></w:sdt>
+```
+```{=typst}
+#outline(title: none, depth: 2)
+```
+
+```{=openxml}
+<w:p><w:r><w:br w:type="page"/></w:r></w:p>
+```
+```{=typst}
+#pagebreak()
+```
+
+::: {custom-style="PortadaTitulo"}
+ÍNDICE DE TABLAS
+:::
+
+```{python}
+#| output: asis
+for k, caption in enumerate(captions("tbl"), start=1):
+    print(f"Tabla {k}. {caption}\n")
+```
+
+::: {custom-style="PortadaTitulo"}
+ÍNDICE DE FIGURAS
+:::
+
+```{python}
+#| output: asis
+for k, caption in enumerate(captions("fig"), start=1):
+    print(f"Figura {k}. {caption}\n")
+```
+
+::: {custom-style="PortadaTitulo"}
+ÍNDICE DE ANEXOS
+:::
+
+Anexo A. Catálogo de los 40 patrones
+
+Anexo B. Tabla completa de candidatos
+
+Anexo C. Reglas pre-registradas
+
+Anexo D. Mapa de la rúbrica del informe de cierre (P4)
+
+Anexo E. Declaración de uso de inteligencia artificial
+
+Anexo F. Repositorio, trazabilidad e historial de versiones
+
+```{=openxml}
+<w:p><w:r><w:br w:type="page"/></w:r></w:p>
+```
+```{=typst}
+#pagebreak()
+```
