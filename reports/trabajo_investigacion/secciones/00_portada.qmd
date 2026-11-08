@@ -52,6 +52,9 @@ Lima – Perú
 
 ```{=typst}
 #set align(left)
+// Los títulos de las páginas preliminares van centrados, como el estilo
+// PortadaTitulo en Word; Pandoc convierte el id de cada bloque en una etiqueta.
+#show selector.or(<titulo-dedicatoria>, <titulo-agradecimientos>, <titulo-contenido>, <titulo-tablas>, <titulo-figuras>, <titulo-anexos>): set align(center)
 ```
 
 ```{=openxml}
@@ -61,7 +64,7 @@ Lima – Perú
 #pagebreak()
 ```
 
-::: {custom-style="PortadaTitulo"}
+::: {#titulo-dedicatoria custom-style="PortadaTitulo"}
 DEDICATORIA
 :::
 
@@ -75,7 +78,7 @@ tomó este trabajo.*
 #pagebreak()
 ```
 
-::: {custom-style="PortadaTitulo"}
+::: {#titulo-agradecimientos custom-style="PortadaTitulo"}
 AGRADECIMIENTOS
 :::
 
@@ -93,7 +96,7 @@ investigación.*
 #pagebreak()
 ```
 
-::: {custom-style="PortadaTitulo"}
+::: {#titulo-contenido custom-style="PortadaTitulo"}
 TABLA DE CONTENIDO
 :::
 
@@ -111,7 +114,7 @@ TABLA DE CONTENIDO
 #pagebreak()
 ```
 
-::: {custom-style="PortadaTitulo"}
+::: {#titulo-tablas custom-style="PortadaTitulo"}
 ÍNDICE DE TABLAS
 :::
 
@@ -121,7 +124,7 @@ for k, caption in enumerate(captions("tbl"), start=1):
     print(f"Tabla {k}. {caption}\n")
 ```
 
-::: {custom-style="PortadaTitulo"}
+::: {#titulo-figuras custom-style="PortadaTitulo"}
 ÍNDICE DE FIGURAS
 :::
 
@@ -131,7 +134,7 @@ for k, caption in enumerate(captions("fig"), start=1):
     print(f"Figura {k}. {caption}\n")
 ```
 
-::: {custom-style="PortadaTitulo"}
+::: {#titulo-anexos custom-style="PortadaTitulo"}
 ÍNDICE DE ANEXOS
 :::
 
