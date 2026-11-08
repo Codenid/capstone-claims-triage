@@ -210,25 +210,35 @@ cuales `{python} i(DATOS["period_rows"]["train_2023_2024"])` corresponden a
 comparte la estructura del problema: texto libre, taxonomía que cambia con
 el tiempo, desbalance fuerte entre motivos y volumen que crece.
 
-Tres cifras públicas dimensionan el contexto peruano; las tres son datos
-con fuente y ninguna mide el costo interno de una entidad. Primero, las
-operaciones no reconocidas por el cliente pasaron a ser en 2022 el primer
-motivo de reclamo a la banca, por delante de la duplicidad de transacciones
-y de los cobros indebidos [@gestion2022reclamos]. Segundo, entre 2021 y
-marzo de 2025 el Indecopi impuso 2,891 sanciones a 271 proveedores por
-operaciones no reconocidas; 2,601 de ellas, el 90 %, recayeron en el sistema
-financiero, con multas por 3,978.8 UIT [@andina2025indecopi]. Tercero, el
-plazo regulado para atender un reclamo es de 15 días hábiles
-[@sbs4036-2022], y desde 2025 las empresas emisoras responden por las
+Cuatro cifras públicas dimensionan el contexto peruano; las cuatro son
+datos con fuente y ninguna mide el costo interno de una entidad. Primero,
+el volumen: según la SBS, los clientes presentaron 3.1 millones de reclamos
+contra proveedores de servicios financieros regulados en 2020 (10.6 por
+cada 10 mil operaciones) y 1.8 millones entre enero y septiembre de 2024
+(2.1 por cada 10 mil) [@sbs2024conducta]; anualizar la segunda cifra da
+unos 2.4 millones, y esa anualización es un supuesto del equipo. Segundo,
+las operaciones no reconocidas por el cliente pasaron a ser en 2022 el
+primer motivo de reclamo a la banca, por delante de la duplicidad de
+transacciones y de los cobros indebidos [@gestion2022reclamos]. Tercero,
+entre 2021 y marzo de 2025 el Indecopi impuso 2,891 sanciones a 271
+proveedores por operaciones no reconocidas; 2,601 de ellas, el 90 %,
+recayeron en el sistema financiero, con multas por 3,978.8 UIT
+[@andina2025indecopi]. Cuarto, el plazo regulado para atender un reclamo
+bajó de 30 días calendario a 15 días hábiles [@sbs4036-2022;
+@sbs2024conducta], y desde 2025 las empresas emisoras responden por las
 pérdidas de operaciones no reconocidas procesadas sin autenticación
 reforzada, con un último plazo de adecuación en abril de 2026
-[@sbs2286-2024]. Las tres cifras explican por qué importan el motivo de un
+[@sbs2286-2024]. Estas cifras explican por qué importan el motivo de un
 reclamo y el aumento sostenido de un patrón: un reclamo mal tipificado
 consume parte de un plazo corto, y una modalidad que se repite entre
 clientes termina en sanción y en pérdida propia. El tamaño del equipo de
-atención de una entidad tipo, el número de reclamos que recibe y el costo
-de un error no están medidos; en el pitch se declararon como supuestos y
-así siguen (sección 6.2).
+atención de una entidad tipo no tiene dato público; los Product Lead lo
+estiman entre 20 y 40 analistas en un banco grande, y el número de
+reclamos por entidad y el costo de un error siguen siendo supuestos
+(sección 6.2). La propia SBS prevé desde 2025 el análisis automatizado de
+los datos no estructurados de los reclamos que reciben las empresas
+[@sbs2024conducta]: el texto del reclamo se ve ya como fuente de
+supervisión y no solo de atención.
 
 ## 2.4 Benchmarking y competencia
 
@@ -244,7 +254,7 @@ los resultados se presentan en el capítulo V.
 rows = [
     ["*Statu quo*: lectura y tipificación manual, una por una", "La persona lee cada reclamo, elige el motivo y deriva", "No ve el conjunto: un aumento de un tipo de reclamo se nota tarde; la tipificación varía entre personas", "SUPUESTO declarado"],
     ["Reglas por producto", "Asignar a cada producto su motivo o su desenlace más frecuente", "Ignora el texto; es la referencia mínima que cualquier modelo debe superar", "Diseño del protocolo de evaluación"],
-    ["Gestores de reclamos comerciales con tipificación asistida", "Módulos de clasificación de texto dentro de plataformas de atención al cliente", "No publican su evaluación en datos comparables; no incluyen vigilancia de patrones con presupuesto de falsas alarmas", "SUPUESTO declarado; no se revisaron plataformas concretas"],
+    ["Gestores de reclamos comerciales con tipificación asistida", "La gestión de reclamos de Salesforce para servicios financieros captura, clasifica para el triaje y resume cada caso; Prodigal identifica, categoriza y resume reclamos a partir de las llamadas al centro de contacto [@salesforce2026complaints; @prodigal2026complaints]", "Trabajan reclamo por reclamo: no agrupan reclamos parecidos de distintos clientes ni siguen cómo crece un patrón en el tiempo; no publican su evaluación en datos comparables", "Lectura del material público de ambos proveedores por los Product Lead (noviembre de 2026)"],
     ["Vigilancia por totales", "Mirar el volumen total de reclamos por semana", "Un patrón que crece queda oculto en el total", "Diseño: cada patrón se vigila contra su propia expectativa"],
     ["Clasificadores publicados sobre la CFPB", "TF-IDF o *embeddings* con cabeza lineal y cinco o seis clases gruesas [@bastani2019lda; @roumeliotis2025reasoning; @wang2026cfpbrelief]", "Clases gruesas; no abordan decenas de motivos desbalanceados ni la reutilización de texto", "Revisión de literatura (2.1)"],
     ["Descubrimiento de temas con BERTopic", "*Embeddings*, UMAP y HDBSCAN [@grootendorst2022bertopic]", "Deja como ruido los documentos que no agrupa; la proyección no es determinista", "Revisión de literatura (2.1)"],

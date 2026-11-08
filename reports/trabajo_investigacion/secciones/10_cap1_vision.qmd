@@ -71,10 +71,21 @@ exigida con el presupuesto de falsas alarmas. Se mantuvo lo central del
 pitch: las tres decisiones, la revisión humana obligatoria, la agrupación
 de reclamos parecidos de distintos clientes y la alerta cuando un patrón
 crece fuera de lo esperado, con la evaluación hacia adelante y reglas
-escritas antes de correr. La retroalimentación oral del asesor y del jurado
-en el pitch en vivo, el P1 y el P2 no quedó registrada por escrito, así que
-lo que se cambió por ella no se distingue aquí de lo que se cambió por la
-evidencia.
+escritas antes de correr.
+
+**Retroalimentación recibida.** Según la registran los Product Lead, fue de
+dos tipos. En la asesoría programada, el asesor pidió profundizar en las
+técnicas de minería de texto y mantener una validación humana que permita
+mejorar el modelo; lo primero se atendió con las representaciones
+numéricas del texto, el espacio semántico y el modelo tabular en contexto
+(capítulo III), y lo segundo con la revisión humana obligatoria y el
+registro de lo que la persona confirma o corrige, diseñado para la
+siguiente fase. En el pitch, la observación fue que los datos provienen de
+un mercado, el de Estados Unidos, distinto del de los stakeholders, que son
+bancos peruanos; se mantuvo la fuente pública por ser la única disponible,
+y la transferencia a reclamos de una entidad peruana se declara como límite
+y como primer paso de la siguiente fase (secciones 4.4 y 6.3). No hay actas
+de esas sesiones; lo anterior es el registro del equipo.
 
 ## 1.2 Usuarios, clientes y casos de uso
 

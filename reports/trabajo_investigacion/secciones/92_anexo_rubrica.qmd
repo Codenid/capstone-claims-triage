@@ -12,7 +12,7 @@ rows = [
     ["B1.2", "Objetivo de negocio y específicos con métrica, umbral, referencia, KPI, criterio de éxito y plazo", "1.3, 1.4 y 1.5", "Indicadores de negocio con metas del pitch; medición en el piloto"],
     ["B1.3", "Alcance y no-alcance, con lo que se difiere a Capstone II", "4.4 y 6.3", "—"],
     ["B1.4", "Por qué este proyecto de la cartera", "1.1", "Criterios reconstruidos por los Product Lead; sin acta de selección"],
-    ["B1.5", "Qué cambió y qué se mantuvo desde el pitch y el informe preliminar", "1.1 (último párrafo)", "Retroalimentación oral sin registro escrito"],
+    ["B1.5", "Qué cambió y qué se mantuvo desde el pitch y el informe preliminar", "1.1 (último párrafo)", "Retroalimentación del asesor y del pitch según el registro de los Product Lead; sin actas"],
     ["B2.1", "Mapa de stakeholders: dueño, usuario, pagador y afectado", "1.2", "Poder e interés declarados como supuesto"],
     ["B2.2", "Hallazgos de la evidencia primaria con fuente y citas anonimizadas", "4.3", "Sin entrevistas: evidencia documental declarada"],
     ["B2.3", "Qué cambió en la formulación por la evidencia", "1.1 y 5.5.2", "—"],
@@ -28,7 +28,7 @@ rows = [
     ["B4.2", "Viabilidad reevaluada y MVP para Capstone II con criterio", "6.1, 6.3 y 6.5", "Viabilidad financiera: Capstone II"],
     ["B5.1", "Formato, citas, figuras y tablas numeradas", "Todo el documento; estilo IEEE según los lineamientos del programa", "La rúbrica pide APA 7: decisión del equipo registrada en el anexo F"],
     ["B5.2", "Resumen ejecutivo de hasta 300 palabras", "Resumen", "—"],
-    ["B5.3", "Anexos A–H, repositorio accesible e historial de versiones", "Anexos A–F; repositorio en el anexo F", "One-pager y pitch en el repositorio del curso (anexo F); sin fichas de stakeholders ni bitácora con el asesor"],
+    ["B5.3", "Anexos A–H, repositorio accesible e historial de versiones", "Anexos A–F; repositorio en el anexo F", "One-pager (diez bloques por autorrevisión, sin verificación externa) y pitch en el repositorio del curso (anexo F); sin fichas de stakeholders ni bitácora con el asesor"],
 ]
 Markdown(md_table(["Evidencia", "Qué pide", "Dónde está", "Pendiente"], rows))
 ```

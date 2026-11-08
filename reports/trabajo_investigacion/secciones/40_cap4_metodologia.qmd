@@ -95,7 +95,10 @@ Markdown(md_table(["Fase", "Qué se hizo", "Producto"], rows))
 Los Product Lead confirmaron en noviembre de 2026 que los stakeholders
 participaron solo como personajes del pitch. El pitch menciona una revisión
 manual de 100 casos por el stakeholder, pero no se conserva acta ni
-etiquetas de esa revisión, así que no cuenta como evidencia primaria.
+etiquetas de esa revisión, así que no cuenta como evidencia primaria. Para
+una validación futura, los Product Lead proponen entrevistas
+semiestructuradas con responsables de prevención de fraude y analistas de
+posventa, con registro de respuestas, procesos actuales y autorizaciones.
 
 ## 4.4 Alcance del prototipo, MVP o solución
 

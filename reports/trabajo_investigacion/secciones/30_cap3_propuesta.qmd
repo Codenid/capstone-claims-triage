@@ -12,7 +12,8 @@ de reclamos de la semana y del día, muestra qué patrones reciben más de lo
 esperado. No decide: sugiere, estima y avisa; la decisión queda en la
 persona, y lo que ella confirma o corrige se guarda para mejorar el sistema.
 
-**Trazabilidad al pitch.** En el pitch de octubre de 2026 el producto se
+**Trazabilidad al pitch.** En el pitch de octubre de 2026 (láminas 4 a 8 y
+12) el producto se
 definió como detector de anomalías y sistema de alertas, con cuatro
 funciones: extraer señales del texto, agrupar reclamos parecidos de
 distintos clientes, priorizar alertas por recurrencia y aprender de lo que
