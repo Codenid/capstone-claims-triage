@@ -14,7 +14,13 @@ fallo operativo empieza a generar reclamos nuevos, pero lo nota tarde, porque
 el volumen diario no deja ver el conjunto. Hoy salen mal dos decisiones: la
 tipificación de cada reclamo, que depende de quién lo lee, y la detección de
 un aumento sostenido en un tipo de reclamo, que no tiene una expectativa
-contra la cual compararse.
+contra la cual compararse. Equivocarse cuesta reprocesos, cuando un reclamo
+mal tipificado vuelve a la cola, y retrasa la investigación de un patrón
+que se repite; en sentido contrario, cada falsa alerta consume tiempo de
+revisión. No existe una medición validada de ese costo en una entidad: los
+Product Lead lo declararon como supuesto en noviembre de 2026. La decisión
+es diaria; el prototipo entrega información diaria y una alerta formal
+semanal.
 
 Los datos muestran por qué el problema es difícil. En los reclamos públicos
 de la Oficina para la Protección Financiera del Consumidor de Estados Unidos
@@ -36,36 +42,53 @@ terminaron con una solución registrada o con compensación) y **qué está
 cambiando** (qué patrones de reclamos reciben más de lo esperado esta semana
 y hoy). El sistema entrega evidencia; la decisión queda en la persona.
 
-**Por qué este proyecto y qué cambió desde el pitch.** El proyecto se eligió
-de la cartera del curso por tener un conjunto de datos público grande, con
-texto libre y etiquetas de desenlace, que permite construir y evaluar el
-método completo sin acceso a datos de una entidad. Desde la formulación
-inicial cambiaron dos cosas por la evidencia: la respuesta fuera de plazo
-salió del triaje porque no se anticipa del texto, y la alerta diaria pasó de
-salida prometida a límite declarado porque no alcanzó la detección exigida
-con el presupuesto de falsas alarmas. Se mantuvo lo central: las tres
-decisiones, la revisión humana y la evaluación hacia adelante con reglas
-escritas antes de correr.
+**Por qué este proyecto.** El proyecto se eligió de la cartera del curso
+por tres criterios que los Product Lead reconstruyeron en noviembre de 2026,
+porque no hay acta del proceso de selección: el impacto potencial en el
+negocio, al apoyar la detección oportuna de incidencias recurrentes y
+reducir reprocesos; la viabilidad técnica, con procesamiento de lenguaje
+natural, aprendizaje automático y detección de cambios en conteos; y la
+disponibilidad de información, porque los `{python} i(DATOS["rows"])`
+reclamos públicos de la CFPB permiten construir y evaluar el método completo
+sin depender de datos confidenciales de una entidad. Los dos últimos
+criterios son datos documentales; el primero es un supuesto declarado.
 
-::: {custom-style="Aviso"}
-PENDIENTE (Product Lead): criterio de elección del proyecto de la cartera
-(anexo A del P4) y resumen de la retroalimentación recibida en el pitch en
-vivo, el P1 y el P2, con lo que se cambió y lo que se mantuvo por argumento.
-:::
+**Qué cambió desde el pitch.** El pitch de octubre de 2026 se tituló
+«Fraude oculto desde reclamos bancarios»: proponía usar los reclamos como
+segunda capa para descubrir modalidades de fraude que escaparon a los
+controles, con la jefatura de prevención de fraude como usuaria principal y
+alertas priorizadas por soles expuestos. La evidencia obligó a generalizar
+esa formulación. Los datos públicos no contienen etiqueta de fraude
+confirmado ni pérdidas asociadas, de modo que la recurrencia de un patrón
+no confirma fraude; el veredicto de negocio del 30 de octubre de 2026
+(anexo F) fijó el alcance como apoyo al triaje y a la investigación de
+patrones recurrentes, que pueden revelar incidencias operativas o posibles
+modalidades de fraude, sin decisiones automáticas ni afirmación de ahorro.
+Después cambiaron dos cosas más por la evidencia: la respuesta fuera de
+plazo salió del triaje porque no se anticipa del texto, y la alerta diaria
+pasó de salida prometida a límite declarado porque no alcanzó la detección
+exigida con el presupuesto de falsas alarmas. Se mantuvo lo central del
+pitch: las tres decisiones, la revisión humana obligatoria, la agrupación
+de reclamos parecidos de distintos clientes y la alerta cuando un patrón
+crece fuera de lo esperado, con la evaluación hacia adelante y reglas
+escritas antes de correr. La retroalimentación oral del asesor y del jurado
+en el pitch en vivo, el P1 y el P2 no quedó registrada por escrito, así que
+lo que se cambió por ella no se distingue aquí de lo que se cambió por la
+evidencia.
 
 ## 1.2 Usuarios, clientes y casos de uso
 
 ```{python}
 #| label: tbl-stakeholders
-#| tbl-cap: "Roles alrededor de la decisión de triaje. Los cargos son los de una entidad financiera tipo y se declaran como supuesto; la participación de cada rol en este proyecto fue documental."
+#| tbl-cap: "Roles alrededor de la decisión de triaje. Cargos, poder e interés son los que los Product Lead declararon a partir de los personajes del pitch y se tratan como supuesto: no hubo acceso a una entidad y ningún rol participó fuera del pitch."
 rows = [
-    ["Dueño del problema", "Jefatura de atención al cliente", "Que los reclamos se tipifiquen bien y se atiendan a tiempo; que un aumento se note antes", "SUPUESTO: no hubo acceso a una entidad"],
-    ["Usuario", "Analista de triaje (lee, tipifica, deriva, vigila plazos)", "Menos lectura, menos derivaciones erradas, una lista corta de patrones que suben", "Diseño de la ficha y de la vista «patrones que suben» a partir de la decisión descrita"],
-    ["Pagador", "Gerencia de atención al cliente o de riesgo operativo", "Costo evitado en horas y en plazos vencidos; detección temprana", "PENDIENTE PL: bloque 10 del *one-pager*"],
-    ["Afectado", "El cliente que reclama", "Respuesta más rápida y mejor dirigida; ninguna decisión automática sobre su caso", "Ninguna salida decide; revisión humana obligatoria"],
-    ["Equipo de datos", "Responsable de los modelos", "Señales claras de cuándo reentrenar; trazabilidad", "Diseño del *pipeline* y de las señales"],
+    ["Dueño del problema", "Jefatura de prevención de fraude o de riesgo operativo (en el pitch, jefatura de prevención e inteligencia de fraude)", "alto / alto", "Que los reclamos se tipifiquen bien y que un patrón recurrente se note antes de que crezca", "Personaje del pitch; sin entrevista"],
+    ["Usuario", "Analista de atención o posventa (ficha por reclamo) y analista de riesgos o fraude (patrones que suben)", "bajo / alto", "Menos lectura, menos derivaciones erradas, una lista corta de patrones que suben", "Personaje del pitch; el diseño de las pantallas partió de la decisión descrita en 1.1"],
+    ["Pagador", "Gerencia de riesgos, con cargo al presupuesto de prevención de fraude, riesgos u operaciones", "alto / medio", "Reprocesos y tiempo de revisión evitados; detección temprana", "Propuesto por los Product Lead; identidad y compromiso de compra sin validar"],
+    ["Afectado", "El cliente que reclama y el equipo de posventa", "bajo / medio", "Respuesta más rápida y mejor dirigida; ninguna decisión automática sobre su caso", "Ninguna salida decide; revisión humana obligatoria"],
+    ["Equipo de datos", "Responsable de los modelos", "—", "Señales claras de cuándo reentrenar; trazabilidad", "Diseño del *pipeline* y de las señales"],
 ]
-Markdown(md_table(["Rol", "Cargo", "Qué gana", "Cómo participó"], rows))
+Markdown(md_table(["Rol", "Cargo", "Poder / interés", "Qué gana", "Cómo participó"], rows))
 ```
 
 Los casos de uso principales son cuatro. (1) **Ficha del reclamo**: al abrir
@@ -118,18 +141,24 @@ apoyo que le dice qué es cada reclamo, qué suele pasar con reclamos así y qu�
 está cambiando, con cifras que vienen de modelos evaluados hacia adelante en
 el tiempo y con un presupuesto declarado de falsas alarmas. Frente a la
 lectura manual y a la vigilancia por totales, convierte un flujo de texto en
-evidencia revisable cada día.
+evidencia revisable cada día. El *one-liner* del pitch de octubre de 2026,
+«convertimos reclamos sueltos en alertas semanales de posibles patrones de
+fraude, con revisión humana», se generaliza aquí: convertir reclamos
+sueltos en evidencia revisable, un motivo sugerido por reclamo y una alerta
+semanal por patrón que sube, con revisión humana.
 
 Cada indicador se define con una métrica, una referencia a vencer y un
 criterio de éxito escrito antes de correr los modelos. Las referencias son
 las reglas más simples posibles: asignar a cada producto su motivo o su tasa
 más frecuente, y esperar para cada patrón el mismo volumen de las últimas
 semanas. Las métricas se definen en el capítulo II y los resultados se
-presentan en el capítulo V.
+presentan en el capítulo V. Los indicadores de negocio son los del pitch,
+generalizados de fraude a incidencias recurrentes; ninguno se ha medido,
+porque requieren tiempos y pérdidas de una entidad (sección 6.2).
 
 ```{python}
 #| label: tbl-kpis
-#| tbl-cap: "Indicadores de éxito del proyecto: métrica, referencia a vencer, criterio de éxito fijado antes de correr y plazo. El indicador de negocio queda pendiente de los Product Lead."
+#| tbl-cap: "Indicadores de éxito del proyecto: métrica, referencia a vencer, criterio de éxito fijado antes de correr y plazo. Los cuatro indicadores de negocio vienen del pitch y del veredicto de negocio; sus metas son supuestos del piloto, no mediciones."
 rows = [
     ["Motivo sugerido", "Macro-F1 en calibración, sin texto compartido", f'regla por producto, {n(T1["rule_calibration"])}', "al menos 5 % de mejora relativa sobre el modelo vigente, con el intervalo del *bootstrap* a favor", "Sprint 3 (31-oct-2026)"],
     ["Solución registrada y compensación", "Precisión promedio (AP)", f'regla por producto, {n(T2["rule_calibration"])} y {n(T3["rule_calibration"])}', "misma regla", "Sprint 3"],
@@ -138,7 +167,10 @@ rows = [
     ["Alerta semanal", "Fracción de crecimientos de 10 % y 20 % semanal detectados con una falsa alarma al mes", "regla de una semana", "la regla acumulada detecta al menos 5 puntos más en ambos crecimientos", "Sprint 3"],
     ["Conteo diario por patrón", "WIS diario", f'Poisson de 7 días, {n(DIARIO["winner"]["baseline_wis"], 2)}', "misma regla que el semanal", "Sprint 3"],
     ["*Pipeline* de inferencia", "Puntuar dos semanas de reclamos sin reentrenar", "—", "corre de extremo a extremo y reproduce la alerta congelada", "Sprint 3"],
-    ["Indicador de negocio", "Minutos de lectura por reclamo y derivaciones erradas; aumentos detectados antes", "cómo se decide hoy", "PENDIENTE PL", "Capstone II"],
+    ["Tiempo de revisión por reclamo (negocio)", "Minutos del analista por reclamo, con y sin la lista corta de motivos", "por medir en el piloto: revisión sin apoyo", "meta por fijar con la medición de línea base", "Piloto (Capstone II)"],
+    ["Tiempo de detección (negocio)", "Días entre el primer reclamo de un episodio y la primera alerta revisable", "por medir en datos históricos de la entidad", "menos de 6 días (meta del pitch; la alerta vigente es semanal)", "Piloto (Capstone II)"],
+    ["Precisión de alertas (negocio)", "Fracción de las alertas revisadas que el equipo confirma como incidencia real", "no aplica sin la capa", "al menos 60 % (meta del pitch)", "Piloto (Capstone II)"],
+    ["Pérdida evitada (negocio)", "Pérdida vía reclamos × fracción evitable × fracción capturada", "cero sin la capa", "al menos 10 % del potencial (meta del pitch)", "Primer año del piloto"],
 ]
 Markdown(md_table(["Indicador", "Métrica", "Referencia", "Criterio de éxito", "Plazo"], rows))
 ```

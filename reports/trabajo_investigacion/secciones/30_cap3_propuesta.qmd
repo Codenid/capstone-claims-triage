@@ -12,6 +12,40 @@ de reclamos de la semana y del día, muestra qué patrones reciben más de lo
 esperado. No decide: sugiere, estima y avisa; la decisión queda en la
 persona, y lo que ella confirma o corrige se guarda para mejorar el sistema.
 
+**Trazabilidad al pitch.** En el pitch de octubre de 2026 el producto se
+definió como detector de anomalías y sistema de alertas, con cuatro
+funciones: extraer señales del texto, agrupar reclamos parecidos de
+distintos clientes, priorizar alertas por recurrencia y aprender de lo que
+el analista confirma o descarta. La *user story* pedía recibir una alerta
+cuando varios reclamos comparten el mismo patrón, para investigar antes de
+que las pérdidas crezcan; las tres frustraciones de la usuaria eran
+enterarse tarde, no tener una vista que conecte reclamos de distintos
+clientes y no saber qué patrón investigar primero. El flujo previsto era
+que el sistema ingiera los reclamos del día, los compare con los recientes
+y alerte cuando un grupo supere un umbral, y que el analista revise la
+evidencia y decida. Las cinco salidas de este capítulo conservan esa
+estructura y la generalizan: la agrupación es el espacio semántico con sus
+40 patrones; la alerta es la regla acumulada sobre el conteo semanal por
+patrón, con un presupuesto de falsas alarmas en lugar de un umbral de
+recurrencia; la extracción de señales queda en el motivo sugerido y en los
+reclamos parecidos; el aprendizaje de lo que la persona confirma se diseña
+y queda para la siguiente fase. La priorización en soles expuestos y el
+cruce con transacciones y terceros requieren datos de la entidad y no
+forman parte del prototipo (@tbl-antes-despues).
+
+```{python}
+#| label: tbl-antes-despues
+#| tbl-cap: "Flujo de decisión antes y después, trazado al pitch de octubre de 2026 y generalizado al triaje. La columna «después» describe el diseño; sus efectos son metas del piloto, no mediciones."
+rows = [
+    ["Uso del reclamo", "Caso por caso", "Por reclamo y por conjunto: patrones entre clientes"],
+    ["Tipificación", "Depende de quién lee", "Motivo sugerido con tres opciones; la persona confirma o corrige"],
+    ["Tiempo para reconocer un aumento", "Cuando el volumen ya creció", "Alerta semanal por patrón contra su propia expectativa"],
+    ["Priorización", "Orden de llegada o criterio manual", "Probabilidad de solución y de compensación; patrones que suben primero"],
+    ["Decisión", "Manual, sin registro de lo aprendido", "Manual, con registro de lo confirmado o corregido (siguiente fase)"],
+]
+Markdown(md_table(["Aspecto", "Antes", "Después"], rows))
+```
+
 Las salidas se organizan alrededor de cuatro tareas de predicción, que en
 adelante se nombran con un código corto: sugerir el motivo del reclamo
 (T1), anticipar si tendrá alguna solución registrada (T2), anticipar si
@@ -140,12 +174,21 @@ tarde. Operativamente se sostiene con un *pipeline* que no reentrena en
 producción, corre en un equipo común para lotes moderados y tiene reglas
 claras de cuándo volver a entrenar.
 
-::: {custom-style="Aviso"}
-PENDIENTE (Product Lead): modelo de negocio y pagador. Hace falta el bloque 10
-del *one-pager*: quién paga (gerencia de atención al cliente o de riesgo
-operativo, por ejemplo), qué costo evita (horas de lectura y derivaciones
-erradas por reclamo, multas por plazos vencidos) y bajo qué modalidad se
-sostiene (licencia interna, servicio). Cada cifra debe ir etiquetada como dato
-o supuesto con su fuente. La viabilidad financiera se desarrolla en la
-siguiente fase (Capstone II).
-:::
+**Pagador y modalidad.** Los Product Lead proponen que pague la entidad
+beneficiaria con cargo al presupuesto del área de prevención de fraude,
+riesgos u operaciones, bajo un esquema de licencia o suscripción
+institucional acompañado de servicios de implementación, mantenimiento y
+soporte; la identidad del responsable de aprobar la inversión y su
+compromiso de compra no están validados. Los costos que la solución
+evitaría son los reprocesos por clasificación y derivación incorrecta, el
+tiempo dedicado a revisar casos parecidos y las pérdidas asociadas a la
+detección tardía de incidencias recurrentes; ninguno está cuantificado con
+datos de una entidad. La sostenibilidad depende de que el beneficio
+demostrado en un piloto supere los costos de implementación, cómputo,
+licencias, mantenimiento e investigación de alertas. El beneficio bruto se
+define como el producto de la pérdida histórica que llegó vía reclamos, la
+fracción evitable con una intervención oportuna y la fracción de esa
+pérdida que la solución captura; el beneficio neto resta los costos
+anteriores. La sección 6.2 presenta los escenarios ilustrativos; todos son
+supuestos declarados, no proyecciones, y la viabilidad financiera se
+desarrolla en la siguiente fase (Capstone II).

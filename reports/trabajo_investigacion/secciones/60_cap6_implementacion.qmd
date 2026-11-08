@@ -54,14 +54,34 @@ y de la puntuación (minutos de GPU o unos 15 minutos de CPU por lote diario
 de 2,500 reclamos, derivados de la prueba de punta a punta), y la licencia
 del modelo tabular en contexto, cuyo precio para uso comercial no se ha
 cotizado. El valor (tiempo de lectura y derivaciones erradas evitadas,
-aumentos detectados antes) requiere el dimensionamiento del *one-pager* y
-del pitch.
+aumentos detectados antes) solo tiene el dimensionamiento ilustrativo que
+sigue.
 
-::: {custom-style="Aviso"}
-PENDIENTE (Product Lead, Capstone II): inversión inicial, costo anual, ahorro
-esperado y escenarios, con cada cifra etiquetada como dato o supuesto y su
-fuente.
-:::
+El dimensionamiento viene del pitch y del veredicto de negocio (anexo F),
+con cada número etiquetado. El beneficio bruto es B = X × Y × Z, donde X
+es la pérdida histórica que llegó vía reclamos, Y la fracción evitable con
+una intervención oportuna y Z la fracción de lo evitable que la solución
+captura. X se fija en un millón de soles solo para explicar la lógica; Y y Z
+son supuestos del equipo (@tbl-escenarios).
+
+```{python}
+#| label: tbl-escenarios
+#| tbl-cap: "Escenarios ilustrativos del beneficio bruto anual con X = S/ 1,000,000, antes de descontar costos. Ninguna cifra es una pérdida observada ni una proyección; son supuestos declarados por los Product Lead."
+rows = [
+    ["Conservador", "20 %", "25 %", "S/ 50,000"],
+    ["Intermedio", "40 %", "50 %", "S/ 200,000"],
+    ["Optimista", "60 %", "50 %", "S/ 300,000"],
+]
+Markdown(md_table(["Escenario", "Fracción evitable (Y)", "Captura (Z)", "Beneficio bruto (X × Y × Z)"], rows))
+```
+
+El beneficio neto resta los costos de investigación adicional, de cómputo y
+licencias y de implementación, ninguno medido todavía, por lo que no puede
+calcularse un retorno de la inversión. La pérdida real vía reclamos, la
+capacidad de intervención y la fracción atribuible a la solución se miden
+en el piloto con datos autorizados de la entidad; el ahorro de tiempo de
+revisión se mide comparando minutos por reclamo con y sin la lista corta
+de motivos.
 
 ## 6.3 Roadmap y siguientes pasos
 

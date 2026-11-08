@@ -4,7 +4,7 @@
 #| label: tbl-repositorio
 #| tbl-cap: "Dónde está el código, los datos y los resultados, y con qué versión se renderizó este documento."
 rows = [
-    ["Repositorio del curso", "https://github.com/utec-dsia/pi1-262-g1, rama `modeling` (código, documentación, informes); rama `entrega` (prototipo del observatorio)"],
+    ["Repositorio del curso", "https://github.com/utec-dsia/pi1-262-g1, rama `modeling` (código, documentación, informes); rama `main` (entrega del Sprint 3: observatorio, *one-pager*, pitch y veredicto de negocio)"],
     ["Repositorio de desarrollo", "https://github.com/Codenid/capstone-claims-triage, rama `Modeling/pipaber`, con el historial completo de commits"],
     ["Commit de este render", f"`{GIT_SHA}` ({GIT_DATE})"],
     ["Etiqueta congelada", "PENDIENTE: etiqueta del 15 de noviembre de 2026 (congelamiento del código) y su SHA"],
@@ -26,6 +26,9 @@ en la rama `modeling`: `https://github.com/utec-dsia/pi1-262-g1/tree/modeling/`.
 #| tbl-cap: "Evidencia en el repositorio por fase y por tema, como rutas relativas a la raíz de la rama modeling del repositorio del curso."
 rows = [
     ["Comprensión del negocio: alcance, tareas y fugas", "`docs/decisiones/0001-alcance-y-fugas.md`; `etapa_1_2_comprension/`"],
+    ["One-pager E1–E2 y pitch de octubre de 2026", "`etapa_1_2_comprension/one_pager/Entregable_CRISP-MD_E1-E2_completado.xlsx`; `etapa_1_2_comprension/pitch/` (rama `main`)"],
+    ["Veredicto de negocio del 30 de octubre de 2026", "`docs/veredicto.md` (rama `main`)"],
+    ["Insumos de negocio de los Product Lead (noviembre de 2026)", "issue 29 del repositorio del curso (PB-27)"],
     ["Análisis exploratorio", "`notebooks/01_eda.ipynb`; `docs/resumen-eda.md`"],
     ["Preparación de datos", "`dvc.yaml`; `params.yaml`; `docs/diccionario/`; `reports/preparation/`"],
     ["Catálogo de modelos y resultados por etapa", "`docs/modelos.md`; `reports/modeling/`"],

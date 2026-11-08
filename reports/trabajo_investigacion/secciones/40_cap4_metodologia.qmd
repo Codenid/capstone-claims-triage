@@ -92,12 +92,10 @@ Markdown(md_table(["Fase", "Qué se hizo", "Producto"], rows))
   diseño de las pantallas se basó en la decisión de triaje descrita en el
   capítulo I y se declara como evidencia documental.
 
-::: {custom-style="Aviso"}
-PENDIENTE (Product Lead): si existen entrevistas o fichas anonimizadas de
-stakeholders del *one-pager*, incorporarlas aquí y en el anexo D (evidencia
-de stakeholders de la rúbrica). Hasta entonces, la evidencia es documental y
-se declara así.
-:::
+Los Product Lead confirmaron en noviembre de 2026 que los stakeholders
+participaron solo como personajes del pitch. El pitch menciona una revisión
+manual de 100 casos por el stakeholder, pero no se conserva acta ni
+etiquetas de esa revisión, así que no cuenta como evidencia primaria.
 
 ## 4.4 Alcance del prototipo, MVP o solución
 
@@ -112,6 +110,12 @@ una alerta diaria con presupuesto garantizado; la capa de lenguaje natural y
 el registro de lo que la persona confirma o corrige (diseñados, previstos
 para Capstone II); la transferencia a datos de una entidad peruana; una
 interfaz probada con usuarios reales.
+
+**Madurez.** En la escala de cinco niveles del pitch (idea, exploración,
+prototipo, MVP y producción) el proyecto se ubicó en el nivel 3, prototipo,
+y ahí sigue: el salto a MVP requiere datos autorizados de una entidad. La
+equivalencia con la escala TRL la fija el ingeniero de aprendizaje
+automático en el paquete de sustentación.
 
 ## 4.5 Construcción o implementación
 

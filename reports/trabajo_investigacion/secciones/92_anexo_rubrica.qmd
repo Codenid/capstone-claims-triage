@@ -6,29 +6,29 @@ así que la tabla dice dónde está cada evidencia.
 
 ```{python}
 #| label: tbl-rubrica
-#| tbl-cap: "Dónde está cada evidencia de la rúbrica del bloque B dentro de este documento, y qué queda pendiente de los Product Lead."
+#| tbl-cap: "Dónde está cada evidencia de la rúbrica del bloque B dentro de este documento, y qué queda como supuesto declarado o pendiente."
 rows = [
-    ["B1.1", "La decisión que hoy sale mal: quién decide, con qué información, frecuencia y costo del error", "1.1 y 1.2", "Costo del error y frecuencia: PENDIENTE PL (bloque 2 del one-pager)"],
-    ["B1.2", "Objetivo de negocio y específicos con métrica, umbral, referencia, KPI, criterio de éxito y plazo", "1.3, 1.4 y 1.5", "KPI de negocio: PENDIENTE PL"],
+    ["B1.1", "La decisión que hoy sale mal: quién decide, con qué información, frecuencia y costo del error", "1.1 y 1.2", "Costo del error y frecuencia: supuestos declarados por los Product Lead; sin medición en una entidad"],
+    ["B1.2", "Objetivo de negocio y específicos con métrica, umbral, referencia, KPI, criterio de éxito y plazo", "1.3, 1.4 y 1.5", "Indicadores de negocio con metas del pitch; medición en el piloto"],
     ["B1.3", "Alcance y no-alcance, con lo que se difiere a Capstone II", "4.4 y 6.3", "—"],
-    ["B1.4", "Por qué este proyecto de la cartera", "1.1", "Criterio de elección: PENDIENTE PL (anexo A del P4)"],
-    ["B1.5", "Qué cambió y qué se mantuvo desde el pitch y el informe preliminar", "1.1 (último párrafo)", "Retroalimentación del pitch: PENDIENTE PL"],
-    ["B2.1", "Mapa de stakeholders: dueño, usuario, pagador y afectado", "1.2", "Poder e interés y participación: PENDIENTE PL"],
+    ["B1.4", "Por qué este proyecto de la cartera", "1.1", "Criterios reconstruidos por los Product Lead; sin acta de selección"],
+    ["B1.5", "Qué cambió y qué se mantuvo desde el pitch y el informe preliminar", "1.1 (último párrafo)", "Retroalimentación oral sin registro escrito"],
+    ["B2.1", "Mapa de stakeholders: dueño, usuario, pagador y afectado", "1.2", "Poder e interés declarados como supuesto"],
     ["B2.2", "Hallazgos de la evidencia primaria con fuente y citas anonimizadas", "4.3", "Sin entrevistas: evidencia documental declarada"],
     ["B2.3", "Qué cambió en la formulación por la evidencia", "1.1 y 5.5.2", "—"],
     ["B2.4", "Mapa de alternativas y estado del arte", "2.1 y 2.4", "—"],
-    ["B2.5", "Propuesta de valor del pitch", "1.5 y 3.1", "User story y one-liner del pitch: PENDIENTE PL"],
-    ["B2.6", "Dimensionamiento con cada número etiquetado", "2.3 y 6.2", "PENDIENTE PL (Capstone II)"],
+    ["B2.5", "Propuesta de valor del pitch", "1.5 y 3.1", "—"],
+    ["B2.6", "Dimensionamiento con cada número etiquetado", "2.3 y 6.2", "Escenarios ilustrativos en 6.2; medición en Capstone II"],
     ["B3.1", "Inventario de datos con acceso y permiso", "2.5 (tabla)", "—"],
     ["B3.2", "Calidad y fuga variable por variable", "4.5.1 y 2.6; documento de alcance y fugas enlazado en el anexo F", "—"],
     ["B3.3", "Veredicto del supuesto principal y de los hallazgos del EDA", "5.1 (tabla de hipótesis) y 4.5.1", "—"],
     ["B3.4", "Decisiones de preparación con su razón", "4.5.1 (tablas de etapas y problemas)", "—"],
     ["B3.5", "Ciclo de vida justificado y cifras trazables", "4.2 y anexo F", "—"],
-    ["B4.1", "Flujo de decisión antes y después, trazado al pitch", "1.1 y 3.1", "Hoja del pitch: PENDIENTE PL"],
+    ["B4.1", "Flujo de decisión antes y después, trazado al pitch", "1.1 y 3.1", "—"],
     ["B4.2", "Viabilidad reevaluada y MVP para Capstone II con criterio", "6.1, 6.3 y 6.5", "Viabilidad financiera: Capstone II"],
     ["B5.1", "Formato, citas, figuras y tablas numeradas", "Todo el documento; estilo IEEE según los lineamientos del programa", "La rúbrica pide APA 7: decisión del equipo registrada en el anexo F"],
     ["B5.2", "Resumen ejecutivo de hasta 300 palabras", "Resumen", "—"],
-    ["B5.3", "Anexos A–H, repositorio accesible e historial de versiones", "Anexos A–F; repositorio en el anexo F", "Anexos B, C y H del P4 (one-pager, stakeholders, bitácora con el asesor): PENDIENTE PL"],
+    ["B5.3", "Anexos A–H, repositorio accesible e historial de versiones", "Anexos A–F; repositorio en el anexo F", "One-pager y pitch en el repositorio del curso (anexo F); sin fichas de stakeholders ni bitácora con el asesor"],
 ]
 Markdown(md_table(["Evidencia", "Qué pide", "Dónde está", "Pendiente"], rows))
 ```

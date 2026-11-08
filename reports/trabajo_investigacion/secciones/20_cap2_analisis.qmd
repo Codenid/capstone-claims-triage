@@ -210,13 +210,25 @@ cuales `{python} i(DATOS["period_rows"]["train_2023_2024"])` corresponden a
 comparte la estructura del problema: texto libre, taxonomía que cambia con
 el tiempo, desbalance fuerte entre motivos y volumen que crece.
 
-::: {custom-style="Aviso"}
-PENDIENTE (Product Lead): cifras del contexto peruano con fuente citable
-(reclamos recibidos por el sistema financiero según SBS o Indecopi, plazo
-regulado, tamaño del equipo de atención en una entidad tipo). Cada cifra debe
-etiquetarse como dato o como supuesto. Hasta tenerlas, esta sección describe
-el contexto sin dimensionarlo.
-:::
+Tres cifras públicas dimensionan el contexto peruano; las tres son datos
+con fuente y ninguna mide el costo interno de una entidad. Primero, las
+operaciones no reconocidas por el cliente pasaron a ser en 2022 el primer
+motivo de reclamo a la banca, por delante de la duplicidad de transacciones
+y de los cobros indebidos [@gestion2022reclamos]. Segundo, entre 2021 y
+marzo de 2025 el Indecopi impuso 2,891 sanciones a 271 proveedores por
+operaciones no reconocidas; 2,601 de ellas, el 90 %, recayeron en el sistema
+financiero, con multas por 3,978.8 UIT [@andina2025indecopi]. Tercero, el
+plazo regulado para atender un reclamo es de 15 días hábiles
+[@sbs4036-2022], y desde 2025 las empresas emisoras responden por las
+pérdidas de operaciones no reconocidas procesadas sin autenticación
+reforzada, con un último plazo de adecuación en abril de 2026
+[@sbs2286-2024]. Las tres cifras explican por qué importan el motivo de un
+reclamo y el aumento sostenido de un patrón: un reclamo mal tipificado
+consume parte de un plazo corto, y una modalidad que se repite entre
+clientes termina en sanción y en pérdida propia. El tamaño del equipo de
+atención de una entidad tipo, el número de reclamos que recibe y el costo
+de un error no están medidos; en el pitch se declararon como supuestos y
+así siguen (sección 6.2).
 
 ## 2.4 Benchmarking y competencia
 
@@ -232,7 +244,7 @@ los resultados se presentan en el capítulo V.
 rows = [
     ["*Statu quo*: lectura y tipificación manual, una por una", "La persona lee cada reclamo, elige el motivo y deriva", "No ve el conjunto: un aumento de un tipo de reclamo se nota tarde; la tipificación varía entre personas", "SUPUESTO declarado"],
     ["Reglas por producto", "Asignar a cada producto su motivo o su desenlace más frecuente", "Ignora el texto; es la referencia mínima que cualquier modelo debe superar", "Diseño del protocolo de evaluación"],
-    ["Gestores de reclamos comerciales con tipificación asistida", "Módulos de clasificación de texto dentro de plataformas de atención al cliente", "No publican su evaluación en datos comparables; no incluyen vigilancia de patrones con presupuesto de falsas alarmas", "SUPUESTO declarado; PENDIENTE PL: nombrar dos plataformas con fuente"],
+    ["Gestores de reclamos comerciales con tipificación asistida", "Módulos de clasificación de texto dentro de plataformas de atención al cliente", "No publican su evaluación en datos comparables; no incluyen vigilancia de patrones con presupuesto de falsas alarmas", "SUPUESTO declarado; no se revisaron plataformas concretas"],
     ["Vigilancia por totales", "Mirar el volumen total de reclamos por semana", "Un patrón que crece queda oculto en el total", "Diseño: cada patrón se vigila contra su propia expectativa"],
     ["Clasificadores publicados sobre la CFPB", "TF-IDF o *embeddings* con cabeza lineal y cinco o seis clases gruesas [@bastani2019lda; @roumeliotis2025reasoning; @wang2026cfpbrelief]", "Clases gruesas; no abordan decenas de motivos desbalanceados ni la reutilización de texto", "Revisión de literatura (2.1)"],
     ["Descubrimiento de temas con BERTopic", "*Embeddings*, UMAP y HDBSCAN [@grootendorst2022bertopic]", "Deja como ruido los documentos que no agrupa; la proyección no es determinista", "Revisión de literatura (2.1)"],
