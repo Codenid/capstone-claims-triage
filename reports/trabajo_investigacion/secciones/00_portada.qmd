@@ -65,9 +65,8 @@ Lima – Perú
 DEDICATORIA
 :::
 
-::: {custom-style="Aviso"}
-PENDIENTE (equipo): texto de la dedicatoria, en cursiva según la plantilla.
-:::
+*A nuestras familias, por su apoyo y su paciencia durante los meses que
+tomó este trabajo.*
 
 ```{=openxml}
 <w:p><w:r><w:br w:type="page"/></w:r></w:p>
@@ -80,9 +79,12 @@ PENDIENTE (equipo): texto de la dedicatoria, en cursiva según la plantilla.
 AGRADECIMIENTOS
 :::
 
-::: {custom-style="Aviso"}
-PENDIENTE (equipo): agradecimientos. Sugerencia: al asesor del curso, al equipo del clúster Khipu de UTEC por el cómputo, y a la CFPB por publicar los datos.
-:::
+*Al asesor del curso, Heider Sánchez Enriquez, por la orientación durante el
+desarrollo del proyecto. Al equipo del clúster Khipu de UTEC, por el tiempo
+de cómputo con el que se ajustaron y evaluaron los modelos. A la Oficina para
+la Protección Financiera del Consumidor de Estados Unidos (CFPB, por sus
+siglas en inglés), por publicar los datos que hicieron posible esta
+investigación.*
 
 ```{=openxml}
 <w:p><w:r><w:br w:type="page"/></w:r></w:p>
