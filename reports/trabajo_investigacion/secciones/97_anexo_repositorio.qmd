@@ -9,7 +9,7 @@ rows = [
     ["Repositorio del curso", "https://github.com/utec-dsia/pi1-262-g1, rama `main` (código, documentación, informes, observatorio, prototipo de pantallas, *one-pager*, pitch y veredicto de negocio)"],
     ["Repositorio de desarrollo", "https://github.com/Codenid/capstone-claims-triage, rama `main`, con el historial completo de commits"],
     ["Commit de este render", f"`{GIT_SHA}` ({GIT_DATE})"],
-    ["Estado congelado", "No se creó una etiqueta. El código de modelos y del *pipeline* no cambia desde el 31 de octubre de 2026; desde entonces solo cambiaron este documento y el prototipo de pantallas. La versión de referencia es el commit de la fila anterior"],
+    ["Etiqueta congelada", "`v1.0-capstone1` en el repositorio del curso, commit `eecaa56ea339` (fusión del PR 30 en `main`, 18 de noviembre de 2026). El código de modelos y del *pipeline* no cambia desde el 31 de octubre de 2026; este documento se renderiza después de la etiqueta y solo agrega esta fila"],
     ["Datos y artefactos", "DVC con remoto en DagsHub (`WinzCode/capstone-claims-triage`); 119 punteros; tabla preparada `datos-v1`, hash " + DATOS["md5"][:12] + "…"],
     ["Experimentos", "MLflow en DagsHub, experimento `claims-triage-modeling`, 87 corridas; exportación y página interactiva en el repositorio (tabla siguiente)"],
     ["Entorno y semillas", "Dependencias fijadas (`pyproject.toml`, `uv.lock`); semilla 42; trabajos de clúster en `scripts/hpc/`"],
