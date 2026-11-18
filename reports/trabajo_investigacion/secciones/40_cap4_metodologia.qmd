@@ -90,7 +90,8 @@ Markdown(md_table(["Fase", "Qué se hizo", "Producto"], rows))
   cada afirmación contra los trabajos recuperados, con cuatro preguntas. En
   ambos casos el equipo validó la lista de trabajos y las teorías antes de
   cada paso.
-- **Evidencia de usuarios.** No hubo entrevistas ni pruebas con usuarios; el
+- **Evidencia de usuarios.** No hubo entrevistas a usuarios ni pruebas con
+  ellos; el
   diseño de las pantallas se basó en la decisión de triaje descrita en el
   capítulo I y se declara como evidencia documental.
 
@@ -101,6 +102,15 @@ etiquetas de esa revisión, así que no cuenta como evidencia primaria. Para
 una validación futura, los Product Lead proponen entrevistas
 semiestructuradas con responsables de prevención de fraude y analistas de
 posventa, con registro de respuestas, procesos actuales y autorizaciones.
+
+**Consulta a un especialista.** Las lecturas regulatorias de la sección 2.3,
+es decir, el plazo de 15 días hábiles para atender un reclamo y la
+responsabilidad de la empresa emisora por las operaciones no reconocidas
+procesadas sin autenticación reforzada, fueron revisadas y validadas por un
+especialista del sector financiero, identificado aquí como E1; su
+organización se omite por confidencialidad. Es la única evidencia primaria
+del proyecto y su alcance es ese: confirma la lectura de las normas, no el
+problema de negocio ni el diseño de las pantallas.
 
 ## 4.4 Alcance del prototipo, MVP o solución
 

@@ -2,485 +2,303 @@
 <html lang="es">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<!-- Prototipo de pantallas (PB-25, issue #27). HTML estatico sin dependencias de datos:
-     las cifras del reclamo y de las semanas del 4 y 11 de noviembre de 2024 vienen de M9/M11;
-     el resto de las series es sintetico. Generado con ayuda de IA (Claude). -->
-<title>Mesa de triaje</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Observatorio de reclamos</title>
 <style>
-  body { margin: 0; font-family: 'IBM Plex Sans', system-ui, sans-serif; }
-  /* Layout: a fixed top bar with three views (Reclamo, Semana, Día); each view is a
-     two-column work surface at desktop width that stacks on a phone. */
-  :root {
-    --bg: #f6f7f8;
-    --surface: #ffffff;
-    --fg: #1d2229;
-    --muted: #5d6673;
-    --line: #d9dde3;
-    --accent: #1f5f8b;
-    --accent-soft: #e4eef6;
-    --good: #2f7d4f;
-    --warn: #b8741a;
-    --crit: #b4332e;
-    --band: #c9d9e8;
-    --sans: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
-    --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-      --bg: #15191e; --surface: #1d2329; --fg: #e6e9ec; --muted: #9aa4b0; --line: #333b45;
-      --accent: #7fb3dc; --accent-soft: #233544; --good: #6cc08a; --warn: #e0a24a; --crit: #e2716b;
-      --band: #2d4256; color-scheme: dark;
-    }
-  }
-  :root[data-theme="dark"] {
-    --bg: #15191e; --surface: #1d2329; --fg: #e6e9ec; --muted: #9aa4b0; --line: #333b45;
-    --accent: #7fb3dc; --accent-soft: #233544; --good: #6cc08a; --warn: #e0a24a; --crit: #e2716b;
-    --band: #2d4256; color-scheme: dark;
-  }
-  * { box-sizing: border-box; }
-  body { background: var(--bg); color: var(--fg); font-family: var(--sans); font-size: 14px; line-height: 1.45; margin: 0; }
-  body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--surface); }
-  a { color: var(--accent); }
-  h1, h2, h3 { margin: 0; font-weight: 600; text-wrap: balance; }
-  h1 { font-size: 15px; letter-spacing: 0.01em; }
-  h2 { font-size: 17px; }
-  h3 { font-size: 13px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); font-weight: 500; }
-  .num { font-family: var(--mono); font-variant-numeric: tabular-nums; }
-  button { font: inherit; }
-
-  .topbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--surface); border-bottom: 1px solid var(--line);
-    padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 10px;
-    display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; }
-  .brand { display: flex; align-items: baseline; gap: 10px; }
-  .brand small { color: var(--muted); }
-  nav { display: flex; gap: 4px; }
-  nav button { background: none; border: 1px solid transparent; border-radius: 4px; padding: 6px 12px; color: var(--muted); cursor: pointer; }
-  nav button[aria-current="page"] { color: var(--fg); background: var(--accent-soft); border-color: var(--line); }
-  nav button:focus-visible, button:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-  .demo { margin-left: auto; color: var(--muted); font-size: 12px; }
-
-  main { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 18px 40px; max-width: 1180px; margin: 0 auto; }
-  .view { display: grid; gap: 18px; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); }
-  .view > * { min-width: 0; }
-  @media (max-width: 820px) { .view { grid-template-columns: minmax(0, 1fr); } }
-  .stack { display: grid; gap: 18px; align-content: start; }
-  .panel { background: var(--surface); border: 1px solid var(--line); border-radius: 6px; padding: 14px 16px; display: grid; gap: 10px; }
-  .panel header { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
-  .meta { color: var(--muted); font-size: 12px; }
-  .narrative { font-size: 14px; line-height: 1.55; max-width: 68ch; white-space: pre-wrap; }
-  .kv { display: grid; grid-template-columns: max-content 1fr; gap: 4px 14px; font-size: 13px; }
-  .kv dt { color: var(--muted); }
-  .kv dd { margin: 0; }
-
-  .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; border: 1px solid var(--line); color: var(--muted); }
-  .pill.good { color: var(--good); border-color: var(--good); }
-  .pill.warn { color: var(--warn); border-color: var(--warn); }
-  .pill.crit { color: var(--crit); border-color: var(--crit); }
-  .pill.accent { color: var(--accent); border-color: var(--accent); }
-
-  .bars { display: grid; gap: 6px; }
-  .bar { display: grid; grid-template-columns: minmax(0, 1fr) 120px 56px; gap: 10px; align-items: center; font-size: 13px; }
-  .bar .track { height: 8px; background: var(--accent-soft); border-radius: 2px; overflow: hidden; }
-  .bar .fill { height: 100%; background: var(--accent); }
-  .bar.chosen .fill { background: var(--good); }
-
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; font-weight: 500; color: var(--muted); font-size: 12px; letter-spacing: 0.03em; padding: 6px 8px; border-bottom: 1px solid var(--line); }
-  td { padding: 7px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
-  tr:last-child td { border-bottom: none; }
-  td.r, th.r { text-align: right; }
-  .tablewrap { overflow-x: auto; }
-  tr.alarm td:first-child { box-shadow: inset 3px 0 0 var(--crit); }
-  tr.watch td:first-child { box-shadow: inset 3px 0 0 var(--warn); }
-  tr.clickable { cursor: pointer; }
-  tr.clickable:hover td { background: var(--accent-soft); }
-
-  .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-  .btn { border: 1px solid var(--line); background: var(--surface); color: var(--fg); border-radius: 4px; padding: 6px 12px; cursor: pointer; }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .btn[aria-pressed="true"] { background: var(--accent-soft); border-color: var(--accent); }
-  [hidden] { display: none !important; }
-  #patternTable td.num { white-space: nowrap; }
-  .filters { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; font-size: 13px; }
-  .filters label { display: flex; align-items: center; gap: 6px; }
-  select, textarea, input[type="date"] { font: inherit; color: var(--fg); background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; }
-  textarea { width: 100%; min-height: 70px; resize: vertical; }
-  .note { font-size: 12px; color: var(--muted); }
-  .toast { font-size: 12px; color: var(--good); min-height: 1.2em; }
-
-  .deadline { display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; align-items: baseline; }
-  .deadline .big { font-size: 26px; font-weight: 600; }
-
-  .series { width: 100%; height: auto; display: block; }
-  .legend { display: flex; flex-wrap: wrap; gap: 14px; font-size: 12px; color: var(--muted); }
-  .legend i { display: inline-block; width: 14px; height: 10px; vertical-align: -1px; margin-right: 4px; border-radius: 2px; }
-  .summary { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
-  .summary div { border: 1px solid var(--line); border-radius: 4px; padding: 10px 12px; display: grid; gap: 2px; }
-  .summary b { font-size: 20px; font-weight: 600; }
-  .summary span { font-size: 12px; color: var(--muted); }
-  .llm { border-left: 3px solid var(--line); padding-left: 12px; font-size: 13px; }
-  details { border-top: 1px solid var(--line); padding-top: 8px; }
-  details summary { cursor: pointer; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: 0.06em; list-style: none; display: flex; align-items: center; gap: 6px; }
-  details summary::-webkit-details-marker { display: none; }
-  details summary::before { content: ""; width: 6px; height: 6px; border-right: 1.5px solid currentColor; border-bottom: 1.5px solid currentColor; transform: rotate(-45deg); transition: transform .15s; }
-  details[open] summary::before { transform: rotate(45deg); }
-  details > :not(summary) { margin-top: 8px; }
-  .ico { width: 18px; height: 18px; vertical-align: -4px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-  .legend-list { display: grid; gap: 6px; font-size: 13px; }
-  .legend-list span { display: flex; align-items: center; gap: 8px; }
-  @media (prefers-reduced-motion: reduce) { details summary::before { transition: none; } }
-  @media (prefers-reduced-motion: no-preference) { .toast { transition: opacity .3s; } }
+:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#14263d;background:#f5f8fc;
+  --blue:#1769aa;--navy:#12365a;--pale:#eaf3fb;--line:#dce6f0;--muted:#65778b;--white:#fff;--warn:#b45309;--warn-bg:#fdf3e4;--alert:#b3261e;--alert-bg:#fdecea;--ok:#1b6e3c}
+*{box-sizing:border-box}body{margin:0}button,select{font:inherit;color:inherit}button{cursor:pointer}
+a{color:var(--blue)}
+.top{background:var(--white);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;padding:16px max(16px,calc((100% - 1180px)/2))}
+.mark{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:linear-gradient(145deg,#12365a,#1769aa)}
+.mark svg{width:22px;height:22px;fill:none;stroke:#fff;stroke-width:1.7;stroke-linecap:round}
+.brand{font-weight:700;letter-spacing:-.02em}.brand small{display:block;color:var(--muted);font-weight:400;font-size:12px;margin-top:3px}
+.notice{background:var(--pale);border-bottom:1px solid var(--line);color:#33526f;font-size:13px;line-height:1.5;padding:10px max(16px,calc((100% - 1180px)/2))}
+main{max-width:1180px;margin:auto;padding:36px 16px 64px}
+.eyebrow{color:var(--blue);text-transform:uppercase;letter-spacing:.12em;font-size:11px;font-weight:700}
+h1{font-size:clamp(26px,4vw,36px);letter-spacing:-.035em;line-height:1.15;margin:10px 0 8px}
+h2{font-size:16px;margin:0 0 14px}
+.lead{color:var(--muted);line-height:1.6;margin:0 0 24px;max-width:70ch}
+.back{border:0;background:transparent;color:var(--blue);padding:0;margin:0 0 18px;font-size:13px;font-weight:650}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:18px}
+.role{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:26px;text-align:left;display:flex;flex-direction:column;min-height:210px;box-shadow:0 4px 18px #15395c08}
+.role:hover{border-color:#8bb8df}.role h2{font-size:20px;margin:0 0 8px}.role p{color:var(--muted);line-height:1.55;margin:0}
+.role .go{color:var(--blue);font-size:13px;font-weight:650;margin-top:auto;padding-top:20px}
+.icon{width:46px;height:46px;border-radius:14px;background:var(--pale);color:var(--blue);display:grid;place-items:center;margin-bottom:22px}
+.icon svg{width:23px;height:23px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.panel{background:var(--white);border:1px solid var(--line);border-radius:15px;padding:20px;min-width:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px;margin-bottom:16px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-bottom:16px}
+.kpi span{display:block;color:var(--muted);font-size:12px}.kpi b{display:block;font-size:26px;letter-spacing:-.02em;margin:6px 0 2px}.kpi small{color:var(--muted)}
+.bar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:16px}
+.bar label{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center}
+select,.btn{border:1px solid var(--line);background:var(--white);border-radius:10px;padding:8px 12px;font-size:13px}
+.btn.primary{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:650}
+.btn.on{background:var(--pale);border-color:#8bb8df;color:var(--blue);font-weight:650}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:11px 12px;border-bottom:1px solid #eef3f8;vertical-align:top}
+td.n,th.n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+tr.click{cursor:pointer}tr.click:hover{background:#f6f9fc}
+tr.alerta{background:var(--alert-bg)}tr.arriba{background:var(--warn-bg)}
+.tag{display:inline-block;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:650;background:var(--pale);color:var(--blue);white-space:nowrap}
+.tag.alerta{background:var(--alert-bg);color:var(--alert)}.tag.arriba{background:var(--warn-bg);color:var(--warn)}.tag.ok{background:#e8f4ec;color:var(--ok)}.tag.gris{background:#eef2f6;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.motive{background:#f6f9fc;border-radius:12px;padding:12px 14px;margin-bottom:8px}
+.motive .row{display:flex;justify-content:space-between;gap:12px;font-size:14px}.motive .row b{font-weight:650}
+.meter{height:4px;border-radius:4px;background:#e3ebf3;margin-top:9px;overflow:hidden}.meter i{display:block;height:100%;background:var(--blue)}
+.small{font-size:12px;color:var(--muted);line-height:1.55}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
+.fact{background:#f6f9fc;border-radius:10px;padding:12px}.fact span{display:block;color:var(--muted);font-size:11px;margin-bottom:6px}.fact b{font-size:13px;font-weight:650;word-break:break-word}
+details{margin-top:12px;font-size:13px;line-height:1.6}summary{cursor:pointer;color:var(--blue);font-weight:650}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin:12px 0}
+.step{border:1px solid var(--line);border-radius:10px;padding:10px;font-size:12px;color:var(--muted)}
+.step.done{background:#e8f4ec;border-color:#b9dcc6;color:var(--ok)}.step.now{background:var(--pale);border-color:#8bb8df;color:var(--navy);font-weight:650}
+.quote{border-left:3px solid var(--line);margin:10px 0 0;padding:2px 0 2px 12px;color:#31465d;font-size:13px;line-height:1.6}
+svg.chart{width:100%;height:auto;display:block}
+.foot{color:#8796a7;font-size:12px;margin-top:28px;line-height:1.6}
+@media (max-width:640px){.steps{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
+<header class="top">
+  <div class="mark"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2.5"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg></div>
+  <div class="brand">Observatorio de reclamos<small>Inteligencia y seguimiento operativo</small></div>
+</header>
+<div class="notice" id="notice"></div>
+<main id="app"></main>
 
-<div class="topbar">
-  <div class="brand"><h1>Mesa de triaje</h1><small>reclamos · prototipo de pantalla</small></div>
-  <nav aria-label="Vistas">
-    <button type="button" data-view="reclamo" aria-current="page">Reclamo</button>
-    <button type="button" data-view="patrones">Patrones que suben</button>
-  </nav>
-  <span class="demo">Prototipo · un reclamo de ejemplo y las semanas de octubre a diciembre de 2024</span>
-</div>
-
-<main>
-  <!-- ============================ RECLAMO ============================ -->
-  <section id="view-reclamo" class="view">
-    <div class="stack">
-      <article class="panel">
-        <header>
-          <div>
-            <h2>Reclamo 10483921</h2>
-            <div class="meta">Recibido el 11 de noviembre de 2024 · Producto: Credit reporting · Empresa: EQUIFAX, INC. · Estado: GA</div>
-          </div>
-          <span class="pill accent">Ejemplo</span>
-        </header>
-        <p class="narrative">I have disputed the same account on my credit report three times since XXXX. The account was opened in XXXX by someone else and I have sent the police report and the identity theft affidavit twice. Each time the bureau says the account was "verified" and it stays on my report. My score dropped more than XXXX points and I was denied a car loan on XX/XX/2024. I am asking that the account be removed and that the investigation be done properly.</p>
-        <dl class="kv">
-          <dt>Patrón semántico</dt><dd>14 · Reporte de crédito, información incorrecta tras disputa <span class="pill">margen del patrón 12.8 %, lectura fiable</span></dd>
-          <dt>Novedad</dt><dd>No. Se parece a los reclamos de ajuste (similitud con el más cercano 0.94).</dd>
-          <dt>Texto compartido</dt><dd>No coincide con ninguna plantilla conocida.</dd>
-        </dl>
-      </article>
-
-      <article class="panel">
-        <header><h3>Motivo sugerido (T1)</h3><span class="meta">TabPFN-3.5 · acierta entre los tres primeros en 96 % de los casos</span></header>
-        <div class="bars" id="t1bars">
-          <div class="bar chosen" data-issue="Problem with a credit reporting company's investigation into an existing problem"><span>Problema con la investigación de una disputa existente</span><div class="track"><div class="fill" style="width:62%"></div></div><span class="num">0.62</span></div>
-          <div class="bar" data-issue="Incorrect information on your report"><span>Información incorrecta en el reporte</span><div class="track"><div class="fill" style="width:24%"></div></div><span class="num">0.24</span></div>
-          <div class="bar" data-issue="Improper use of your report"><span>Uso indebido del reporte</span><div class="track"><div class="fill" style="width:7%"></div></div><span class="num">0.07</span></div>
-        </div>
-        <div class="actions">
-          <button type="button" class="btn primary" id="confirmT1">Confirmar motivo sugerido</button>
-          <label for="otherIssue" class="note">o elegir otro</label>
-          <select id="otherIssue">
-            <option value="">Elegir motivo</option>
-            <option>Información incorrecta en el reporte</option>
-            <option>Uso indebido del reporte</option>
-            <option>Problema con un servicio de monitoreo o protección</option>
-            <option>Robo de identidad o fraude</option>
-          </select>
-          <button type="button" class="btn" id="correctT1">Guardar corrección</button>
-        </div>
-        <div class="toast" id="t1toast" aria-live="polite"></div>
-        <details><summary>Qué pasa con lo que confirmo</summary><p class="note">Se guarda con el reclamo y alimenta la señal de reentrenamiento (caída de Macro-F1 mayor que 5 %).</p></details>
-      </article>
-
-      <article class="panel">
-        <header><h3>Qué suele pasar con reclamos así</h3><span class="meta">T2 y T3, logística sobre TF-IDF; umbrales fijados en calibración</span></header>
-        <div class="summary">
-          <div><b class="num">0.72</b><span>Probabilidad de alguna solución registrada</span><span class="pill good">Probable (umbral 0.30)</span></div>
-          <div><b class="num">0.05</b><span>Probabilidad de compensación monetaria</span><span class="pill">Poco probable (umbral 0.18)</span></div>
-          <div><b class="num">9</b><span>Días hábiles hasta el plazo de respuesta</span><span class="pill warn">Vence el 25 de noviembre</span></div>
-        </div>
-        <details><summary>De dónde salen estas cifras</summary><p class="note">T2 y T3 son regresiones logísticas sobre el texto, con umbrales elegidos en calibración. El plazo sale de la regla de días hábiles con calendario de feriados; no se predice del texto.</p></details>
-      </article>
-    </div>
-
-    <div class="stack">
-      <article class="panel">
-        <header><h3>Cinco reclamos parecidos y su desenlace</h3><span class="meta">Índice FAISS sobre embeddings BGE-large, reclamos de ajuste 2023–2024</span></header>
-        <div class="tablewrap">
-          <table>
-            <thead><tr><th class="r">Similitud</th><th>Fecha</th><th>Motivo registrado</th><th>Respuesta</th></tr></thead>
-            <tbody>
-              <tr><td class="num r">94 %</td><td class="num">2024-08-02</td><td>Investigación de disputa existente</td><td><span title="Cerrado con explicación" aria-label="Cerrado con explicación"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1.5"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg></span></td></tr>
-              <tr><td class="num r">93 %</td><td class="num">2024-05-19</td><td>Investigación de disputa existente</td><td><span title="Cerrado con solución no monetaria" aria-label="Cerrado con solución no monetaria"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><polyline points="8,12.5 11,15.5 16.5,9.5"/></svg></span></td></tr>
-              <tr><td class="num r">92 %</td><td class="num">2023-11-27</td><td>Información incorrecta en el reporte</td><td><span title="Cerrado con explicación" aria-label="Cerrado con explicación"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1.5"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg></span></td></tr>
-              <tr><td class="num r">91 %</td><td class="num">2024-02-14</td><td>Investigación de disputa existente</td><td><span title="Cerrado con solución no monetaria" aria-label="Cerrado con solución no monetaria"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><polyline points="8,12.5 11,15.5 16.5,9.5"/></svg></span></td></tr>
-              <tr><td class="num r">90 %</td><td class="num">2023-09-08</td><td>Investigación de disputa existente</td><td><span title="Cerrado con explicación" aria-label="Cerrado con explicación"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1.5"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg></span></td></tr>
-            </tbody>
-          </table>
-        </div>
-        <details>
-          <summary>Leyenda de respuestas</summary>
-          <div class="legend-list">
-            <span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="1.5"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="13" y2="16"/></svg> Cerrado con explicación: la empresa respondió y no cambió nada.</span>
-            <span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><polyline points="8,12.5 11,15.5 16.5,9.5"/></svg> Cerrado con solución no monetaria: corrigió, retiró o ajustó algo sin pagar.</span>
-            <span><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="6" width="19" height="12" rx="1.5"/><circle cx="12" cy="12" r="3"/><line x1="6" y1="12" x2="6.5" y2="12"/><line x1="17.5" y1="12" x2="18" y2="12"/></svg> Cerrado con compensación monetaria: hubo un pago al consumidor.</span>
-          </div>
-        </details>
-        <details>
-          <summary>Resumen de precedentes</summary>
-          <div class="llm">
-            <div class="meta">Texto generado a partir de los cinco casos de arriba (ejemplo). No clasifica ni decide.</div>
-            <p>Los cinco casos son disputas repetidas sobre una cuenta que el consumidor atribuye a robo de identidad. En dos de cinco la empresa retiró la cuenta como solución no monetaria; en tres respondió con explicación y la cuenta siguió. Lo que distinguió a los dos retiros: el consumidor adjuntó la denuncia policial y la declaración jurada, como en este reclamo.</p>
-          </div>
-        </details>
-      </article>
-
-      <article class="panel">
-        <header><h3>Derivar</h3></header>
-        <div class="actions">
-          <select id="team"><option>Disputas de reporte de crédito</option><option>Fraude e identidad</option><option>Atención general</option></select>
-          <select id="priority"><option>Prioridad normal</option><option selected>Prioridad alta (plazo en 9 días)</option></select>
-          <button type="button" class="btn primary" id="assign">Derivar</button>
-        </div>
-        <div class="toast" id="assignToast" aria-live="polite"></div>
-      </article>
-    </div>
-  </section>
-
-  <!-- ============================ PATRONES ============================ -->
-  <section id="view-patrones" class="view" hidden>
-    <div class="stack">
-      <article class="panel">
-        <header>
-          <div><h2>Patrones que suben</h2><div class="meta">Observados frente a esperados por patrón en el periodo elegido · intervalo del 80 % · alerta de crecimiento sostenido</div></div>
-          <span class="pill">Datos de calibración 2024; series de demostración salvo las semanas del 4 y 11 de noviembre</span>
-        </header>
-        <form class="filters" id="filters">
-          <label>Ver por <select id="grain"><option value="semana">semana</option><option value="dia">día</option></select></label>
-          <label>Desde <input type="date" id="from" min="2024-10-07" max="2024-12-22" value="2024-11-04"></label>
-          <label>Hasta <input type="date" id="to" min="2024-10-07" max="2024-12-22" value="2024-11-17"></label>
-          <label><input type="checkbox" id="onlyUp" checked> solo los que suben</label>
-          <button type="button" class="btn primary" id="apply">Aplicar</button>
-          <span class="meta" id="rangeNote"></span>
-        </form>
-        <div class="summary" id="rangeSummary"></div>
-        <div class="tablewrap">
-          <table id="patternTable">
-            <thead><tr><th>Patrón</th><th class="r">Observados</th><th class="r">Esperados</th><th class="r">Intervalo 80 %</th><th class="r">Diferencia</th><th>Estado</th></tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <details><summary>Cómo leer esta tabla</summary><p class="note">Esperados e intervalo salen del modelo de conteo (M9 por semana, D-D por día) y se suman sobre el periodo elegido. La diferencia es observados menos esperados; una fila va resaltada cuando los observados superan el intervalo. «Alerta» es la regla semanal de crecimiento sostenido (M11), calibrada para una falsa alarma al mes; por día no hay alerta formal, solo la lectura por encima o dentro del intervalo.</p></details>
-      </article>
-    </div>
-
-    <div class="stack">
-      <article class="panel" id="patternPanel">
-        <header><h3 id="patternTitle">Patrón 14 · Reporte de crédito, información incorrecta</h3><span class="meta" id="patternMeta"></span></header>
-        <svg class="series" id="patternChart" viewBox="0 0 520 200" role="img" aria-label="Observados y esperados del patrón elegido con banda del 80 %"></svg>
-        <div class="legend"><span><i style="background:var(--fg)"></i>Observados</span><span><i style="background:var(--accent)"></i>Esperados</span><span><i style="background:var(--band)"></i>Intervalo del 80 %</span></div>
-        <div id="patternStatus" class="kv"></div>
-        <details>
-          <summary>Lectura de la alerta</summary>
-          <dl class="kv">
-            <dt>Qué dice</dt><dd>El patrón viene por encima de lo esperado varias semanas seguidas y la regla de crecimiento sostenido superó su umbral, fijado para una falsa alarma al mes.</dd>
-            <dt>Fiabilidad del patrón</dt><dd id="boundaryText"></dd>
-            <dt>Cuidado</dt><dd>Tras una ráfaga, lo esperado sube durante dos o tres semanas. Si la semana siguiente vuelve a lo esperado, la alerta se cierra sola.</dd>
-          </dl>
-        </details>
-        <div class="actions">
-          <span class="note">Marcar como</span>
-          <button type="button" class="btn" data-mark="revisada">Revisada</button>
-          <button type="button" class="btn" data-mark="real">Aumento real</button>
-          <button type="button" class="btn" data-mark="eco">Eco de ráfaga</button>
-          <button type="button" class="btn" data-mark="reasignacion">Reasignación</button>
-        </div>
-        <textarea id="alertNote" placeholder="Nota para el equipo (opcional)"></textarea>
-        <div class="toast" id="alertToast" aria-live="polite"></div>
-        <div class="actions"><button type="button" class="btn" id="openComplaints">Ver los reclamos del patrón en el periodo</button></div>
-      </article>
-    </div>
-  </section>
-</main>
+<!-- Datos: foto fija de una salida del pipeline. La escribe construir_foto.py; no se edita a mano. -->
+<script id="foto" type="application/json">{"meta":{"rows":35265,"first":"2024-11-04","last":"2024-11-17","commit":"3cb322d","t1_model":"tabpfn-3.5","novel_fraction":0.0115,"coverage_80":0.7875,"macro_f1":0.307,"retrain":false,"t2_threshold":0.3,"t3_threshold":0.18,"sample":65},"patterns":[{"id":0,"product":"Credit reporting or other personal consumer reports","product_share":0.842,"terms":["disputes","submitting disputes","getting inaccurate","send disputes","bureaus having","disputes getting"],"fit_rows":1947,"frontier":0.011,"example":{"id":"6639394","text":"i submitted numerous of disputes and called the reporting agencies to resolve issues on my credit report and all i received was refusal to send me to the right departments and even calls hung up in my face"}},{"id":1,"product":"Credit reporting or other personal consumer reports","product_share":0.858,"terms":["credit","100 accurate","reporting 100","credit report","accurate","report"],"fit_rows":5995,"frontier":0.124,"example":{"id":"6603345","text":"Recently I did an investigation on my credit report which caused anxiety beyond belief. I found information that was unverifiable, invalidated, inaccurate, and highly questionable that the agencies didn't make sure it was reporting 100 % c…"}},{"id":2,"product":"Credit reporting or other personal consumer reports","product_share":0.983,"terms":["section","information","consumer","reporting","items","agency"],"fit_rows":8520,"frontier":0.128,"example":{"id":"9428485","text":"-- -- -- -- -- -- -- -- In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States …"}},{"id":3,"product":"Credit reporting or other personal consumer reports","product_share":0.886,"terms":["account","credit","information","consumer","reporting","report"],"fit_rows":35532,"frontier":0.672,"example":{"id":"7005197","text":"United revenue corporation, has failed to provide all proper documents to validate and verify the alleged debts. Which is a clear violation of my rights according to 15 U.S.C 1692g validation of debts. I am disputing three accounts. Accoun…"}},{"id":4,"product":"Credit reporting or other personal consumer reports","product_share":0.979,"terms":["validate","erroneous","credit","authorized fail","proof period","period allowed"],"fit_rows":13290,"frontier":0.756,"example":{"id":"7615893","text":"When I reviewed my credit report, I discovered that some of the information was erroneous. The 3 credit bureaus must validate these accounts in line with Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ) ( A ). It is not authorized to fai…"}},{"id":5,"product":"Credit reporting or other personal consumer reports","product_share":0.851,"terms":["consumer","section","states","reporting","report","reporting agency"],"fit_rows":9474,"frontier":0.026,"example":{"id":"9980651","text":"After reviewing my consumer report I've noticed that. there is a collection account reporting. I asked the creditor that's reporting this account to send me all documents that verifies the alleged debt. They failed to respond to me with an…"}},{"id":6,"product":"Credit reporting or other personal consumer reports","product_share":0.997,"terms":["balance","records","complain question","question specific","coming wrongdoing"],"fit_rows":13745,"frontier":0.223,"example":{"id":"6716896","text":"This is my Follow-up endeavor to tell you that I am a victim of identity theft and I complain to question specific items in my document coming about because of the wrongdoing. The items I am questioning connect with no exchanges acquiring …"}},{"id":7,"product":"Credit reporting or other personal consumer reports","product_share":0.933,"terms":["report","credit","disputes","accounts","credit report","verify"],"fit_rows":11531,"frontier":0.46,"example":{"id":"7305677","text":"Your efficiency and prompt attention to correcting some of the adverse information previously stated on my credit file is appreciated, yet there are still items that need to be addressed again and to be corrected immediately. The three cre…"}},{"id":8,"product":"Checking or savings account","product_share":0.388,"terms":["bank","card","account","told","money","called"],"fit_rows":119770,"frontier":0.088,"example":{"id":"7007829","text":"I have been a XXXX XXXX and I received a wisely card with my direct deposits in XXXX. I worked through XXXX and got direct deposits on the wisely card. I have some direct deposit set up on my card but it is not my main card. On XX/XX/XXXX,…"}},{"id":9,"product":"Credit reporting or other personal consumer reports","product_share":0.851,"terms":["complaint","party","complaint error","party involved","involved","reported"],"fit_rows":2670,"frontier":0.119,"example":{"id":"6435652","text":"This is my XXXX nd time submitting a dispute to the company. Each time they keep sending me a letter saying they are not going to investigate. This is extremely inappropriate as I am trying to get my credit report to report accurately."}},{"id":10,"product":"Credit reporting or other personal consumer reports","product_share":0.971,"terms":["report","credit","credit report","consent","complaint","erroneous information"],"fit_rows":9158,"frontier":0.474,"example":{"id":"8564407","text":"I am sending you this complaint to inform you that this company made an unauthorized inquiry on my personal credit report. I have listed the company 's name below, and the dates the inquiry was made. Since I did not authorize this company …"}},{"id":11,"product":"Credit reporting or other personal consumer reports","product_share":0.97,"terms":["balance","credit","inquiries","items","remove"],"fit_rows":97126,"frontier":0.233,"example":{"id":"6839109","text":"Consider This Complaint as a Follow-up to my previous complaint. My previous Complaint contains these fraudulent items XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX XXXX …"}},{"id":12,"product":"Debt collection","product_share":0.552,"terms":["debt","collection","account","company","alleged","credit"],"fit_rows":86363,"frontier":0.113,"example":{"id":"6659562","text":"This is my 3rd attempt to remove this debt collection from my credit report. XXXX XXXX XXXX has sold my XXXX collection to re-collectors, again and again. As stated on my credit report, my vehicle was repossessed in XX/XX/XXXX, and do not …"}},{"id":13,"product":"Credit reporting or other personal consumer reports","product_share":0.373,"terms":["loan","mortgage","payment","told","payments","paid"],"fit_rows":97382,"frontier":0.162,"example":{"id":"6669721","text":"Loan origination date was on or about XX/XX/XXXX for the amount of XXXX dollars. Contacted them in XX/XX/XXXX when the payment amount went up from XXXX dollars to XXXX dollars. During this conversation asked about the loan documents and wh…"}},{"id":14,"product":"Credit reporting or other personal consumer reports","product_share":0.939,"terms":["account","credit","report","information","credit report","reporting"],"fit_rows":176716,"frontier":0.128,"example":{"id":"7404034","text":"I have called and asked about why my personal information is being furnished without my written permission, which is a violation against my rights and is a crime and i need these credit reporting agencies to do what I am requesting and i d…"}},{"id":15,"product":"Credit reporting or other personal consumer reports","product_share":0.975,"terms":["letters","bureaus continuously","far gotten","happened mailed","continuously far","really sure"],"fit_rows":7597,"frontier":0.456,"example":{"id":"7179404","text":"I have never applied for credit. They are fraudulently reporting on my credit report. I filed FTC report with report number XXXX and now requesting CFPB to investigate as well."}},{"id":16,"product":"Credit reporting or other personal consumer reports","product_share":0.961,"terms":["consumer","section","reporting agency","reporting","states","consumer reporting"],"fit_rows":9342,"frontier":0.222,"example":{"id":"7607765","text":"In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to priv…"}},{"id":17,"product":"Credit reporting or other personal consumer reports","product_share":0.937,"terms":["account","section","states","consumer"],"fit_rows":71113,"frontier":0.314,"example":{"id":"8065335","text":"In accordance with the Fair Credit reporting act the following creditors violated my rights under the 15 USC 1681 section 6 o 2 states \" I have a right to privacy ( 15 USC 1681 section 604 states a consumer can not furnish an account witho…"}},{"id":18,"product":"Credit reporting or other personal consumer reports","product_share":0.884,"terms":["permitted","legitimate activity","report","legitimate","activity","credit report"],"fit_rows":10792,"frontier":0.621,"example":{"id":"8889596","text":"Failed to implement adequate procedures to ensure the highest level of accuracy in the credit reports you publish. According to credit reporting laws, it is essential that bureaus only report credit information that is 100 % accurate, and …"}},{"id":19,"product":"Credit reporting or other personal consumer reports","product_share":0.911,"terms":["credit","credit report","report","identity","accounts","inquiries"],"fit_rows":63214,"frontier":0.094,"example":{"id":"7362976","text":"Fraudulent information being reported to my file and needs to be blocked."}},{"id":20,"product":"Credit reporting or other personal consumer reports","product_share":0.99,"terms":["consumer reports","consent","reports","consumer","consent fraud","reports consent"],"fit_rows":3371,"frontier":0.006,"example":{"id":"8837023","text":"Please take a look at the attached letters and ID docs for verification that it is I XXXX XXXX filing this complaint. The stuff on my credit report is wrong and Under 15 U.S. Code 1681b Permissible purposes of consumer reports I never gave…"}},{"id":21,"product":"Credit reporting or other personal consumer reports","product_share":0.566,"terms":["start investigation","bureau start","documents want","want bureau","start","investigation accounts"],"fit_rows":4109,"frontier":0.178,"example":{"id":"8003705","text":"See the attached documents. I want the bureau to start the investigation on these accounts that I am never late for but they're reporting me as late."}},{"id":22,"product":"Credit reporting or other personal consumer reports","product_share":0.96,"terms":["law","written requests","violation federal","requests","items","federal law"],"fit_rows":12879,"frontier":0.311,"example":{"id":"7344476","text":"The following items continue to report on my credit report without my permission, in violation of federal law, despite numerous written requests. As required by Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ), these items must be verifi…"}},{"id":23,"product":"Credit reporting or other personal consumer reports","product_share":0.958,"terms":["consumer","agency","section","reporting","reporting agency","states"],"fit_rows":6407,"frontier":0.489,"example":{"id":"9493967","text":"In accordance with the Fair Credit Reporting Act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. XXXX XXXX XXXXXXXX 15 U.S.C 1681 section 602 A. States I hav…"}},{"id":24,"product":"Credit reporting or other personal consumer reports","product_share":0.844,"terms":["items","stress","accounts","unseen","identity","disputed items"],"fit_rows":9733,"frontier":0.202,"example":{"id":"9319486","text":"I disputed incorrect negative items on my credit report with Transition, XXXX, and XXXX. The items came back verified by all XXXX credit bureaus, so I responded with a verification letter asking for methods used when investigating my dispu…"}},{"id":25,"product":"Credit reporting or other personal consumer reports","product_share":0.974,"terms":["sections 609","sections","balance"],"fit_rows":14204,"frontier":0.303,"example":{"id":"8742835","text":"Upon examining my credit report, I identified inaccuracies in certain information. According to Sections 609 ( a ) ( 1 ) ( A ) and 611 ( a ) ( 1 ) ( A ), it is imperative for the Equifax and XXXX credit bureaus to authenticate these accoun…"}},{"id":26,"product":"Credit reporting or other personal consumer reports","product_share":0.912,"terms":["accounts","credit","report","credit report","information","consumer"],"fit_rows":11256,"frontier":0.511,"example":{"id":"9135593","text":"I'm disputing and investigating these wrongly reported accounts on my credit file. According to the Fair Credit Report Act, I should get XXXX} for each mistake. The FCRA 605B says we must report any incorrect accounts on a consumer 's repo…"}},{"id":27,"product":"Credit reporting or other personal consumer reports","product_share":0.992,"terms":["report","credit report","inquiry credit","fraud inquiry","remove fraud","theft remove"],"fit_rows":8018,"frontier":0.322,"example":{"id":"10221498","text":"IM A VICTIM OF IDENTITY THEFT PURSUANT TO FEDERAL LAW SECTION 605B YOU MUST REMOVE THE FRAUDULENT INFORMATION FROM MY NAME. I HAVE ATTACHED PAPERWORK SHOWING THE FRAUDULENT INFORMATION."}},{"id":28,"product":"Credit reporting or other personal consumer reports","product_share":0.796,"terms":["accounts","report","debt","credit","code","credit report"],"fit_rows":6960,"frontier":0.029,"example":{"id":"9356747","text":"In accordance with the Fair Credit Reporting Act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. has violated my rights. Or a list of inquiries : 15 U.S.C 16…"}},{"id":29,"product":"Credit reporting or other personal consumer reports","product_share":0.977,"terms":["identity","theft","identity theft","items","federal","federal trade"],"fit_rows":9166,"frontier":0.095,"example":{"id":"6447416","text":"This is the several time I've complained about being a victim of identity theft. The XXXX Credit Bureaus must remove any item that was opened without my knowledge, consent, or authority within XXXX business days with ( 1 ) appropriate proo…"}},{"id":30,"product":"Credit reporting or other personal consumer reports","product_share":0.866,"terms":["payment","late","payments","creditor","mailed delivered","periodic"],"fit_rows":21597,"frontier":0.318,"example":{"id":"7415307","text":"I reviewed my Consumer Reports and noticed that I had two late payments on an account that I was never late for. Consumer Reporting Agencies have assumed a vital role and have a responsibility to report Consumer Information to the best of …"}},{"id":31,"product":"Credit reporting or other personal consumer reports","product_share":0.777,"terms":["need reporting","reporting correction","correction company","identified inaccurate","inaccurate accounts","reviewing credit"],"fit_rows":8060,"frontier":0.155,"example":{"id":"9618436","text":"Upon reviewing my credit report, I have identified inaccurate accounts that need reporting and correction through your company."}},{"id":32,"product":"Credit reporting or other personal consumer reports","product_share":0.955,"terms":["credit","late payment","section","consumer","verify","information"],"fit_rows":9040,"frontier":0.289,"example":{"id":"9800318","text":"I filed a dispute for incorrect information on my credit report. I received an email from the credit bureau stating that they are assuming the disputes are coming from a 3rd party. They in fact did not come from a 3rd party. l even called …"}},{"id":33,"product":"Credit reporting or other personal consumer reports","product_share":0.885,"terms":["payments","updated records","consistently maintained","precise updated","seeking precise","reflect timely"],"fit_rows":7051,"frontier":0.345,"example":{"id":"8592458","text":"I have consistently made on-time payments, and it is unjust to be penalized with this erroneous entry. I urge you to update my account without delay."}},{"id":34,"product":"Credit reporting or other personal consumer reports","product_share":0.992,"terms":["letters","bureaus continuously","happened mailed","really sure","far gotten","continuously far"],"fit_rows":6530,"frontier":0.0,"example":{"id":"9058654","text":"I'm really not sure what happened. I have mailed off letters to the credit bureaus continuously and thus far I have not gotten a response. My name is XXXX XXXX and I am filing this complaint for falsely reporting misleading information. Th…"}},{"id":35,"product":"Credit reporting or other personal consumer reports","product_share":1.0,"terms":["dispute incorrect","invalid items","referenced issues","incorrect invalid","letter referenced","assistance creditors"],"fit_rows":2888,"frontier":0.0,"example":{"id":"8254616","text":"I have been trying to dispute incorrect and/or invalid items listed on my credit report and have gotten no assistance from the creditors or the credit bureaus regarding this matter. Please see attached documents and letter for referenced i…"}},{"id":36,"product":"Credit reporting or other personal consumer reports","product_share":0.96,"terms":["consumer","information","reporting","usc","15 usc","consumer reporting"],"fit_rows":53587,"frontier":0.112,"example":{"id":"9858245","text":"15 usc 1692 design to eliminate abusive, deceptive, and unfair debt collection practices 15 usc 1681s-2 Responsibility of furnishers of information to consumer reporting agencies 15 usc 1681 ( n ) Civil liability for wilful non compliance …"}},{"id":37,"product":"Credit reporting or other personal consumer reports","product_share":0.854,"terms":["letters","reporting","inaccurate date","date","written","credit"],"fit_rows":6255,"frontier":0.13,"example":{"id":"10178808","text":"I'm really not sure what happened. I have mailed off letters to the credit bureaus continuously and thus far I have not gotten a response. My name is XXXX XXXX and I am filing this complaint for falsely reporting misleading information. Th…"}},{"id":38,"product":"Credit reporting or other personal consumer reports","product_share":0.966,"terms":["payment","late","complaint","error","creditor","complaint bureaus"],"fit_rows":6321,"frontier":0.165,"example":{"id":"9874560","text":"My account with ALLY FINCL was never late! I have had exceptional payment history witH XXXX XXXX and all payments were placed on Autopay. This late payment that is reporting is a result on a systematic error on their end processing my paym…"}},{"id":39,"product":"Credit reporting or other personal consumer reports","product_share":0.95,"terms":["section","consumer","information","states","reporting agency","consumer reporting"],"fit_rows":8485,"frontier":0.561,"example":{"id":"9424182","text":"In accordance with the Fair Credit Reporting act. The List of accounts below has violated my federally protected consumer rights to privacy and confidentiality under 15 USC 1681. 15 U.S.C 1681 section 602 A. States I have the right to priv…"}}],"weeks":["2024-11-04","2024-11-11"],"weekly":{"0":[[12,13.3,4.0,24.0,0.03,0.0,false],[16,12.8,4.0,23.0,0.56,0.06,false]],"1":[[41,80.2,35.0,133.0,-1.04,0.0,false],[42,60.1,26.0,101.10000000000014,-0.51,0.0,false]],"2":[[347,298.8,170.0,430.0,0.56,0.06,false],[201,321.6,195.0,463.10000000000014,-1.15,0.0,false]],"3":[[1193,1176.0,923.0,1444.0,0.14,1.22,false],[965,1177.5,914.0,1434.1,-1.05,0.0,false]],"4":[[155,134.5,92.0,180.0,0.66,0.16,false],[101,144.3,102.0,191.0,-1.25,0.0,false]],"5":[[276,347.3,144.0,587.1000000000001,-0.24,0.17,false],[278,309.2,129.0,518.0,-0.02,0.0,false]],"6":[[138,152.8,113.9,193.0,-0.41,0.0,false],[107,144.6,107.0,182.0,-1.27,0.0,false]],"7":[[154,200.5,115.0,293.10000000000014,-0.58,0.0,false],[146,175.9,99.9,262.0,-0.38,0.0,false]],"8":[[1582,1470.5,1320.0,1631.0,0.92,1.0,false],[1798,1518.0,1362.0,1682.0,2.11,2.61,false]],"9":[[16,20.7,10.0,34.0,-0.39,0.0,false],[16,18.5,8.0,30.0,-0.16,0.0,false]],"10":[[190,145.9,85.0,211.0,0.91,2.15,false],[194,167.6,100.0,244.1000000000001,0.55,2.19,false]],"11":[[1702,1343.3,1170.9,1524.1,2.45,1.95,false],[1714,1516.9,1323.0,1705.0,1.28,2.73,false]],"12":[[1385,1306.6,1175.0,1429.0,0.8,0.3,false],[1436,1338.4,1205.0,1468.0,0.97,0.77,false]],"13":[[1289,1351.3,1218.9,1497.0,-0.56,0.43,false],[1404,1311.5,1184.0,1447.1,0.88,0.82,false]],"14":[[3682,3717.4,3379.9,4090.0,-0.1,2.26,false],[4247,3676.4,3322.0,4036.3,1.97,3.74,true]],"15":[[9,77.3,33.0,135.0,-2.7,0.0,false],[4,42.4,16.900000000000006,72.10000000000014,-2.75,0.0,false]],"16":[[166,350.9,158.0,557.0,-1.23,0.0,false],[191,255.3,116.0,408.0,-0.42,0.0,false]],"17":[[634,619.3,508.0,732.0,0.21,0.0,false],[708,623.1,505.9,738.1000000000001,0.95,0.45,false]],"18":[[91,93.1,59.0,130.0,0.02,0.0,false],[75,91.7,58.0,127.0,-0.55,0.0,false]],"19":[[1863,1475.5,1251.0,1712.0,2.02,3.45,true],[1571,1662.8,1408.0,1913.1,-0.43,0.0,false]],"20":[[33,46.9,15.0,87.0,-0.35,0.0,false],[9,39.8,13.0,71.0,-1.69,0.0,false]],"21":[[50,59.9,31.0,92.0,-0.3,0.0,false],[29,54.8,28.90000000000001,87.0,-1.24,0.0,false]],"22":[[136,211.4,142.0,285.0,-1.42,0.0,false],[117,172.1,115.0,235.0,-1.24,0.0,false]],"23":[[44,97.5,29.0,184.0,-0.84,0.0,false],[46,70.0,21.0,131.0,-0.37,0.0,false]],"24":[[190,181.7,109.0,264.0,0.24,0.0,false],[143,185.0,109.0,267.10000000000014,-0.6,0.0,false]],"25":[[121,180.7,129.0,237.0,-1.5,0.0,false],[142,149.6,107.0,198.0,-0.14,0.0,false]],"26":[[74,145.5,80.9,216.1000000000001,-1.48,0.0,false],[68,108.6,60.0,163.0,-1.02,0.0,false]],"27":[[55,74.5,38.0,117.0,-0.55,0.0,false],[50,64.4,33.0,100.0,-0.44,0.0,false]],"28":[[189,221.3,77.9,402.0,-0.05,0.0,false],[49,203.8,71.9,362.10000000000014,-1.68,0.0,false]],"29":[[71,90.2,53.0,132.0,-0.55,0.0,false],[45,80.1,47.0,117.0,-1.38,0.0,false]],"30":[[414,393.0,278.9,521.0,0.29,0.0,false],[347,401.4,280.0,542.1000000000001,-0.5,0.0,false]],"31":[[233,256.9,20.0,616.1000000000001,0.27,0.0,false],[180,243.4,20.0,596.3000000000004,0.09,0.0,false]],"32":[[32,137.2,69.0,218.1000000000001,-2.41,0.0,false],[53,83.3,41.0,131.0,-0.78,0.0,false]],"33":[[6,14.7,4.0,29.0,-0.96,0.0,false],[7,10.5,3.0,20.0,-0.35,0.0,false]],"34":[[14,43.6,12.0,84.0,-1.15,0.0,false],[25,28.6,8.0,54.0,0.03,0.0,false]],"35":[[0,31.1,12.0,54.0,-3.66,0.0,false],[0,15.4,6.0,27.0,-3.08,0.0,false]],"36":[[673,638.7,488.9,794.0,0.33,0.0,false],[782,652.3,494.9,807.0,1.02,0.52,false]],"37":[[41,79.9,27.0,141.0,-0.8,0.0,false],[26,60.0,21.0,109.10000000000014,-1.01,0.0,false]],"38":[[254,236.3,117.0,377.0,0.31,0.0,false],[134,244.0,117.9,388.0,-1.06,0.0,false]],"39":[[128,166.7,101.0,241.0,-0.63,0.0,false],[116,146.3,86.0,210.1000000000001,-0.54,0.0,false]]},"days":["2024-11-04","2024-11-05","2024-11-06","2024-11-07","2024-11-08","2024-11-09","2024-11-10","2024-11-11","2024-11-12","2024-11-13","2024-11-14","2024-11-15","2024-11-16","2024-11-17"],"daily":{"0":[[0,1.6,0.0,4.0],[4,1.4,0.0,4.0],[2,2.1,0.0,5.0],[3,1.8,0.0,5.0],[0,2.3,0.0,6.0],[3,1.0,0.0,3.0],[0,1.0,0.0,3.0],[0,1.6,0.0,4.0],[0,1.5,0.0,4.0],[0,1.6,0.0,4.0],[4,0.9,0.0,2.0],[0,1.8,0.0,5.0],[6,0.9,0.0,2.0],[6,1.0,0.0,3.0]],"1":[[10,12.0,2.0,25.0],[10,12.5,2.0,26.0],[14,11.8,2.0,24.0],[2,12.6,2.0,25.100000000000136],[4,9.3,2.0,19.0],[0,2.9,0.0,7.0],[1,2.1,0.0,5.0],[6,6.2,1.0,13.0],[10,6.8,1.0,14.0],[8,9.7,2.0,20.0],[7,8.4,1.0,17.100000000000136],[8,7.7,1.0,16.0],[1,3.0,0.0,7.0],[2,1.7,0.0,4.0]],"2":[[89,46.0,17.0,80.0],[61,64.1,23.0,113.0],[88,65.5,25.0,115.0],[64,60.4,23.0,104.10000000000014],[31,67.7,26.0,118.10000000000014],[7,19.9,7.0,36.0],[7,10.7,3.0,20.0],[33,45.3,17.0,79.0],[22,47.1,17.0,83.0],[65,53.7,20.90000000000001,95.0],[25,43.3,17.0,78.0],[47,44.8,17.0,81.0],[9,16.5,5.0,31.0],[0,7.2,2.0,14.0]],"3":[[213,184.4,116.0,259.0],[256,232.4,146.9,326.10000000000014],[237,220.9,139.0,311.0],[175,229.8,141.0,323.0],[156,185.7,114.9,263.0],[94,69.4,42.0,99.0],[62,60.4,36.0,88.0],[147,166.9,101.0,237.0],[193,198.5,124.0,280.0],[239,231.1,142.0,328.0],[125,213.6,132.0,307.0],[122,169.7,103.0,237.0],[95,66.8,40.0,97.0],[44,46.8,27.0,68.0]],"4":[[25,20.2,9.0,31.0],[52,26.3,12.0,42.0],[27,33.3,17.0,53.0],[23,29.2,14.0,46.0],[10,26.1,12.0,41.0],[14,9.0,4.0,15.0],[4,3.1,1.0,6.0],[20,20.3,9.0,32.0],[26,25.0,12.0,41.0],[8,31.6,16.0,50.0],[21,20.5,10.0,33.0],[8,19.9,9.0,32.0],[18,7.5,3.0,13.0],[0,2.3,0.0,5.0]],"5":[[41,60.7,18.0,114.0],[67,69.2,21.0,123.0],[75,58.2,19.0,107.0],[62,59.8,18.0,104.0],[23,60.2,18.0,111.0],[8,18.5,5.0,34.0],[0,9.0,2.0,18.0],[20,40.7,13.0,73.0],[55,45.0,14.0,83.0],[74,51.4,17.0,96.0],[38,49.5,16.0,90.0],[69,48.2,15.0,89.0],[6,20.4,6.0,38.0],[16,7.8,2.0,15.0]],"6":[[20,22.8,11.0,36.0],[23,24.6,13.0,39.0],[31,22.9,11.0,36.0],[32,23.6,12.0,36.0],[11,24.2,12.0,37.0],[9,10.8,4.0,17.0],[12,2.0,0.0,4.0],[13,21.9,11.0,35.0],[16,22.2,11.0,35.0],[21,24.8,12.0,39.0],[21,20.1,10.0,31.0],[24,19.9,9.0,32.0],[5,11.4,5.0,19.0],[7,1.6,0.0,4.0]],"7":[[16,31.4,11.0,55.0],[21,30.7,11.0,53.0],[44,26.0,9.0,45.0],[28,33.5,12.0,58.0],[42,29.4,11.0,50.0],[3,7.6,2.0,14.0],[0,3.2,0.0,7.0],[17,24.5,9.0,42.0],[12,25.9,10.0,45.0],[41,26.3,8.0,45.0],[40,29.9,12.0,51.0],[29,30.6,12.0,54.0],[7,7.8,2.0,14.0],[0,2.6,0.0,6.0]],"8":[[241,230.1,191.0,271.0],[272,272.6,227.0,319.10000000000014],[232,264.4,220.0,310.0],[262,244.2,203.0,287.0],[269,232.1,192.0,274.0],[176,136.0,111.0,163.0],[130,119.8,97.0,143.10000000000014],[334,214.2,177.0,254.0],[322,284.0,236.0,332.0],[309,362.1,304.0,425.0],[279,296.4,249.0,347.0],[287,281.4,233.0,329.0],[151,173.8,143.0,206.0],[116,115.8,94.0,138.0]],"9":[[6,3.3,0.0,7.0],[1,4.9,0.9000000000000057,10.0],[4,3.5,0.0,8.0],[5,3.6,0.0,8.0],[0,3.3,0.0,7.0],[0,0.8,0.0,2.0],[0,0.6,0.0,2.0],[10,2.3,0.0,5.0],[2,5.2,1.0,11.0],[2,5.0,1.0,11.0],[2,3.7,0.0,8.0],[0,2.9,0.0,6.0],[0,0.7,0.0,2.0],[0,0.5,0.0,1.0]],"10":[[12,26.3,7.0,50.0],[7,28.8,8.0,55.0],[10,24.7,7.0,47.0],[84,16.9,4.0,33.0],[52,29.7,8.0,56.0],[23,8.2,2.0,16.0],[2,3.5,0.0,8.0],[25,31.4,8.0,60.0],[38,38.7,11.0,74.0],[50,54.2,16.0,101.0],[35,39.6,11.0,77.0],[18,36.0,10.0,67.0],[17,8.3,2.0,16.0],[11,2.7,0.0,6.0]],"11":[[292,218.8,169.0,275.0],[276,269.8,205.0,337.10000000000014],[319,253.8,195.0,317.0],[330,269.6,208.0,334.10000000000014],[279,264.2,203.0,331.0],[115,133.4,101.0,171.0],[91,69.2,50.0,89.0],[249,234.9,181.0,295.0],[273,272.6,208.0,338.0],[318,324.1,247.0,410.10000000000014],[290,288.9,223.0,358.0],[310,277.1,211.9,346.0],[180,153.8,117.0,193.0],[94,66.1,48.900000000000006,86.0]],"12":[[251,203.6,167.0,242.0],[240,249.7,208.0,296.0],[220,243.4,201.0,287.0],[208,226.5,186.0,265.0],[201,189.2,154.0,223.0],[149,120.0,97.0,144.0],[116,120.3,98.0,144.0],[223,184.3,151.0,218.0],[250,226.5,187.0,266.0],[261,291.0,239.0,346.0],[250,241.3,200.0,286.0],[208,212.9,176.0,256.10000000000014],[124,143.8,116.0,173.0],[120,109.6,87.0,133.0]],"13":[[170,220.6,183.0,262.0],[232,241.2,202.0,285.0],[216,221.5,184.0,263.0],[221,213.6,178.9,252.0],[227,198.5,164.0,235.0],[113,105.8,85.0,127.0],[110,96.6,77.0,117.0],[178,188.5,155.0,223.0],[254,218.5,181.0,256.0],[292,268.2,224.0,315.0],[244,238.2,198.0,280.0],[225,227.1,189.0,270.0],[110,127.2,104.0,153.0],[101,90.4,73.0,109.0]],"14":[[519,621.1,523.0,728.0],[629,666.6,551.0,776.1000000000001],[584,623.4,522.0,731.0],[624,587.2,492.0,693.0],[643,537.9,445.0,627.0],[350,339.8,282.0,401.0],[333,318.5,264.0,375.0],[573,532.8,453.0,626.0],[614,613.2,517.0,714.1000000000001],[776,741.4,619.9,863.0],[785,641.8,537.0,752.0],[740,625.5,522.0,731.0],[464,427.5,357.0,505.0],[295,323.2,268.0,379.0]],"15":[[3,14.0,0.0,31.0],[2,10.0,0.0,23.0],[1,7.9,0.0,19.0],[0,5.5,0.0,13.0],[3,4.0,0.0,10.0],[0,1.0,0.0,3.0],[0,0.6,0.0,2.0],[0,3.9,0.0,10.0],[1,2.7,0.0,7.0],[1,3.0,0.0,7.0],[1,2.0,0.0,5.0],[0,1.7,0.0,4.0],[1,0.4,0.0,1.0],[0,0.2,0.0,1.0]],"16":[[33,51.6,17.0,95.0],[19,56.7,19.0,104.0],[54,38.5,12.0,68.0],[24,43.4,14.0,78.0],[23,39.6,13.0,73.0],[10,17.3,5.0,32.0],[3,7.9,2.0,15.0],[23,27.0,9.0,49.0],[15,32.0,11.0,57.0],[58,29.3,10.0,54.0],[37,33.8,12.0,60.100000000000136],[45,36.1,12.0,63.0],[6,19.9,7.0,38.0],[7,7.0,2.0,13.0]],"17":[[80,83.9,57.0,113.0],[113,106.0,73.0,142.0],[79,99.3,69.0,134.0],[127,91.6,62.0,122.0],[125,92.1,63.0,123.0],[84,60.9,41.0,83.0],[26,54.8,36.0,74.0],[84,78.0,54.0,104.0],[131,102.7,70.9,137.0],[129,128.2,88.0,171.0],[147,111.2,76.0,147.0],[92,113.6,79.0,151.0],[91,72.8,50.0,99.0],[34,51.8,35.0,71.0]],"18":[[20,11.4,4.0,20.0],[16,17.3,7.0,29.0],[21,15.0,6.0,26.0],[1,17.2,7.0,29.0],[25,12.8,5.0,21.0],[4,5.3,1.0,10.0],[4,2.0,0.0,4.0],[7,12.3,5.0,21.0],[16,14.2,5.900000000000006,24.0],[31,16.5,7.0,28.0],[10,19.1,8.0,31.0],[8,16.7,7.0,28.0],[0,5.4,2.0,10.0],[3,1.6,0.0,4.0]],"19":[[299,253.2,189.0,321.0],[407,313.1,232.0,401.0],[340,330.4,243.0,421.10000000000014],[341,333.9,248.0,429.0],[291,290.4,215.9,368.0],[93,128.1,94.0,165.0],[92,99.5,74.0,127.10000000000014],[250,243.8,183.0,310.0],[261,293.1,219.0,370.0],[323,353.7,267.0,449.0],[290,310.5,233.0,397.10000000000014],[260,272.0,200.0,346.0],[124,128.8,95.0,167.10000000000014],[63,81.7,57.0,106.0]],"20":[[13,6.8,1.0,15.0],[10,9.4,1.0,19.100000000000136],[4,9.2,1.0,19.0],[6,8.8,1.0,20.0],[0,6.5,1.0,14.0],[0,1.6,0.0,4.0],[0,1.3,0.0,3.0],[6,4.3,0.0,10.0],[1,5.3,0.0,12.0],[2,5.2,0.0,11.0],[0,4.3,0.0,9.0],[0,2.7,0.0,7.0],[0,0.7,0.0,2.0],[0,0.5,0.0,1.0]],"21":[[6,7.7,1.0,15.0],[12,9.8,2.0,20.0],[13,10.9,2.0,22.0],[11,10.7,2.0,21.0],[8,9.2,2.0,19.0],[0,3.0,0.0,7.0],[0,0.9,0.0,2.0],[0,6.4,1.0,13.0],[2,6.8,1.0,14.0],[2,7.3,1.0,14.100000000000136],[9,4.8,1.0,10.0],[7,5.1,1.0,11.0],[9,2.0,0.0,5.0],[0,0.7,0.0,2.0]],"22":[[17,30.9,14.0,52.0],[26,32.3,15.0,55.0],[20,28.3,12.0,46.0],[48,26.6,11.0,45.0],[17,29.3,13.0,49.0],[8,8.6,3.0,15.0],[0,3.0,0.0,6.0],[11,21.6,10.0,36.0],[25,22.8,10.0,38.0],[20,27.6,12.0,46.0],[36,23.2,10.0,38.0],[8,24.9,10.0,41.0],[12,7.4,2.0,13.0],[5,2.2,0.0,5.0]],"23":[[6,11.8,1.0,25.0],[8,13.4,1.0,30.0],[11,11.3,1.0,24.0],[8,10.9,1.0,25.0],[8,10.4,1.0,23.0],[3,2.9,0.0,7.0],[0,1.6,0.0,4.0],[6,7.0,1.0,16.0],[9,8.9,1.0,19.0],[11,10.8,1.0,24.0],[11,9.5,1.0,21.0],[4,10.4,1.0,22.0],[2,2.8,0.0,7.0],[3,1.2,0.0,3.0]],"24":[[37,27.3,10.0,48.0],[38,35.1,13.0,62.0],[35,34.9,13.0,61.0],[29,35.7,14.0,61.100000000000136],[45,31.9,12.0,54.0],[3,10.7,4.0,20.0],[3,7.3,2.0,13.0],[22,25.5,10.0,45.0],[35,29.3,11.0,51.0],[34,38.0,14.0,66.0],[22,33.8,13.0,57.0],[28,29.8,12.0,52.0],[2,9.8,3.0,18.0],[0,5.2,1.0,11.0]],"25":[[10,31.9,15.0,51.0],[34,31.3,14.0,51.0],[19,30.0,13.0,50.100000000000136],[15,26.3,12.0,43.0],[11,22.5,10.0,37.0],[11,8.4,3.0,15.0],[21,2.6,0.0,5.0],[23,22.1,9.900000000000006,36.0],[9,27.1,12.0,44.0],[37,26.6,12.0,43.0],[24,25.5,12.0,42.0],[16,24.6,11.0,40.0],[5,10.3,4.0,18.0],[28,2.4,0.0,5.0]],"26":[[12,24.9,5.0,50.0],[30,20.7,4.0,43.0],[6,24.8,5.0,52.0],[7,18.3,3.0,37.0],[7,17.4,3.0,35.0],[2,5.3,1.0,12.0],[10,2.8,0.0,7.0],[6,13.9,3.0,30.0],[12,11.7,2.0,25.0],[8,16.1,3.0,35.0],[9,11.4,2.0,23.0],[11,12.3,2.0,26.0],[3,4.6,0.0,10.0],[19,2.0,0.0,5.0]],"27":[[13,8.8,2.0,17.0],[14,11.7,3.0,22.0],[9,14.0,4.0,26.0],[9,12.0,3.0,23.0],[4,9.6,2.0,18.0],[5,2.6,0.0,6.0],[1,1.0,0.0,3.0],[14,7.7,2.0,15.0],[0,10.9,3.0,21.0],[16,11.6,3.0,23.0],[2,11.1,3.0,22.0],[13,7.8,2.0,15.0],[5,3.0,0.0,6.0],[0,0.9,0.0,2.0]],"28":[[32,34.1,5.0,71.0],[30,41.4,6.0,87.0],[47,33.1,5.0,76.0],[42,35.3,6.0,79.0],[25,35.2,5.0,75.10000000000014],[13,14.1,1.0,30.0],[0,7.2,0.0,15.0],[4,27.8,4.0,60.0],[16,27.5,4.0,59.0],[11,26.9,5.0,59.0],[7,19.6,2.0,42.0],[6,16.4,2.0,36.0],[2,6.6,1.0,15.0],[3,2.5,0.0,6.0]],"29":[[13,13.3,4.0,25.0],[10,15.5,5.0,28.0],[25,11.9,3.0,22.0],[2,17.2,6.0,32.0],[11,12.3,3.0,22.0],[10,5.3,1.0,10.0],[0,2.5,0.0,5.0],[5,10.7,3.0,20.0],[4,11.0,3.0,21.0],[11,10.0,3.0,18.0],[7,10.6,3.0,20.0],[11,9.1,2.0,17.100000000000136],[3,4.5,1.0,9.0],[4,1.5,0.0,3.0]],"30":[[82,50.3,24.0,80.0],[95,74.4,36.900000000000006,118.10000000000014],[90,80.1,41.0,125.0],[68,82.0,39.0,131.0],[62,72.2,37.0,116.0],[7,22.6,10.0,37.0],[10,12.6,5.0,21.100000000000136],[38,49.7,24.0,80.0],[63,60.8,29.90000000000001,96.0],[75,77.7,39.0,124.0],[62,68.5,34.0,111.0],[90,63.2,31.0,99.0],[16,24.2,11.0,40.0],[3,11.0,4.0,19.0]],"31":[[34,34.3,0.0,82.0],[65,43.3,0.0,108.0],[55,40.9,0.0,97.0],[35,54.8,0.0,136.0],[41,41.9,0.0,103.10000000000014],[0,13.2,0.0,33.0],[3,7.5,0.0,19.0],[1,27.8,0.0,62.0],[41,28.4,0.0,71.0],[57,33.2,0.0,81.0],[32,43.6,0.0,104.0],[45,35.2,0.0,85.0],[4,12.8,0.0,32.0],[0,5.9,0.0,16.0]],"32":[[12,23.1,5.0,46.0],[12,24.5,6.0,48.0],[3,19.2,4.0,37.0],[2,15.4,3.0,32.0],[0,11.4,2.0,24.0],[2,4.4,0.0,9.0],[1,1.7,0.0,4.0],[8,7.1,1.0,15.0],[7,9.0,2.0,19.0],[8,9.9,2.0,20.0],[7,8.5,2.0,18.0],[10,7.8,1.0,17.0],[8,4.4,0.0,10.0],[5,1.6,0.0,4.0]],"33":[[1,1.9,0.0,5.0],[2,2.5,0.0,6.0],[1,2.4,0.0,6.0],[1,1.9,0.0,5.0],[0,1.5,0.0,4.0],[0,0.4,0.0,1.0],[1,0.2,0.0,1.0],[0,1.1,0.0,3.0],[0,1.3,0.0,4.0],[1,1.3,0.0,3.0],[2,1.0,0.0,3.0],[0,1.2,0.0,3.0],[4,0.3,0.0,1.0],[0,0.2,0.0,1.0]],"34":[[4,6.5,0.0,16.100000000000136],[5,5.5,0.0,14.0],[1,5.4,0.0,14.0],[1,3.8,0.0,10.0],[3,3.2,0.0,9.0],[0,0.8,0.0,2.0],[0,0.4,0.0,1.0],[5,3.0,0.0,8.0],[0,3.4,0.0,9.0],[10,3.4,0.0,9.0],[2,4.2,0.0,11.0],[8,3.8,0.0,10.0],[0,1.3,0.0,4.0],[0,0.4,0.0,1.0]],"35":[[0,3.9,0.0,10.0],[0,4.1,0.0,11.0],[0,2.7,0.0,7.0],[0,2.2,0.0,6.0],[0,1.9,0.0,5.0],[0,0.3,0.0,1.0],[0,0.1,0.0,1.0],[0,0.9,0.0,3.0],[0,1.0,0.0,3.0],[0,0.9,0.0,3.0],[0,0.7,0.0,2.0],[0,0.6,0.0,2.0],[0,0.1,0.0,0.0],[0,0.0,0.0,0.0]],"36":[[98,101.2,67.0,142.0],[99,110.1,76.0,152.0],[118,106.9,72.9,146.10000000000014],[119,104.6,70.0,140.10000000000014],[117,98.9,67.0,137.0],[58,58.3,38.0,80.0],[64,57.2,37.0,78.10000000000014],[89,94.3,62.0,128.0],[139,103.4,70.0,142.0],[161,141.6,95.0,195.0],[174,125.4,86.0,176.0],[110,128.5,87.0,174.0],[70,76.7,51.0,105.10000000000014],[39,59.5,39.0,83.0]],"37":[[7,6.0,0.0,14.0],[9,8.2,0.0,20.0],[16,8.0,1.0,19.0],[5,9.8,1.0,22.0],[4,10.3,1.0,23.0],[0,4.1,0.0,10.0],[0,2.1,0.0,5.0],[12,4.2,0.0,10.0],[5,7.7,0.0,18.0],[3,8.5,0.0,19.0],[2,6.3,0.0,14.0],[1,6.5,0.0,16.0],[3,2.6,0.0,6.0],[0,1.2,0.0,4.0]],"38":[[66,40.4,9.0,77.0],[65,51.1,12.0,102.0],[53,60.4,13.0,120.0],[39,64.5,14.0,125.0],[28,44.9,10.0,84.10000000000014],[3,12.0,2.0,25.0],[0,3.8,0.0,8.0],[2,32.8,7.0,62.0],[21,27.6,6.0,54.0],[50,36.4,8.0,71.0],[23,40.2,10.0,76.0],[19,28.6,6.0,59.0],[19,8.4,1.0,17.0],[0,2.5,0.0,6.0]],"39":[[25,24.5,10.0,42.0],[22,27.4,10.0,46.0],[28,28.3,12.0,46.0],[32,26.4,11.0,46.0],[10,26.0,10.0,44.0],[9,7.7,2.0,14.0],[2,4.5,1.0,8.0],[19,18.6,7.0,32.0],[17,20.9,9.0,35.0],[24,27.7,11.0,47.0],[25,22.4,9.0,38.0],[17,22.2,9.0,39.0],[12,7.8,2.0,14.0],[2,3.8,1.0,7.0]]},"mixture":[{"week":"2024-11-04","p_value":0.158,"rare":false},{"week":"2024-11-11","p_value":0.285,"rare":false}],"complaints":[{"id":"10667128","date":"2024-11-04","product":"Credit card","issue":"Problem with a purchase shown on your statement","pattern":8,"novel":false,"t2":0.306,"t2_likely":true,"t3":0.355,"t3_likely":true,"top":[["Problem with a purchase shown on your statement",0.853],["Other features, terms, or problems",0.068],["Problem when making payments",0.045]],"neighbors":["7937408","9785253","8627871","6618740","6990878"],"similarity":0.906},{"id":"10667139","date":"2024-11-04","product":"Credit reporting or other personal consumer reports","issue":"Incorrect information on your report","pattern":11,"novel":false,"t2":0.486,"t2_likely":true,"t3":0.001,"t3_likely":false,"top":[["Incorrect information on your report",0.567],["Problem with a company's investigation into an existing problem",0.337],["Improper use of your report",0.077]],"neighbors":["8046512","8156793","8229808","8158642","8066548"],"similarity":0.952},{"id":"10667152","date":"2024-11-04","product":"Payday loan, title loan, personal loan, or advance loan","issue":"Vehicle was repossessed or sold the vehicle","pattern":13,"novel":false,"t2":0.113,"t2_likely":false,"t3":0.01,"t3_likely":false,"top":[["Struggling to pay your loan",0.233],["Charged fees or interest you didn't expect",0.215],["Problem with the payoff process at the end of the loan",0.163]],"neighbors":["7417133","6650859","9037183","8042614","7062464"],"similarity":0.85},{"id":"10667164","date":"2024-11-04","product":"Credit reporting or other personal consumer reports","issue":"Incorrect information on your report","pattern":19,"novel":false,"t2":0.505,"t2_likely":true,"t3":0.0,"t3_likely":false,"top":[["Incorrect information on your report",0.721],["Problem with a company's investigation into an existing problem",0.165],["Improper use of your report",0.105]],"neighbors":["9165539","8755588","8731015","10140938","9581020"],"similarity":0.935},{"id":"10667172","date":"2024-11-04","product":"Debt collection","issue":"Communication tactics","pattern":36,"novel":false,"t2":0.171,"t2_likely":false,"t3":0.002,"t3_likely":false,"top":[["Written notification about debt",0.367],["Attempts to collect debt not owed",0.296],["Took or threatened to take negative or legal action",0.112]],"neighbors":["8311633","7642349","6939578","6939579","6410873"],"similarity":0.855},{"id":"10667233","date":"2024-11-04","product":"Credit reporting or other personal consumer reports","issue":"Improper use of your report","pattern":19,"novel":false,"t2":0.241,"t2_likely":false,"t3":0.001,"t3_likely":false,"top":[["Improper use of your report",0.886],["Incorrect information on your report",0.085],["Problem with a company's investigation into an existing problem",0.021]],"neighbors":["8695566","8695484","6478879","8339019","9567893"],"similarity":0.928},{"id":"10667260","date":"2024-11-04","product":"Credit reporting or other personal consumer reports","issue":"Incorrect information on your report","pattern":19,"novel":false,"t2":0.505,"t2_likely":true,"t3":0.0,"t3_likely":false,"top":[["Incorrect information on your report",0.721],["Problem with a company's investigation into an existing problem",0.165],["Improper use of your report",0.105]],"neighbors":["9165539","8755588","8731015","10140938","9581020"],"similarity":0.935},{"id":"10667333","date":"2024-11-04","product":"Debt collection","issue":"Attempts to collect debt not owed","pattern":11,"novel":true,"t2":0.448,"t2_likely":true,"t3":0.001,"t3_likely":false,"top":[["Attempts to collect debt not owed",0.994],["Written notification about debt",0.002],["False statements or representation",0.001]],"neighbors":["10012141","10011663","10011549","10008981","10000991"],"similarity":1.0},{"id":"10672080","date":"2024-11-05","product":"Credit reporting or other personal consumer reports","issue":"Problem with a company's investigation into an existing problem","pattern":12,"novel":false,"t2":0.559,"t2_likely":true,"t3":0.0,"t3_likely":false,"top":[["Problem with a company's investigation into an existing problem",0.994],["Incorrect information on your report",0.002],["Improper use of your report",0.001]],"neighbors":["10031727","10030549","10021556","10013797","10009306"],"similarity":1.0},{"id":"10672212","date":"2024-11-05","product":"Debt collection","issue":"Attempts to collect debt not owed","pattern":31,"novel":false,"t2":0.519,"t2_likely":true,"t3":0.001,"t3_likely":false,"top":[["Attempts to collect debt not owed",0.996],["Written notification about debt",0.0],["False statements or representation",0.0]],"neighbors":["10038732","10038713","10020429","10015579","10000166"],"similarity":1.0},{"id":"10672236","date":"2024-11-05","product":"Credit reporting or other personal consumer reports","issue":"Incorrect information on your report","pattern":12,"novel":true,"t2":0.657,"t2_likely":true,"t3":0.0,"t3_likely":false,"top":[["Problem with a company's investigation into an existing problem",0.56],["Improper use of your report",0.308],["Incorrect information on your report",0.123]],"neighbors":["10119226","10111219","10098300","10052546","10025846"],"similarity":1.0},{"id":"10672240","date":"2024-11-05","product":"Mortgage","issue":"Applying for a mortgage or refinancing an existing mortgage","pattern":13,"novel":false,"t2":0.07,"t2_likely":false,"t3":0.004,"t3_likely":false,"top":[["Struggling to pay mortgage",0.438],["Applying for a mortgage or refinancing an existing mortgage",0.37],["Closing on a mortgage",0.095]],"neighbors":["6655102","9386036","7920779","7366424","7049303"],"similarity":0.824},{"id":"10672242","date":"2024-11-05","product":"Credit reporting or other personal consumer reports","issue":"Incorrect information on your report","pattern":12,"novel":true,"t2":0.657,"t2_likely":true,"t3":0.0,"t3_likely":false,"top":[["Problem with a company's investigation into an existing problem",0.56],["Improper use of your report",0.308],["Incorrect information on your report",0.123]],"neighbors":["10119226","10111219","10098300","10052546","10025846"],"similarity":1.0},{"id":"10672292","date":"2024-11-05","product":"Credit card","issue":"Other features, terms, or problems","pattern":8,"novel":false,"t2":0.456,"t2_likely":true,"t3":0.544,"t3_likely":true,"top":[["Problem with a purchase shown on your statement",0.637],["Other features, terms, or problems",0.242],["Problem when making payments",0.041]],"neighbors":["8462979","6639583","9930087","9482217","7659242"],"similarity":0.89},{"id":"10687173","date":"2024-11-06","product":"Credit reporting or other personal consumer reports","issue":"Incorrect information on your report","pattern":11,"novel":true,"t2":0.448,"t2_likely":true,"t3":0.001,"t3_likely":false,"top":[["Incorrect information on your report",0.994],["Problem with a company's investigation into an existing problem",0.002],["Improper use of your report",0.001]],"neighbors":["10012141","10011663","10011549","10008981","10000991"],"similarity":1.0},{"id":"10687198","date":"2024-11-06","product":"Debt collection","issue":"False statements or representation","pattern":3,"novel":false,"t2":0.265,"t2_likely":false,"t3":0.001,"t3_likely":false,"top":[["Attempts to collect debt not owed",0.482],["Written notification about debt",0.272],["False statements or representation",0.123]],"neighbors":["10279625","8874145","9196740","8303033","7917091"],"similarity":0.906},{"id":"10687258","date":"2024-11-06","product":"Mortgage","issue":"Trouble during payment process","pattern":13,"novel":false,"t2":0.05,"t2_likely":false,"t3":0.005,"t3_likely":false,"top":[["Trouble during payment process",0.778],["Struggling to pay mortgage",0.093],["Applying for a mortgage or refinancing an existing mortgage",0.061]],"neighbors":["9584576","9953559","9595302","9959735","9788525"],"similarity":0.881},{"id":"10687280","date":"2024-11-06","product":"Credit card","issue":"Closing your account","pattern":8,"novel":false,"t2":0.126,"t2_likely":false,"t3":0.039,"t3_likely":false,"top":[["Closing your account",0.941],["Trouble using your card",0.025],["Other features, terms, or problems",0.017]],"neighbors":["7200318","8086992","10172093","7143127","7907083"],"similarity":0.907},{"id":"10701302","date":"2024-11-07","product":"Debt collection","issue":"Written notification about debt","pattern":12,"novel":false,"t2":0.32,"t2_likely":true,"t3":0.0,"t3_likely":false,"top":[["Attempts to collect debt not owed",0.362],["Written notification about debt",0.306],["False statements or representation",0.18]],"neighbors":["9822821","7328289","8390302","10233689","10244020"],"similarity":0.896},{"id":"10701304","date":"2024-11-07","product":"Credit reporting or other personal consumer reports","issue":"Improper use of your report","pattern":19,"novel":false,"t2":0.46,"t2_likely":true,"t3":0.001,"t3_likely":false,"top":[["Improper use of your report",0.822],["Incorrect information on your report",0.127],["Problem with a company's investigation into an existing problem",0.042]],"neighbors":["9221376","9221362","9177392","9150513","9454634"],"similarity":0.97},{"id":"10701308","date":"2024-11-07","product":"Credit card","issue":"Problem with a purchase shown on your statement","pattern":8,"novel":false,"t2":0.421,"t2_likely":true,"t3":0.278,"t3_likely":true,"top":[["Problem with a purchase shown on your statement",0.888],["Other features, terms, or problems",0.081],["Fees or interest",0.006]],"neighbors":["9894667","10174233","10235391","7633379","6416775"],"similarity":0.894},{"id":"10701327","date":"2024-11-07","product":"Mortgage","issue":"Trouble during payment process","pattern":13,"novel":false,"t2":0.054,"t2_likely":false,"t3":0.008,"t3_likely":false,"top":[["Trouble during payment process",0.925],["Incorrect information on your report",0.033],["Struggling to pay mortgage",0.02]],"neighbors":["10258057","8659862","6432425","6394373","8033036"],"similarity":0.906},{"id":"10721676","date":"2024-11-08","product":"Credit reporting or other personal consumer reports","issue":"Problem with a company's investigation into an existing problem","pattern":11,"novel":false,"t2":0.507,"t2_likely":true,"t3":0.001,"t3_likely":false,"top":[["Problem with a company's investigation into an existing problem",0.977],["Incorrect information on your report",0.013],["Improper use of your report",0.007]],"neighbors":["8213888","8175633","8175472","8169826","8169000"],"similarity":0.998},{"id":"10721687","date":"2024-11-08","product":"Debt collection","issue":"Threatened to contact someone or share information improperly","pattern":14,"novel":false,"t2":0.32,"t2_likely":true,"t3":0.0,"t3_likely":false,"top":[["Written notification about debt",0.466],["Attempts to collect debt not owed",0.386],["False statements or representation",0.087]],"neighbors":["7539346","9835020","10004076","10004331","10158810"],"similarity":0.947},{"id":"10721851","date":"2024-11-08","product":"Vehicle loan or lease","issue":"Getting a loan or lease","pattern":13,"novel":false,"t2":0.051,"t2_likely":false,"t3":0.071,"t3_likely":false,"top":[["Struggling to pay your loan",0.286],["Managing the loan or lease",0.273],["Getting a loan or lease",0.254]],"neighbors":["7757526","6873841","6917521","7387446","7607546"],"similarity":0.935},{"id":"10721901","date":"2024-11-08","product":"Money transfer, virtual currency, or money service","issue":"Fraud or scam","pattern":8,"novel":false,"t2":0.052,"t2_likely":false,"t3":0.009,"t3_likely":false,"top":[["Fraud or scam",0.98],["Other transaction problem",0.006],["Unauthorized transactions or other transaction problem",0.004]],"neighbors":["6652639","9024890","7978363","8295377","10051857"],"similarity":0.962},{"id":"10726410","date":"2024-11-09","product":"Credit reporting or other personal consumer reports","issue":"Incorrect information on your report","pattern":14,"novel":false,"t2":0.63,"t2_likely":true,"t3":0.001,"t3_likely":false,"top":[["Incorrect information on your report",0.674],["Improper use of your report",0.245],["Problem with a company's investigation into an existing problem",0.065]],"neighbors":["7660472","9144282","6564302","8836496","9748669"],"similarity":0.886},{"id":"10726479","date":"2024-11-09","product":"Debt collection","issue":"False statements or representation","pattern":12,"novel":false,"t2":0.287,"t2_likely":false,"t3":0.0,"t3_likely":false,"top":[["Attempts to collect debt not owed",0.424],["Written notification about debt",0.373],["False statements or representation",0.115]],"neighbors":["10136317","10255540","9999774","10059597","10205961"],"similarity":1.0},{"id":"10726631","date":"2024-11-09","product":"Vehicle loan or lease","issue":"Incorrect information on your report","pattern":13,"novel":false,"t2":0.162,"t2_likely":false,"t3":0.036,"t3_likely":false,"top":[["Managing the loan or lease",0.555],["Problems at the end of the loan or lease",0.298],["Incorrect information on your report",0.059]],"neighbors":["9690438","9212205","6502422","8787581","8025097"],"similarity":0.922},{"id":"10726636","date":"2024-11-09","product":"Checking or savings account","issue":"Managing an account","pattern":8,"novel":false,"t2":0.061,"t2_likely":false,"t3":0.014,"t3_likely":false,"top":[["Managing an account",0.535],["Closing an account",0.209],["Opening an account",0.131]],"neighbors":["7750209","7939916","6407730","9527691","6887737"],"similarity":0.821},{"id":"10739391","date":"2024-11-10","product":"Credit reporting or other personal consumer reports","issue":"Incorrect information on your report","pattern":13,"novel":false,"t2":0.498,"t2_likely":true,"t3":0.0,"t3_likely":false,"top":[["Incorrect information on your report",0.59],["Problem with a company's investigation into an existing problem",0.271],["Improper use of your report",0.126]],"neighbors":["8236580","8236579","8888437","8914158","8917602"],"similarity":0.913},{"id":"10739484","date":"2024-11-10","product":"Debt collection","issue":"Attempts to collect debt not owed","pattern":33,"novel":false,"t2":0.28,"t2_likely":false,"t3":0.002,"t3_likely":false,"top":[["Attempts to collect debt not owed",0.923],["Written notification about debt",0.028],["False statements or representation",0.025]],"neighbors":["6553192","6479826","6478925","6451271","6430981"],"similarity":0.85},{"id":"10739678","date":"2024-11-10","product":"Vehicle loan or lease","issue":"Repossession","pattern":13,"novel":false,"t2":0.173,"t2_likely":false,"t3":0.002,"t3_likely":false,"top":[["Managing the loan or lease",0.475],["Problems at the end of the loan or lease",0.147],["Repossession",0.14]],"neighbors":["9845932","7725072","10021377","7543655","6999024"],"similarity":0.826},{"id":"10740172","date":"2024-11-10","product":"Checking or savings account","issue":"Managing an account","pattern":8,"novel":false,"t2":0.161,"t2_likely":false,"t3":0.348,"t3_likely":true,"top":[["Problem caused by your funds being low",0.582],["Managing an account",0.291],["Problem with a lender or other company charging your account",0.082]],"neighbors":["8060370","7472385","7820037","7090097","7468225"],"similarity":0.844},{"id":"10745461","date":"2024-11-11","product":"Credit reporting or other personal consumer reports","issue":"Incorrect information on your report","pattern":12,"novel":false,"t2":0.292,"t2_likely":false,"t3":0.001,"t3_likely":false,"top":[["Incorrect information on your report",0.39],["Improper use of your report",0.343],["Problem with a company's investigation into an existing problem",0.257]],"neighbors":["9207086","9321093","6910655","9629077","9568544"],"similarity":0.908},{"id":"10745469","date":"2024-11-11","product":"Credit reporting or other personal consumer reports","issue":"Incorrect information on your report","pattern":14,"novel":false,"t2":0.414,"t2_likely":true,"t3":0.0,"t3_likely":false,"top":[["Incorrect information on your report",0.909],["Problem with a company's investigation into an existing problem",0.047],["Improper use of your report",0.038]],"neighbors":["7773178","9281475","7038054","6931709","6601413"],"similarity":0.964},{"id":"10745473","date":"2024-11-11","product":"Credit reporting or other personal consumer reports","issue":"Improper use of your report","pattern":14,"novel":false,"t2":0.504,"t2_likely":true,"t3":0.0,"t3_likely":false,"top":[["Incorrect information on your report",0.44],["Improper use of your report",0.348],["Problem with a company's investigation into an existing problem",0.181]],"neighbors":["10055918","7386210","10176129","7112624","7424880"],"similarity":0.912},{"id":"10745482","date":"2024-11-11","product":"Credit reporting or other personal consumer reports","issue":"Problem with a company's investigation into an existing problem","pattern":14,"novel":false,"t2":0.693,"t2_likely":true,"t3":0.001,"t3_likely":false,"top":[["Incorrect information on your report",0.541],["Improper use of your report",0.277],["Problem with a company's investigation into an existing problem",0.157]],"neighbors":["10061067","10234727","10101448","10281376","9403897"],"similarity":0.955},{"id":"10745723","date":"2024-11-11","product":"Checking or savings account","issue":"Problem caused by your funds being low","pattern":8,"novel":false,"t2":0.252,"t2_likely":false,"t3":0.152,"t3_likely":false,"top":[["Problem caused by your funds being low",0.85],["Managing an account",0.114],["Problem with a lender or other company charging your account",0.019]],"neighbors":["6455918","7018067","7488159","6747454","6475124"],"similarity":0.808},{"id":"10745725","date":"2024-11-11","product":"Credit card","issue":"Problem with a purchase shown on your statement","pattern":8,"novel":false,"t2":0.16,"t2_likely":false,"t3":0.318,"t3_likely":true,"top":[["Problem with a purchase shown on your statement",0.943],["Other features, terms, or problems",0.045],["Problem when making payments",0.004]],"neighbors":["9851229","10027411","6772256","9195770","8469442"],"similarity":0.917},{"id":"10745736","date":"2024-11-11","product":"Debt collection","issue":"Took or threatened to take negative or legal action","pattern":12,"novel":false,"t2":0.328,"t2_likely":true,"t3":0.007,"t3_likely":false,"top":[["Communication tactics",0.367],["Took or threatened to take negative or legal action",0.282],["Attempts to collect debt not owed",0.206]],"neighbors":["6639519","8817354","7230875","7805599","8602635"],"similarity":0.875},{"id":"10750747","date":"2024-11-12","product":"Credit reporting or other personal consumer reports","issue":"Incorrect information on your report","pattern":19,"novel":false,"t2":0.282,"t2_likely":false,"t3":0.002,"t3_likely":false,"top":[["Problem with fraud alerts or security freezes",0.837],["Incorrect information on your report",0.044],["Unable to get your credit report or credit score",0.034]],"neighbors":["9773432","9286316","9286052","10093181","10087617"],"similarity":1.0},{"id":"10750800","date":"2024-11-12","product":"Vehicle loan or lease","issue":"Managing the loan or lease","pattern":13,"novel":false,"t2":0.228,"t2_likely":false,"t3":0.34,"t3_likely":true,"top":[["Repossession",0.375],["Struggling to pay your loan",0.294],["Managing the loan or lease",0.16]],"neighbors":["7245579","9767827","7608540","8520465","6476934"],"similarity":0.932},{"id":"10750871","date":"2024-11-12","product":"Checking or savings account","issue":"Problem caused by your funds being low","pattern":8,"novel":false,"t2":0.113,"t2_likely":false,"t3":0.086,"t3_likely":false,"top":[["Managing an account",0.567],["Problem caused by your funds being low",0.262],["Closing an account",0.076]],"neighbors":["8974085","7100192","7468225","7519069","10221355"],"similarity":0.882},{"id":"10750958","date":"2024-11-12","product":"Money transfer, virtual currency, or money service","issue":"Confusing or missing disclosures","pattern":8,"novel":false,"t2":0.094,"t2_likely":false,"t3":0.027,"t3_likely":false,"top":[["Other transaction problem",0.254],["Fraud or scam",0.171],["Unauthorized transactions or other transaction problem",0.147]],"neighbors":["7075146","6412875","7819416","9883363","7218804"],"similarity":0.848},{"id":"10763489","date":"2024-11-13","product":"Credit reporting or other personal consumer reports","issue":"Problem with a company's investigation into an existing problem","pattern":19,"novel":false,"t2":0.596,"t2_likely":true,"t3":0.0,"t3_likely":false,"top":[["Problem with a company's investigation into an existing problem",0.807],["Incorrect information on your report",0.184],["Improper use of your report",0.005]],"neighbors":["10120343","10109358","10108183","10084534","10024702"],"similarity":1.0},{"id":"10763608","date":"2024-11-13","product":"Mortgage","issue":"Struggling to pay mortgage","pattern":13,"novel":false,"t2":0.127,"t2_likely":false,"t3":0.046,"t3_likely":false,"top":[["Struggling to pay mortgage",0.452],["Trouble during payment process",0.36],["Applying for a mortgage or refinancing an existing mortgage",0.088]],"neighbors":["9005925","8390935","7253509","9940909","8902974"],"similarity":0.811},{"id":"10763716","date":"2024-11-13","product":"Debt collection","issue":"Written notification about debt","pattern":12,"novel":false,"t2":0.249,"t2_likely":false,"t3":0.004,"t3_likely":false,"top":[["Attempts to collect debt not owed",0.382],["Written notification about debt",0.304],["False statements or representation",0.119]],"neighbors":["9217616","9979968","8334843","8240940","9904395"],"similarity":0.776},{"id":"10764074","date":"2024-11-13","product":"Checking or savings account","issue":"Problem with a lender or other company charging your account","pattern":8,"novel":false,"t2":0.254,"t2_likely":false,"t3":0.219,"t3_likely":true,"top":[["Managing an account",0.559],["Problem with a lender or other company charging your account",0.384],["Problem caused by your funds being low",0.039]],"neighbors":["8423753","8181242","6504412","6955489","6478371"],"similarity":0.919},{"id":"10778544","date":"2024-11-14","product":"Credit reporting or other personal consumer reports","issue":"Incorrect information on your report","pattern":17,"novel":true,"t2":0.518,"t2_likely":true,"t3":0.001,"t3_likely":false,"top":[["Incorrect information on your report",0.984],["Problem with a company's investigation into an existing problem",0.007],["Improper use of your report",0.004]],"neighbors":["8201268","8175653","8169012","8169004","8166250"],"similarity":1.0},{"id":"10778547","date":"2024-11-14","product":"Checking or savings account","issue":"Problem caused by your funds being low","pattern":8,"novel":false,"t2":0.178,"t2_likely":false,"t3":0.389,"t3_likely":true,"top":[["Problem caused by your funds being low",0.628],["Managing an account",0.203],["Closing an account",0.066]],"neighbors":["6954281","6515881","6467646","6502184","6457077"],"similarity":0.85},{"id":"10778562","date":"2024-11-14","product":"Debt collection","issue":"Written notification about debt","pattern":12,"novel":false,"t2":0.075,"t2_likely":false,"t3":0.006,"t3_likely":false,"top":[["Attempts to collect debt not owed",0.722],["Written notification about debt",0.129],["False statements or representation",0.091]],"neighbors":["7869443","9469734","8623762","8430008","6728443"],"similarity":0.857},{"id":"10778680","date":"2024-11-14","product":"Credit card","issue":"Incorrect information on your report","pattern":12,"novel":false,"t2":0.09,"t2_likely":false,"t3":0.002,"t3_likely":false,"top":[["Incorrect information on your report",0.743],["Problem with a company's investigation into an existing problem",0.103],["Getting a credit card",0.057]],"neighbors":["10279851","8656988","7677797","9750863","10013691"],"similarity":0.926},{"id":"10792554","date":"2024-11-15","product":"Credit reporting or other personal consumer reports","issue":"Incorrect information on your report","pattern":14,"novel":false,"t2":0.786,"t2_likely":true,"t3":0.0,"t3_likely":false,"top":[["Incorrect information on your report",0.779],["Problem with a company's investigation into an existing problem",0.146],["Improper use of your report",0.048]],"neighbors":["7447672","8082611","8333766","8413003","7253086"],"similarity":0.877},{"id":"10792563","date":"2024-11-15","product":"Mortgage","issue":"Trouble during payment process","pattern":13,"novel":false,"t2":0.25,"t2_likely":false,"t3":0.066,"t3_likely":false,"top":[["Trouble during payment process",0.811],["Struggling to pay mortgage",0.072],["Incorrect information on your report",0.042]],"neighbors":["9940491","9329620","7166130","7034698","8392203"],"similarity":0.874},{"id":"10792607","date":"2024-11-15","product":"Debt collection","issue":"Written notification about debt","pattern":14,"novel":true,"t2":0.289,"t2_likely":false,"t3":0.0,"t3_likely":false,"top":[["Attempts to collect debt not owed",0.537],["Written notification about debt",0.276],["Took or threatened to take negative or legal action",0.071]],"neighbors":["7920998","7381545","7379366","7284493","7228389"],"similarity":0.883},{"id":"10792612","date":"2024-11-15","product":"Student loan","issue":"Dealing with your lender or servicer","pattern":13,"novel":false,"t2":0.118,"t2_likely":false,"t3":0.023,"t3_likely":false,"top":[["Dealing with your lender or servicer",0.965],["Struggling to repay your loan",0.029],["Getting a loan",0.002]],"neighbors":["7754246","7793143","7989349","7683652","8644488"],"similarity":0.937},{"id":"10806815","date":"2024-11-16","product":"Credit reporting or other personal consumer reports","issue":"Incorrect information on your report","pattern":11,"novel":false,"t2":0.59,"t2_likely":true,"t3":0.0,"t3_likely":false,"top":[["Incorrect information on your report",0.476],["Improper use of your report",0.426],["Problem with a company's investigation into an existing problem",0.087]],"neighbors":["9484827","7002786","8438914","8152599","8152513"],"similarity":0.935},{"id":"10806857","date":"2024-11-16","product":"Checking or savings account","issue":"Problem with a lender or other company charging your account","pattern":8,"novel":false,"t2":0.221,"t2_likely":false,"t3":0.17,"t3_likely":false,"top":[["Managing an account",0.728],["Problem with a lender or other company charging your account",0.212],["Problem caused by your funds being low",0.041]],"neighbors":["6414724","8455352","8582837","7808137","7281193"],"similarity":0.92},{"id":"10806865","date":"2024-11-16","product":"Payday loan, title loan, personal loan, or advance loan","issue":"Incorrect information on your report","pattern":22,"novel":false,"t2":0.288,"t2_likely":false,"t3":0.007,"t3_likely":false,"top":[["Incorrect information on your report",0.208],["Problem when making payments",0.187],["Charged fees or interest you didn't expect",0.105]],"neighbors":["10209694","6652796","6652573","7919679","7919667"],"similarity":0.831},{"id":"10806868","date":"2024-11-16","product":"Debt collection","issue":"Written notification about debt","pattern":12,"novel":false,"t2":0.271,"t2_likely":false,"t3":0.0,"t3_likely":false,"top":[["Written notification about debt",0.53],["Attempts to collect debt not owed",0.308],["False statements or representation",0.089]],"neighbors":["8512774","9943598","9970469","10199805","8640178"],"similarity":0.924},{"id":"10822158","date":"2024-11-17","product":"Vehicle loan or lease","issue":"Managing the loan or lease","pattern":36,"novel":false,"t2":0.359,"t2_likely":true,"t3":0.001,"t3_likely":false,"top":[["Getting a loan or lease",0.349],["Repossession",0.17],["Improper use of your report",0.163]],"neighbors":["8980575","8840392","6610869","7789617","7482121"],"similarity":0.894},{"id":"10822164","date":"2024-11-17","product":"Credit reporting or other personal consumer reports","issue":"Improper use of your report","pattern":14,"novel":false,"t2":0.088,"t2_likely":false,"t3":0.005,"t3_likely":false,"top":[["Incorrect information on your report",0.348],["Improper use of your report",0.243],["Problem with a company's investigation into an existing problem",0.18]],"neighbors":["6389679","7154996","8701184","8244048","8207267"],"similarity":0.929},{"id":"10822170","date":"2024-11-17","product":"Money transfer, virtual currency, or money service","issue":"Fraud or scam","pattern":8,"novel":false,"t2":0.284,"t2_likely":false,"t3":0.135,"t3_likely":false,"top":[["Fraud or scam",0.894],["Other transaction problem",0.024],["Unauthorized transactions or other transaction problem",0.022]],"neighbors":["9607935","6463540","6739461","9041553","7257550"],"similarity":0.919},{"id":"10823510","date":"2024-11-17","product":"Credit card","issue":"Trouble using your card","pattern":8,"novel":false,"t2":0.34,"t2_likely":true,"t3":0.147,"t3_likely":false,"top":[["Problem with a purchase shown on your statement",0.499],["Other features, terms, or problems",0.309],["Trouble using your card",0.064]],"neighbors":["6481765","6653038","9619132","8625548","6891833"],"similarity":0.891}]}</script>
 
 <script>
-  (function () {
-    // ---------- navigation ----------
-    var views = ["reclamo", "patrones"];
-    var buttons = document.querySelectorAll("nav button");
-    function show(name) {
-      if (views.indexOf(name) < 0) name = "reclamo";
-      views.forEach(function (v) { document.getElementById("view-" + v).hidden = v !== name; });
-      buttons.forEach(function (b) {
-        if (b.dataset.view === name) b.setAttribute("aria-current", "page"); else b.removeAttribute("aria-current");
-      });
-    }
-    buttons.forEach(function (b) { b.addEventListener("click", function () { show(b.dataset.view); }); });
-    show((location.hash || "").replace("#", ""));
+"use strict";
+const F = JSON.parse(document.getElementById("foto").textContent);
+const app = document.getElementById("app");
+const PATTERN = Object.fromEntries((F.patterns || []).map(p => [p.id, p]));
+const COMPLAINT = Object.fromEntries((F.complaints || []).map(c => [c.id, c]));
+const CFPB = "https://www.consumerfinance.gov/data-research/consumer-complaints/search/detail/";
+const OUTCOMES = ["Aumento real", "Eco de una ráfaga anterior", "Reasignación entre patrones", "Descartada"];
+const STEPS = ["Registrar la alerta", "Revisar con el área responsable", "Intervenir", "Cerrar el seguimiento"];
 
-    function remember(key, value) { try { localStorage.setItem("mesa:" + key, JSON.stringify(value)); } catch (e) {} }
-    function recall(key) { try { return JSON.parse(localStorage.getItem("mesa:" + key)); } catch (e) { return null; } }
-    function flash(id, text) { document.getElementById(id).textContent = text; }
-    function fmt(n) { return Math.round(n).toLocaleString("es-PE"); }
+// Lo que la persona confirma, corrige o marca vive solo mientras la página está abierta.
+const feedback = {};
+const alerts = {};
+const view = {scale: "week", period: null, rising: false, day: "all"};
 
-    // ---------- reclamo ----------
-    document.getElementById("confirmT1").addEventListener("click", function () {
-      remember("t1:10483921", { motivo: "Problema con la investigación de una disputa existente", fuente: "confirmado" });
-      flash("t1toast", "Motivo confirmado y guardado con el reclamo.");
-    });
-    document.getElementById("correctT1").addEventListener("click", function () {
-      var choice = document.getElementById("otherIssue").value;
-      if (!choice) { flash("t1toast", "Elige un motivo antes de guardar la corrección."); return; }
-      remember("t1:10483921", { motivo: choice, fuente: "corregido" });
-      flash("t1toast", "Corrección guardada: " + choice + ".");
-    });
-    document.getElementById("assign").addEventListener("click", function () {
-      var team = document.getElementById("team").value, prio = document.getElementById("priority").value;
-      remember("derivacion:10483921", { equipo: team, prioridad: prio });
-      flash("assignToast", "Derivado a " + team + " con " + prio.toLowerCase() + ".");
-    });
-    var savedT1 = recall("t1:10483921");
-    if (savedT1 && savedT1.motivo) flash("t1toast", "Guardado antes: " + savedT1.motivo + " (" + savedT1.fuente + ").");
+const esc = s => String(s).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+const num = x => Math.round(x).toLocaleString("en-US");
+const pct = (x, d = 0) => (100 * x).toFixed(d) + " %";
+const date = iso => { const [y, m, d] = iso.split("-"); return `${d}/${m}/${y}`; };
+const short = iso => iso.slice(8, 10) + "/" + iso.slice(5, 7);
+const link = id => `<a href="${CFPB}${esc(id)}" target="_blank" rel="noopener">${esc(id)}</a>`;
+const patternName = id => `Patrón ${String(id).padStart(2, "0")}`;
+const terms = p => p.terms.slice(0, 4).join(", ");
+const alertKey = (week, id) => week + "|" + id;
 
-    // ---------- demo data: 8 patterns, 11 weeks (2024-10-07 .. 2024-12-16) ----------
-    var PATTERNS = [
-      { id: 14, name: "Reporte de crédito, información incorrecta", base: 3600, boundary: 0.128 },
-      { id: 19, name: "Cobros no reconocidos en tarjeta", base: 1480, boundary: 0.094 },
-      { id: 3,  name: "Deuda que no reconozco", base: 2980, boundary: 0.672 },
-      { id: 8,  name: "Problemas con el pago de hipoteca", base: 1590, boundary: 0.22 },
-      { id: 4,  name: "Cobranza de deuda ya pagada", base: 430, boundary: 0.756 },
-      { id: 36, name: "Cierre de cuenta sin aviso", base: 780, boundary: 0.18 },
-      { id: 11, name: "Problemas al abrir o cerrar una cuenta", base: 1250, boundary: 0.31 },
-      { id: 17, name: "Cargos o intereses inesperados", base: 640, boundary: 0.41 }
-    ];
-    var WEEKS = []; var d0 = new Date("2024-10-07T00:00:00");
-    for (var w = 0; w < 11; w++) { var d = new Date(d0); d.setDate(d0.getDate() + 7 * w); WEEKS.push(d.toISOString().slice(0, 10)); }
-    function seeded(i) { var x = Math.sin(i * 9301 + 49297) * 233280; return x - Math.floor(x); }
-    // weekly expected, observed and band; real values for 14 and 19 on their alert weeks
-    var weekly = {};
-    PATTERNS.forEach(function (p, pi) {
-      weekly[p.id] = WEEKS.map(function (wk, wi) {
-        var trend = p.id === 14 ? 1 + 0.045 * Math.max(0, wi - 3) : 1;
-        var expected = p.base * trend;
-        var noise = (seeded(pi * 31 + wi) - 0.5) * 0.12;
-        var observed = expected * (1 + noise);
-        var sd = Math.sqrt(expected + expected * expected / 40);
-        var row = { week: wk, expected: expected, observed: observed, lo: expected - 1.28 * sd, hi: expected + 1.28 * sd, alarm: false };
-        if (p.id === 14 && wi >= 4) row.observed = expected * (1 + 0.06 + 0.02 * (wi - 4));
-        if (p.id === 14 && wk === "2024-11-11") { row.observed = 4247; row.expected = 3676; row.lo = 3310; row.hi = 4050; row.alarm = true; }
-        if (p.id === 19 && wk === "2024-11-04") { row.observed = 1863; row.expected = 1475; row.lo = 1320; row.hi = 1640; row.alarm = true; }
-        return row;
-      });
-    });
-    // daily: 77 days (2024-10-07 .. 2024-12-22), weekly total spread by a day-of-week profile
-    var DOW = [0.90, 1.42, 1.38, 1.30, 1.22, 1.02, 0.76]; // mon..sun share of 1/7 each, sum = 7
-    var daily = {};
-    PATTERNS.forEach(function (p, pi) {
-      daily[p.id] = [];
-      weekly[p.id].forEach(function (wrow, wi) {
-        for (var k = 0; k < 7; k++) {
-          var d = new Date(wrow.week + "T00:00:00"); d.setDate(d.getDate() + k);
-          var expected = wrow.expected / 7 * DOW[k];
-          var sd = Math.sqrt(expected + expected * expected / 20);
-          var observed = wrow.observed / 7 * DOW[k] * (1 + (seeded(pi * 97 + wi * 7 + k) - 0.5) * 0.25);
-          daily[p.id].push({ day: d.toISOString().slice(0, 10), expected: expected, observed: observed, lo: Math.max(0, expected - 1.28 * sd), hi: expected + 1.28 * sd, alarm: false });
-        }
-      });
-    });
+// Estado de un patrón en un periodo: la alerta formal solo existe por semana.
+function status(row, weekly) {
+  const [obs, , p10, p90] = row;
+  if (weekly && row[6]) return ["alerta", "Alerta de crecimiento"];
+  if (obs > p90) return ["arriba", "Por encima del intervalo"];
+  if (obs < p10) return ["gris", "Por debajo del intervalo"];
+  return ["ok", "Dentro de lo esperado"];
+}
+function reliability(p) {
+  if (p.frontier < 0.1) return "alta";
+  if (p.frontier < 0.3) return "media";
+  return "baja: sus reclamos quedan cerca de otro patrón y un aumento puede ser una reasignación";
+}
 
-    // ---------- filtering and table ----------
-    var state = { pattern: 14 };
-    function rowsInRange(id, grain, from, to) {
-      var src = grain === "semana" ? weekly[id] : daily[id];
-      return src.filter(function (r) { var key = r.week || r.day; return key >= from && key <= to; });
-    }
-    function render() {
-      var grain = document.getElementById("grain").value;
-      var from = document.getElementById("from").value, to = document.getElementById("to").value;
-      if (from > to) { var t = from; from = to; to = t; document.getElementById("from").value = from; document.getElementById("to").value = to; }
-      if (grain === "semana") { from = WEEKS.filter(function (w) { return w <= from; }).pop() || WEEKS[0]; }
-      var onlyUp = document.getElementById("onlyUp").checked;
-      var rows = PATTERNS.map(function (p) {
-        var rs = rowsInRange(p.id, grain, from, to);
-        var sum = function (k) { return rs.reduce(function (a, r) { return a + r[k]; }, 0); };
-        var observed = sum("observed"), expected = sum("expected"), lo = sum("lo"), hi = sum("hi");
-        return { p: p, n: rs.length, observed: observed, expected: expected, lo: lo, hi: hi, diff: observed - expected,
-                 alarm: rs.some(function (r) { return r.alarm; }), above: observed > hi };
-      }).filter(function (r) { return r.n > 0 && (!onlyUp || r.diff > 0); })
-        .sort(function (a, b) { return (b.diff / b.expected) - (a.diff / a.expected); });
-      var body = document.querySelector("#patternTable tbody"); body.innerHTML = "";
-      rows.forEach(function (r) {
-        var tr = document.createElement("tr"); tr.className = "clickable" + (r.alarm ? " alarm" : r.above ? " watch" : "");
-        tr.dataset.pattern = r.p.id;
-        var pct = (100 * r.diff / r.expected);
-        var status = r.alarm ? '<span class="pill crit">Alerta de crecimiento</span>' : r.above ? '<span class="pill warn">Por encima del intervalo</span>' : "Dentro de lo esperado";
-        tr.innerHTML = "<td>" + r.p.id + " · " + r.p.name + "</td><td class='num r'>" + fmt(r.observed) + "</td><td class='num r'>" + fmt(r.expected) +
-          "</td><td class='num r'>" + fmt(r.lo) + " – " + fmt(r.hi) + "</td><td class='num r'>" + (r.diff >= 0 ? "+" : "−") + fmt(Math.abs(r.diff)) + " (" + (pct >= 0 ? "+" : "−") + Math.abs(pct).toFixed(1) + " %)</td><td>" + status + "</td>";
-        tr.addEventListener("click", function () { state.pattern = r.p.id; drawPattern(grain, from, to); document.getElementById("patternPanel").scrollIntoView({ behavior: "smooth", block: "start" }); });
-        body.appendChild(tr);
-      });
-      var units = grain === "semana" ? "semanas" : "días";
-      var n = rows.length ? rows[0].n : 0;
-      document.getElementById("rangeNote").textContent = n ? n + " " + units + " en el periodo" : "Sin datos en el periodo";
-      var alarms = rows.filter(function (r) { return r.alarm; }).length, above = rows.filter(function (r) { return !r.alarm && r.above; }).length;
-      var all = PATTERNS.length;
-      document.getElementById("rangeSummary").innerHTML =
-        "<div><b class='num'>" + alarms + "</b><span>Patrones con alerta de crecimiento</span></div>" +
-        "<div><b class='num'>" + above + "</b><span>Por encima del intervalo sin alerta</span></div>" +
-        "<div><b class='num'>" + (all - alarms - above) + "</b><span>Dentro de lo esperado</span></div>";
-      if (!rows.some(function (r) { return r.p.id === state.pattern; }) && rows.length) state.pattern = rows[0].p.id;
-      drawPattern(grain, from, to);
-    }
+function menu() {
+  const card = (hash, title, text, go, icon) => `
+    <button class="role" onclick="location.hash='${hash}'"><div class="icon"><svg viewBox="0 0 24 24">${icon}</svg></div>
+    <h2>${title}</h2><p>${text}</p><div class="go">${go} →</div></button>`;
+  app.innerHTML = `<div class="eyebrow">Menú principal</div><h1>Menú principal</h1>
+    <p class="lead">Apoyo al triaje de reclamos: evidencia por reclamo y por patrón. Ninguna pantalla decide; la decisión es de la persona.</p>
+    <div class="cards">
+    ${card("#bandeja", "Bandeja de expedientes", "Consulta los reclamos recibidos, sus motivos sugeridos y la ficha de evidencia de cada uno.", "Abrir mesa de trabajo", '<circle cx="9" cy="8" r="3"/><path d="M3 20c0-3 3-5 6-5s6 2 6 5M16 5a3 3 0 0 1 0 6M18 20c0-2-1-4-3-4.6"/>')}
+    ${card("#patrones", "Observatorio de patrones", "Lo observado frente a lo esperado en cada patrón semántico, por semana y por día.", "Abrir observatorio", '<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5M11 8v6M8 11h6"/>')}
+    ${card("#alertas", "Seguimiento de alertas", "Revisa las alertas de crecimiento y registra qué se hizo con cada una.", "Abrir seguimiento", '<path d="M6 16V11a6 6 0 0 1 12 0v5l2 2H4zM10 20a2 2 0 0 0 4 0"/>')}
+    </div>`;
+}
 
-    // ---------- chart ----------
-    function drawPattern(grain, from, to) {
-      var p = PATTERNS.filter(function (x) { return x.id === state.pattern; })[0];
-      var rs = rowsInRange(p.id, grain, from, to);
-      var svg = document.getElementById("patternChart");
-      document.getElementById("patternTitle").textContent = "Patrón " + p.id + " · " + p.name;
-      document.getElementById("patternMeta").textContent = rs.length + (grain === "semana" ? " semanas" : " días") + " · " + from + " a " + to;
-      if (!rs.length) { svg.innerHTML = ""; return; }
-      var W = 520, H = 200, left = 52, right = 10, top = 14, bottom = 26;
-      var max = Math.max.apply(null, rs.map(function (r) { return Math.max(r.observed, r.hi); })) * 1.08, min = 0;
-      var x = function (i) { return left + (rs.length === 1 ? (W - left - right) / 2 : i * (W - left - right) / (rs.length - 1)); };
-      var y = function (v) { return top + (H - top - bottom) * (1 - (v - min) / (max - min)); };
-      var ticks = 4, out = [];
-      for (var t = 0; t <= ticks; t++) { var v = min + (max - min) * t / ticks; out.push('<line x1="' + left + '" y1="' + y(v) + '" x2="' + (W - right) + '" y2="' + y(v) + '" stroke="var(--line)"/><text x="4" y="' + (y(v) + 3) + '" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--muted)">' + fmt(v) + '</text>'); }
-      var band = rs.map(function (r, i) { return x(i) + "," + y(r.hi); }).concat(rs.map(function (r, i) { return x(i) + "," + y(r.lo); }).reverse()).join(" ");
-      out.push('<polygon points="' + band + '" fill="var(--band)" opacity="0.7"/>');
-      out.push('<polyline points="' + rs.map(function (r, i) { return x(i) + "," + y(r.expected); }).join(" ") + '" fill="none" stroke="var(--accent)" stroke-width="1.5" stroke-dasharray="4 3"/>');
-      out.push('<polyline points="' + rs.map(function (r, i) { return x(i) + "," + y(r.observed); }).join(" ") + '" fill="none" stroke="var(--fg)" stroke-width="1.8"/>');
-      rs.forEach(function (r, i) { if (r.alarm || r.observed > r.hi) out.push('<circle cx="' + x(i) + '" cy="' + y(r.observed) + '" r="3.5" fill="' + (r.alarm ? "var(--crit)" : "var(--warn)") + '"/>'); });
-      var first = rs[0].week || rs[0].day, last = rs[rs.length - 1].week || rs[rs.length - 1].day;
-      out.push('<text x="' + left + '" y="' + (H - 8) + '" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--muted)">' + first + '</text>');
-      out.push('<text x="' + (W - right) + '" y="' + (H - 8) + '" font-size="10" font-family="IBM Plex Mono, monospace" fill="var(--muted)" text-anchor="end">' + last + '</text>');
-      svg.innerHTML = out.join("");
-      var alarms = rs.filter(function (r) { return r.alarm; });
-      var status = document.getElementById("patternStatus");
-      status.innerHTML = alarms.length
-        ? "<dt>Estado</dt><dd><span class='pill crit'>Alerta de crecimiento</span> en " + alarms.map(function (r) { return r.week || r.day; }).join(", ") + "</dd>"
-        : "<dt>Estado</dt><dd>" + (rs.some(function (r) { return r.observed > r.hi; }) ? "<span class='pill warn'>Por encima del intervalo</span> en algún periodo; sin alerta de crecimiento sostenido." : "Dentro de lo esperado en todo el periodo.") + "</dd>";
-      document.getElementById("boundaryText").textContent = p.boundary > 0.3
-        ? "Baja: " + Math.round(p.boundary * 100) + " % de sus reclamos están cerca de otro patrón; una subida puede ser reasignación, conviene mirar los reclamos antes de actuar."
-        : "Buena: solo " + Math.round(p.boundary * 100) + " % de sus reclamos están cerca de otro patrón; la subida es del patrón.";
-      var saved = recall("alerta:" + p.id);
-      document.querySelectorAll("[data-mark]").forEach(function (b) { b.setAttribute("aria-pressed", saved && saved.estado === b.dataset.mark ? "true" : "false"); });
-      document.getElementById("alertNote").value = saved && saved.nota ? saved.nota : "";
-    }
+function bandeja() {
+  const days = [...new Set(F.complaints.map(c => c.date))];
+  const rows = F.complaints.filter(c => view.day === "all" || c.date === view.day);
+  app.innerHTML = `<button class="back" onclick="location.hash='#menu'">← Menú principal</button>
+    <h1>Bandeja de expedientes</h1>
+    <p class="lead">Muestra de ${F.meta.sample} reclamos entre los ${num(F.meta.rows)} que el pipeline puntuó en el periodo. El motivo sugerido es el más probable de los tres que entrega el modelo.</p>
+    <div class="panel"><div class="bar"><label>Fecha de recepción
+      <select onchange="view.day=this.value;bandeja()"><option value="all">Todas</option>
+      ${days.map(d => `<option value="${d}" ${d === view.day ? "selected" : ""}>${date(d)}</option>`).join("")}</select></label>
+      <span class="small">${rows.length} expedientes</span></div>
+    <div class="scroll"><table><thead><tr><th>ID del expediente</th><th>Recepción</th><th>Producto</th><th>Motivo sugerido</th><th class="n">Prob.</th><th>Patrón</th><th>Revisión</th></tr></thead><tbody>
+    ${rows.map(c => `<tr class="click" onclick="location.hash='#reclamo/${c.id}'"><td><b>${esc(c.id)}</b></td><td>${date(c.date)}</td><td>${esc(c.product)}</td>
+      <td>${esc(c.top[0][0])}</td><td class="n">${pct(c.top[0][1])}</td><td>${patternName(c.pattern)}${c.novel ? ' <span class="tag arriba">Novedoso</span>' : ""}</td>
+      <td>${feedback[c.id] ? `<span class="tag ok">${feedback[c.id].kind}</span>` : '<span class="tag gris">Pendiente</span>'}</td></tr>`).join("")}
+    </tbody></table></div></div>
+    <p class="foot">Producto y motivo se muestran con los nombres de la taxonomía pública de la CFPB.</p>`;
+}
 
-    document.getElementById("apply").addEventListener("click", render);
-    document.getElementById("grain").addEventListener("change", render);
-    document.getElementById("onlyUp").addEventListener("change", render);
-    document.getElementById("filters").addEventListener("submit", function (e) { e.preventDefault(); render(); });
-    document.querySelectorAll("[data-mark]").forEach(function (b) {
-      b.addEventListener("click", function () {
-        document.querySelectorAll("[data-mark]").forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
-        remember("alerta:" + state.pattern, { estado: b.dataset.mark, nota: document.getElementById("alertNote").value });
-        flash("alertToast", "Patrón " + state.pattern + " marcado como «" + b.textContent + "».");
-      });
-    });
-    document.getElementById("openComplaints").addEventListener("click", function () {
-      flash("alertToast", "En el producto, esto abre la lista de reclamos del patrón " + state.pattern + " en el periodo, con su motivo y su desenlace.");
-    });
-    render();
-  })();
+function saveFeedback(id, kind, issue) { feedback[id] = {kind, issue}; reclamo(id); }
+
+function reclamo(id) {
+  const c = COMPLAINT[id];
+  if (!c) { location.hash = "#bandeja"; return; }
+  const p = PATTERN[c.pattern], fb = feedback[id];
+  const probable = (likely, value, threshold) => `<b>${likely ? "Probable" : "Poco probable"}</b> · ${pct(value, 1)}
+    <div class="meter"><i style="width:${Math.max(1, 100 * value)}%"></i></div><p class="small">Se marca «probable» desde ${pct(threshold)}; el umbral se fijó en calibración.</p>`;
+  const rank = c.top.findIndex(t => t[0] === c.issue);
+  app.innerHTML = `<button class="back" onclick="location.hash='#bandeja'">← Bandeja de expedientes</button>
+    <h1>Ficha de evidencia: ${esc(c.id)}</h1>
+    <div class="grid">
+      <div class="panel"><h2>Datos recibidos</h2>
+        <div class="facts"><div class="fact"><span>Recepción</span><b>${date(c.date)}</b></div><div class="fact"><span>Producto</span><b>${esc(c.product)}</b></div>
+        <div class="fact"><span>Registro público</span><b>${link(c.id)}</b></div></div>
+        <p class="small">La foto fija no guarda el texto del reclamo. Se consulta en la base pública de la CFPB con el identificador.</p></div>
+      <div class="panel"><h2>Motivos sugeridos</h2>
+        ${c.top.map((t, k) => `<div class="motive"><div class="row"><span>Motivo ${k + 1}<br><b>${esc(t[0])}</b></span><span>${pct(t[1])}</span></div><div class="meter"><i style="width:${100 * t[1]}%"></i></div></div>`).join("")}
+        <div class="bar" style="margin:12px 0 0"><button class="btn primary" onclick="saveFeedback('${c.id}','Confirmado','${esc(c.top[0][0]).replace(/'/g, "\\'")}')">Confirmar motivo 1</button>
+          <select id="other"><option value="">Corregir a…</option>${c.top.slice(1).map(t => `<option>${esc(t[0])}</option>`).join("")}<option>Otro motivo</option></select>
+          <button class="btn" onclick="const v=document.getElementById('other').value;if(v)saveFeedback('${c.id}','Corregido',v)">Guardar corrección</button></div>
+        <p class="small">${fb ? `<span class="tag ok">${fb.kind}</span> ${esc(fb.issue)}` : "Sin revisar."} El registro vive solo mientras esta página está abierta.</p></div>
+    </div>
+    <div class="grid">
+      <div class="panel"><h2>Solución registrada</h2>${probable(c.t2_likely, c.t2, F.meta.t2_threshold)}</div>
+      <div class="panel"><h2>Compensación monetaria</h2>${probable(c.t3_likely, c.t3, F.meta.t3_threshold)}</div>
+    </div>
+    <div class="grid">
+      <div class="panel"><h2>Patrón semántico</h2><p style="margin:0 0 10px"><a href="#patron/${p.id}"><b>${patternName(p.id)}</b></a> · ${esc(p.product)}</p>
+        <div class="chips">${p.terms.map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
+        <p class="small" style="margin-top:10px">Fiabilidad de la asignación en este patrón: ${reliability(p)}.</p></div>
+      <div class="panel"><h2>¿Es un relato poco habitual?</h2>
+        <span class="tag ${c.novel ? "arriba" : "ok"}">${c.novel ? "Novedoso" : "Habitual"}</span>
+        <p class="small" style="margin-top:10px">${c.novel ? "Queda lejos de todos los patrones conocidos; conviene leerlo con atención." : "Se parece a los reclamos que suelen recibirse en su patrón."}</p></div>
+    </div>
+    <div class="panel"><h2>Reclamos históricos parecidos</h2>
+      <p style="margin:0 0 8px">${c.neighbors.map(link).join(" · ")}</p>
+      <p class="small">Similitud con el más parecido: ${pct(c.similarity)}. El desenlace de cada uno se consulta en su registro público.</p>
+      <details><summary>Comprobación con el motivo que quedó registrado</summary>
+        Motivo registrado: <b>${esc(c.issue)}</b>. ${rank === 0 ? "Coincide con el motivo 1." : rank > 0 ? `Está entre los tres sugeridos (motivo ${rank + 1}).` : "No está entre los tres sugeridos."}
+        Esta comprobación solo es posible en la demostración: en operación el motivo aún no existe cuando se hace el triaje.</details>
+      <details><summary>Cómo se obtuvo el resultado</summary>
+        El texto se convierte en un vector; un modelo tabular en contexto (${esc(F.meta.t1_model)}) ordena los motivos; dos clasificadores lineales calibrados estiman solución y compensación;
+        un índice de vecinos busca los reclamos parecidos, y la distancia a los 40 centros da el patrón y la novedad. Nada se reentrena al puntuar.</details></div>`;
+}
+
+function patrones() {
+  const weekly = view.scale === "week";
+  const periods = weekly ? F.weeks : F.days, table = weekly ? F.weekly : F.daily;
+  if (!periods.includes(view.period)) view.period = periods[periods.length - 1];
+  const k = periods.indexOf(view.period);
+  let rows = F.patterns.map(p => ({p, row: table[p.id][k]})).map(x => ({...x, diff: x.row[1] ? x.row[0] / x.row[1] - 1 : 0, st: status(x.row, weekly)}));
+  const total = rows.reduce((s, x) => s + x.row[0], 0);
+  const count = code => rows.filter(x => x.st[0] === code).length;
+  if (view.rising) rows = rows.filter(x => x.st[0] === "alerta" || x.st[0] === "arriba");
+  rows.sort((a, b) => b.diff - a.diff);
+  const mix = weekly ? F.mixture.find(m => m.week === view.period) : null;
+  app.innerHTML = `<button class="back" onclick="location.hash='#menu'">← Menú principal</button>
+    <h1>Observatorio de patrones</h1>
+    <p class="lead">Cada patrón se compara con su propia expectativa. La alerta de crecimiento es semanal y acumula evidencia de varias semanas; por día solo hay expectativa e intervalo.</p>
+    <div class="bar">
+      <button class="btn ${weekly ? "on" : ""}" onclick="view.scale='week';view.period=null;patrones()">Por semana</button>
+      <button class="btn ${weekly ? "" : "on"}" onclick="view.scale='day';view.period=null;patrones()">Por día</button>
+      <label>${weekly ? "Semana del" : "Día"} <select onchange="view.period=this.value;patrones()">${periods.map(d => `<option value="${d}" ${d === view.period ? "selected" : ""}>${date(d)}</option>`).join("")}</select></label>
+      <label><input type="checkbox" ${view.rising ? "checked" : ""} onchange="view.rising=this.checked;patrones()"> Solo los que suben</label></div>
+    <div class="kpis">
+      <div class="panel kpi"><span>Reclamos observados</span><b>${num(total)}</b><small>${weekly ? "en la semana" : "en el día"}</small></div>
+      <div class="panel kpi"><span>Alertas de crecimiento</span><b>${weekly ? count("alerta") : "—"}</b><small>${weekly ? "regla acumulada semanal" : "no hay alerta diaria formal"}</small></div>
+      <div class="panel kpi"><span>Por encima del intervalo</span><b>${count("arriba")}</b><small>sin alerta sostenida</small></div>
+      <div class="panel kpi"><span>Mezcla de patrones</span><b>${mix ? (mix.rare ? "Rara" : "Normal") : "—"}</b><small>${mix ? "p-valor " + mix.p_value.toFixed(2) : "se evalúa por semana"}</small></div>
+    </div>
+    <div class="panel"><h2>Patrones observados frente a lo esperado</h2><div class="scroll"><table>
+      <thead><tr><th>Patrón</th><th>Términos</th><th class="n">Observados</th><th class="n">Esperados</th><th class="n">Intervalo 80 %</th><th class="n">Diferencia</th><th>Estado</th></tr></thead><tbody>
+      ${rows.map(({p, row, diff, st}) => `<tr class="click ${st[0] === "alerta" || st[0] === "arriba" ? st[0] : ""}" onclick="location.hash='#patron/${p.id}'">
+        <td><b>${patternName(p.id)}</b></td><td>${esc(terms(p))}</td><td class="n">${num(row[0])}</td><td class="n">${num(row[1])}</td>
+        <td class="n">${num(row[2])} – ${num(row[3])}</td><td class="n">${diff >= 0 ? "+" : ""}${pct(diff)}</td><td><span class="tag ${st[0]}">${st[1]}</span></td></tr>`).join("") || '<tr><td colspan="7">Ningún patrón sube en este periodo.</td></tr>'}
+      </tbody></table></div></div>
+    <p class="foot">Señales de reentrenamiento del periodo: novedosos ${pct(F.meta.novel_fraction, 1)} (aviso desde 3 %), cobertura del intervalo de 80 % ${pct(F.meta.coverage_80)} (aviso bajo 70 %),
+      Macro-F1 del motivo ${F.meta.macro_f1.toFixed(3)}. ${F.meta.retrain ? "Se recomienda reentrenar." : "No se recomienda reentrenar."}</p>`;
+}
+
+function chart(p) {
+  const rows = F.daily[p.id], W = 760, H = 240, L = 46, R = 12, T = 12, B = 30;
+  const max = Math.max(...rows.map(r => Math.max(r[0], r[3]))) * 1.08 || 1;
+  const x = k => L + k * (W - L - R) / (rows.length - 1), y = v => T + (1 - v / max) * (H - T - B);
+  const path = col => rows.map((r, k) => `${k ? "L" : "M"}${x(k).toFixed(1)},${y(r[col]).toFixed(1)}`).join("");
+  const band = rows.map((r, k) => `${x(k).toFixed(1)},${y(r[3]).toFixed(1)}`).concat(rows.map((r, k) => `${x(k).toFixed(1)},${y(r[2]).toFixed(1)}`).reverse()).join(" ");
+  const ticks = [0, 0.5, 1].map(f => `<line x1="${L}" x2="${W - R}" y1="${y(max * f)}" y2="${y(max * f)}" stroke="#e3ebf3"/><text x="${L - 6}" y="${y(max * f) + 4}" text-anchor="end" font-size="11" fill="#65778b">${num(max * f)}</text>`).join("");
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-label="Reclamos diarios observados, esperados e intervalo de 80 por ciento">
+    ${ticks}<polygon points="${band}" fill="#1769aa" opacity=".13"/>
+    <path d="${path(1)}" fill="none" stroke="#1769aa" stroke-width="1.6" stroke-dasharray="5 4"/>
+    <path d="${path(0)}" fill="none" stroke="#14263d" stroke-width="2"/>
+    ${rows.map((r, k) => `<circle cx="${x(k)}" cy="${y(r[0])}" r="3.2" fill="${r[0] > r[3] ? "#b45309" : "#14263d"}"><title>${date(F.days[k])}: ${num(r[0])} observados, ${num(r[1])} esperados, intervalo ${num(r[2])} a ${num(r[3])}</title></circle>`).join("")}
+    ${F.days.map((d, k) => `<text x="${x(k)}" y="${H - 10}" text-anchor="middle" font-size="10" fill="#65778b">${short(d)}</text>`).join("")}</svg>
+    <p class="small">Línea continua: observados. Línea punteada: esperados. Banda: intervalo de 80 %. Los puntos naranjas quedan por encima del intervalo.</p>`;
+}
+
+function patron(id) {
+  const p = PATTERN[id];
+  if (!p) { location.hash = "#patrones"; return; }
+  const weeks = F.weeks.map((w, k) => ({w, row: F.weekly[p.id][k], st: status(F.weekly[p.id][k], true)}));
+  app.innerHTML = `<button class="back" onclick="location.hash='#patrones'">← Observatorio de patrones</button>
+    <h1>${patternName(p.id)}</h1>
+    <p class="lead">${esc(p.product)} en ${pct(p.product_share)} de sus reclamos · ${num(p.fit_rows)} reclamos en el periodo de ajuste.</p>
+    <div class="grid">
+      <div class="panel"><h2>Qué contiene</h2><div class="chips">${p.terms.map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
+        <blockquote class="quote">${esc(p.example.text)}<br><span class="small">Reclamo de ejemplo ${link(p.example.id)}, del catálogo de patrones.</span></blockquote>
+        <p class="small" style="margin-top:10px">Fiabilidad de la asignación: ${reliability(p)}. Masa de frontera ${pct(p.frontier)}.</p></div>
+    </div>
+    <div class="grid">
+      <div class="panel"><h2>Semanas del periodo</h2><div class="scroll"><table><thead><tr><th>Semana del</th><th class="n">Obs.</th><th class="n">Esp.</th><th class="n">Intervalo 80 %</th><th class="n">Acumulado</th><th>Estado</th><th></th></tr></thead><tbody>
+        ${weeks.map(({w, row, st}) => `<tr><td>${date(w)}</td><td class="n">${num(row[0])}</td><td class="n">${num(row[1])}</td><td class="n">${num(row[2])} – ${num(row[3])}</td><td class="n">${row[5].toFixed(2)}</td>
+          <td><span class="tag ${st[0]}">${st[1]}</span></td><td>${alerts[alertKey(w, p.id)] ? '<a href="#alertas">En seguimiento</a>' : `<button class="btn" onclick="register('${w}',${p.id})">Registrar alerta</button>`}</td></tr>`).join("")}
+        </tbody></table></div>
+        <p class="small" style="margin-top:10px">«Acumulado» es la suma de los excesos semanales que usa la regla de alerta; el umbral se fijó para una falsa alarma al mes.</p></div>
+    </div>
+    <div class="panel"><h2>Día a día</h2>${chart(p)}</div>`;
+}
+
+function register(week, id, origin = "Registrada a mano") {
+  alerts[alertKey(week, id)] = {week, id, origin, step: 1, outcome: ""};
+  if (origin === "Registrada a mano") location.hash = "#alertas";
+}
+function advance(key) { const a = alerts[key]; if (a.step < 3) a.step += 1; alertas(); }
+function closeAlert(key, outcome) { if (outcome) { alerts[key].step = 4; alerts[key].outcome = outcome; alertas(); } }
+
+function alertas() {
+  const list = Object.entries(alerts).sort((a, b) => a[1].step - b[1].step);
+  app.innerHTML = `<button class="back" onclick="location.hash='#menu'">← Menú principal</button>
+    <h1>Seguimiento de alertas</h1>
+    <p class="lead">Cada alerta de crecimiento se revisa y se cierra con una lectura. Ese registro es lo que después permite medir la precisión de las alertas.</p>
+    ${list.map(([key, a]) => { const p = PATTERN[a.id], row = F.weekly[a.id][F.weeks.indexOf(a.week)];
+      return `<div class="panel" style="margin-bottom:14px"><h2><a href="#patron/${a.id}">${patternName(a.id)}</a> · semana del ${date(a.week)}</h2>
+        <p class="small">${esc(terms(p))} · ${num(row[0])} observados frente a ${num(row[1])} esperados · ${esc(a.origin)}</p>
+        <div class="steps">${STEPS.map((s, k) => `<div class="step ${k + 1 < a.step || a.step === 4 ? "done" : k + 1 === a.step ? "now" : ""}">${k + 1}. ${s}</div>`).join("")}</div>
+        ${a.step === 4 ? `<span class="tag ok">Cerrada</span> Lectura: <b>${esc(a.outcome)}</b>`
+          : a.step === 3 ? `<div class="bar" style="margin:0"><label>Cerrar como <select onchange="closeAlert('${key}',this.value)"><option value="">Elegir lectura…</option>${OUTCOMES.map(o => `<option>${o}</option>`).join("")}</select></label></div>`
+          : `<button class="btn primary" onclick="advance('${key}')">Avanzar al paso ${a.step + 1}</button>`}</div>`; }).join("") || '<div class="panel">No hay alertas en seguimiento.</div>'}
+    <p class="foot">El seguimiento vive solo mientras esta página está abierta; guardarlo es trabajo de la siguiente fase.</p>`;
+}
+
+function route() {
+  const [name, arg] = location.hash.replace("#", "").split("/");
+  ({bandeja, reclamo: () => reclamo(arg), patrones, patron: () => patron(Number(arg)), alertas}[name] || menu)();
+  window.scrollTo(0, 0);
+}
+
+if (!F.meta) {
+  app.innerHTML = '<div class="panel">Esta página no tiene datos. Ejecuta <code>construir_foto.py --score &lt;carpeta&gt;</code> para incrustar una salida del pipeline.</div>';
+} else {
+  document.getElementById("notice").innerHTML = `<b>Foto fija de una salida real del pipeline.</b> ${num(F.meta.rows)} reclamos públicos de la CFPB recibidos entre el ${date(F.meta.first)} y el ${date(F.meta.last)}
+    (periodo de calibración), puntuados sin reentrenar con el código del commit ${esc(F.meta.commit)}. No es un sistema en vivo: ninguna cifra se actualiza y lo que se marca aquí no se guarda.`;
+  // Las alarmas que la regla acumulada dio en el periodo entran al seguimiento desde el inicio.
+  F.weeks.forEach((w, k) => F.patterns.forEach(p => { if (F.weekly[p.id][k][6]) register(w, p.id, "Regla acumulada semanal"); }));
+  window.addEventListener("hashchange", route);
+  route();
+}
 </script>
-
 </body>
 </html>

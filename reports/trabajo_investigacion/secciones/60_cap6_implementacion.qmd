@@ -48,20 +48,25 @@ reentrenamiento y un equipo de atención que use las salidas y registre lo
 que confirma o corrige.
 
 **Estado del prototipo de pantallas y pasos manuales.** El prototipo de
-pantallas es una página estática con datos de ejemplo; todavía no lee las
-tablas que escribe el *pipeline*. En su versión del 18 de noviembre de 2026
-tiene tres entradas: una bandeja de expedientes con la ficha de evidencia
-de cada reclamo (tres motivos sugeridos, indicio de solución y de
-compensación, tema, novedad y reclamos parecidos con su desenlace); un
-observatorio de patrones, con lo observado frente a lo esperado en cada
-uno; y un seguimiento de alertas en cuatro pasos (registrar, revisar con
-el área responsable, intervenir y cerrar). Frente al diseño de la sección
-1.2, la maqueta aún no incluye la confirmación o corrección del motivo, el
-intervalo de 80 % ni la vista diaria, y reemplaza las cuatro marcas de
-revisión de una alerta por ese flujo de seguimiento. Los pasos manuales
-son tres: ajustar los componentes en el clúster, correr la puntuación de
-cada lote y llevar sus tablas a las pantallas. Conectar la maqueta a esas
-tablas es el primer trabajo de la siguiente fase.
+pantallas es una página estática que muestra una foto fija de una salida
+real del *pipeline*: los 35,265 reclamos de las dos semanas de la prueba de
+punta a punta, del 4 al 17 de noviembre de 2024, dentro del periodo de
+calibración. Tiene tres entradas. La bandeja de expedientes abre la ficha
+de evidencia de una muestra de 65 reclamos: tres motivos sugeridos con la
+opción de confirmar o corregir, probabilidad de solución registrada y de
+compensación, patrón, novedad y reclamos parecidos. El observatorio de
+patrones muestra, por semana y por día, lo observado, lo esperado, el
+intervalo de 80 % y el estado de cada uno de los 40 patrones; en esa foto
+la regla acumulada dio dos alertas, una por semana. El seguimiento de
+alertas lleva cada una por cuatro pasos (registrar, revisar con el área
+responsable, intervenir y cerrar) y la cierra con una lectura: aumento
+real, eco de una ráfaga anterior, reasignación entre patrones o descartada.
+Un programa regenera la foto a partir de cualquier carpeta de salida del
+*pipeline*. Los pasos manuales son tres: ajustar los componentes en el
+clúster, correr la puntuación de cada lote y regenerar la foto. La página
+no guarda lo que la persona confirma, corrige o marca, no muestra el texto
+del reclamo ni el desenlace de los reclamos parecidos, y no se actualiza
+sola; resolverlo es el primer trabajo de la siguiente fase.
 
 ## 6.2 Viabilidad financiera
 

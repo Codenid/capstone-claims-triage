@@ -6,8 +6,8 @@ La @tbl-repositorio ubica el código, los datos y los resultados.
 #| label: tbl-repositorio
 #| tbl-cap: "Dónde está el código, los datos y los resultados, y con qué versión se renderizó este documento."
 rows = [
-    ["Repositorio del curso", "https://github.com/utec-dsia/pi1-262-g1, rama `modeling` (código, documentación, informes); rama `main` (entrega del Sprint 3: observatorio, *one-pager*, pitch y veredicto de negocio)"],
-    ["Repositorio de desarrollo", "https://github.com/Codenid/capstone-claims-triage, rama `Modeling/pipaber`, con el historial completo de commits"],
+    ["Repositorio del curso", "https://github.com/utec-dsia/pi1-262-g1, rama `main` (código, documentación, informes, observatorio, prototipo de pantallas, *one-pager*, pitch y veredicto de negocio)"],
+    ["Repositorio de desarrollo", "https://github.com/Codenid/capstone-claims-triage, rama `main`, con el historial completo de commits"],
     ["Commit de este render", f"`{GIT_SHA}` ({GIT_DATE})"],
     ["Estado congelado", "No se creó una etiqueta. El código de modelos y del *pipeline* no cambia desde el 31 de octubre de 2026; desde entonces solo cambiaron este documento y el prototipo de pantallas. La versión de referencia es el commit de la fila anterior"],
     ["Datos y artefactos", "DVC con remoto en DagsHub (`WinzCode/capstone-claims-triage`); 119 punteros; tabla preparada `datos-v1`, hash " + DATOS["md5"][:12] + "…"],
@@ -21,15 +21,15 @@ Markdown(md_table(["Elemento", "Dónde"], rows))
 
 La @tbl-evidencia ubica la evidencia de cada fase y cada afirmación de este
 documento. Todas las rutas son relativas a la raíz del repositorio del curso
-en la rama `modeling`: `https://github.com/utec-dsia/pi1-262-g1/tree/modeling/`.
+en la rama `main`: `https://github.com/utec-dsia/pi1-262-g1/tree/main/`.
 
 ```{python}
 #| label: tbl-evidencia
-#| tbl-cap: "Evidencia en el repositorio por fase y por tema, como rutas relativas a la raíz de la rama modeling del repositorio del curso."
+#| tbl-cap: "Evidencia en el repositorio por fase y por tema, como rutas relativas a la raíz de la rama main del repositorio del curso."
 rows = [
     ["Comprensión del negocio: alcance, tareas y fugas", "`docs/decisiones/0001-alcance-y-fugas.md`; `etapa_1_2_comprension/`"],
-    ["One-pager E1–E2 y pitch de octubre de 2026", "`etapa_1_2_comprension/one_pager/Entregable_CRISP-MD_E1-E2_completado.xlsx`; `etapa_1_2_comprension/pitch/` (rama `main`)"],
-    ["Veredicto de negocio del 30 de octubre de 2026", "`docs/veredicto.md` (rama `main`)"],
+    ["One-pager E1–E2 y pitch de octubre de 2026", "`etapa_1_2_comprension/one_pager/Entregable_CRISP-MD_E1-E2_completado.xlsx`; `etapa_1_2_comprension/pitch/`"],
+    ["Veredicto de negocio del 30 de octubre de 2026", "`docs/veredicto.md`"],
     ["Insumos de negocio de los Product Lead (noviembre de 2026)", "issue 29 del repositorio del curso (PB-27)"],
     ["Análisis exploratorio", "`notebooks/01_eda.ipynb`; `docs/resumen-eda.md`"],
     ["Preparación de datos", "`dvc.yaml`; `params.yaml`; `docs/diccionario/`; `reports/preparation/`"],
@@ -43,8 +43,8 @@ rows = [
     ["Exportación de MLflow y página interactiva de experimentos", "`reports/modeling/mlflow_runs.json`; `reports/experimentos/experimentos.html`"],
     ["Pipeline de inferencia y guía de uso (3.2)", "`src/pipeline/`; `docs/pipeline.md`"],
     ["Pruebas unitarias", "`tests/`"],
-    ["Animación del flujo diario y prototipo de pantallas", "`etapa_6_despliegue/flujo_diario.html`; `etapa_6_despliegue/prototipo_pantallas/` (versión del 18 de noviembre de 2026 en la rama `app`)"],
-    ["Observatorio", "`prototipo/` (rama `main`)"],
+    ["Animación del flujo diario y prototipo de pantallas", "`etapa_6_despliegue/flujo_diario.html`; `etapa_6_despliegue/prototipo_pantallas/` (página, programa que incrusta la foto fija y capturas); guion de demo en `docs/guion_demo.md`"],
+    ["Observatorio", "`prototipo/`"],
     ["Informe de cierre del curso (P4, APA 7)", "`reports/informe/`"],
     ["Este documento (fuente Quarto, Word y PDF)", "`reports/trabajo_investigacion/`"],
 ]

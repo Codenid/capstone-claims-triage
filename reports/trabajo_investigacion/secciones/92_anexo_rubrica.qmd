@@ -14,7 +14,7 @@ rows = [
     ["B1.4", "Por qué este proyecto de la cartera", "1.1", "Criterios reconstruidos por los Product Lead; sin acta de selección"],
     ["B1.5", "Qué cambió y qué se mantuvo desde el pitch y el informe preliminar", "1.1 (último párrafo)", "Retroalimentación del asesor y del pitch según el registro de los Product Lead; sin actas"],
     ["B2.1", "Mapa de stakeholders: dueño, usuario, pagador y afectado", "1.2", "Poder e interés declarados como supuesto"],
-    ["B2.2", "Hallazgos de la evidencia primaria con fuente y citas anonimizadas", "4.3", "Sin entrevistas: evidencia documental declarada"],
+    ["B2.2", "Hallazgos de la evidencia primaria con fuente y citas anonimizadas", "4.3", "Una consulta a un especialista (E1) valida las lecturas regulatorias; el resto es evidencia documental declarada"],
     ["B2.3", "Qué cambió en la formulación por la evidencia", "1.1 y 5.5.2", "—"],
     ["B2.4", "Mapa de alternativas y estado del arte", "2.1 y 2.4", "—"],
     ["B2.5", "Propuesta de valor del pitch", "1.5 y 3.1", "—"],
