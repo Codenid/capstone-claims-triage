@@ -2,6 +2,8 @@
 
 #### Clasificadores
 
+La @tbl-t1 y la @fig-t1 presentan los candidatos de motivo en el orden en que compitieron.
+
 ```{python}
 #| label: tbl-t1
 #| tbl-cap: "T1, motivo del reclamo: Macro-F1 en calibración sin texto compartido, en el orden en que compitieron. En negrita, los candidatos que reemplazaron al vigente por cumplir la regla del 5 % con el intervalo del bootstrap a su favor."
@@ -57,6 +59,8 @@ cero) y con los 1,024 valores sin PCA cayó a
 (`{python} signed_pct(CLAS["ablation"]["tabpfn_bge1024"]["gain"])`), porque
 cada estimador de TabPFN ve a lo más 768 columnas.
 
+La @tbl-t2t3 presenta las tres tareas de desenlace.
+
 ```{python}
 #| label: tbl-t2t3
 #| tbl-cap: "T2 (alguna solución registrada), T3 (compensación monetaria) y T4 (respuesta no oportuna): precisión promedio en calibración sin texto compartido y confirmación en 2025-H1."
@@ -93,6 +97,8 @@ producto con el reclamo consultado en
 `{python} pct(SEM["faiss"]["top1_same_product_rate"])` de los casos y motivo
 en `{python} pct(SEM["faiss"]["top1_same_t1_rate"])`. Es la evidencia de que
 el espacio captura significado y no solo palabras.
+
+La @tbl-clustering compara las tres familias de agrupamiento.
 
 ```{python}
 #| label: tbl-clustering
@@ -136,6 +142,8 @@ de vecinos. Cambiar solo la semilla de UMAP da particiones con ARI
 anexo A describe cada patrón con sus términos y su serie semanal.
 
 #### Conteo semanal por patrón (M9)
+
+La @tbl-m9 y la @fig-m9 comparan los candidatos de conteo semanal.
 
 ```{python}
 #| label: tbl-m9
@@ -216,6 +224,8 @@ señal calibrada marcaría
 Una sola $\kappa$ no cubre los cambios de composición de 2023; es un límite
 declarado y el umbral no se recalibró.
 
+La @fig-senal muestra el p-valor semanal de la señal de mezcla rara.
+
 ```{python}
 #| label: fig-senal
 #| fig-cap: "p-valor semanal de mezcla rara (escala logarítmica). La línea marca el umbral 0.01 fijado antes de mirar; 2025-H1 ya estaba consultada."
@@ -238,6 +248,8 @@ plt.show()
 ```
 
 #### Alerta de aumento persistente (M11)
+
+La @tbl-m11 y la @fig-m11 comparan las dos reglas de alerta en los escenarios inyectados.
 
 ```{python}
 #| label: tbl-m11
@@ -299,6 +311,8 @@ al mes en calibración).
 
 #### Bloque diario
 
+La @tbl-diario y la @fig-diario comparan los candidatos de conteo diario.
+
 ```{python}
 #| label: tbl-diario
 #| tbl-cap: "Candidatos de conteo diario: WIS en los 92 días de calibración (menor es mejor), ganancia frente a la Poisson de 7 días y cobertura. Todos aceptan la regla; gana el de menor WIS."
@@ -348,6 +362,8 @@ verlo: su muestreador satura la profundidad de árbol en las dos
 parametrizaciones probadas y una corrida completa no cabe en las 8 horas por
 trabajo del clúster.
 
+La @fig-diario-series muestra la predicción diaria para los cuatro patrones más grandes.
+
 ![Predicción diaria de D-D en los últimos 120 días de ajuste y calibración para los cuatro patrones más grandes: observados (negro), mediana predictiva (azul) y bandas del 50 %, 80 % y 95 %. El ciclo semanal domina y las bandas se ensanchan en los patrones pequeños.](figuras/diario_backtest.png){#fig-diario-series width=100%}
 
 La Dirichlet-multinomial diaria (D-E, $\kappa$ =
@@ -361,6 +377,8 @@ la señal diaria de mezcla rara: marca
 `{python} DIARIO["composition"]["signal"]["calibration"]["flagged"]` de
 `{python} DIARIO["composition"]["signal"]["calibration"]["days"]` días de
 calibración.
+
+La @tbl-d11 y la @fig-d11 presentan la detección de la regla diaria.
 
 ```{python}
 #| label: tbl-d11
@@ -537,6 +555,8 @@ empíricos fijados sobre los excesos reales de ajuste
 a `{python} n(DIARIO["change"]["thresholds"]["daily"], 2)` en D-11;
 $s^{*}$ = `{python} n(CIERRE["daily_v2"]["thresholds"]["scan"], 2)`;
 $h$ = `{python} n(CIERRE["daily_v2"]["thresholds"]["cusum"], 2)`).
+
+La @tbl-d11v2 presenta la segunda versión de la regla diaria.
 
 ```{python}
 #| label: tbl-d11v2

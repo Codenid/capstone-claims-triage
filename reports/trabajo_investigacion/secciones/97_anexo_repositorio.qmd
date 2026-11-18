@@ -1,5 +1,7 @@
 ## ANEXO F. Repositorio, trazabilidad e historial de versiones
 
+La @tbl-repositorio ubica el código, los datos y los resultados.
+
 ```{python}
 #| label: tbl-repositorio
 #| tbl-cap: "Dónde está el código, los datos y los resultados, y con qué versión se renderizó este documento."
@@ -7,7 +9,7 @@ rows = [
     ["Repositorio del curso", "https://github.com/utec-dsia/pi1-262-g1, rama `modeling` (código, documentación, informes); rama `main` (entrega del Sprint 3: observatorio, *one-pager*, pitch y veredicto de negocio)"],
     ["Repositorio de desarrollo", "https://github.com/Codenid/capstone-claims-triage, rama `Modeling/pipaber`, con el historial completo de commits"],
     ["Commit de este render", f"`{GIT_SHA}` ({GIT_DATE})"],
-    ["Etiqueta congelada", "PENDIENTE: etiqueta del 15 de noviembre de 2026 (congelamiento del código) y su SHA"],
+    ["Estado congelado", "No se creó una etiqueta. El código de modelos y del *pipeline* no cambia desde el 31 de octubre de 2026; desde entonces solo cambiaron este documento y el prototipo de pantallas. La versión de referencia es el commit de la fila anterior"],
     ["Datos y artefactos", "DVC con remoto en DagsHub (`WinzCode/capstone-claims-triage`); 119 punteros; tabla preparada `datos-v1`, hash " + DATOS["md5"][:12] + "…"],
     ["Experimentos", "MLflow en DagsHub, experimento `claims-triage-modeling`, 87 corridas; exportación y página interactiva en el repositorio (tabla siguiente)"],
     ["Entorno y semillas", "Dependencias fijadas (`pyproject.toml`, `uv.lock`); semilla 42; trabajos de clúster en `scripts/hpc/`"],
@@ -17,7 +19,7 @@ rows = [
 Markdown(md_table(["Elemento", "Dónde"], rows))
 ```
 
-La tabla siguiente ubica la evidencia de cada fase y cada afirmación de este
+La @tbl-evidencia ubica la evidencia de cada fase y cada afirmación de este
 documento. Todas las rutas son relativas a la raíz del repositorio del curso
 en la rama `modeling`: `https://github.com/utec-dsia/pi1-262-g1/tree/modeling/`.
 
@@ -41,8 +43,8 @@ rows = [
     ["Exportación de MLflow y página interactiva de experimentos", "`reports/modeling/mlflow_runs.json`; `reports/experimentos/experimentos.html`"],
     ["Pipeline de inferencia y guía de uso (3.2)", "`src/pipeline/`; `docs/pipeline.md`"],
     ["Pruebas unitarias", "`tests/`"],
-    ["Animación del flujo diario y prototipo de pantallas", "`etapa_6_despliegue/flujo_diario.html`; `etapa_6_despliegue/prototipo_pantallas/`"],
-    ["Observatorio", "`prototipo/` (rama `entrega`)"],
+    ["Animación del flujo diario y prototipo de pantallas", "`etapa_6_despliegue/flujo_diario.html`; `etapa_6_despliegue/prototipo_pantallas/` (versión del 18 de noviembre de 2026 en la rama `app`)"],
+    ["Observatorio", "`prototipo/` (rama `main`)"],
     ["Informe de cierre del curso (P4, APA 7)", "`reports/informe/`"],
     ["Este documento (fuente Quarto, Word y PDF)", "`reports/trabajo_investigacion/`"],
 ]

@@ -50,6 +50,8 @@ sprints del curso, con cinco decisiones de método que le dan rigor:
    abiertos y contrastó el conjunto con la literatura mediante Asta Theorizer
    [@jansen2026theorizer].
 
+La @tbl-crispdm resume lo hecho en cada fase.
+
 ```{python}
 #| label: tbl-crispdm
 #| tbl-cap: "Fases de CRISP-DM, qué se hizo en cada una y qué produjo. La ubicación de cada producto en el repositorio está en el anexo F."

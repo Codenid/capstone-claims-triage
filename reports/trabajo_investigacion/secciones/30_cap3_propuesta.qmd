@@ -54,6 +54,8 @@ tendrá compensación monetaria (T3) y anticipar si la respuesta llegará fuera
 de plazo (T4). Las tres primeras son salidas del sistema; la cuarta se
 evaluó con el mismo protocolo y su resultado se presenta en el capítulo V.
 
+La @tbl-salidas resume las cinco salidas.
+
 ```{python}
 #| label: tbl-salidas
 #| tbl-cap: "Las cinco salidas del sistema, el componente que produce cada una y para qué le sirve a la persona que hace el triaje."
@@ -127,6 +129,8 @@ lee un componente congelado concreto y escribe columnas concretas. La guía
 de uso y una animación del flujo diario están enlazadas en el anexo F.
 
 ## 3.3 Requisitos funcionales y no funcionales
+
+La @tbl-requisitos lista los requisitos y la forma en que cada uno se cumple o se verifica.
 
 ```{python}
 #| label: tbl-requisitos

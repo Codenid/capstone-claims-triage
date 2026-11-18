@@ -31,6 +31,8 @@ piezas:
    de un día y ×1.5 de siete días para la regla diaria; 1,000 ráfagas por
    escenario.
 
+La @tbl-hipotesis enlaza cada hipótesis con su experimento y su veredicto.
+
 ```{python}
 #| label: tbl-hipotesis
 #| tbl-cap: "Hipótesis del proyecto, experimento que las pone a prueba y veredicto. El detalle de cada cifra está en la sección 5.3."

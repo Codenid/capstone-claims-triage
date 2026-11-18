@@ -2,8 +2,7 @@
 
 Un banco recibe reclamos escritos y debe decidir de qué trata cada uno,
 atenderlo a tiempo y notar cuándo algo nuevo está pasando. Este trabajo
-construye y evalúa un sistema de apoyo al triaje que entrega a la persona
-que hace ese trabajo cinco salidas: el motivo más probable del reclamo, la
+construye y evalúa un sistema de apoyo al triaje que entrega cinco salidas: el motivo más probable del reclamo, la
 probabilidad de que termine con solución y con compensación, los reclamos
 históricos parecidos, el patrón semántico al que pertenece y, cada semana y
 cada día, qué patrones reciben más reclamos de lo esperado. Se siguió
@@ -11,8 +10,7 @@ CRISP-DM con dos adaptaciones: la regla de decisión de cada modelo se
 escribió antes de correrlo y la evaluación fue hacia adelante en el tiempo,
 con una validación de un solo uso. Se usaron
 `{python} i(DATOS["rows"])` reclamos públicos de la CFPB y una vista que
-excluye el texto reutilizado. Un modelo tabular en contexto, que no se
-entrena, sugiere el motivo entre 90 clases con Macro-F1
+excluye el texto reutilizado. Un modelo tabular en contexto sugiere el motivo entre 90 clases con Macro-F1
 `{python} n(TABPFN["macro_f1"])` frente a
 `{python} n(T1["rule_calibration"])` de la regla por producto; modelos
 lineales estiman la solución y la compensación; 40 patrones sobre
@@ -23,8 +21,7 @@ referencia, y una regla acumulada detecta crecimientos de 20 % semanal en
 `{python} pct(ALERTAS["detection"]["growth_20"]["cusum"]["detected"], 0)` de
 los casos con una falsa alarma al mes. La respuesta fuera de plazo no se
 anticipa del texto y la alerta diaria no alcanzó la detección exigida; ambos
-límites se declaran. Un *pipeline* puntúa reclamos nuevos sin reentrenar y
-el contraste con la literatura respalda las elecciones centrales. El método
+límites se declaran. Un *pipeline* puntúa reclamos nuevos sin reentrenar. El método
 se traslada a un banco; las cifras no.
 
 **PALABRAS CLAVES:** triaje de reclamos; clasificación de texto; modelo
@@ -43,28 +40,25 @@ HISTORICAL OUTCOMES, SEMANTIC PATTERNS AND ALERTS ON CFPB PUBLIC COMPLAINTS**
 
 A bank receives written complaints and must decide what each one is about,
 answer it on time and notice when something new is happening. This work
-builds and evaluates a triage support system that gives the person doing
-that work five outputs: the most likely issue, the probability that the
+builds and evaluates a triage support system that gives five outputs: the most likely issue, the probability that the
 complaint ends with relief and with monetary relief, similar historical
 complaints, the semantic pattern it belongs to and, every week and every
 day, which patterns receive more complaints than expected. CRISP-DM was
 followed with two adaptations: the decision rule of every model was written
 before running it, and evaluation was forward in time with a single-use
 validation period. `{python} i(DATOS["rows"])` public CFPB complaints were
-used, with a view that excludes reused text. An in-context tabular model,
-which is not trained, suggests the issue among 90 classes with macro-F1
+used, with a view that excludes reused text. An in-context tabular model suggests the issue among 90 classes with macro-F1
 `{python} n(TABPFN["macro_f1"])` against `{python} n(T1["rule_calibration"])`
 for the product rule; linear models estimate relief and monetary relief; 40
 patterns over embeddings organize the flow; a negative binomial with short
-memory forecasts weekly volume per pattern with
+memory forecasts weekly volume with
 `{python} pct(SEMANAL["c_a_vs_poisson"]["wis_gain"], 0)` less error than the
 reference, and a cumulative-sum rule detects 20 % weekly growth in
 `{python} pct(ALERTAS["detection"]["growth_20"]["cusum"]["detected"], 0)` of
 simulated cases at one false alarm per month. Untimely response cannot be
 anticipated from the text and the daily alert did not reach the required
 detection; both limits are declared. A pipeline scores new complaints
-without retraining, and a contrast with the literature supports the central
-choices. The method transfers to a bank; the figures do not.
+without retraining. The method transfers to a bank; the figures do not.
 
 **KEYWORDS:** complaint triage; text classification; in-context tabular
 model; semantic patterns; negative binomial; CUSUM; pre-registration; CFPB.

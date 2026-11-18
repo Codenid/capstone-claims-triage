@@ -10,6 +10,8 @@ filas y `{python} DATOS["columns"]` columnas
 (`{python} n(DATOS["size_gib"], 2)` GiB), con un hash de contenido fijado en
 DVC; ese hash acompaña cada corrida registrada en MLflow.
 
+La @tbl-periodos y la @fig-periodos muestran cuántos reclamos hay en cada periodo.
+
 ```{python}
 #| label: tbl-periodos
 #| tbl-cap: "Filas por periodo temporal. Solo 2023–2024 y 2025-H1 entran en el modelado; 2015–2022 es contexto, 2025-H2 quedó bloqueado por un experimento anterior y 2026 es parcial."
@@ -65,6 +67,8 @@ una con el hash de su salida, y termina en un diccionario de datos con
 `{python} DATOS["dictionary"]["columnas"]` columnas descritas (cobertura
 `{python} n(DATOS["dictionary"]["cobertura_pct"], 0)` %).
 
+La @tbl-etapas resume las cinco etapas de preparación.
+
 ```{python}
 #| label: tbl-etapas
 #| tbl-cap: "Etapas de preparación (P1–P5) tal como las registra el informe de limpieza."
@@ -92,6 +96,8 @@ T3 y `{python} n(DATOS["positives"]["pct_positivos_T4"], 1)` % para T4. No se
 remuestrea: la métrica principal de T2 a T4 es la precisión promedio, que no
 depende del umbral.
 
+La @tbl-problemas lista los problemas encontrados y su tratamiento.
+
 ```{python}
 #| label: tbl-problemas
 #| tbl-cap: "Problemas encontrados en los datos y su tratamiento, del informe de limpieza."
@@ -105,7 +111,7 @@ Markdown(md_table(["Problema", "Tratamiento"], rows))
 
 Cada componente y cada candidato tiene un código corto, heredado del
 registro de pre-registro, que se usa en las tablas y figuras de este
-documento. La tabla siguiente los define; en el texto se prefiere el nombre
+documento. La @tbl-componentes los define; en el texto se prefiere el nombre
 descriptivo.
 
 ```{python}
@@ -131,6 +137,8 @@ Markdown(md_table(["Código", "Significado"], rows))
 Las decisiones de este protocolo se fijaron antes de entrenar y no se
 cambiaron después; están escritas, con fecha, en el registro de pre-registro
 (anexo C y anexo F).
+
+La @tbl-ventanas fija las ventanas temporales y las filas elegibles de cada vista.
 
 ```{python}
 #| label: tbl-ventanas

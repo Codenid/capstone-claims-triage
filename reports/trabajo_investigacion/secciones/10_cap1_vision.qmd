@@ -89,6 +89,8 @@ de esas sesiones; lo anterior es el registro del equipo.
 
 ## 1.2 Usuarios, clientes y casos de uso
 
+La @tbl-stakeholders resume los roles alrededor de la decisión, con su poder y su interés.
+
 ```{python}
 #| label: tbl-stakeholders
 #| tbl-cap: "Roles alrededor de la decisión de triaje. Cargos, poder e interés son los que los Product Lead declararon a partir de los personajes del pitch y se tratan como supuesto: no hubo acceso a una entidad y ningún rol participó fuera del pitch."
@@ -166,6 +168,8 @@ semanas. Las métricas se definen en el capítulo II y los resultados se
 presentan en el capítulo V. Los indicadores de negocio son los del pitch,
 generalizados de fraude a incidencias recurrentes; ninguno se ha medido,
 porque requieren tiempos y pérdidas de una entidad (sección 6.2).
+
+La @tbl-kpis reúne los indicadores.
 
 ```{python}
 #| label: tbl-kpis

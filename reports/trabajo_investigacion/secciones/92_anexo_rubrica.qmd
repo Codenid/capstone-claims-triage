@@ -2,7 +2,7 @@
 
 La rúbrica del bloque B del P4 define 21 evidencias observables ubicadas en
 cinco secciones. Este documento sigue la plantilla de la Escuela de Posgrado,
-así que la tabla dice dónde está cada evidencia.
+así que la @tbl-rubrica dice dónde está cada evidencia.
 
 ```{python}
 #| label: tbl-rubrica

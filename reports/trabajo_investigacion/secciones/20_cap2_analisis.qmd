@@ -243,8 +243,7 @@ supervisión y no solo de atención.
 ## 2.4 Benchmarking y competencia
 
 La solución compite contra tres cosas: cómo se decide hoy, las herramientas
-que ya existen en el mercado y el estado del arte académico. La tabla
-siguiente resume cada alternativa, su limitación conocida y en qué se
+que ya existen en el mercado y el estado del arte académico. La @tbl-alternativas resume cada alternativa, su limitación conocida y en qué se
 diferencia la propuesta; ninguna cifra de este proyecto aparece aquí, porque
 los resultados se presentan en el capítulo V.
 
@@ -274,6 +273,8 @@ entidad, que exige repetir la preparación y la evaluación con su propia
 taxonomía.
 
 ## 2.5 Datos, recursos y viabilidad
+
+La @tbl-inventario describe las fuentes de datos del proyecto.
 
 ```{python}
 #| label: tbl-inventario

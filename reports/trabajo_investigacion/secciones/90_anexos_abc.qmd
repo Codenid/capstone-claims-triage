@@ -1,4 +1,4 @@
-## Anexo A. Catálogo de los 40 patrones
+## ANEXO A. Catálogo de los 40 patrones
 
 Cada patrón se describe con su producto principal, su tamaño en ajuste, los
 términos que lo distinguen (TF-IDF del patrón frente al resto) y su serie
@@ -29,7 +29,7 @@ for p in sorted(CATALOGO, key=lambda p: p["cluster_id"]):
     print(f'![Serie semanal del patrón {p["cluster_id"]:02d}](figuras/{p["image"]}){{width=100%}}\n')
 ```
 
-## Anexo B. Tabla completa de candidatos
+## ANEXO B. Tabla completa de candidatos
 
 Reproducción de la tabla comparativa del repositorio (anexo F): cada
 candidato con su rol entre paréntesis, el conjunto donde se midió, su
@@ -96,7 +96,7 @@ print(md_table_widths(
 ))
 ```
 
-## Anexo C. Reglas pre-registradas
+## ANEXO C. Reglas pre-registradas
 
 Resumen de las reglas escritas en el registro de pre-registro antes de correr
 cada etapa. El registro completo, con fechas y la evidencia de cada decisión,

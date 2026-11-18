@@ -21,6 +21,8 @@ componentes congelados y aplica aritmética; en CPU solo el paso de
 clasificador de motivo cae al lineal de respaldo si no hay pesos del modelo
 tabular.
 
+La @tbl-operacion detalla qué hace falta para operar y cada cuánto reentrenar.
+
 ```{python}
 #| label: tbl-operacion
 #| tbl-cap: "Qué hace falta para operar el prototipo y cada cuánto reentrenar cada componente, según las señales que el propio pipeline escribe en cada puntuación."
@@ -44,6 +46,22 @@ observatorio ya corre sobre los archivos del *pipeline*. Las capacidades
 requeridas son un responsable de datos que vigile las señales de
 reentrenamiento y un equipo de atención que use las salidas y registre lo
 que confirma o corrige.
+
+**Estado del prototipo de pantallas y pasos manuales.** El prototipo de
+pantallas es una página estática con datos de ejemplo; todavía no lee las
+tablas que escribe el *pipeline*. En su versión del 18 de noviembre de 2026
+tiene tres entradas: una bandeja de expedientes con la ficha de evidencia
+de cada reclamo (tres motivos sugeridos, indicio de solución y de
+compensación, tema, novedad y reclamos parecidos con su desenlace); un
+observatorio de patrones, con lo observado frente a lo esperado en cada
+uno; y un seguimiento de alertas en cuatro pasos (registrar, revisar con
+el área responsable, intervenir y cerrar). Frente al diseño de la sección
+1.2, la maqueta aún no incluye la confirmación o corrección del motivo, el
+intervalo de 80 % ni la vista diaria, y reemplaza las cuatro marcas de
+revisión de una alerta por ese flujo de seguimiento. Los pasos manuales
+son tres: ajustar los componentes en el clúster, correr la puntuación de
+cada lote y llevar sus tablas a las pantallas. Conectar la maqueta a esas
+tablas es el primer trabajo de la siguiente fase.
 
 ## 6.2 Viabilidad financiera
 
@@ -117,6 +135,8 @@ literatura señaló como más probable de funcionar:
 
 ## 6.4 Cronograma o diagrama de Gantt
 
+La @fig-gantt presenta el cronograma del proyecto.
+
 ```{python}
 #| label: fig-gantt
 #| fig-cap: "Cronograma del proyecto por fase (2026), con las fechas de los sprints del curso y del cierre del modelado, y la siguiente fase prevista."
@@ -150,6 +170,8 @@ plt.show()
 ```
 
 ## 6.5 Riesgos y estrategias de mitigación
+
+La @tbl-riesgos reúne los riesgos, con su disparador y su mitigación.
 
 ```{python}
 #| label: tbl-riesgos

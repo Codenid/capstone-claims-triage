@@ -1,5 +1,7 @@
 ```{=typst}
 #set align(center)
+// Sin partir palabras en la portada.
+#set text(hyphenate: false)
 ```
 
 ::: {custom-style="PortadaTitulo"}
@@ -11,7 +13,7 @@ ESCUELA DE POSGRADO
 :::
 
 ::: {custom-style="Centrado"}
-![](recursos/utec_posgrado.png){width=6.5in}
+![](recursos/utec_posgrado.png){width=6in}
 :::
 
 ::: {custom-style="PortadaTitulo"}
@@ -52,6 +54,7 @@ Lima – Perú
 
 ```{=typst}
 #set align(left)
+#set text(hyphenate: auto)
 // Los títulos de las páginas preliminares van centrados, como el estilo
 // PortadaTitulo en Word; Pandoc convierte el id de cada bloque en una etiqueta.
 #show selector.or(<titulo-dedicatoria>, <titulo-agradecimientos>, <titulo-contenido>, <titulo-tablas>, <titulo-figuras>, <titulo-anexos>): set align(center)

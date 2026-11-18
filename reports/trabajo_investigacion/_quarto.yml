@@ -25,17 +25,19 @@ execute:
 format:
   docx:
     reference-doc: recursos/plantilla.docx
-    fig-width: 6.3
+    fig-width: 6.1
     fig-height: 3.3
     fig-dpi: 200
   typst:
     citeproc: true
-    papersize: a4
+    # Tipografía de la plantilla de la Escuela de Posgrado: Carta, márgenes de
+    # 3 cm, Times New Roman 12; el interlineado 1.5 se fija en trabajo.qmd.
+    papersize: us-letter
     margin:
-      x: 2.5cm
-      y: 2.5cm
-    mainfont: Arial
-    fontsize: 11pt
-    fig-width: 6.3
+      x: 3cm
+      y: 3cm
+    mainfont: Times New Roman
+    fontsize: 12pt
+    fig-width: 6.1
     fig-height: 3.3
     keep-typ: true

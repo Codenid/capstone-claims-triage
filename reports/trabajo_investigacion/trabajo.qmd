@@ -90,6 +90,18 @@ def captions(kind):
 // un bloque y Typst no admite saltos dentro de contenedores); en Word lo hace el
 // estilo Título 1 con salto de página anterior.
 #show figure: set block(breakable: true)
+// Plantilla de Posgrado: interlineado 1.5 en el texto, Título 1 centrado de
+// 16 pt, Título 2 de 12 pt en negrita y Título 3 de 14 pt sin negrita. Las
+// tablas y los títulos de figuras y tablas van a interlineado sencillo.
+#set par(leading: 1.05em, spacing: 1.5em)
+#show heading.where(level: 1): set align(center)
+#show heading.where(level: 1): set text(size: 16pt)
+#show heading.where(level: 2): set text(size: 12pt)
+#show heading.where(level: 3): set text(size: 14pt, weight: "regular")
+#show heading: set block(above: 1.6em, below: 1.1em)
+#show table: set text(size: 10pt)
+#show table: set par(leading: 0.65em)
+#show figure.caption: set par(leading: 0.65em)
 ```
 
 {{< include secciones/00_portada.qmd >}}
